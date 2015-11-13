@@ -1,34 +1,18 @@
-{% extends "base.html" %}
-
 {% block content %}
-
-    {% if form.errors %}
-        <p>Your username and password didn't match. Please try again.</p>
-    {% endif %}
-    
-    <form method="post" action="">
-        {% csrf_token %}
-        <table>
-            <tr>
-                {{ state }}
-            </tr>
-            {% if status_code == 1 %}
-                <tr>Welcome {{username}}</tr>
-                <tr><a href="/info/logout/"><input type="button" value="logout" /></a>
-            {% else %}
-            <tr>
-                <td>username:</td> 
-                <td><input type="text" name="username" value="{{ username}}" /></td>
-                   
-            </tr>
-            <tr>
-                <td>password:</td>
-                <td><input type="password" name="password" value="" /></td>
-            </tr>
-        </table>
-        
-        <input type="submit" value="login" />
+    {% if user.is_authenticated %}
+        <p>Welcome, {{ user.username }}  <a href="/info/logout/">[logout]</a></p>
+    {% else %}
+        {% if form.errors %}
+            <p>Your username and password didn't match. Please try again.</p>
         {% endif %}
-    </form>
-
+        <form method="post" action="">
+            {% csrf_token %}
+            <table>
+                <tr><td>Username</td><td><input type="text" name="username"></td></tr>
+                <tr><td>Password</td><td><input type="password" name="password"></td></tr>
+            </table>
+            <input type="submit" value="login" />
+            <input type="hidden" name="next" value="/" />
+        </form>
+    {% endif %}
 {% endblock %}

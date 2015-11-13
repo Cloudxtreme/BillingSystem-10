@@ -1,14 +1,17 @@
 from django.shortcuts import render, render_to_response
 from django.http import HttpResponse
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.views import login, logout
+from django.contrib.auth import authenticate
 from django.template.context import RequestContext
 from infoGatherer.models import Guarantor_Information, Insurance_Information, Personal_Information, Payer 
+from django.contrib.auth.decorators import login_required
 
 actions = {'I':'Created','U':'Changed','D':'Deleted'}
 
 def index(request):
     return HttpResponse("Welcome")
 
+@login_required(login_url='/info/login/')
 def admin_log(request):
     #Each Table's Log
     print '\nPersonal Information'
@@ -45,7 +48,8 @@ def user_login(request):
       
     return render_to_response('login.html',{'state':state,'status_code':status_code,'username':username},context_instance=RequestContext(request))    
 
-def user_logout(request):
-    logout(request)
-    state = 'You have successfully Logged Out'
-    return render_to_response('login.html',{'state':state})
+
+def user_logout(request, *args, **kwargs):
+    user = request.user
+    logout(request, *args, **kwargs)
+    #return render_to_response('logout.html',context_instance=RequestContext(request))
