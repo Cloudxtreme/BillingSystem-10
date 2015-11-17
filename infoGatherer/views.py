@@ -30,8 +30,8 @@ def admin_log(request):
 def user_login(request):
     username = ''
     password = ''
-    state = 'Please Log In'
-    status_code = 0
+    state = ''
+    status_code = ''    
     if request.POST:
         username = request.POST['username']
         password = request.POST['password']
@@ -46,10 +46,10 @@ def user_login(request):
         else:
             state = 'Invalid Login Details'
       
-    return render_to_response('login.html',{'state':state,'status_code':status_code,'username':username},context_instance=RequestContext(request))    
-
+    #return render_to_response('login.html',{'state':state,'status_code':status_code,'username':username},context_instance=RequestContext(request))    
+    return login(request, template_name='login.html',extra_context={'state':state,'status_code':status_code})
 
 def user_logout(request, *args, **kwargs):
     user = request.user
-    logout(request, *args, **kwargs)
+    return logout(request, *args, **kwargs)
     #return render_to_response('logout.html',context_instance=RequestContext(request))
