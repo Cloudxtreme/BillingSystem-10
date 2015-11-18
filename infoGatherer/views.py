@@ -1,6 +1,7 @@
 from django.shortcuts import render, render_to_response
 from django.http import HttpResponse
-from django.contrib.auth.views import login, logout
+from django.contrib.auth.views import login, logout, password_reset,\
+    password_reset_confirm, password_reset_done, password_reset_complete
 from django.contrib.auth import authenticate
 from django.template.context import RequestContext
 from infoGatherer.models import Guarantor_Information, Insurance_Information, Personal_Information, Payer 
@@ -53,3 +54,20 @@ def user_logout(request, *args, **kwargs):
     user = request.user
     return logout(request, *args, **kwargs)
     #return render_to_response('logout.html',context_instance=RequestContext(request))
+    
+def user_password_reset(request):
+    print 'pwd reset'
+    return password_reset(request, is_admin_site=False, template_name='password_reset_form.html', 
+                          email_template_name='password_reset_email.html',post_reset_redirect='/info/user/password/reset/done/',)
+
+def user_password_reset_done(request):
+    print 'pwd reset done'
+    return password_reset_done(request,template_name='password_reset_done.html',)
+
+def user_password_reset_confirm(request,*args,**kwargs):
+    print 'pwd reset confirm'
+    return password_reset_confirm(request,template_name='password_reset_confirm.html',post_reset_redirect='/info/user/password/done/',)
+
+def user_password_reset_complete(request):
+    print 'pwd reset complete'
+    return password_reset_complete(request,template_name='password_reset_complete.html',)
