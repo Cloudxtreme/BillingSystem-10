@@ -64,7 +64,9 @@ INSURANCE_STATUS_CHOICES = (('Active','Active'),('Inactive','Inactive'),('Invali
 PAYER_TYPE_CHOICE = (('M','Medicare'),('C','Commercial'))
 
 RELATION_CHOICES = (('Self','Self'),('Other','Other'))
-  
+
+PROVIDER_ROLE_CHOICES = (('Billing','Billing'),('Rendering','Rendering'),('Dual','Dual'))
+
 class Personal_Information(models.Model):
     first_name = models.CharField(max_length=128, default='')
     middle_name = models.CharField(max_length=128, default='', null=True, blank=True)
@@ -147,3 +149,32 @@ class Insurance_Information(models.Model):
     
     def __unicode__(self):
         return self.payer.name 
+
+class Locations(models.Model):
+    location_name = models.CharField(max_length=128,default='')
+    address = models.CharField(max_length=256, default='')
+    city = models.CharField(max_length=128,default='')   
+    state = USStateField(default='')  
+    phone = PhoneNumberField(null=True, blank=True, help_text='XXX-XXX-XXXX')
+    
+    def __unicode__(self):
+        return self.location_name
+
+class Provider(models.Model):
+    provider_name = models.CharField(max_length=128,default='')
+    tax_id = models.IntegerField(default='')
+    npi = models.IntegerField(default='')
+    speciality = models.CharField(max_length=128,default='')
+    role = models.CharField(choices=PROVIDER_ROLE_CHOICES,max_length=10,default='Rendering')
+    
+    def __unicode__(self):
+        return self.provider_name
+    
+class Procedure_Codes(models.Model):
+    procedure_name = models.CharField(max_length=128,default='')
+    procedure_code = models.IntegerField(default='')
+    
+    def __unicode__(self):
+        return self.procedure_names
+    
+#class Diagnosis_Codes(models.Model):
