@@ -1,5 +1,5 @@
 from django.contrib import admin
-from infoGatherer.models import Personal_Information, Payer, Insurance_Information
+from infoGatherer.models import Personal_Information, Payer, Insurance_Information, Diagnosis_Codes
       
 class PIAdmin(admin.ModelAdmin):
     #fields = (('first_name','middle_name','last_name'),)
@@ -17,7 +17,10 @@ class IIAdmin(admin.ModelAdmin):
 class LogAdmin(admin.ModelAdmin):
     pass
     #list_display = ('insurance_id','log_user','log_type',)
- 
+class DiagnosisCodes_Admin(admin.ModelAdmin):
+    pass
+
 admin.site.register(Personal_Information, PIAdmin) 
 admin.site.register(Payer, PayerAdmin)
 admin.site.register(Insurance_Information, IIAdmin)
+admin.site.register(Diagnosis_Codes,DiagnosisCodes_Admin)

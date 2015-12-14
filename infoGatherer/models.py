@@ -175,6 +175,11 @@ class Procedure_Codes(models.Model):
     procedure_code = models.IntegerField(default='')
     
     def __unicode__(self):
-        return self.procedure_names
+        return self.procedure_name
     
-#class Diagnosis_Codes(models.Model):
+class Diagnosis_Codes(models.Model):
+    diagnosis_name = models.CharField(max_length=128,default='')
+    diagnosis_code = models.CharField(max_length=8,default='')
+    
+    def __unicode__(self):
+        return self.diagnosis_name
