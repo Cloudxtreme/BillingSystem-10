@@ -15,6 +15,7 @@ class IIAdmin(admin.ModelAdmin):
     list_display = ('insurance_id',)
 
 class LogAdmin(admin.ModelAdmin):
+    
     pass
     #list_display = ('insurance_id','log_user','log_type',)
 class DiagnosisCodes_Admin(admin.ModelAdmin):
