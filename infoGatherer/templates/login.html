@@ -1,9 +1,9 @@
 {% extends "base.html" %}
-{% block content %}
+{% block data %}
     {% if form.errors %}
         <p>Your username and password didn't match. Please try again.</p>
     {% endif %}
-    <p> state: {{state}} </p>
+
     <form method="post" action="">
         {% csrf_token %}
         <table>
@@ -12,6 +12,7 @@
         </table>
         <a href="/info/user/password/reset/">Reset Password</a>
         <input type="submit" value="login" />
-        <input type="hidden" name="next" value="/info/login/" />
+        <input type="hidden" name="next" value={{request.path}} />
+        
     </form>
 {% endblock %}

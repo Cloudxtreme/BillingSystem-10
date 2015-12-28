@@ -186,14 +186,14 @@ class Diagnosis_Codes(models.Model):
     def __unicode__(self):
         return self.diagnosis_code
 
-class Test(models.Model):
-#     patient = models.ForeignKey()
-#     insurance = models.ForeignKey()
-#     billing and providers
-    dos = models.DateField()
-    billing_provider = models.ForeignKey(Provider, limit_choices_to={'role':'Billing'},)
-    rendering_provider = models.ForeignKey(Provider, limit_choices_to={'role':'Rendering'}, related_name = 'rendering_provider')
-    icd = models.ManyToManyField(Diagnosis_Codes)
+# class Test(models.Model):
+# #     patient = models.ForeignKey()
+# #     insurance = models.ForeignKey()
+# #     billing and providers
+#     dos = models.DateField()
+#     billing_provider = models.ForeignKey(Provider, limit_choices_to={'role':'Billing'},)
+#     rendering_provider = models.ForeignKey(Provider, limit_choices_to={'role':'Rendering'}, related_name = 'rendering_provider')
+#     icd = models.ManyToManyField(Diagnosis_Codes)
     
 #     referring_provider
 

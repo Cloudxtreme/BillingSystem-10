@@ -6,6 +6,7 @@ from django.contrib.auth import authenticate
 from django.template.context import RequestContext
 from infoGatherer.models import Guarantor_Information, Insurance_Information, Personal_Information, Payer 
 from django.contrib.auth.decorators import login_required
+from infoGatherer.forms import PatientForm, GuarantorForm, InsuranceForm
 
 actions = {'I':'Created','U':'Changed','D':'Deleted'}
 
@@ -55,19 +56,83 @@ def user_logout(request, *args, **kwargs):
     return logout(request, *args, **kwargs)
     #return render_to_response('logout.html',context_instance=RequestContext(request))
     
-def user_password_reset(request):
-    print 'pwd reset'
-    return password_reset(request, is_admin_site=False, template_name='password_reset_form.html', 
-                          email_template_name='password_reset_email.html',post_reset_redirect='/info/user/password/reset/done/',)
+# def user_password_reset(request):
+#     print 'pwd reset'
+#     return password_reset(request, is_admin_site=False, template_name='password_reset_form.html', 
+#                           email_template_name='password_reset_email.html',post_reset_redirect='/info/user/password/reset/done/',)
+# 
+# def user_password_reset_done(request):
+#     print 'pwd reset done'
+#     return password_reset_done(request,template_name='password_reset_done.html',)
+# 
+# def user_password_reset_confirm(request,*args,**kwargs):
+#     print 'pwd reset confirm'
+#     return password_reset_confirm(request,template_name='password_reset_confirm.html',post_reset_redirect='/info/user/password/done/',)
+# 
+# def user_password_reset_complete(request):
+#     print 'pwd reset complete'
+#     return password_reset_complete(request,template_name='password_reset_complete.html',)
 
-def user_password_reset_done(request):
-    print 'pwd reset done'
-    return password_reset_done(request,template_name='password_reset_done.html',)
+@login_required(login_url='/info/login/')
+def get_patient_info(request):
+    # if this is a POST request we need to process the form data
+    if request.method == 'POST':
+        # create a form instance and populate it with data from the request:
+        form = PatientForm(request.POST)
+        # check whether it's valid:
+        if form.is_valid():
+            # process the data in form.cleaned_data as required
+            # ...
+            # redirect to a new URL:
+            form.save()
+            return HttpResponse('/thanks/')
 
-def user_password_reset_confirm(request,*args,**kwargs):
-    print 'pwd reset confirm'
-    return password_reset_confirm(request,template_name='password_reset_confirm.html',post_reset_redirect='/info/user/password/done/',)
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        form = PatientForm()
+        
+    return render(request, 'patient.html', {'form': form})
 
-def user_password_reset_complete(request):
-    print 'pwd reset complete'
-    return password_reset_complete(request,template_name='password_reset_complete.html',)
+@login_required(login_url='/info/login/')
+def get_insurance_info(request):
+    # if this is a POST request we need to process the form data
+    if request.method == 'POST':
+        # create a form instance and populate it with data from the request:
+        form = InsuranceForm(request.POST)
+        # check whether it's valid:
+        if form.is_valid():
+            # process the data in form.cleaned_data as required
+            # ...
+            # redirect to a new URL:
+            return HttpResponse('/thanks/')
+
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        form = InsuranceForm()
+        
+    return render(request, 'insurance.html', {'form': form})
+
+@login_required(login_url='/info/login/')
+def get_guarantor_info(request):
+    # if this is a POST request we need to process the form data
+    if request.method == 'POST':
+        # create a form instance and populate it with data from the request:
+        form = GuarantorForm(request.POST)
+        # check whether it's valid:
+        if form.is_valid():
+            # process the data in form.cleaned_data as required
+            # ...
+            # redirect to a new URL:
+            return HttpResponse('/thanks/')
+
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        form = GuarantorForm()
+        
+    return render(request, 'guarantor.html', {'form': form})
+
+@login_required(login_url='/info/login/')
+def get_patient(request):
+    
+    return HttpResponse('Patients Will Be Displayed as Links')
+    
