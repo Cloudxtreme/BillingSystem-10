@@ -1,18 +1,82 @@
+<style>
+#c1{
+    width: 33%;
+    float: left;
+}
+#c2{
+    width:auto;
+}
+#c3{
+    width:33%;
+    float:right;
+}
+</style>
 {% extends "base.html" %}
 {% block content %}
     <h3>Patient Information</h3>
     <form action="" method="post">
         {% csrf_token %}
-        <table>
-            {% for field in form %}
-                {% if form.errors %}
-                    {% for error in field.errors %}
-                        {{ error|escape }}
-                        <tr><td>{{ field.label_tag }}</td><td> {{ field }}</td></tr>
+        <div id="wrapper">
+            {% if patient %}
+                <div id="c1">
+                    Patient Information:
+                    <table>
+                        <tr><td><h4>Account Information</h4></td></tr>
+                        <tr><td>chart_no</td><td>{{patient.chart_no}}</td></tr> 
+                        <tr><td>date_registered</td><td>{{patient.date_registered}}</td></tr> 
+                        <tr><td>account_type</td><td>{{patient.account_type}}</td></tr> 
+                        <tr><td>account_status</td><td>{{patient.account_status}}</td></tr> 
+                        <tr><td><h4>Personal Information</h4></td></tr>
+                        <tr><td>Name</td><td>{{patient.first_name}} {{patient.middle_name}} {{patient.last_name}}</td></tr>
+                        <tr><td>dob</td><td>{{patient.dob}}</td></tr> 
+                        <tr><td>sex</td><td>{{patient.sex}}</td></tr>  
+                        <tr><td>race</td><td>{{patient.race}}</td></tr> 
+                        <tr><td>ethnicity</td><td>{{patient.etnicity}}</td></tr> 
+                        <tr><td>language</td><td>{{patient.language}}</td></tr> 
+                        <tr><td>country</td><td>{{patient.country}}</td></tr> 
+                        <tr><td>ssn </td><td>{{patient.ssn}}</td></tr> 
+                        <tr><td>address</td><td>{{patient.address}}</td></tr> 
+                        <tr><td>city</td><td>{{patient.city}}</td></tr>  
+                        <tr><td>state</td><td>{{patient.state}}</td></tr> 
+                        <tr><td>zip </td><td>{{patient.zip}}</td></tr> 
+                        <tr><td>home_phone</td><td>{{patient.home_phone}}</td></tr> 
+                        <tr><td>cell_phone</td><td>{{patient.cell_phone}}</td></tr> 
+                        <tr><td>email</td><td>{{patient.email}}</td></tr> 
+                        <tr><td>call_pref</td><td>{{patient.call_pref}}</td></tr> 
+                        <tr><td>written_pref</td><td>{{patient.written_pref}}</td></tr> 
+                        <tr><td>emp_status</td><td>{{patient.emp_status}}</td></tr>   
+                        <tr><td>sign</td><td>{{patient.dob}}</td></tr> 
+                    </table>
+                </div>
+                <div id="c2">    
+                    Guarantor Information:
+                </div>
+                <div id="c3">
+                    Insurance Details:
+                    {% for each in insurance %}
+                        <table>
+                            <tr><td>level</td><td>{{each.level}}</td></tr>
+                            <tr><td>status</td><td>{{each.status}}</td></tr>
+                            <tr><td>payer</td><td>{{each.payer}}</td></tr>
+                            <tr><td>insurance_id</td><td>{{each.insurance_id}}</td></tr>
+                        </table>
                     {% endfor %}
-                {% endif %}    
-            {% endfor %}
-            <tr><td><input type="submit" value="Submit" /></td></tr>
-        </table>
+                </div>
+            {% else %}
+                <table>
+                    {% for field in form %}
+                        {% if form.errors %}
+                            {% for error in field.errors %}
+                                {{ error|escape }}
+                                <tr><td>{{ field.label_tag }}</td><td> {{ field }}</td></tr>
+                            {% endfor %}
+                        {% else %}
+                                <tr><td>{{ field.label_tag }}</td><td> {{ field }}</td></tr>
+                        {% endif %}    
+                    {% endfor %}
+                    <tr><td><input type="submit" value="Submit" /></td></tr>
+                </table>
+            {% endif %}
+        </div>
     </form>
 {% endblock %}

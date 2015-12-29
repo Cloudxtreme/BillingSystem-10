@@ -4,6 +4,7 @@ from django_languages.fields import LanguageField
 from localflavor.us.models import USStateField, USSocialSecurityNumberField, PhoneNumberField
 from django.utils import timezone
 from audit_log.models.managers import AuditLog
+from django.forms.models import model_to_dict
 
 GENDER_CHOICES = (('Female', 'Female'), ('Male', 'Male'), ('Undifferentiated', 'Undifferentiated'), ('Blank', ''))
 
@@ -102,7 +103,15 @@ class Personal_Information(models.Model):
     
     def __unicode__(self):
         return self.first_name+' '+self.last_name
-
+    
+    def get_data(self):
+        details = model_to_dict(self, exclude=['audit_log','dob','date_registered','state','country'])
+        details['dob'] = str(self.dob)
+        details['date_registerd'] = str(self.date_registered)
+        details['state'] = str(self.state)
+        details['country'] = str(self.country)
+        return details
+    
 class Guarantor_Information(models.Model):
     patient = models.ForeignKey(Personal_Information)
     relation = models.CharField(choices=RELATION_CHOICES,max_length=128)
@@ -125,7 +134,7 @@ class Guarantor_Information(models.Model):
     home_phone = PhoneNumberField(help_text='XXX-XXX-XXXX')
     
     def __unicode__(self):
-        return self.patient+' '+self.relation
+        return str(self.patient.pk)
     
 class Payer(models.Model):
     code = models.IntegerField(primary_key=True)

@@ -7,6 +7,8 @@ from django.template.context import RequestContext
 from infoGatherer.models import Guarantor_Information, Insurance_Information, Personal_Information, Payer 
 from django.contrib.auth.decorators import login_required
 from infoGatherer.forms import PatientForm, GuarantorForm, InsuranceForm
+import re
+import simplejson
 
 actions = {'I':'Created','U':'Changed','D':'Deleted'}
 
@@ -74,7 +76,7 @@ def user_logout(request, *args, **kwargs):
 #     return password_reset_complete(request,template_name='password_reset_complete.html',)
 
 @login_required(login_url='/info/login/')
-def get_patient_info(request):
+def get_patient_info(request, who=''):
     # if this is a POST request we need to process the form data
     if request.method == 'POST':
         # create a form instance and populate it with data from the request:
@@ -89,7 +91,24 @@ def get_patient_info(request):
 
     # if a GET (or any other method) we'll create a blank form
     else:
-        form = PatientForm()
+        context = dict()
+        if who == 'all':
+            context['all_patients'] = Personal_Information.objects.all()   
+            return render(request, 'all_patients.html', context)
+        elif re.match(r'\d+', who):
+            patient_dict = dict()
+            if Personal_Information.objects.get(pk=who):
+                patient = Personal_Information.objects.get(pk=who)
+                guarantor = Guarantor_Information.objects.filter(patient=who)
+                insurance = Insurance_Information.objects.filter(patient=who)
+                
+                context['patient'] = patient#.get_data() #converting to dictionary - order is lost
+                context['guarantor'] = guarantor
+                context['insurance'] = insurance
+            
+                return render(request, 'patient.html', context)
+        else:
+            form = PatientForm()
         
     return render(request, 'patient.html', {'form': form})
 
