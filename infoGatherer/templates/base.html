@@ -1,8 +1,8 @@
 {% if user.is_authenticated %}
     <p>Welcome, {{ user.username }}  <a href="/info/logout">[logout]</a></p>
-    <a href="/info/new/patient">Add a New Patient </a>
+    <a href="/info/patient/new/">Add a New Patient </a>
     <br>
-    <a href="/info/view/all">Modify an Existing Patient </a>
+    <a href="/info/view/all/">Modify an Existing Patient </a>
     {% block content %}
         
     {% endblock %}

@@ -84,7 +84,7 @@ class Personal_Information(models.Model):
     address = models.CharField(max_length=128,default='')
     city = models.CharField(max_length=128,default='')   
     state = USStateField(default='')  
-    zip = models.IntegerField(default='')
+    zip = models.CharField(max_length=5,default='')
     home_phone = PhoneNumberField(help_text='XXX-XXX-XXXX')
     cell_phone = PhoneNumberField(null=True, blank=True, help_text='XXX-XXX-XXXX')
     email = models.EmailField(null=True, blank=True)
@@ -117,21 +117,21 @@ class Guarantor_Information(models.Model):
     relation = models.CharField(choices=RELATION_CHOICES,max_length=128)
     
     #If relation is self, auto fill rest of the details
-    first_name = models.CharField(max_length=128, default='')
+    first_name = models.CharField(max_length=128, default='', null=True, blank=True)
     middle_name = models.CharField(max_length=128, default='', null=True, blank=True)
-    last_name = models.CharField(max_length=128, default='')
-    dob = models.DateField()
+    last_name = models.CharField(max_length=128, default='', null=True, blank=True)
+    dob = models.DateField(null=True, blank=True)
     sex = models.CharField(choices=GENDER_CHOICES, max_length=32, default='Blank')
     race = models.CharField(choices=RACE_CHOICES, max_length=64, default='Blank')
     ethnicity = models.CharField(choices=ETHNICITY_CHOICES, max_length=64, default='Blank')
     language = LanguageField(default='en')
     country = CountryField(blank_label='',default='US')
     ssn = USSocialSecurityNumberField(null=True, blank=True, help_text='XXX-XX-XXXX')
-    address = models.CharField(max_length=128,default='')
-    city = models.CharField(max_length=128,default='')   
+    address = models.CharField(max_length=128,default='', null=True, blank=True)
+    city = models.CharField(max_length=128,default='', null=True, blank=True)   
     state = USStateField(default='')  
-    zip = models.IntegerField(default='')
-    home_phone = PhoneNumberField(help_text='XXX-XXX-XXXX')
+    zip = models.CharField(max_length=5, default='',null=True, blank=True)
+    home_phone = PhoneNumberField(help_text='XXX-XXX-XXXX', null=True, blank=True)
     
     def __unicode__(self):
         return str(self.patient.pk)
@@ -167,7 +167,7 @@ class Locations(models.Model):
     city = models.CharField(max_length=128,default='')   
     state = USStateField(default='')  
     phone = PhoneNumberField(null=True, blank=True, help_text='XXX-XXX-XXXX')
-    
+        
     def __unicode__(self):
         return self.location_name
 
@@ -177,21 +177,21 @@ class Provider(models.Model):
     npi = models.IntegerField(default='')
     speciality = models.CharField(max_length=128,default='')
     role = models.CharField(choices=PROVIDER_ROLE_CHOICES,max_length=10,default='Rendering')
-    
+     
     def __unicode__(self):
         return self.provider_name
     
 class Procedure_Codes(models.Model):
     procedure_name = models.CharField(max_length=128,default='')
     procedure_code = models.IntegerField(default='')
-    
+     
     def __unicode__(self):
         return self.procedure_code
-    
+     
 class Diagnosis_Codes(models.Model):
     diagnosis_name = models.CharField(max_length=128,default='')
     diagnosis_code = models.CharField(max_length=8,default='')
-    
+     
     def __unicode__(self):
         return self.diagnosis_code
 

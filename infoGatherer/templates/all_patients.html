@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+    <h3>All Patients</h3>
+    <table border=1>
+        <tr><td>Chart Number</td><td>Name</td></tr>
+    {% for patient in all_patients %}
+        <tr>    
+            <td><a href="/info/view/{{patient.pk}}/">{{patient.chart_no}}</a></td>
+            <td><a href="/info/view/{{patient.pk}}/">{{patient.first_name}} {{patient.last_name}}</a></td>
+        </tr>
+    {% endfor %}
+    </table>
+{% endblock %}

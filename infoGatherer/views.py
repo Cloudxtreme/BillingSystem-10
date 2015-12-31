@@ -1,5 +1,5 @@
 from django.shortcuts import render, render_to_response
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.views import login, logout, password_reset,\
     password_reset_confirm, password_reset_done, password_reset_complete
 from django.contrib.auth import authenticate
@@ -8,7 +8,7 @@ from infoGatherer.models import Guarantor_Information, Insurance_Information, Pe
 from django.contrib.auth.decorators import login_required
 from infoGatherer.forms import PatientForm, GuarantorForm, InsuranceForm
 import re
-import simplejson
+from django.shortcuts import redirect
 
 actions = {'I':'Created','U':'Changed','D':'Deleted'}
 
@@ -87,16 +87,17 @@ def get_patient_info(request, who=''):
             # ...
             # redirect to a new URL:
             form.save()
-            return HttpResponse('/thanks/')
-
+            patient = Personal_Information.objects.all().order_by('-pk')[0]
+            url = '/info/insurance/'+str(patient.pk)
+            return redirect(url)
     # if a GET (or any other method) we'll create a blank form
     else:
         context = dict()
         if who == 'all':
             context['all_patients'] = Personal_Information.objects.all()   
             return render(request, 'all_patients.html', context)
+        
         elif re.match(r'\d+', who):
-            patient_dict = dict()
             if Personal_Information.objects.get(pk=who):
                 patient = Personal_Information.objects.get(pk=who)
                 guarantor = Guarantor_Information.objects.filter(patient=who)
@@ -109,11 +110,11 @@ def get_patient_info(request, who=''):
                 return render(request, 'patient.html', context)
         else:
             form = PatientForm()
-        
+            
     return render(request, 'patient.html', {'form': form})
-
+        
 @login_required(login_url='/info/login/')
-def get_insurance_info(request):
+def get_insurance_info(request, id=''):
     # if this is a POST request we need to process the form data
     if request.method == 'POST':
         # create a form instance and populate it with data from the request:
@@ -123,35 +124,62 @@ def get_insurance_info(request):
             # process the data in form.cleaned_data as required
             # ...
             # redirect to a new URL:
-            return HttpResponse('/thanks/')
+            form.save()
+            patient = Personal_Information.objects.get(pk=id)
+            url = '/info/guarantor/'+str(patient.pk)
+            return redirect(url)
+            #return HttpResponse('/thanks/')
 
     # if a GET (or any other method) we'll create a blank form
     else:
-        form = InsuranceForm()
+        patient = Personal_Information.objects.get(pk=id)
+        form = InsuranceForm(initial={'patient': patient})
         
     return render(request, 'insurance.html', {'form': form})
 
 @login_required(login_url='/info/login/')
-def get_guarantor_info(request):
+def get_guarantor_info(request, id=''):
     # if this is a POST request we need to process the form data
     if request.method == 'POST':
         # create a form instance and populate it with data from the request:
         form = GuarantorForm(request.POST)
-        # check whether it's valid:
+        
+#         if form['relation'].value() == "Self":
+#             print "relation is self"
+#             #print(form)
+#             patient = Personal_Information.objects.get(pk=id)
+#             print(form['first_name'].value())
+#             form['first_name'].value = patient.first_name
+#             form['first_name'].set
+#             print(form['first_name'].value())
+#             form['middle_name'].value = patient.middle_name
+#             form['last_name'].value = patient.last_name
+#             form['dob'].value = patient.dob
+#             form['sex'].value = patient.sex
+#             #form['country'].value = patient.country
+#             form['ssn'].value = patient.ssn
+#             form['address'].value = patient.address
+#             form['city'].value = patient.city
+#             form['state'].value = patient.state
+#             form['zip'].value = patient.zip
+#             form['home_phone'].value = patient.home_phone
+#                 #print(form)
+#             form.save()
+            
+#         else:
+            # check whether it's valid:
         if form.is_valid():
+            print "valid"
             # process the data in form.cleaned_data as required
             # ...
             # redirect to a new URL:
-            return HttpResponse('/thanks/')
+        form.save()
+        
+        return HttpResponse('/thanks/')
 
     # if a GET (or any other method) we'll create a blank form
     else:
-        form = GuarantorForm()
+        patient = Personal_Information.objects.get(pk=id)
+        form = GuarantorForm(initial={'patient': patient})
         
     return render(request, 'guarantor.html', {'form': form})
-
-@login_required(login_url='/info/login/')
-def get_patient(request):
-    
-    return HttpResponse('Patients Will Be Displayed as Links')
-    

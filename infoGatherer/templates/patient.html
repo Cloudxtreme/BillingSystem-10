@@ -64,18 +64,9 @@
                 </div>
             {% else %}
                 <table>
-                    {% for field in form %}
-                        {% if form.errors %}
-                            {% for error in field.errors %}
-                                {{ error|escape }}
-                                <tr><td>{{ field.label_tag }}</td><td> {{ field }}</td></tr>
-                            {% endfor %}
-                        {% else %}
-                                <tr><td>{{ field.label_tag }}</td><td> {{ field }}</td></tr>
-                        {% endif %}    
-                    {% endfor %}
+                    {{ form.as_table }}
                     <tr><td><input type="submit" value="Submit" /></td></tr>
-                </table>
+                 </table>
             {% endif %}
         </div>
     </form>

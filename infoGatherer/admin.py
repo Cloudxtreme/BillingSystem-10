@@ -1,5 +1,5 @@
 from django.contrib import admin
-from infoGatherer.models import Payer, Diagnosis_Codes,  Procedure_Codes, Provider, Personal_Information, Guarantor_Information
+from infoGatherer.models import Payer,Personal_Information, Guarantor_Information, Insurance_Information, Diagnosis_Codes, Procedure_Codes, Provider, Locations
       
 
 class PayerAdmin(admin.ModelAdmin):
@@ -8,6 +8,9 @@ class PayerAdmin(admin.ModelAdmin):
 
 class GuarantorAdmin(admin.ModelAdmin):
     pass
+
+class InsuranceAdmin(admin.ModelAdmin):
+    list_display = ('payer','patient',)
 
 class DiagnosisCodes_Admin(admin.ModelAdmin):
     list_display = ('diagnosis_code','diagnosis_name',)
@@ -27,10 +30,11 @@ class Patient_Admin(admin.ModelAdmin):
     pass
 
 admin.site.register(Payer, PayerAdmin)
-admin.site.register(Guarantor_Information, GuarantorAdmin)
 admin.site.register(Diagnosis_Codes,DiagnosisCodes_Admin)
 admin.site.register(Procedure_Codes,ProcedureCodes_Admin)
 admin.site.register(Provider,Provider_Admin)
 
 admin.site.register(Personal_Information,Patient_Admin)
+admin.site.register(Guarantor_Information, GuarantorAdmin)
+admin.site.register(Insurance_Information, InsuranceAdmin)
 # admin.site.register(Test,Test_Admin)
