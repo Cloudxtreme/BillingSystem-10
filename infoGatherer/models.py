@@ -104,6 +104,9 @@ class Personal_Information(models.Model):
     def __unicode__(self):
         return self.first_name+' '+self.last_name
     
+    def get_name(self):
+        return self.first_name+" "+self.middle_name+" "+self.last_name
+    
     def get_data(self):
         details = model_to_dict(self, exclude=['audit_log','dob','date_registered','state','country'])
         details['dob'] = str(self.dob)
@@ -111,6 +114,7 @@ class Personal_Information(models.Model):
         details['state'] = str(self.state)
         details['country'] = str(self.country)
         return details
+
     
 class Guarantor_Information(models.Model):
     patient = models.ForeignKey(Personal_Information)
@@ -161,6 +165,9 @@ class Insurance_Information(models.Model):
     def __unicode__(self):
         return self.payer.name 
 
+    def get_payer_name(self):
+        return self.payer.name
+    
 class Locations(models.Model):
     location_name = models.CharField(max_length=128,default='')
     address = models.CharField(max_length=256, default='')

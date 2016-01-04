@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import login_required
 from infoGatherer.forms import PatientForm, GuarantorForm, InsuranceForm
 import re
 from django.shortcuts import redirect
+from django.forms import formset_factory
 
 actions = {'I':'Created','U':'Changed','D':'Deleted'}
 
@@ -79,6 +80,7 @@ def user_logout(request, *args, **kwargs):
 def get_patient_info(request, who=''):
     # if this is a POST request we need to process the form data
     if request.method == 'POST':
+        request_type = request.POST['submit']
         # create a form instance and populate it with data from the request:
         form = PatientForm(request.POST)
         # check whether it's valid:
@@ -86,10 +88,11 @@ def get_patient_info(request, who=''):
             # process the data in form.cleaned_data as required
             # ...
             # redirect to a new URL:
-            form.save()
-            patient = Personal_Information.objects.all().order_by('-pk')[0]
-            url = '/info/insurance/'+str(patient.pk)
-            return redirect(url)
+            if request_type != "Update":
+                form.save()
+                patient = Personal_Information.objects.all().order_by('-pk')[0]
+                url = '/info/insurance/'+str(patient.pk)
+                return redirect(url)
     # if a GET (or any other method) we'll create a blank form
     else:
         context = dict()
@@ -99,15 +102,31 @@ def get_patient_info(request, who=''):
         
         elif re.match(r'\d+', who):
             if Personal_Information.objects.get(pk=who):
-                patient = Personal_Information.objects.get(pk=who)
-                guarantor = Guarantor_Information.objects.filter(patient=who)
-                insurance = Insurance_Information.objects.filter(patient=who)
+                patient = Personal_Information.objects.filter(pk=who).values()[0]
+                guarantor = Guarantor_Information.objects.filter(patient=who).values()
+                insurance = Insurance_Information.objects.filter(patient=who).values()
                 
-                context['patient'] = patient#.get_data() #converting to dictionary - order is lost
-                context['guarantor'] = guarantor
-                context['insurance'] = insurance
+                #context['patient'] = patient#.get_data() #converting to dictionary - order is lost
+                #context['guarantor'] = guarantor
+                #context['insurance'] = insurance
+                
             
-                return render(request, 'patient.html', context)
+                p_form = PatientForm(initial = patient)
+                #g_form = GuarantorForm(initial = guarantor)
+                
+#                 InsuranceFormSet = formset_factory(InsuranceForm)
+#                 i_formSet = InsuranceFormSet()
+#                 for each in i_formSet:
+#                     print (each.as_table())
+
+                i_form = []
+                
+                for each in insurance:
+                    payer_id = each['payer_id']
+                    payer_name = Payer.objects.filter(pk=payer_id).values()[0]['name']
+                    i_form.append(InsuranceForm(initial = each))
+                
+                return render(request, 'patient.html', {'p_form':p_form, 'i_form':i_form})
         else:
             form = PatientForm()
             
@@ -168,14 +187,14 @@ def get_guarantor_info(request, id=''):
             
 #         else:
             # check whether it's valid:
-        if form.is_valid():
-            print "valid"
+#         if form.is_valid():
+#             print "valid"
             # process the data in form.cleaned_data as required
             # ...
             # redirect to a new URL:
         form.save()
-        
-        return HttpResponse('/thanks/')
+        url = '/info/login/'
+        return redirect(url)
 
     # if a GET (or any other method) we'll create a blank form
     else:
