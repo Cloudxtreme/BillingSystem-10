@@ -59,7 +59,7 @@ ROOT_URLCONF = 'BillingSystem.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['C:\Users\Utsav\Documents\BillingApp\infoGatherer\templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -85,10 +85,17 @@ DATABASES = {
         'NAME': 'xenonhealth',
         'HOST': 'localhost',
         'USER': 'root',
-        'PASSWORD': 'Xenonhealth',
+        'PASSWORD': 'Purple#786',
     }
 }
-
+"""
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
+}
+"""
 if DEBUG:
     EMAIL_HOST = 'localhost'
     EMAIL_PORT = 1025
