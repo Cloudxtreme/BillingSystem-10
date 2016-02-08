@@ -1,0 +1,27 @@
+<form action="{% url 'claims:generateClaim' %}" method="post">
+    {% csrf_token %}
+    Patient: <select name="patient_chart_no">
+        {% for patient in patient_list %}
+        <option value="{{patient.chart_no}}">{{ patient.first_name }}</option>
+        {% endfor %}
+    </select>
+    <br>
+    <br>
+    Insured:
+    <select name="insured_chart_no">
+        {% for patient in patient_list %}
+        <option value="{{patient.chart_no}}">{{ patient.first_name }}</option>
+        {% endfor %}
+    </select>
+    <br>
+    <br>
+    Payer:
+    <select name="payer_code">
+        {% for payer in payer_list %}
+        <option value="{{payer.code}}">{{ payer.name }}</option>
+        {% endfor %}
+    </select>
+    <br>
+    <br>
+    <input type="submit" value="Make a form">
+</form>
