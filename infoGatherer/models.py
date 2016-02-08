@@ -70,6 +70,33 @@ PROVIDER_ROLE_CHOICES = (('Billing','Billing'),('Rendering','Rendering'),('Dual'
 
 POS_CHOICES = (('Home','Home'),('Hospital','Hospital'),('Office','Office'))
 
+#New stuff
+CATEGORIES = (  
+    ('LAB', 'labor'),
+    ('CAR', 'cars'),
+    ('TRU', 'trucks'),
+    ('WRI', 'writing'),
+)
+LOCATIONS = (  
+    ('BRO', 'Bronx'),
+    ('BRK', 'Brooklyn'),
+    ('QNS', 'Queens'),
+    ('MAN', 'Manhattan'),
+    ('STN', 'Staten Island'),
+)
+
+
+class PostAd(models.Model):  
+    name        = models.CharField(max_length=50)
+    email       = models.EmailField()
+    gist        = models.CharField(max_length=50)
+    category    = models.CharField(max_length=3, choices=CATEGORIES)
+    location    = models.CharField(max_length=3, choices=LOCATIONS)
+    description = models.TextField(max_length=300)
+    expire      = models.DateField()
+#New stuff
+
+
 class Personal_Information(models.Model):
     first_name = models.CharField(max_length=128, default='')
     middle_name = models.CharField(max_length=128, default='', null=True, blank=True)

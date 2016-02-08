@@ -59,7 +59,7 @@ ROOT_URLCONF = 'BillingSystem.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['C:\Users\Utsav\Documents\BillingApp\infoGatherer\templates'],
+        'DIRS': ['C:\Users\Utsav\Documents\BillingApp\infoGatherer\\templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

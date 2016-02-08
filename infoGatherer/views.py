@@ -4,9 +4,9 @@ from django.contrib.auth.views import login, logout, password_reset,\
     password_reset_confirm, password_reset_done, password_reset_complete
 from django.contrib.auth import authenticate
 from django.template.context import RequestContext
-from infoGatherer.models import Guarantor_Information, Insurance_Information, Personal_Information, Payer
+from infoGatherer.models import PostAd, Guarantor_Information, Insurance_Information, Personal_Information, Payer
 from django.contrib.auth.decorators import login_required
-from infoGatherer.forms import PatientForm, GuarantorForm, InsuranceForm
+from infoGatherer.forms import PostAdForm, PatientForm, GuarantorForm, InsuranceForm
 import re
 from django.shortcuts import redirect
 from django.forms import formset_factory
@@ -14,9 +14,23 @@ from fdfgen import forge_fdf
 import os
 import datetime
 import subprocess
+from django.views.generic import FormView
+from django.template.loader import get_template
 
 
 # New Stuff
+class PostAdPage(FormView):
+    template_name = 'post_ad.html'
+    success_url = '/awesome/'
+    form_class = PostAdForm
+
+    def form_valid(self, form):
+        return HttpResponse("Sweeeeeet.")
+
+def view_in_between(request):
+	return render(request, 'test.html')
+
+
 def search_form(request):
     #return HttpResponse("Welcome")
 	#now = datetime.datetime.now()
@@ -29,9 +43,9 @@ def print_form(request):
 	fdf_file.write(fdf)
 	fdf_file.close()
 	#process = subprocess.Popen(['pdftk', 'CMS1500.pdf', 'fill_form','data.fdf','output','output.pdf'])
-	r = subprocess.call("pdftk CMS1500.pdf fill_form data.fdf output output.pdf",Shell=True)
-	#os.system('pdftk CMS1500.pdf fill_form data.fdf output output.pdf')
-	#os.remove('data.fdf')
+	#r = subprocess.call("pdftk CMS1500.pdf fill_form data.fdf output output.pdf",Shell=True)
+	os.system('pdftk CMS1500.pdf fill_form data.fdf output output.pdf')
+	os.remove('data.fdf')
 	return HttpResponse("asdf")
 	
 	

@@ -1,11 +1,14 @@
 from django.conf.urls import patterns, url, include
 from infoGatherer import views
+from infoGatherer.views import PostAdPage
 from django.contrib.auth.views import logout
-urlpatterns = patterns('',
 
+urlpatterns = patterns('',
+        (r'^postad/', PostAdPage.as_view()),
         url(r'^search-form/$', views.search_form),
-		url(r'^search-form/print/$', views.print_form),
-		
+        url(r'^search-form/print/$', views.print_form),
+        url(r'^claim/$', views.view_in_between),
+
         url(r'^$', views.index, name='index'),
         url(r'^log$', views.admin_log, name='log'),
         url(r'^login/$', views.user_login, name='login'),
