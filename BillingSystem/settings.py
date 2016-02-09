@@ -41,6 +41,7 @@ INSTALLED_APPS = (
     'django_countries',
     'localflavor',
     'claims.apps.ClaimsConfig',
+    'bootstrapform',
 )
 
 MIDDLEWARE_CLASSES = (

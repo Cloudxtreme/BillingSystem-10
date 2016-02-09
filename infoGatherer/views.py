@@ -19,6 +19,7 @@ from django.template.loader import get_template
 
 
 # New Stuff
+
 class PostAdPage(FormView):
     template_name = 'post_ad.html'
     success_url = '/awesome/'
@@ -27,29 +28,36 @@ class PostAdPage(FormView):
     def form_valid(self, form):
         return HttpResponse("Sweeeeeet.")
 
+
+"""
+def PostAdPage(request):
+    form=PostAdForm()
+    return render(request, 'post_ad.html', {'form': form})
+"""
+
 def view_in_between(request):
-	return render(request, 'test.html')
+    return render(request, 'test.html')
 
 
 def search_form(request):
     #return HttpResponse("Welcome")
-	#now = datetime.datetime.now()
+    #now = datetime.datetime.now()
     return render(request, 'test.html')
 
 def print_form(request):
-	fields = [('2','1168 W 35th St'), ('10','2138809466'), ('11','Ekasit Ja')]
-	fdf = forge_fdf("",fields,[],[],[])
-	fdf_file = open("data.fdf","w")
-	fdf_file.write(fdf)
-	fdf_file.close()
-	#process = subprocess.Popen(['pdftk', 'CMS1500.pdf', 'fill_form','data.fdf','output','output.pdf'])
-	#r = subprocess.call("pdftk CMS1500.pdf fill_form data.fdf output output.pdf",Shell=True)
-	os.system('pdftk CMS1500.pdf fill_form data.fdf output output.pdf')
-	os.remove('data.fdf')
-	return HttpResponse("asdf")
-	
-	
-	
+    fields = [('2','1168 W 35th St'), ('10','2138809466'), ('11','Ekasit Ja')]
+    fdf = forge_fdf("",fields,[],[],[])
+    fdf_file = open("data.fdf","w")
+    fdf_file.write(fdf)
+    fdf_file.close()
+    #process = subprocess.Popen(['pdftk', 'CMS1500.pdf', 'fill_form','data.fdf','output','output.pdf'])
+    #r = subprocess.call("pdftk CMS1500.pdf fill_form data.fdf output output.pdf",Shell=True)
+    os.system('pdftk CMS1500.pdf fill_form data.fdf output output.pdf')
+    os.remove('data.fdf')
+    return HttpResponse("asdf")
+    
+    
+    
 
 #Old Stuff
 actions = {'I':'Created','U':'Changed','D':'Deleted'}
