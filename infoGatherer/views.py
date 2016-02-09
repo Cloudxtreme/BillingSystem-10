@@ -1,5 +1,5 @@
 from django.shortcuts import render, render_to_response
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.contrib.auth.views import login, logout, password_reset,\
     password_reset_confirm, password_reset_done, password_reset_complete
 from django.contrib.auth import authenticate
@@ -16,7 +16,7 @@ import datetime
 import subprocess
 from django.views.generic import FormView
 from django.template.loader import get_template
-
+import json
 
 # New Stuff
 
@@ -28,12 +28,18 @@ class PostAdPage(FormView):
     def form_valid(self, form):
         return HttpResponse("Sweeeeeet.")
 
-
 """
 def PostAdPage(request):
     form=PostAdForm()
     return render(request, 'post_ad.html', {'form': form})
 """
+        
+def get_make_claim_extra_context(request):
+    extra_context = {
+        'patient_list': list(Personal_Information.objects.values('chart_no', 'first_name', 'last_name').order_by('first_name')),
+    }
+
+    return JsonResponse(data=json.dumps(extra_context), safe=False);
 
 def view_in_between(request):
     return render(request, 'test.html')

@@ -3,6 +3,7 @@ from infoGatherer import views
 from infoGatherer.views import PostAdPage
 from django.contrib.auth.views import logout
 
+app_name = 'infoGatherer'
 urlpatterns = patterns('',
         url(r'^postad/', PostAdPage.as_view()),
         url(r'^search-form/$', views.search_form),
@@ -23,6 +24,6 @@ urlpatterns = patterns('',
 #         url(r'^user/password/reset/(?P<uidb36>[0-9A-Za-z]+)-(?P<token>.+)/$', views.user_password_reset_confirm, name='password_reset_confirm'),
 #         url(r'^user/password/done/$', views.user_password_reset_complete),
 
-
+    url(r'^get_make_claim_extra_context$', views.get_make_claim_extra_context, name="get_make_claim_extra_context"),
 
 )
