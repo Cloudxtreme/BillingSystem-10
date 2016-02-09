@@ -88,12 +88,39 @@ LOCATIONS = (
 
 class PostAd(models.Model):  
     name        = models.CharField(max_length=50)
+    insured_idnumber= models.CharField(max_length=50)
+    insured_name= models.CharField(max_length=100)
+    insured_address= models.CharField(max_length=100)
+    insured_streetaddress = models.TextField(max_length=100)
+    insured_city    = models.TextField(max_length=50)
+    insured_zip     = models.CharField(max_length=5,default='')
+    insured_state   = USStateField(default='') 
+    insured_telephone= PhoneNumberField(null=True, blank=True, help_text='XXX-XXX-XXXX')
+    insured_other_insured_policy=models.TextField(max_length=100)
+    insured_birth_date  = models.DateField()
+    other_cliam_id  = models.TextField(max_length=50)
+    insured_plan_name_program= models.TextField(max_length=100)
+    claim_codes= models.TextField(max_length=50)
+
     email       = models.EmailField()
     gist        = models.CharField(max_length=50)
     category    = models.CharField(max_length=3, choices=CATEGORIES)
     location    = models.CharField(max_length=3, choices=LOCATIONS)
-    description = models.TextField(max_length=300)
     expire      = models.DateField()
+    birth_date  = models.DateField()
+    pat_streetaddress = models.TextField(max_length=100)
+    pat_city    = models.TextField(max_length=50)
+    pat_zip     = models.CharField(max_length=5,default='')
+    pat_state   = USStateField(default='') 
+    pat_telephone= PhoneNumberField(null=True, blank=True, help_text='XXX-XXX-XXXX')
+    pat_other_insured_name=models.TextField(max_length=100)
+    pat_other_insured_policy=models.TextField(max_length=100)
+    pat_reservednucc1=models.TextField(max_length=50)
+    pat_reservednucc2=models.TextField(max_length=50)
+    pat_reservednucc3=models.TextField(max_length=50)
+    pat_insuranceplanname=models.TextField(max_length=100)
+    
+
 #New stuff
 
 

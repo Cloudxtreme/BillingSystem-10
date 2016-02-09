@@ -40,6 +40,7 @@ INSTALLED_APPS = (
     'infoGatherer',
     'django_countries',
     'localflavor',
+    'bootstrapform',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -85,7 +86,7 @@ DATABASES = {
         'NAME': 'xenonhealth',
         'HOST': 'localhost',
         'USER': 'root',
-        'PASSWORD': 'Purple#786',
+        'PASSWORD': 'Xenonhealth',
     }
 }
 """

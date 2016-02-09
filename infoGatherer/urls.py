@@ -4,7 +4,7 @@ from infoGatherer.views import PostAdPage
 from django.contrib.auth.views import logout
 
 urlpatterns = patterns('',
-        (r'^postad/', PostAdPage.as_view()),
+        url(r'^postad/', PostAdPage.as_view()),
         url(r'^search-form/$', views.search_form),
         url(r'^search-form/print/$', views.print_form),
         url(r'^claim/$', views.view_in_between),
