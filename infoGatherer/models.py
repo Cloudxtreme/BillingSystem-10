@@ -120,6 +120,8 @@ class PostAd(models.Model):
     pat_reservednucc3=models.TextField(max_length=50)
     pat_insuranceplanname=models.TextField(max_length=100)
     
+    pat_name    = models.TextField(max_length=50)
+    
 
 #New stuff
 

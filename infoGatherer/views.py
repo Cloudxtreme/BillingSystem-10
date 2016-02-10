@@ -17,6 +17,7 @@ import subprocess
 from django.views.generic import FormView
 from django.template.loader import get_template
 import json
+from django.core.serializers.json import DjangoJSONEncoder
 
 # New Stuff
 
@@ -35,11 +36,17 @@ def PostAdPage(request):
 """
         
 def get_make_claim_extra_context(request):
+    p_set = Personal_Information.objects.values('chart_no', 'first_name', 'last_name').order_by('first_name')
     extra_context = {
-        'patient_list': list(Personal_Information.objects.values('chart_no', 'first_name', 'last_name').order_by('first_name')),
+        'patient_list': list(p_set),
     }
 
     return JsonResponse(data=json.dumps(extra_context), safe=False);
+
+def get_json_personal_information(request):
+    p_set = Personal_Information.objects.filter(pk=request.POST['patient_chart_no']).values()
+
+    return JsonResponse(data=json.dumps(list(p_set), cls=DjangoJSONEncoder), safe=False);
 
 def view_in_between(request):
     return render(request, 'test.html')

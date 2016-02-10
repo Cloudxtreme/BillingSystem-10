@@ -1,7 +1,12 @@
 {% load bootstrap %}
 {% load staticfiles %}
 <script type="text/javascript" src="{% static 'infoGatherer/jquery-2.2.0.min.js' %}"></script>
-<script type="text/javascript" src="{% static 'infoGatherer/jquery.autocomplete.js' %}"></script>
+<script type="text/javascript" src="{% static 'infoGatherer/jquery.autocomplete.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'infoGatherer/jquery.cookie.js' %}"></script>
+
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
 {% comment %}
 
 This is the display for the 'Post Ad' form.
@@ -16,17 +21,10 @@ View Return: HttpResponse : message - "Sweeeeeeeet."
 
 {% endcomment %}
 
-<head>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-</head>
-
 <body>
 <div class="container">
 {% block content %}
-<form action="info/postad/" method="post">
+<form action="info/postad/" method="post" id="make-claims-form">
     {% csrf_token %}
     <br/>
     <strong>Patient:</strong>
@@ -42,6 +40,7 @@ View Return: HttpResponse : message - "Sweeeeeeeet."
         {{ form.pat_name.errors }}
         <label for="id_patientname">Patient's name</label>
         {{ form.pat_name }}
+        <input type="hidden" name="patient_chart_no" id="patient_chart_no" data-patient-chart-no>
     </div>
     <!-- *Patients Address -->
     <div class="fieldWrapper">
@@ -199,27 +198,61 @@ View Return: HttpResponse : message - "Sweeeeeeeet."
 
 <script>
     $(function() {
-        var availablePatient = [];
-        
+
+        $('#make-claims-form').submit(function(e) {
+            return false;
+        });
+
+        var csrftoken = $.cookie('csrftoken');
+
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+
         $.ajax({
             url: "{% url 'infoGatherer:get_make_claim_extra_context' %}",
         }).done(function(data) {
-            jObj = JSON.parse(data);
-            patient_list = jObj.patient_list;
+            var jObj = JSON.parse(data);
+            var patient_list = jObj.patient_list;
+            var patient_list_obj = [];
 
-            for(patient of patient_list)
-                availablePatient.push({value: patient.first_name + ' ' + patient.last_name, data: patient.chart_no})
+            for(var patient of patient_list)
+                patient_list_obj.push({value: patient.first_name + " " + patient.last_name, data: patient.chart_no})
 
-            console.log(availablePatient);
-
-            $("#id_name").autocomplete({
-                lookup: availablePatient,
+            $("#id_pat_name").autocomplete({
+                lookup: patient_list_obj,
                 onSelect: function (suggestion) {
-                    console.log(suggestion.value);
+                    $.post(
+                        "{% url 'infoGatherer:get_json_personal_information' %}",
+                        {patient_chart_no: suggestion.data},
+                        function(patient_info_str) {
+                            var patient_info = JSON.parse(patient_info_str)[0];
+                            
+                            $("#id_pat_streetaddress").val(patient_info.address);
+                            $("#id_pat_city").val(patient_info.city);
+                            $("#id_pat_state").val(patient_info.state);
+                            $("#id_pat_zip").val(patient_info.zip);
+
+                            $("#id_pat_telephone").val(patient_info.home_phone);
+
+                            var birth_date_str = patient_info.dob.substr(0,4) + "/" + patient_info.dob.substr(5,2) + "/" + patient_info.dob.substr(8,2)
+
+                            $("#id_birth_date").val(birth_date_str);
+                            $("#id_pat_sex").val(patient_info.sex.substr(0,1));
+                        }
+                    );
                 }
             });
         });
-
     });
 </script>
 
@@ -255,3 +288,5 @@ View Return: HttpResponse : message - "Sweeeeeeeet."
     #searchfield form .biginput:focus {
         color: #858585;
     }
+
+</style>

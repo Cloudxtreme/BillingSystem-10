@@ -44,7 +44,7 @@ class PostAdForm(forms.ModelForm):
     health_plan = forms.ChoiceField(choices=HEALTHPLAN, required=True )
 
     #Patient Info.
-    pat_name = forms.ModelChoiceField(queryset=patient_list, empty_label="(Select Name)" )
+    #pat_name = forms.ModelChoiceField(queryset=patient_list, empty_label="(Select Name)" )
     pat_sex = forms.ChoiceField(choices=SEX, required=True )
     pat_relationship=forms.ChoiceField(choices=REL_INSUR, required=True )
     pat_relation_emp = forms.BooleanField(initial=False)
@@ -61,6 +61,7 @@ class PostAdForm(forms.ModelForm):
         fields = '__all__'
 
         widgets = {
+            'pat_name': forms.TextInput(attrs={'placeholder': 'Patient\'s name'}),
             'birth_date': forms.TextInput(attrs={'placeholder': 'MM/DD/YYYY'}),
             'insured_idnumber': forms.TextInput(attrs={'placeholder': ''}),
             'insured_streetaddress': forms.TextInput(attrs={'placeholder': 'No,. Street'}),

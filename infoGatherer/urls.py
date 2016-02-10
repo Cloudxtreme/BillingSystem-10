@@ -25,5 +25,5 @@ urlpatterns = patterns('',
 #         url(r'^user/password/done/$', views.user_password_reset_complete),
 
     url(r'^get_make_claim_extra_context$', views.get_make_claim_extra_context, name="get_make_claim_extra_context"),
-
+    url(r'^get_json_personal_information$', views.get_json_personal_information, name="get_json_personal_information"),
 )
