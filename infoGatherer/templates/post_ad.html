@@ -6,122 +6,113 @@
 
 <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
 <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<style type="text/css">@media (min-width: 1200px) { .container { width: 700px !important;</style>
 
-{% comment %}
 
-This is the display for the 'Post Ad' form.
 
-URL: postad/  
-Model: PostAd  
-ModelForm: PostAdForm  
-View: PostAdPage [FormView]  
-View Return: HttpResponse : message - "Sweeeeeeeet."
-
-* = preset when user is logged in.
-
-{% endcomment %}
-
-<body>
 <div class="container">
-{% block content %}
-<form action="info/postad/" method="post" id="make-claims-form">
+<form action="" method="post">
     {% csrf_token %}
     <br/>
-    <strong>Patient:</strong>
-    <br/><br/>
+    <h1>Patient</h1><br/><br/>
     <!-- *Health Plan -->
-    <div class="fieldWrapper">
-        {{ form.health_plan.errors }}
-        <label for="id_healthplan">Health Plan</label>
+    <div class="fieldWrapper {%if form.health_plan.errors %}has-error{%endif%}">
+        <label for="id_health_plan">Health Plan</label>
         {{ form.health_plan }}
     </div>
     <!-- *Patients name -->
-    <div class="fieldWrapper" id="searchField">
-        {{ form.pat_name.errors }}
-        <label for="id_patientname">Patient's name</label>
+    <div class="fieldWrapper {%if form.pat_name.errors %}has-error{%endif%}">
+        <label for="id_pat_name">Patient's name</label>
         {{ form.pat_name }}
         <input type="hidden" name="patient_chart_no" id="patient_chart_no" data-patient-chart-no>
     </div>
     <!-- *Patients Address -->
-    <div class="fieldWrapper">
-        {{ form.pat_streetaddress.errors }}
-        <label for="id_patientstreetaddress">Patient's Address</label>
+    <div class="fieldWrapper {%if form.pat_streetaddress.errors %}has-error{%endif%}">
+        <label for="id_pat_streetaddress">Patient's Address</label>
         {{ form.pat_streetaddress }}
-        <label for="id_patientcity"></label>
+        <label for="id_pat_city"></label>
         {{ form.pat_city }}
-        <label for="id_state"></label>
+        <label for="id_pat_state"></label>
         {{ form.pat_state }}
-        <label for="id_zip"></label>
+        <label for="id_pat_zip"></label>
         {{ form.pat_zip }}
     </div>
-    <div class="fieldWrapper" >
-        {{ form.pat_telephone.errors }}
-        <label for="id_telephone">Phone No.</label>
+    <div class="fieldWrapper {%if form.pat_telephone.errors %}has-error{%endif%}" >
+        <label for="id_pat_telephone">Phone No.</label>
         {{ form.pat_telephone }}
     </div>
     <!-- Birth Date -->
-    <div class="fieldWrapper">
-        {{ form.birth_date.errors }}
-        <label for="id_birthdate">Birth Date</label>
+    <div class="fieldWrapper {%if form.birth_date.errors %}has-error{%endif%}">
+        <label for="id_birth_date">Birth Date</label>
         {{ form.birth_date }}
     </div>
     <!-- *Patient sex -->
-    <div class="fieldWrapper">
-        {{ form.pat_sex.errors }}
-        <label for="id_patientsex">Patient's sex</label>
+    <div class="fieldWrapper {%if form.pat_sex.errors %}has-error{%endif%}">
+        <label for="id_pat_sex">Patient's sex</label>
         {{ form.pat_sex }}
     </div>
     <!-- *Patient Relationship to Insured -->
     <div class="fieldWrapper">
         {{ form.pat_relationship.errors }}
-        <label for="id_patientrelationshiptoinsured">Patient's Relationship to Insured</label>
+        <label for="id_pat_relationship">Patient's Relationship to Insured</label>
         {{ form.pat_relationship }}
     </div>
-    <!-- Others insured name -->
+    
     <div class="fieldWrapper">
-        {{ form.pat_other_insured_name.errors }}
-        <label for="id_patientotherinsured">Other Insured's Name</label>
-        {{ form.pat_other_insured_name }}
-    </div>
-    <div class="fieldWrapper">
-        {{ form.pat_other_insured_policy.errors }}
-        <label for="id_patientotherinsured">Other Insured's Policy/Group Number</label>
-        {{ form.pat_other_insured_policy }}
-    </div>
-    <div class="fieldWrapper">
-        {{ form.pat_reserved_nucc1.errors }}
-        <label for="id_reservednucc1">Reserved for NUCC use</label>
+        <label for="id_pat_reservednucc1">Reserved for NUCC use</label>
         {{ form.pat_reservednucc1 }}
-        <label for="id_reservednucc2"></label>
-        {{ form.pat_reservednucc2 }}
-        <label for="id_reservednucc3"></label>
-        {{ form.pat_reservednucc3 }}
     </div>
-    <!-- Insurance plan name or program name -->
+    
+
     <div class="fieldWrapper">
-        {{ form.pat_insuranceplanname.errors }}
-        <label for="id_insuranceplanname">Insurance plan name or program name</label>
-        {{ form.pat_insuranceplanname }}
-    </div>
-    <div class="fieldWrapper">
-        Is Patients Condition related to: 
-        {{ form.pat_relation_emp.errors }}
-        <label for="id_relation_emp">Emploment?</label>
-        {{ form.pat_relation_emp }}
-        <label for="id_relation_auto_accident">Auto Accident?</label>
-        {{ form.pat_relation_auto_accident }}
-        <label for="id_relation_other_accident">Other Accident?</label>
-        {{ form.pat_relation_other_accident }}
+        <label>Is Patients Condition related to:</label> 
+        <div class="checkbox">
+            <label>{{ form.pat_relation_emp }}Emploment</label>
+        </div>
+        <div class="checkbox">
+            <label>{{ form.pat_relation_auto_accident }}Auto Accident</label>
+            <label id="input_show_hide" style="display:none">{{ form.pat_auto_accident_state }}</label>
+            
+        </div>
+        <div class="checkbox">
+            <label>{{ form.pat_relation_other_accident }}Other Accident</label>
+            
+        </div>
     </div>
     <div class="fieldWrapper">
-        {{ form.claim_codes.errors }}
         <label for="id_claim_codes">Claim Codes</label>
         {{ form.claim_codes }}
     </div>
-
+    <div class="fieldWrapper">
+        <div class="checkbox">
+            <label>{{ form.insured_other_benifit_plan }}Is there another health benifit plan?</label>
+        </div>
+    </div>
+    <div id="show_hide" style="display:none">
+        <!-- Others insured name -->
+        <div class="fieldWrapper">
+            <label for="id_pat_other_insured_name">Other Insured's Name</label>
+            {{ form.pat_other_insured_name }}
+        </div>
+        <div class="fieldWrapper">
+            <label for="id_pat_other_insured_policy">Other Insured's Policy/Group Number</label>
+            {{ form.pat_other_insured_policy }}
+        </div>
+        <div class="fieldWrapper">
+            <label for="id_pat_reservednucc2">Reserved for NUCC use</label>
+                {{ form.pat_reservednucc2 }}
+            <label for="id_pat_reservednucc3"></label>
+                {{ form.pat_reservednucc3 }}
+        </div>
+        <!-- Insurance plan name or program name -->
+        <div class="fieldWrapper">
+            <label for="id_pat_insuranceplanname">Insurance plan name or program name</label>
+            {{ form.pat_insuranceplanname }}
+        </div>
+    </div>
 
     <br/>
-    <strong>Insured:</strong>
+    <h1>Insured</h1>
     <br/><br/>
 
 
@@ -129,72 +120,59 @@ View Return: HttpResponse : message - "Sweeeeeeeet."
 
 
     <!-- Insured id number -->
-    <div class="fieldWrapper">
-        {{ form.insured_idnumber.errors }}
-        <label for="id_idnumber">Insured id number</label>
+    <div class="fieldWrapper {%if form.insured_idnumber.errors %}has-error{%endif%}" >
+        <label for="id_insured_idnumber">Insured id number</label>
         {{ form.insured_idnumber }}
     </div>
     <!-- *insured name -->
-    <div class="fieldWrapper">
-        {{ form.insured_name.errors }}
-        <label for="id_insuredname">Insured's name</label>
+    <div class="fieldWrapper {%if form.insured_name.errors %}has-error{%endif%}">
+        <label for="id_insured_name">Insured's name</label>
         {{ form.insured_name }}
     </div>
     <!-- *insured Address -->
-    <div class="fieldWrapper">
-        {{ form.insured_streetaddress.errors }}
-        <label for="id_insuredstreetaddress">Insured's Address</label>
+    <div class="fieldWrapper {%if form.insured_streetaddress.errors %}has-error{%endif%}">
+        <label for="id_insured_streetaddress">Insured's Address</label>
         {{ form.insured_streetaddress }}
-        <label for="id_insuredcity"></label>
+        <label for="id_insured_city"></label>
         {{ form.insured_city }}
-        <label for="id_insuredstate"></label>
+        <label for="id_insured_state"></label>
         {{ form.insured_state }}
-        <label for="id_insuredzip"></label>
+        <label for="id_insured_zip"></label>
         {{ form.insured_zip }}
     </div>
-    <div class="fieldWrapper">
-        {{ form.insured_telephone.errors }}
-        <label for="id_insuredtelephone">Phone No.</label>
+    <div class="fieldWrapper {%if form.insured_telephone.errors %}has-error{%endif%}">
+        <label for="id_insured_telephone">Phone No.</label>
         {{ form.insured_telephone }}
     </div>
-    <div class="fieldWrapper">
-        {{ form.insured_other_insured_policy.errors }}
-        <label for="id_patientotherinsured">Insured's Policy/Group Number</label>
+    <div class="fieldWrapper {%if form.insured_other_insured_policy.errors %}has-error{%endif%}">
+        <label for="id_insured_other_insured_policy">Insured's Policy/Group Number</label>
         {{ form.insured_other_insured_policy }}
     </div>
     <!-- Birth Date -->
-    <div class="fieldWrapper">
-        {{ form.insured_birth_date.errors }}
-        <label for="id_insured_birthdate">Insured's Birth Date</label>
+    <div class="fieldWrapper {%if form.insured_birth_date.errors %}has-error{%endif%}">
+        <label for="id_insured_birth_date">Insured's Birth Date</label>
         {{ form.insured_birth_date }}
     </div>
     <!-- *Insured sex -->
-    <div class="fieldWrapper">
-        {{ form.insured_sex.errors }}
-        <label for="id_insuredsex">Insured's sex</label>
+    <div class="fieldWrapper {%if form.insured_sex.errors %}has-error{%endif%}">
+        <label for="id_insured_sex">Insured's sex</label>
         {{ form.insured_sex }}
     </div>
     <div class="fieldWrapper">
-        {{ form.other_cliam_id.errors }}
-        <label for="id_other_claim_id">Other claim id</label>
+        <label for="id_other_cliam_id">Other claim id</label>
         {{ form.other_cliam_id }}
     </div>
-    <div class="fieldWrapper">
-        {{ form.insured_plan_name_program.errors }}
-        <label for="id_other_claim_id">Insurance plan name or program name</label>
+    <div class="fieldWrapper {%if form.insured_plan_name_program.errors %}has-error{%endif%}">
+        <label for="id_insured_plan_name_program">Insurance plan name or program name</label>
         {{ form.insured_plan_name_program }}
     </div>
-    <div class="fieldWrapper">
-        {{ form.insured_other_benifit_plan.errors }}
-        <label for="id_other_claim_id">Is there another health benifit plan?</label>
-        {{ form.insured_other_benifit_plan }}
-    </div>
+    
     <br/>
-    <button type="submit">
+    <button type="submit" class="btn btn-primary btn-md" value="Submit Button">
         <i class="fa fa-thumb-tack"></i> Print Please!
     </button>
 </form>
-{% endblock %}
+</div>
 
 <script>
     $(function() {
@@ -255,6 +233,51 @@ View Return: HttpResponse : message - "Sweeeeeeeet."
         });
     });
 </script>
+<script>
+        function init(){
+            // Div tasgs
+            var d = document.getElementsByClassName("fieldWrapper");
+            for(i=0;i<d.length;i++){
+                d[i].className+=" form-group";
+            }
+
+            // Label tags
+            var d = document.getElementsByTagName("label");
+            for(i=0;i<d.length;i++){
+                d[i].className+=" control-label";
+            }
+
+            // Input tags
+            var d = document.getElementsByTagName("input");
+            for(i=0;i<d.length;i++){
+                    d[i].className+=" form-control";
+            }
+            document.getElementById("id_pat_relation_emp").className="";
+            document.getElementById("id_pat_relation_auto_accident").className="";
+            document.getElementById("id_pat_relation_other_accident").className="";
+            document.getElementById("id_insured_other_benifit_plan").className="";
+            
+            
+            // Select tags
+            var d = document.getElementsByTagName("select");
+            for(i=0;i<d.length;i++){
+                d[i].className+=" form-control";
+            }
+
+            // OnClick for 9 (a) ---- (d)
+            document.getElementById("id_insured_other_benifit_plan").onclick=function(){if (document.getElementById('show_hide').style.display==='none'){document.getElementById('show_hide').style.display = "block"} else {document.getElementById('show_hide').style.display = "none"}}
+
+            // Adding class to state # box
+            document.getElementById("id_pat_auto_accident_state").className+=" input-sm";
+            
+            // Onlick state for Auto Accident
+            document.getElementById("id_pat_relation_auto_accident").onclick=function(){if (document.getElementById('input_show_hide').style.display==='none'){document.getElementById('input_show_hide').style.display = "inline-block"} else {document.getElementById('input_show_hide').style.display = "none"}}
+
+            //Filling default value
+            $("#id_insured_other_insured_policy").val("NONE");
+        }
+        window.onload = init;
+    </script>
 
 <style type="text/css">
     .autocomplete-suggestions { border: 1px solid #999; background: #fff; cursor: default; overflow: auto; }
