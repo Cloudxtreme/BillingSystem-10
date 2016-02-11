@@ -120,6 +120,8 @@ class PostAd(models.Model):
     pat_insuranceplanname=models.TextField(max_length=100)
     pat_auto_accident_state=USStateField(default='')
     
+    pat_name    = models.TextField(max_length=50)
+    
 
 #New stuff
 

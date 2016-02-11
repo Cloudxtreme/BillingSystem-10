@@ -1,10 +1,19 @@
+{% load staticfiles %}
+<script type="text/javascript" src="{% static 'claims/jquery-2.2.0.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'claims/jquery.autocomplete.js' %}"></script>
+
 <form action="{% url 'claims:generateClaim' %}" method="post">
     {% csrf_token %}
-    Patient: <select name="patient_chart_no">
+    <!-- Patient: <select name="patient_chart_no">
         {% for patient in patient_list %}
         <option value="{{patient.chart_no}}">{{ patient.first_name }}</option>
         {% endfor %}
-    </select>
+    </select> -->
+    <div id="searchfield">
+        <input type="text" name="patient_name" id="id_pat_name" placeholder="Patient's name">
+        <input type="hidden" name="patient_chart_no">
+    </div>
+
     <br>
     <br>
     Insured:
@@ -25,3 +34,65 @@
     <br>
     <input type="submit" value="Make a form">
 </form>
+
+
+<script>
+    $(function() {
+        var availablePatient = [];
+        
+        $.ajax({
+            url: "{% url 'infoGatherer:get_make_claim_extra_context' %}",
+        }).done(function(data) {
+            jObj = JSON.parse(data);
+            patient_list = jObj.patient_list;
+
+            for(patient of patient_list)
+                availablePatient.push({value: patient.first_name + ' ' + patient.last_name, data: patient.chart_no})
+
+            console.log('availablePatient', availablePatient);
+
+            $("#id_pat_name").autocomplete({
+                lookup: availablePatient,
+                onSelect: function (suggestion) {
+                    console.log(suggestion.value);
+                }
+            });
+        });
+
+    });
+</script>
+
+<style type="text/css">
+    .autocomplete-suggestions { border: 1px solid #999; background: #fff; cursor: default; overflow: auto; }
+    .autocomplete-suggestion { padding: 10px 5px; font-size: 1.2em; white-space: nowrap; overflow: hidden; }
+    .autocomplete-selected { background: #f0f0f0; }
+    .autocomplete-suggestions strong { font-weight: normal; color: #3399ff; }
+
+    #searchfield form {
+        display: inline-block;
+        background: #eeefed;
+        padding: 0;
+        margin: 0;
+        padding: 5px;
+        border-radius: 3px;
+        margin: 5px 0 0 0;
+    }
+    #searchfield form .biginput {
+        width: 600px;
+        height: 40px;
+        padding: 0 10px 0 10px;
+        background-color: #fff;
+        border: 1px solid #c8c8c8;
+        border-radius: 3px;
+        color: #aeaeae;
+        font-weight:normal;
+        font-size: 1.5em;
+        -webkit-transition: all 0.2s linear;
+        -moz-transition: all 0.2s linear;
+        transition: all 0.2s linear;
+    }
+    #searchfield form .biginput:focus {
+        color: #858585;
+    }
+    
+</style>
