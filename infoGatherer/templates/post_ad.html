@@ -6,7 +6,7 @@
 
 <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
 <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-<style type="text/css">@media (min-width: 1200px) { .container { width: 700px !important;</style>
+<style type="text/css">@media (min-width: 1200px) { .container { width: 700px !important;} </style>
 
 
 
@@ -206,7 +206,41 @@
             for(var patient of patient_list)
                 patient_list_obj.push({value: patient.first_name + " " + patient.last_name, data: patient.chart_no})
 
+            // Show all patient information when click patient name text field
+            // $("#id_pat_name").autocomplete( "search", "" );
+
+            // Patient information
             $("#id_pat_name").autocomplete({
+                minChars: 0,
+                lookup: patient_list_obj,
+                onSelect: function (suggestion) {
+                    $.post(
+                        "{% url 'infoGatherer:get_json_personal_information' %}",
+                        {personal_chart_no: suggestion.data},
+                        function(patient_info_str) {
+
+                            console.log(patient_info_str);
+
+                            var patient_info = JSON.parse(patient_info_str)[0];
+                            
+                            $("#id_pat_streetaddress").val(patient_info.address);
+                            $("#id_pat_city").val(patient_info.city);
+                            $("#id_pat_state").val(patient_info.state);
+                            $("#id_pat_zip").val(patient_info.zip);
+
+                            $("#id_pat_telephone").val(patient_info.home_phone);
+
+                            var birth_date_str = patient_info.dob.substr(0,4) + "/" + patient_info.dob.substr(5,2) + "/" + patient_info.dob.substr(8,2)
+
+                            $("#id_birth_date").val(birth_date_str);
+                            $("#id_pat_sex").val(patient_info.sex.substr(0,1));
+                        }
+                    );
+                }
+            });
+
+            // Insured information
+            $("#id_insured_name").autocomplete({
                 lookup: patient_list_obj,
                 onSelect: function (suggestion) {
                     $.post(
@@ -215,6 +249,8 @@
                         function(patient_info_str) {
                             var patient_info = JSON.parse(patient_info_str)[0];
                             
+                            console.log(patient_info);
+
                             $("#id_pat_streetaddress").val(patient_info.address);
                             $("#id_pat_city").val(patient_info.city);
                             $("#id_pat_state").val(patient_info.state);

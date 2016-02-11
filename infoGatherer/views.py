@@ -18,6 +18,7 @@ from django.views.generic import FormView
 from django.template.loader import get_template
 import json
 from django.core.serializers.json import DjangoJSONEncoder
+from django.core import serializers
 
 # New Stuff
 
@@ -44,9 +45,19 @@ def get_make_claim_extra_context(request):
     return JsonResponse(data=json.dumps(extra_context), safe=False);
 
 def get_json_personal_information(request):
-    p_set = Personal_Information.objects.filter(pk=request.POST['patient_chart_no']).values()
+    p_arr = Personal_Information.objects.filter(pk=request.POST['personal_chart_no'])
+    p_arr_dict = p_arr.values()
 
-    return JsonResponse(data=json.dumps(list(p_set), cls=DjangoJSONEncoder), safe=False);
+    i_arr = p_arr[0].insurance_information_set.all()
+
+    pay_arr_dict = [{"code": i.payer.code, "name": i.payer.name} for i in i_arr]
+
+    content = {
+        "personal_information": p_arr_dict,
+        "payer_list": pay_arr_dict,
+    }
+
+    return JsonResponse(data=json.dumps(list(content), cls=DjangoJSONEncoder), safe=False);
 
 def view_in_between(request):
     return render(request, 'test.html')
