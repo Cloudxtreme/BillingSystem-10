@@ -77,7 +77,10 @@ class PostAdForm(forms.ModelForm):
     claim_codes = forms.CharField(required=False, widget=forms.TextInput(attrs={'placeholder': '10 (d)'}))
     insured_other_insured_policy = forms.CharField(required=False, widget=forms.TextInput(attrs={'placeholder': ''}))
     insured_plan_name_program = forms.CharField(required=False, widget=forms.TextInput(attrs={'placeholder': '11 (c)'}))
-
+    payer_num = forms.CharField(required=False)
+    payer_name = forms.CharField(required=False)
+    payer_address = forms.CharField(required=False)
+    
 
     class Meta:
         model = PostAd

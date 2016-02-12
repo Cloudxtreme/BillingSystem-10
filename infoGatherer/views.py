@@ -26,7 +26,7 @@ from django.forms.models import model_to_dict
 
 class PostAdPage(FormView):
     template_name = 'post_ad.html'
-    success_url = '/awesome/'
+    success_url = ''
     form_class = PostAdForm
 
     def form_valid(self, form):
