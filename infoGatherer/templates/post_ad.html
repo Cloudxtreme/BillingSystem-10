@@ -246,7 +246,7 @@
                         function(patient_info_str) {
                             // Auto populate fields in patient section
                             var patient_info = JSON.parse(patient_info_str)["personal_information"][0];
-                            var birth_date_str = patient_info.dob.substr(0,4) + "/" + patient_info.dob.substr(5,2) + "/" + patient_info.dob.substr(8,2)
+                            var birth_date_str = patient_info.dob.substr(0,4) + "/" + patient_info.dob.substr(5,2) + "/" + patient_info.dob.substr(8,2);
                             $("#id_pat_streetaddress").val(patient_info.address);
                             $("#id_pat_city").val(patient_info.city);
                             $("#id_pat_state").val(patient_info.state);
@@ -270,7 +270,7 @@
                         function(insured_info_str) {
                             // Auto populate fields in insured section
                             var insured_info = JSON.parse(insured_info_str)["personal_information"][0];
-                            var birth_date_str = insured_info.dob.substr(0,4) + "/" + insured_info.dob.substr(5,2) + "/" + insured_info.dob.substr(8,2)
+                            var birth_date_str = insured_info.dob.substr(0,4) + "/" + insured_info.dob.substr(5,2) + "/" + insured_info.dob.substr(8,2);
                             $("#id_insured_streetaddress").val(insured_info.address);
                             $("#id_insured_city").val(insured_info.city);
                             $("#id_insured_state").val(insured_info.state);
@@ -279,23 +279,54 @@
                             $("#id_insured_birth_date").val(birth_date_str);
                             $("#id_insured_sex").val(insured_info.sex.substr(0,1));
 
+                            // Set auto suggestion for insurance id number
                             var insurance_list = JSON.parse(insured_info_str)["insurance_list"];
-                            var insurance_list_obj = [];
+                            var insuranceNumberListObj = [];
                             for(i of insurance_list)
-                                insurance_list_obj.push({value: i.insurance_id, insurance_data: i});
+                                insuranceNumberListObj.push({value: i.insurance_id, insurance_data: i});
 
-                            // Set auto suggestion for insurance information
                             $("#id_insured_idnumber").autocomplete({
-                                lookup: insurance_list_obj,
-                                onSelect: function (suggestion) {
-                                    console.log(suggestion.insurance_data);
-                                }
+                                lookup: insuranceNumberListObj,
+                                onSelect: populateInsuranceSection,
                             });
+
+                            // Set auto suggesntion for insurance name
+                            var insuranceNameListObj = [];
+                            for(i of insurance_list)
+                                insuranceNameListObj.push({value: i.payer.name, insurance_data: i});
+
+                            $("#id_payer_name").autocomplete({
+                                lookup: insuranceNameListObj,
+                                onSelect: populateInsuranceSection,
+                            });
+
+                            // Set auto suggestion for insurance code
+                            var insuranceCodeListObj = [];
+                            for(i of insurance_list)
+                                insuranceCodeListObj.push({value: i.payer.code + "", insurance_data: i});
+
+                            $("#id_payer_num").autocomplete({
+                                lookup: insuranceCodeListObj,
+                                onSelect: populateInsuranceSection,
+                            });
+
                         }
                     );
                 }
             });
         });
+
+        function populateInsuranceSection(suggestion) {
+            // Auto populate fields in insurance section
+            var insurance = suggestion.insurance_data;
+            var payer = insurance.payer;
+            var fullAddress = payer.address + ' ' + payer.city + ' ' + payer.state + ' ' + payer.zip;
+            $("#id_insured_idnumber").val(insurance.insurance_id);
+            $("#id_payer_num").val(insurance.payer.code);
+            $("#id_payer_name").val(insurance.payer.name);
+            $("#id_payer_address").val(fullAddress);
+        }
+
     });
 </script>
 <script>
