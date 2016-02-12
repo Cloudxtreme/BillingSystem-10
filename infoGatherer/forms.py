@@ -41,57 +41,56 @@ class PostAdForm(forms.ModelForm):
     patient_list = Personal_Information.objects.order_by('first_name')
     
     #Health Plan
-    health_plan = forms.ChoiceField(choices=HEALTHPLAN, required=True )
+    health_plan = forms.ChoiceField(choices=HEALTHPLAN, required=False )
 
     #Patient Info.
     #pat_name = forms.ModelChoiceField(queryset=patient_list, empty_label="(Select Name)" )
-    pat_sex = forms.ChoiceField(choices=SEX, required=True )
-    pat_relationship=forms.ChoiceField(choices=REL_INSUR, required=True )
+    pat_sex = forms.ChoiceField(choices=SEX, required=False )
+    pat_relationship=forms.ChoiceField(choices=REL_INSUR, required=False )
     pat_relation_emp = forms.BooleanField(initial=False)
     pat_relation_other_accident =forms.BooleanField(initial=False)
     pat_relation_auto_accident = forms.BooleanField(initial=False)
 
     #Insured's Info
-    insured_sex = forms.ChoiceField(choices=SEX, required=True )
+    insured_sex = forms.ChoiceField(choices=SEX, required=False )
     insured_other_benifit_plan=forms.BooleanField(initial=False)
     
     # Not required fields
-    insured_name=forms.CharField(required=True)
+    insured_name=forms.CharField(required=False)
     pat_other_insured_name=forms.CharField(required=False)
     pat_other_insured_policy=forms.CharField(required=False)
     pat_reservednucc1 = forms.CharField(required=False, widget=forms.TextInput(attrs={'placeholder': '8'}))
     pat_reservednucc2 = forms.CharField(required=False, widget=forms.TextInput(attrs={'placeholder': '9 (b)'}))
     pat_reservednucc3 = forms.CharField(required=False, widget=forms.TextInput(attrs={'placeholder': '9 (c)'}))
-    pat_insuranceplanname = forms.CharField(required=False, widget=forms.TextInput(attrs={'placeholder': '9 (c)'}))
+    pat_insuranceplanname = forms.CharField(required=False, widget=forms.TextInput(attrs={'placeholder': '9 (d)'}))
     other_cliam_id = forms.CharField(required=False, widget=forms.TextInput(attrs={'placeholder': '11 (b)'}))
-    
+
+    pat_name = forms.CharField(required=False, widget=forms.TextInput(attrs={'placeholder': 'Patient\'s name'}))
+    birth_date = forms.CharField(required=False, widget=forms.TextInput(attrs={'placeholder': 'MM/DD/YYYY'}))
+    insured_idnumber = forms.CharField(required=False, widget=forms.TextInput(attrs={'placeholder': ''}))
+    insured_streetaddress = forms.CharField(required=False, widget=forms.TextInput(attrs={'placeholder': 'No,. Street'}))
+    insured_city = forms.CharField(required=False, widget=forms.TextInput(attrs={'placeholder': 'City'}))
+    insured_state = forms.CharField(required=False, widget=forms.TextInput(attrs={'placeholder': 'State'}))
+    insured_zip = forms.CharField(required=False, widget=forms.TextInput(attrs={'placeholder': 'Zip'}))
+    insured_telephone = forms.CharField(required=False, widget=forms.TextInput(attrs={'placeholder': 'Phone No.'}))
+    pat_auto_accident_state = forms.CharField(required=False, widget=forms.TextInput(attrs={'placeholder': 'State'}))
+    claim_codes = forms.CharField(required=False, widget=forms.TextInput(attrs={'placeholder': '10 (d)'}))
+    insured_other_insured_policy = forms.CharField(required=False, widget=forms.TextInput(attrs={'placeholder': ''}))
+    insured_plan_name_program = forms.CharField(required=False, widget=forms.TextInput(attrs={'placeholder': '11 (c)'}))
+
+
     class Meta:
         model = PostAd
         fields = '__all__'
 
-
         widgets = {
-            'pat_name': forms.TextInput(attrs={'placeholder': 'Patient\'s name'}),
-            'birth_date': forms.TextInput(attrs={'placeholder': 'MM/DD/YYYY'}),
-            'insured_idnumber': forms.TextInput(attrs={'placeholder': ''}),
-            'insured_streetaddress': forms.TextInput(attrs={'placeholder': 'No,. Street'}),
-            'insured_city': forms.TextInput(attrs={'placeholder': 'City'}),
-            'insured_state': forms.TextInput(attrs={'placeholder': 'State'}),
-            'insured_zip': forms.TextInput(attrs={'placeholder': 'Zip'}),
-            'insured_telephone': forms.TextInput(attrs={'placeholder': 'Phone No.'}),
-            'insured_other_insured_policy': forms.TextInput(attrs={'placeholder': ''}),
             'insured_birth_date': forms.TextInput(attrs={'placeholder': 'MM/DD/YYYY'}),
-            'insured_plan_name_program': forms.TextInput(attrs={'placeholder': '11 (c)'}),
-            'claim_codes': forms.TextInput(attrs={'placeholder': '10 (d)'}),
             'pat_streetaddress': forms.TextInput(attrs={'placeholder': 'No,. Street'}),
             'pat_city': forms.TextInput(attrs={'placeholder': 'City'}),
             'pat_state': forms.TextInput(attrs={'placeholder': 'State'}),
             'pat_zip': forms.TextInput(attrs={'placeholder': 'Zip'}),
             'pat_telephone': forms.TextInput(attrs={'placeholder': 'Phone No.'}),
-            'pat_auto_accident_state': forms.TextInput(attrs={'placeholder': 'State'}),
-            'email': forms.TextInput(attrs={'placeholder': 'john@example.com'}),
-            'gist': forms.TextInput(attrs={'placeholder': 'In a few words, I\'m looking for/to...'}),
-            'expire': forms.TextInput(attrs={'placeholder': 'MM/DD/YYYY'}),
+            
         }
 
 

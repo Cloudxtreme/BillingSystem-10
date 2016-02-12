@@ -21,6 +21,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 
 # New Stuff
 
+
 class PostAdPage(FormView):
     template_name = 'post_ad.html'
     success_url = '/awesome/'
@@ -28,7 +29,7 @@ class PostAdPage(FormView):
 
     def form_valid(self, form):
         return HttpResponse("Sweeeeeet.")
-
+        
 """
 def PostAdPage(request):
     form=PostAdForm()
