@@ -12,15 +12,19 @@
 <style type="text/css">@media (min-width: 1200px) { .container { width: 700px !important; }}</style>
 
 <div class="container" id="hideAll" style="display:none">
+
+{% if form.error %}
+    <p style="color: red;">Please submit a search term.</p>
+{% endif %}
+
 <form id="myForm" action="" method="post" data-toggle="validator">
     {% csrf_token %}
     <br/>
+
+
+
     <h1>Patient</h1><br/><br/>
-    <!-- *Health Plan -->
-    <div class="fieldWrapper ">
-        <label for="id_health_plan">Health Plan</label>
-        {{ form.health_plan }}
-    </div>
+    
     <!-- *Patients name -->
     <div class="fieldWrapper ">
         <label for="id_pat_name">Patient's name</label>
@@ -123,11 +127,29 @@
 
 
 
+    <!-- *Payer Number -->
+    <div class="fieldWrapper ">
+        <label for="id_payer_num">Payer Number</label>
+        {{ form.payer_num }}
+    </div>
+    <div class="fieldWrapper ">
+        <label for="id_payer_name">Payer Name</label>
+        {{ form.payer_name }}
+    </div>
+    <div class="fieldWrapper ">
+        <label for="id_payer_name">Payer Address</label>
+        {{ form.payer_address }}
+    </div>
+    
 
-
+    <!-- *Health Plan -->
+    <div class="fieldWrapper ">
+        <label for="id_health_plan">Health Plan</label>
+        {{ form.health_plan }}
+    </div>
     <!-- Insured id number -->
     <div class="fieldWrapper " >
-        <label for="id_insured_idnumber">Insured id number</label>
+        <label for="id_insured_idnumber">Insured's id number</label>
         {{ form.insured_idnumber }}
     </div>
     <!-- *insured name -->
@@ -175,9 +197,7 @@
     </div>
     
     <br/>
-    <button type="submit" class="btn btn-primary btn-md" value="Submit Button" href="javascript:valid()">
-        <i class="fa fa-thumb-tack"></i> Print Please!
-    </button>
+    <button type="submit" class="btn btn-primary btn-md" value="Submit Button">Print Please!</button>
 </form>
 </div>
 
@@ -381,7 +401,12 @@
                     other_cliam_id: {
                         required: false
                     },
-                    insured_plan_name_program: "required"
+                    insured_plan_name_program: "required",
+                    payer_num: "required",
+                    payer_name: "required",
+                    payer_address: {
+                        required: false
+                    }
                 },
                 highlight: function(element) {
                     $(element).closest('.form-group').addClass('has-error');
