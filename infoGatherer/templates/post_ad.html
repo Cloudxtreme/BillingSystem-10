@@ -134,6 +134,7 @@
     <div class="fieldWrapper ">
         <label for="id_insured_name">Insured's name</label>
         {{ form.insured_name }}
+        <input type="hidden" name="insured_chart_no" id="insured_chart_no" data-insured-chart-no>
     </div>
     <!-- *insured Address -->
     <div class="fieldWrapper ">
@@ -181,9 +182,7 @@
 </div>
 
 <script>
-
-    
-
+    "use strict";
     $(function() {
 
         $('#make-claims-form').submit(function(e) {
@@ -215,14 +214,19 @@
             for(var patient of patient_list)
                 patient_list_obj.push({value: patient.first_name + " " + patient.last_name, data: patient.chart_no})
 
+            // Show all patient information when click patient name text field
+            // $("#id_pat_name").autocomplete( "search", "" );
+
+            // Patient information
             $("#id_pat_name").autocomplete({
+                minChars: 0,
                 lookup: patient_list_obj,
                 onSelect: function (suggestion) {
                     $.post(
                         "{% url 'infoGatherer:get_json_personal_information' %}",
-                        {patient_chart_no: suggestion.data},
+                        {personal_chart_no: suggestion.data},
                         function(patient_info_str) {
-                            var patient_info = JSON.parse(patient_info_str)[0];
+                            var patient_info = JSON.parse(patient_info_str)['personal_information'][0];
                             
                             $("#id_pat_streetaddress").val(patient_info.address);
                             $("#id_pat_city").val(patient_info.city);
@@ -235,6 +239,46 @@
 
                             $("#id_birth_date").val(birth_date_str);
                             $("#id_pat_sex").val(patient_info.sex.substr(0,1));
+                        }
+                    );
+                }
+            });
+
+            // Insured information
+            $("#id_insured_name").autocomplete({
+                lookup: patient_list_obj,
+                onSelect: function (suggestion) {
+                    $.post(
+                        "{% url 'infoGatherer:get_json_personal_information' %}",
+                        {personal_chart_no: suggestion.data},
+                        function(insured_info_str) {
+                            var insured_info = JSON.parse(insured_info_str)['personal_information'][0];
+
+                            $("#id_insured_streetaddress").val(insured_info.address);
+                            $("#id_insured_city").val(insured_info.city);
+                            $("#id_insured_state").val(insured_info.state);
+                            $("#id_insured_zip").val(insured_info.zip);
+
+                            $("#id_insured_telephone").val(insured_info.home_phone);
+
+                            var birth_date_str = insured_info.dob.substr(0,4) + "/" + insured_info.dob.substr(5,2) + "/" + insured_info.dob.substr(8,2)
+
+                            $("#id_insured_birth_date").val(birth_date_str);
+                            $("#id_insured_sex").val(insured_info.sex.substr(0,1));
+
+                            var payer_list_obj = [];
+                            
+                            // var payer_list = JSON.parse(patient_info_str)['payer_list'];
+                            // for(var payer of payer_list)
+                            //     payer_list_obj.push({value: payer.name, data: payer.code});
+
+                            // $("#id_insured_name").autocomplete({
+                            //     minChars: 0,
+                            //     lookup: payer_list_obj,
+                            //     onSelect: function (suggestion) {
+
+                            //     }
+                            // });
                         }
                     );
                 }
