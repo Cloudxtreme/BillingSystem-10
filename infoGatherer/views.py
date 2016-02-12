@@ -45,19 +45,19 @@ def get_make_claim_extra_context(request):
     return JsonResponse(data=json.dumps(extra_context), safe=False);
 
 def get_json_personal_information(request):
-    p_arr = Personal_Information.objects.filter(pk=request.POST['personal_chart_no'])
-    p_arr_dict = p_arr.values()
+    personal_set = Personal_Information.objects.filter(pk=request.POST['personal_chart_no'])
 
-    i_arr = p_arr[0].insurance_information_set.all()
+    insurance_set = personal_set[0].insurance_information_set.all()
 
-    pay_arr_dict = [{"code": i.payer.code, "name": i.payer.name} for i in i_arr]
+    payer_code_list = [i.payer.code for i in insurance_set]
+    payer_set = Payer.objects.filter(code__in=payer_code_list)
 
     content = {
-        "personal_information": p_arr_dict,
-        "payer_list": pay_arr_dict,
+        "personal_information": list(personal_set.values()),
+        "payer_list": list(payer_set.values()),
     }
 
-    return JsonResponse(data=json.dumps(list(content), cls=DjangoJSONEncoder), safe=False);
+    return JsonResponse(data=json.dumps(content, cls=DjangoJSONEncoder), safe=False);
 
 def view_in_between(request):
     return render(request, 'test.html')
