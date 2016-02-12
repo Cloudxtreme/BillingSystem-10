@@ -19,6 +19,7 @@ from django.template.loader import get_template
 import json
 from django.core.serializers.json import DjangoJSONEncoder
 from django.core import serializers
+from django.forms.models import model_to_dict
 
 # New Stuff
 
@@ -45,17 +46,26 @@ def get_make_claim_extra_context(request):
 
     return JsonResponse(data=json.dumps(extra_context), safe=False);
 
-def get_json_personal_information(request):
+def get_json_personal_info(request):
     personal_set = Personal_Information.objects.filter(pk=request.POST['personal_chart_no'])
+    content = {
+        "personal_information": list(personal_set.values()),
+    }
 
-    insurance_set = personal_set[0].insurance_information_set.all()
+    return JsonResponse(data=json.dumps(content, cls=DjangoJSONEncoder), safe=False);
 
-    payer_code_list = [i.payer.code for i in insurance_set]
-    payer_set = Payer.objects.filter(code__in=payer_code_list)
+def get_json_personal_and_insurance_info(request):
+    personal_set = Personal_Information.objects.filter(pk=request.POST['personal_chart_no'])
+    insurance_set = personal_set[0].insurance_information_set.all().select_related("payer")
+    i_set_dict = insurance_set.values()
+    i_set = [i for i in i_set_dict]
+
+    for i in range(len(i_set)):
+        i_set[i]["payer"] = model_to_dict(insurance_set[i].payer)
 
     content = {
         "personal_information": list(personal_set.values()),
-        "payer_list": list(payer_set.values()),
+        "insurance_list": i_set,
     }
 
     return JsonResponse(data=json.dumps(content, cls=DjangoJSONEncoder), safe=False);

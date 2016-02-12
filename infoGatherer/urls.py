@@ -21,5 +21,6 @@ urlpatterns = patterns('',
     url(r'^view/(?P<who>\w{3})/$',views.get_patient_info),
     url(r'^view/(?P<who>\d+)/$',views.get_patient_info),
     url(r'^get_make_claim_extra_context$', views.get_make_claim_extra_context, name="get_make_claim_extra_context"),
-    url(r'^get_json_personal_information$', views.get_json_personal_information, name="get_json_personal_information"),
+    url(r'^get_json_personal_info$', views.get_json_personal_info, name="get_json_personal_info"),
+    url(r'^get_json_personal_and_insurance_info$', views.get_json_personal_and_insurance_info, name="get_json_personal_and_insurance_info"),
 )
