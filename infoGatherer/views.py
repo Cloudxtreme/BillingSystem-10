@@ -32,7 +32,7 @@ def PostAdPage(request):
 
         
 def get_make_claim_extra_context(request):
-    p_set = Personal_Information.objects.values('chart_no', 'first_name', 'last_name').order_by('first_name')
+    p_set = Personal_Information.objects.values('chart_no', 'first_name', 'last_name', 'address', 'city').order_by('first_name')
     extra_context = {
         'patient_list': list(p_set),
     }

@@ -233,11 +233,19 @@
             var patient_list_obj = [];
 
             for(var patient of patient_list)
-                patient_list_obj.push({value: patient.first_name + " " + patient.last_name, data: patient.chart_no})
+                patient_list_obj.push({
+                    value: patient.first_name + " " + patient.last_name,
+                    data: patient.chart_no,
+                    hintAddress: patient.address + ", " + patient.city,
+                })
 
             // Set auto suggestion for patient's name
             $("#id_pat_name").autocomplete({
+                minChars: 0,
                 lookup: patient_list_obj,
+                formatResult: function(suggestion, currentValue) {
+                    return suggestion.value + detailString(suggestion.hintAddress);
+                },
                 onSelect: function (suggestion) {
                     // Get patient information
                     $.post(
@@ -256,12 +264,16 @@
                             $("#id_pat_sex").val(patient_info.sex.substr(0,1));
                         }
                     );
-                }
+                },
             });
 
             // Set auto suggestion for insured's name
             $("#id_insured_name").autocomplete({
+                minChars: 0,
                 lookup: patient_list_obj,
+                formatResult: function(suggestion, currentValue) {
+                    return suggestion.value + " <span class='detail'>" + suggestion.hintAddress + "</span>";
+                },
                 onSelect: function (suggestion) {
                     // Get insured information and insurance according to that person
                     $.post(
@@ -286,8 +298,12 @@
                                 insuranceNumberListObj.push({value: i.insurance_id, insurance_data: i});
 
                             $("#id_insured_idnumber").autocomplete({
+                                minChars: 0,
                                 lookup: insuranceNumberListObj,
                                 onSelect: populateInsuranceSection,
+                                formatResult: function(suggestion, currentValue) {
+                                    return suggestion.value + detailString(suggestion.insurance_data.payer.name);
+                                },
                             });
 
                             // Set auto suggesntion for insurance name
@@ -296,8 +312,12 @@
                                 insuranceNameListObj.push({value: i.payer.name, insurance_data: i});
 
                             $("#id_payer_name").autocomplete({
+                                minChars: 0,
                                 lookup: insuranceNameListObj,
                                 onSelect: populateInsuranceSection,
+                                formatResult: function(suggestion, currentValue) {
+                                    return suggestion.value + detailString(suggestion.insurance_data.payer.address + ", " + suggestion.insurance_data.payer.city);
+                                },
                             });
 
                             // Set auto suggestion for insurance code
@@ -306,8 +326,12 @@
                                 insuranceCodeListObj.push({value: i.payer.code + "", insurance_data: i});
 
                             $("#id_payer_num").autocomplete({
+                                minChars: 0,
                                 lookup: insuranceCodeListObj,
                                 onSelect: populateInsuranceSection,
+                                formatResult: function(suggestion, currentValue) {
+                                    return suggestion.value + detailString(suggestion.insurance_data.payer.name);
+                                },
                             });
 
                         }
@@ -325,6 +349,10 @@
             $("#id_payer_num").val(insurance.payer.code);
             $("#id_payer_name").val(insurance.payer.name);
             $("#id_payer_address").val(fullAddress);
+        }
+
+        function detailString(text) {
+            return "<span class='detail'>" + text + "</span>"
         }
 
     });
@@ -450,6 +478,7 @@
     .autocomplete-suggestion { padding: 10px 5px; font-size: 1.2em; white-space: nowrap; overflow: hidden; }
     .autocomplete-selected { background: #f0f0f0; }
     .autocomplete-suggestions strong { font-weight: normal; color: #3399ff; }
+    .autocomplete-suggestions .detail { font-weight: normal; font-size: 0.8em; color: #999999; margin-left: 10px;}
 
     #searchfield form {
         display: inline-block;
