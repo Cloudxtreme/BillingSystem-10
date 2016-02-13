@@ -23,20 +23,13 @@ from django.forms.models import model_to_dict
 
 # New Stuff
 
-
-class PostAdPage(FormView):
-    template_name = 'post_ad.html'
-    success_url = ''
-    form_class = PostAdForm
-
-    def form_valid(self, form):
-        return HttpResponse("Sweeeeeet.")
-        
-"""
 def PostAdPage(request):
     form=PostAdForm()
+    if request.method == 'POST':
+        var=print_form(True);
+        return var
     return render(request, 'post_ad.html', {'form': form})
-"""
+
         
 def get_make_claim_extra_context(request):
     p_set = Personal_Information.objects.values('chart_no', 'first_name', 'last_name').order_by('first_name')
@@ -79,7 +72,7 @@ def search_form(request):
     #now = datetime.datetime.now()
     return render(request, 'test.html')
 
-def print_form(request):
+def print_form(bar):
     fields = [('2','1168 W 35th St'), ('10','2138809466'), ('11','Ekasit Ja')]
     fdf = forge_fdf("",fields,[],[],[])
     fdf_file = open("data.fdf","w")
@@ -88,8 +81,13 @@ def print_form(request):
     #process = subprocess.Popen(['pdftk', 'CMS1500.pdf', 'fill_form','data.fdf','output','output.pdf'])
     #r = subprocess.call("pdftk CMS1500.pdf fill_form data.fdf output output.pdf",Shell=True)
     os.system('pdftk CMS1500.pdf fill_form data.fdf output output.pdf')
+    with open('output.pdf', 'r') as pdf:
+        response = HttpResponse(pdf.read(), content_type='application/pdf')
+        response['Content-Disposition'] = 'inline;filename=some_file.pdf'
+        return response
+    pdf.closed
     os.remove('data.fdf')
-    return HttpResponse("asdf")
+    return True
     
     
     
