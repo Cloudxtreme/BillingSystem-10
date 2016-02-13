@@ -3,7 +3,7 @@ from django.http import HttpResponse, Http404
 
 from infoGatherer.models import Personal_Information, Payer
 from fdfgen import forge_fdf
-import os
+import os, sys
 
 # Create your views here.
 def index(request):
@@ -20,6 +20,12 @@ def createClaim(request):
     return render(request, 'claims/createClaim.html', context)
 
 def generateClaim(request):
+    print >>sys.stderr, request.method
+    print >>sys.stderr, request.POST['patient_chart_no']
+    print >>sys.stderr,  request.POST['insured_chart_no']
+    print >>sys.stderr,  request.POST['payer_code']
+
+
     if request.method == 'POST' and \
         request.POST['patient_chart_no'] and \
         request.POST['insured_chart_no'] and \

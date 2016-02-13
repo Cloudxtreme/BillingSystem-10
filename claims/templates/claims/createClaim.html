@@ -11,7 +11,7 @@
     </select> -->
     <div id="searchfield">
         <input type="text" name="patient_name" id="id_pat_name" placeholder="Patient's name">
-        <input type="hidden" name="patient_chart_no">
+        <input type="hidden" name="patient_chart_no" id="patient_chart_no">
     </div>
 
     <br>
@@ -55,6 +55,7 @@
                 lookup: availablePatient,
                 onSelect: function (suggestion) {
                     console.log(suggestion.value);
+                    $("#patient_chart_no").val(suggestion.data);
                 }
             });
         });
