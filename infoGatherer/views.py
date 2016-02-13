@@ -26,8 +26,8 @@ from django.forms.models import model_to_dict
 def PostAdPage(request):
 
     form=PostAdForm()
-    if request.method == 'POST':
-        var=print_form(True);
+    if 'pat_name' in request.GET and request.GET['pat_name']:
+        var=print_form(request.GET);
         return var
     return render(request, 'post_ad.html', {'form': form})
 
@@ -74,7 +74,26 @@ def search_form(request):
     return render(request, 'test.html')
 
 def print_form(bar):
-    fields = [('2','1168 W 35th St'), ('10','2138809466'), ('11','Ekasit Ja')]
+
+    fields = [('11',bar['pat_name']),('18',bar['pat_streetaddress']),('19',bar['pat_city']),('20',bar['pat_state']),('21',bar['pat_zip']),('22',bar['pat_telephone'].split('-')[0]),('23',bar['pat_telephone'].split('-')[1]+"-"+bar['pat_telephone'].split('-')[2])]
+    fields.append(('12',bar['birth_date'].split('/')[1]))
+    fields.append(('14',bar['birth_date'].split('/')[0]))
+    fields.append(('13',bar['birth_date'].split('/')[2]))
+    if(bar['pat_sex']=='M'):
+        fields.append(('15',True))
+    else:
+        fields.append(('16',True))
+
+    if(bar['pat_relationship']=='Self'):
+        fields.append(('24',True))
+    elif(bar['pat_relationship']=='Spouse'):
+        fields.append(('25',True))
+    elif(bar['pat_relationship']=='Child'):
+        fields.append(('26',True))
+    else:
+        fields.append(('27',True))
+        
+    # ('22',bar['pat_telephone'].split('-')[0]),('23',bar['pat_telephone'].split(-)[1]+bar['pat_telephone'].split(-)[2]),(,bar['pat_sex'])]
     fdf = forge_fdf("",fields,[],[],[])
     fdf_file = open("data.fdf","w")
     fdf_file.write(fdf)
