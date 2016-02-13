@@ -23,6 +23,7 @@ from django.core import serializers
 # New Stuff
 
 def PostAdPage(request):
+
     form=PostAdForm()
     if request.method == 'POST':
         var=print_form(True);
@@ -71,7 +72,7 @@ def print_form(bar):
     #process = subprocess.Popen(['pdftk', 'CMS1500.pdf', 'fill_form','data.fdf','output','output.pdf'])
     #r = subprocess.call("pdftk CMS1500.pdf fill_form data.fdf output output.pdf",Shell=True)
     os.system('pdftk CMS1500.pdf fill_form data.fdf output output.pdf')
-    with open('output.pdf', 'r') as pdf:
+    with open('output.pdf', 'rb') as pdf:
         response = HttpResponse(pdf.read(), content_type='application/pdf')
         response['Content-Disposition'] = 'inline;filename=some_file.pdf'
         return response
