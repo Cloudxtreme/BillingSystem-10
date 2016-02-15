@@ -94,19 +94,23 @@ def print_form(bar):
         fields.append(('27',True))
         
     # ('22',bar['pat_telephone'].split('-')[0]),('23',bar['pat_telephone'].split(-)[1]+bar['pat_telephone'].split(-)[2]),(,bar['pat_sex'])]
+    data_filename = "data.fdf"
+    output_filename = "output.pdf"
+    CMS_form_filename = "CMS1500.pdf"
     fdf = forge_fdf("",fields,[],[],[])
-    fdf_file = open("data.fdf","w")
+    fdf_file = open(data_filename,"w")
     fdf_file.write(fdf)
     fdf_file.close()
     #process = subprocess.Popen(['pdftk', 'CMS1500.pdf', 'fill_form','data.fdf','output','output.pdf'])
     #r = subprocess.call("pdftk CMS1500.pdf fill_form data.fdf output output.pdf",Shell=True)
-    os.system('pdftk CMS1500.pdf fill_form data.fdf output output.pdf')
-    with open('output.pdf', 'rb') as pdf:
+    os.system('pdftk ' + CMS_form_filename + ' fill_form ' + data_filename + ' output ' + output_filename)
+    os.remove(data_filename)
+    with open(output_filename, 'rb') as pdf:
         response = HttpResponse(pdf.read(), content_type='application/pdf')
         response['Content-Disposition'] = 'inline;filename=some_file.pdf'
         return response
     pdf.closed
-    os.remove('data.fdf')
+    
     return True
     
     
