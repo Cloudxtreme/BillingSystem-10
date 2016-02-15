@@ -1,11 +1,11 @@
-from django.conf.urls import patterns, url, include
+from django.conf.urls import url, include
 from infoGatherer import views
 from infoGatherer.views import PostAdPage
 from django.contrib.auth.views import logout
 
 # url(r'^postad/', PostAdPage.as_view()),
 app_name ='infoGatherer'
-urlpatterns = patterns('',
+urlpatterns = [
     url(r'^postad/', views.PostAdPage),
     url(r'^search-form/$', views.search_form),
     url(r'^search-form/print/$', views.print_form),
@@ -23,4 +23,4 @@ urlpatterns = patterns('',
     url(r'^get_make_claim_extra_context$', views.get_make_claim_extra_context, name="get_make_claim_extra_context"),
     url(r'^get_json_personal_info$', views.get_json_personal_info, name="get_json_personal_info"),
     url(r'^get_json_personal_and_insurance_info$', views.get_json_personal_and_insurance_info, name="get_json_personal_and_insurance_info"),
-)
+]
