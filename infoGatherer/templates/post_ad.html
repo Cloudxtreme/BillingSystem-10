@@ -5,6 +5,9 @@
 <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
 <script type="text/javascript" src="{% static 'infoGatherer/jquery.autocomplete.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'infoGatherer/jquery.cookie.js' %}"></script>
+<link href="{% static 'infoGatherer/open-iconic/font/css/open-iconic-bootstrap.css' %}" rel="stylesheet">
+<link href="{% static 'infoGatherer/open-iconic/font/css/open-iconic.css' %}" rel="stylesheet">
+
 <script src="http://jqueryvalidation.org/files/dist/additional-methods.min.js"></script>
 
 <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
@@ -31,10 +34,6 @@
         {{ form.pat_name }}
         <input type="hidden" name="patient_chart_no" id="patient_chart_no" data-patient-chart-no>
     </div>
-
-
-    
-    
 
     <!-- *Patients Address -->
     <div class="fieldWrapper ">
@@ -95,9 +94,12 @@
     </div>
     <div class="fieldWrapper">
         <div class="checkbox">
-            <label>{{ form.insured_other_benifit_plan }}Is there another health benifit plan?</label>
+            <label class="c-input c-checkbox"><span class="c-indicator"></span>{{ form.insured_other_benifit_plan }}Is there another health benifit plan?</label>
         </div>
     </div>
+
+
+
     <div id="show_hide" style="display:none">
         <!-- Others insured name -->
         <div class="fieldWrapper">
@@ -126,7 +128,12 @@
     <br/><br/>
 
 
-
+    <!-- *insured name -->
+    <div class="fieldWrapper ">
+        <label for="id_insured_name">Insured's name</label>
+        {{ form.insured_name }}
+        <input type="hidden" name="insured_chart_no" id="insured_chart_no" data-insured-chart-no>
+    </div>
     <!-- *Payer Number -->
     <div class="fieldWrapper ">
         <label for="id_payer_num">Payer Number</label>
@@ -152,12 +159,7 @@
         <label for="id_insured_idnumber">Insured's id number</label>
         {{ form.insured_idnumber }}
     </div>
-    <!-- *insured name -->
-    <div class="fieldWrapper ">
-        <label for="id_insured_name">Insured's name</label>
-        {{ form.insured_name }}
-        <input type="hidden" name="insured_chart_no" id="insured_chart_no" data-insured-chart-no>
-    </div>
+    
     <!-- *insured Address -->
     <div class="fieldWrapper ">
         <label for="id_insured_streetaddress">Insured's Address</label>
@@ -196,6 +198,26 @@
         {{ form.insured_plan_name_program }}
     </div>
     
+    <br/>
+    <h1>Physician Informaiton</h1><br/><br/>
+    <div class="fieldWrapper ">
+        <label for="id_first_name">First name</label>
+        {{ form2.first_name }}
+    </div>  
+    <div class="fieldWrapper ">
+        <label for="id_last_name">Last name</label>
+        {{ form2.last_name }}
+    </div>  
+    <div class="fieldWrapper ">
+        <label for="id_NPI">NPI</label>
+        {{ form2.NPI }}
+    </div>  
+    <div class="fieldWrapper ">
+        <label for="id_ICD_10">ICD code</label>
+        {{ form3.ICD_10 }}
+    </div>
+
+
     <br/>
     <button type="submit" class="btn btn-primary btn-md" value="Submit Button">Print Please!</button>
 </form>
@@ -457,7 +479,11 @@
                     payer_name: "required",
                     payer_address: {
                         required: false
-                    }
+                    },
+                    first_name: "required",
+                    last_name: "required",
+                    NPI: "required",
+                    ICD_10: "required"
                 },
                 highlight: function(element) {
                     $(element).closest('.form-group').addClass('has-error');

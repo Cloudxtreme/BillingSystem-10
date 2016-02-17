@@ -6,7 +6,7 @@ from django.contrib.auth import authenticate
 from django.template.context import RequestContext
 from infoGatherer.models import PostAd, Guarantor_Information, Insurance_Information, Personal_Information, Payer
 from django.contrib.auth.decorators import login_required
-from infoGatherer.forms import PostAdForm, PatientForm, GuarantorForm, InsuranceForm
+from infoGatherer.forms import PostAdForm, PatientForm, GuarantorForm, InsuranceForm, ReferringProviderForm, dxForm
 import re
 from django.shortcuts import redirect
 from django.forms import formset_factory
@@ -24,12 +24,13 @@ from django.forms.models import model_to_dict
 # New Stuff
 
 def PostAdPage(request):
-
     form=PostAdForm()
+    form2=ReferringProviderForm()
+    form3=dxForm()
     if 'pat_name' in request.GET and request.GET['pat_name']:
         var=print_form(request.GET);
         return var
-    return render(request, 'post_ad.html', {'form': form})
+    return render(request, 'post_ad.html', {'form': form, 'form2':form2, 'form3':form3})
 
         
 def get_make_claim_extra_context(request):
@@ -94,6 +95,17 @@ def print_form(bar):
         fields.append(('27',True))
         
     # ('22',bar['pat_telephone'].split('-')[0]),('23',bar['pat_telephone'].split(-)[1]+bar['pat_telephone'].split(-)[2]),(,bar['pat_sex'])]
+
+    fields.append(('2',bar['payer_name']+"\n"+bar['payer_address']))
+
+    fields.append(('81',bar['last_name']+", "+bar['first_name']))
+    fields.append(('84',bar['NPI']))
+    fields.append(('93',True))
+    fields.append(('94','0.00'))
+    fields.append(('21_A','0'))
+    fields.append(('95',bar['ICD_10']))
+
+
     fdf = forge_fdf("",fields,[],[],[])
     fdf_file = open("data.fdf","w")
     fdf_file.write(fdf)
