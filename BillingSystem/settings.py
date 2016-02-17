@@ -41,6 +41,7 @@ INSTALLED_APPS = (
     'django_countries',
     'localflavor',
     'claims.apps.ClaimsConfig',
+    'accounts.apps.AccountsConfig',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -60,7 +61,10 @@ ROOT_URLCONF = 'BillingSystem.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['C:\Users\Utsav\Documents\BillingApp\infoGatherer\\templates'],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'infoGatherer/templates/'),
+            os.path.join(BASE_DIR, 'static/'),
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -122,3 +126,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = '/static/'
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static/')]
+
+AUTH_USER_MODEL = 'accounts.User'
+AUTHENTICATION_BACKENDS = ['accounts.backends.EmailAuthBackend', ]
