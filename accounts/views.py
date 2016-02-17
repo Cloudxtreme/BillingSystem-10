@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect
 from django.contrib import auth
 from django.core.urlresolvers import reverse
+from django.contrib.auth.decorators import login_required
 
 from accounts.forms import Registration_Form, Sign_In_Form
 
@@ -13,16 +14,19 @@ def sign_in(request):
         if form.is_valid():
 
             user = auth.authenticate(
-                email=request.POST.get('email', ""),
-                password=request.POST.get('password', ""),
+                email = request.POST.get('email', ""),
+                password = request.POST.get('password', ""),
             )
 
 
             if user is not None:
                 if user.is_active:
                     auth.login(request, user)
-                    # return redirect('/')
-                    return success(request)
+
+                    if 'next' in request.GET:
+                        return redirect(request.GET.get('next'))
+
+                    return redirect(reverse('accounts:success'))
             else:
                 return render(request, 'accounts/failure.html')
     else:
@@ -45,5 +49,6 @@ def sign_out(request):
     auth.logout(request)
     return redirect(reverse('accounts:sign_in'))
 
+@login_required
 def success(request):
     return render(request, 'accounts/success.html')

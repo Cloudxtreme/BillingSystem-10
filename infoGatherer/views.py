@@ -20,9 +20,10 @@ import json
 from django.core.serializers.json import DjangoJSONEncoder
 from django.core import serializers
 from django.forms.models import model_to_dict
+from django.contrib.auth.decorators import login_required
 
 # New Stuff
-
+@login_required
 def PostAdPage(request):
 
     form=PostAdForm()
