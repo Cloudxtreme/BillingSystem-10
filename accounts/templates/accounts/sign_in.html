@@ -2,27 +2,12 @@
 
 {% block body %}
 <div>
-    <form class="form-horizontal" name="Sign_In_Form" action="{% url 'accounts:sign_in' %}" method="post">
+    <form class="form-horizontal" name="Sign_In_Form" method="post">
     {% csrf_token %}
     
-    {{ form.password }}
+    {{ form.as_p }}
 
-    {{ form.email }}
-
-
-<!--     <div class="control-group">
-        <label class="control-label" for="username">Username</label>
-        <div class="controls">
-            <input type="email" id="email" name="email"  placeholder="Email">
-        </div>
-    </div>
-    <div class="control-group">
-        <label class="control-label" for="password">Password</label>
-        <div class="controls">
-            <input type="password" name="password" id="password" placeholder="Password">
-        </div>
-    </div>
- -->    <div class="control-group">
+   <div class="control-group">
         <div class="controls">
             <button type="submit" class="btn">Login</button>
         </div>

@@ -5,16 +5,14 @@ class Sign_In_Form(forms.Form):
     """
     Sign In form
     """
-    email = forms.EmailField(widget=forms.TextInput)
-    password = forms.CharField(widget=forms.PasswordInput)
+    email = forms.EmailField(
+        widget=forms.EmailInput(attrs={'placeholder': 'Email Address'}),
+        label='Email Address'
+    )
+    password = forms.CharField(
+        widget=forms.PasswordInput(attrs={'placeholder': 'Password'}),
+        label='Password'
+    )
 
     class Meta:
-        fields = ["email", "password"]
-        # widgets = {
-        #     "email":  forms.EmailInput,
-        #     "password": forms.PasswordInput,
-        # }
-        # labels = {
-        #     "email":  _("Email Address"),
-        #     "password": _("Password"),
-        # }
+        fields = ['email', 'password']
