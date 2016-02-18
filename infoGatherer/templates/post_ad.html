@@ -100,6 +100,7 @@
 
 
 
+
     <div id="show_hide" style="display:none">
         <!-- Others insured name -->
         <div class="fieldWrapper">
@@ -212,10 +213,86 @@
         <label for="id_NPI">NPI</label>
         {{ form2.NPI }}
     </div>  
-    <div class="fieldWrapper ">
-        <label for="id_ICD_10">ICD code</label>
-        {{ form3.ICD_10 }}
+    <div class="form-group fieldWrapper">
+        <label for="id_ICD_10">Diagnosis</label>
+        <div class="row">
+            <div class="col-xs-2">
+                <div class="input-group">
+                    <div class="input-group-addon">A</div>
+                    <input type="text" name="ICD_10" id="id_ICD_10" >
+                </div>
+            </div>
+            <div class="col-xs-2">
+                <div class="input-group">
+                    <div class="input-group-addon">B</div>
+                    <input type="text"  >
+                </div>
+            </div>
+            <div class="col-xs-2">
+                <div class="input-group">
+                    <div class="input-group-addon">C</div>
+                    <input type="text"  >
+                </div>
+            </div>
+            <div class="col-xs-2">
+                <div class="input-group">
+                    <div class="input-group-addon">D</div>
+                    <input type="text" >
+                </div>
+            </div>
+            <div class="col-xs-2">
+                <div class="input-group">
+                    <div class="input-group-addon">E</div>
+                    <input type="text" >
+                </div>
+            </div>
+            <div class="col-xs-2">
+                <div class="input-group">
+                    <div class="input-group-addon">F</div>
+                    <input type="text" >
+                </div>
+            </div>
+            <div class="col-xs-2" style="margin-top:5px">
+                <div class="input-group">
+                    <div class="input-group-addon">G</div>
+                    <input type="text" >
+                </div>
+            </div>
+            <div class="col-xs-2" style="margin-top:5px">
+                <div class="input-group">
+                    <div class="input-group-addon">H</div>
+                    <input type="text" >
+                </div>
+            </div>
+            <div class="col-xs-2" style="margin-top:5px">
+                <div class="input-group">
+                    <div class="input-group-addon">I</div>
+                    <input type="text" >
+                </div>
+            </div>
+            <div class="col-xs-2" style="margin-top:5px">
+                <div class="input-group">
+                    <div class="input-group-addon">J</div>
+                    <input type="text" >
+                </div>
+            </div>
+            <div class="col-xs-2" style="margin-top:5px">
+                <div class="input-group">
+                    <div class="input-group-addon">K</div>
+                    <input type="text" >
+                </div>
+            </div>
+            <div class="col-xs-2" style="margin-top:5px">
+                <div class="input-group">
+                    <div class="input-group-addon">L</div>
+                    <input type="text" >
+                </div>
+            </div>
+        </div>
+
     </div>
+
+
 
 
     <br/>
@@ -482,8 +559,7 @@
                     },
                     first_name: "required",
                     last_name: "required",
-                    NPI: "required",
-                    ICD_10: "required"
+                    NPI: "required"
                 },
                 highlight: function(element) {
                     $(element).closest('.form-group').addClass('has-error');
