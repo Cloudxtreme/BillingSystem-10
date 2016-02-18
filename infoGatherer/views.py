@@ -70,12 +70,11 @@ def view_in_between(request):
 
 
 def search_form(request):
-    #return HttpResponse("Welcome")
-    #now = datetime.datetime.now()
     return render(request, 'test.html')
 
 def print_form(bar):
 
+    # Patient Information
     fields = [('11',bar['pat_name']),('18',bar['pat_streetaddress']),('19',bar['pat_city']),('20',bar['pat_state']),('21',bar['pat_zip']),('22',bar['pat_telephone'].split('-')[0]),('23',bar['pat_telephone'].split('-')[1]+"-"+bar['pat_telephone'].split('-')[2])]
     fields.append(('12',bar['birth_date'].split('/')[1]))
     fields.append(('14',bar['birth_date'].split('/')[0]))
@@ -84,7 +83,6 @@ def print_form(bar):
         fields.append(('15',True))
     else:
         fields.append(('16',True))
-
     if(bar['pat_relationship']=='Self'):
         fields.append(('24',True))
     elif(bar['pat_relationship']=='Spouse'):
@@ -93,25 +91,35 @@ def print_form(bar):
         fields.append(('26',True))
     else:
         fields.append(('27',True))
-        
-    # ('22',bar['pat_telephone'].split('-')[0]),('23',bar['pat_telephone'].split(-)[1]+bar['pat_telephone'].split(-)[2]),(,bar['pat_sex'])]
 
+    # Payer Information
     fields.append(('2',bar['payer_name']+"\n"+bar['payer_address']))
 
+    # Physician Information
     fields.append(('81',bar['last_name']+", "+bar['first_name']))
     fields.append(('84',bar['NPI']))
     fields.append(('93',True))
     fields.append(('94','0.00'))
     fields.append(('21_A','0'))
-    fields.append(('95',bar['ICD_10']))
+    fields.append(('95',bar['ICD_10_1']))
+    fields.append(('96',bar['ICD_10_2']))
+    fields.append(('97',bar['ICD_10_3']))
+    fields.append(('98',bar['ICD_10_4']))
+    fields.append(('99',bar['ICD_10_5']))
+    fields.append(('100',bar['ICD_10_6']))
+    fields.append(('101',bar['ICD_10_7']))
+    fields.append(('102',bar['ICD_10_8']))
+    fields.append(('103',bar['ICD_10_9']))
+    fields.append(('104',bar['ICD_10_10']))
+    fields.append(('105',bar['ICD_10_11']))
+    fields.append(('106',bar['ICD_10_12']))
 
 
+    # PDF generation
     fdf = forge_fdf("",fields,[],[],[])
     fdf_file = open("data.fdf","w")
     fdf_file.write(fdf)
     fdf_file.close()
-    #process = subprocess.Popen(['pdftk', 'CMS1500.pdf', 'fill_form','data.fdf','output','output.pdf'])
-    #r = subprocess.call("pdftk CMS1500.pdf fill_form data.fdf output output.pdf",Shell=True)
     os.system('pdftk CMS1500.pdf fill_form data.fdf output output.pdf')
     with open('output.pdf', 'rb') as pdf:
         response = HttpResponse(pdf.read(), content_type='application/pdf')
@@ -120,8 +128,6 @@ def print_form(bar):
     pdf.closed
     os.remove('data.fdf')
     return True
-    
-    
     
 
 #Old Stuff
