@@ -200,7 +200,7 @@ def print_form(bar):
     fdf_file.write(fdf)
     fdf_file.close()
     os.system('pdftk CMS1500.pdf fill_form data.fdf output output.pdf')
-	os.remove('data.fdf')
+    os.remove('data.fdf')
     with open('output.pdf', 'rb') as pdf:
         response = HttpResponse(pdf.read(), content_type='application/pdf')
         response['Content-Disposition'] = 'inline;filename=some_file.pdf'
