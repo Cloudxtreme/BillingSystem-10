@@ -1,5 +1,5 @@
 from django.contrib import admin
-from infoGatherer.models import Payer,Personal_Information, Guarantor_Information, Insurance_Information, Diagnosis_Codes, Procedure_Codes, Provider, Locations
+from infoGatherer.models import Payer,Personal_Information, Guarantor_Information, Insurance_Information, Diagnosis_Codes, Procedure_Codes,dx, Provider, Locations, RefferingProvider
       
 
 class PayerAdmin(admin.ModelAdmin):
@@ -29,6 +29,14 @@ class Provider_Admin(admin.ModelAdmin):
 class Patient_Admin(admin.ModelAdmin):
     pass
 
+class RP(admin.ModelAdmin):
+    list_display = ('first_name','last_name','taxonomy','NPI')
+    search_fields = ['first_name','last_name','taxonomy','NPI',]
+
+class DX(admin.ModelAdmin):
+    list_display = ('ICD_10','description')
+    search_fields = ['ICD_10','description',]
+
 admin.site.register(Payer, PayerAdmin)
 admin.site.register(Diagnosis_Codes,DiagnosisCodes_Admin)
 admin.site.register(Procedure_Codes,ProcedureCodes_Admin)
@@ -37,4 +45,9 @@ admin.site.register(Provider,Provider_Admin)
 admin.site.register(Personal_Information,Patient_Admin)
 admin.site.register(Guarantor_Information, GuarantorAdmin)
 admin.site.register(Insurance_Information, InsuranceAdmin)
+
+#new stuff
+admin.site.register(RefferingProvider, RP)
+admin.site.register(dx, DX)
+
 # admin.site.register(Test,Test_Admin)

@@ -120,15 +120,38 @@ class PostAd(models.Model):
     pat_insuranceplanname=models.TextField(max_length=100)
     pat_auto_accident_state=USStateField(default='')
     pat_name    = models.TextField(max_length=50)
-
     payer_num = models.CharField(max_length=100)
     payer_name = models.CharField(max_length=100)
     payer_address = models.CharField(max_length=200)
 
     
 
-#New stuff
+class RefferingProvider(models.Model):
+    first_name = models.CharField(max_length=200,primary_key=True)
+    last_name = models.CharField(max_length=200,primary_key=True)
+    address1 = models.CharField(max_length=200)
+    address2 = models.CharField(max_length=200,null=True, blank=True)
+    city= models.CharField(max_length=200)
+    state=USStateField(default='')
+    zip=models.IntegerField()
+    phone_work=PhoneNumberField()
+    fax=models.CharField(max_length=100,null=True, blank=True)
+    email=models.CharField(max_length=100,null=True, blank=True)
+    taxonomy=models.CharField(max_length=100)
+    NPI=models.IntegerField()
+    tax_id=models.CharField(max_length=100,null=True, blank=True)
+    def __unicode__(self):
+        return self.first_name+" "+self.last_name
 
+
+class dx(models.Model):
+    ICD_10 = models.CharField(max_length=200, primary_key=True)
+    description = models.CharField(max_length=200)
+    def __unicode__(self):
+        return self.ICD_10
+
+
+#New stuff
 
 class Personal_Information(models.Model):
     first_name = models.CharField(max_length=128, default='')

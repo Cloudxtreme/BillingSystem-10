@@ -6,7 +6,7 @@ from django.contrib.auth import authenticate
 from django.template.context import RequestContext
 from infoGatherer.models import PostAd, Guarantor_Information, Insurance_Information, Personal_Information, Payer
 from django.contrib.auth.decorators import login_required
-from infoGatherer.forms import PostAdForm, PatientForm, GuarantorForm, InsuranceForm
+from infoGatherer.forms import PostAdForm, PatientForm, GuarantorForm, InsuranceForm, ReferringProviderForm, dxForm
 import re
 from django.shortcuts import redirect
 from django.forms import formset_factory
@@ -25,12 +25,13 @@ from django.contrib.auth.decorators import login_required
 # New Stuff
 @login_required
 def PostAdPage(request):
-
     form=PostAdForm()
+    form2=ReferringProviderForm()
+    form3=dxForm()
     if 'pat_name' in request.GET and request.GET['pat_name']:
         var=print_form(request.GET);
         return var
-    return render(request, 'post_ad.html', {'form': form})
+    return render(request, 'post_ad.html', {'form': form, 'form2':form2, 'form3':form3})
 
         
 def get_make_claim_extra_context(request):
@@ -70,21 +71,25 @@ def view_in_between(request):
 
 
 def search_form(request):
-    #return HttpResponse("Welcome")
-    #now = datetime.datetime.now()
     return render(request, 'test.html')
 
 def print_form(bar):
 
+    # Patient Information
     fields = [('11',bar['pat_name']),('18',bar['pat_streetaddress']),('19',bar['pat_city']),('20',bar['pat_state']),('21',bar['pat_zip']),('22',bar['pat_telephone'].split('-')[0]),('23',bar['pat_telephone'].split('-')[1]+"-"+bar['pat_telephone'].split('-')[2])]
     fields.append(('12',bar['birth_date'].split('/')[1]))
     fields.append(('14',bar['birth_date'].split('/')[0]))
     fields.append(('13',bar['birth_date'].split('/')[2]))
+    fields.append(('10',bar['insured_idnumber']))
+    fields.append(('txt8',bar['pat_reservednucc1']))
+    fields.append(('56_1',bar['claim_codes']))
+    fields.append(('17_A','DN'))
+    
+
     if(bar['pat_sex']=='M'):
         fields.append(('15',True))
     else:
         fields.append(('16',True))
-
     if(bar['pat_relationship']=='Self'):
         fields.append(('24',True))
     elif(bar['pat_relationship']=='Spouse'):
@@ -93,28 +98,116 @@ def print_form(bar):
         fields.append(('26',True))
     else:
         fields.append(('27',True))
-        
-    # ('22',bar['pat_telephone'].split('-')[0]),('23',bar['pat_telephone'].split(-)[1]+bar['pat_telephone'].split(-)[2]),(,bar['pat_sex'])]
-    data_filename = "data.fdf"
-    output_filename = "output.pdf"
-    CMS_form_filename = "CMS1500.pdf"
+
+    if('insured_other_benifit_plan' in bar):
+        if(bar['insured_other_benifit_plan']=='on'):
+            fields.append(('64',True))
+    else:
+        fields.append(('65',True))
+
+    if('pat_relation_emp' in bar):
+        if(bar['pat_relation_emp']=='on'):
+            fields.append(('49',True))
+    else:
+        fields.append(('50',True))
+    if('pat_relation_auto_accident' in bar):
+        if(bar['pat_relation_auto_accident']=='on'):
+            fields.append(('51',True))
+    else:
+        fields.append(('52',True))
+    if('pat_relation_other_accident' in bar):
+        if(bar['pat_relation_other_accident']=='on'):
+            fields.append(('54',True))
+    else:
+        fields.append(('55',True))
+    
+
+    # Payer Information
+    fields.append(('2',bar['payer_name']+"\n"+bar['payer_address']))
+
+    # Physician Information
+    fields.append(('81',bar['last_name']+", "+bar['first_name']))
+    fields.append(('84',bar['NPI']))
+    fields.append(('93',True))
+    fields.append(('94','0.00'))
+    fields.append(('21_A','0'))
+    fields.append(('95',bar['ICD_10_1']))
+    fields.append(('96',bar['ICD_10_2']))
+    fields.append(('97',bar['ICD_10_3']))
+    fields.append(('98',bar['ICD_10_4']))
+    fields.append(('99',bar['ICD_10_5']))
+    fields.append(('100',bar['ICD_10_6']))
+    fields.append(('101',bar['ICD_10_7']))
+    fields.append(('102',bar['ICD_10_8']))
+    fields.append(('103',bar['ICD_10_9']))
+    fields.append(('104',bar['ICD_10_10']))
+    fields.append(('105',bar['ICD_10_11']))
+    fields.append(('106',bar['ICD_10_12']))
+
+	# Insured
+    fields.append(('53',bar['pat_auto_accident_state']))
+
+    fields.append(('42',bar['pat_reservednucc2']))
+    fields.append(('47',bar['pat_reservednucc3']))
+    
+    fields.append(('48',bar['pat_insuranceplanname']))
+
+    fields.append(('56',bar['claim_codes']))
+    fields.append(('40',bar['pat_other_insured_name']))
+    fields.append(('41',bar['pat_other_insured_policy']))
+    fields.append(('17',bar['insured_name']))
+    fields.append(('28',bar['insured_streetaddress']))
+    fields.append(('29',bar['insured_city']))
+    fields.append(('30',bar['insured_state']))
+    fields.append(('31',bar['insured_zip']))
+    fields.append(('32',bar['insured_telephone'].split('-')[0]))
+    fields.append(('33',bar['insured_telephone'].split('-')[1]+"-"+bar['insured_telephone'].split('-')[2]))
+    fields.append(('63',bar['insured_plan_name_program'].split('-')[0]))
+
+    if(bar['insured_sex']=='M'):
+        fields.append(('60',True))
+    else:
+        fields.append(('61',True))
+    fields.append(('57',bar['insured_birth_date'].split('/')[1]))
+    fields.append(('59',bar['insured_birth_date'].split('/')[0]))
+    fields.append(('58',bar['insured_birth_date'].split('/')[2]))
+    fields.append(('56_2',bar['insured_other_insured_policy']))
+    fields.append(('62',bar['other_cliam_id']))
+
+    if(bar['health_plan']=='Medicare'):
+        fields.append(('3',True))
+    elif(bar['health_plan']=='Medicaid'):
+        fields.append(('4',True))
+    elif(bar['health_plan']=='Tricare'):
+        fields.append(('5',True))
+    elif(bar['health_plan']=='Champva'):
+        fields.append(('6',True))
+    elif(bar['health_plan']=='GroupHealthPlan'):
+        fields.append(('7',True))
+    elif(bar['health_plan']=='FECA_Blk_Lung'):
+        fields.append(('8',True))
+    elif(bar['health_plan']=='Other'):
+        fields.append(('9',True))
+    fields.append(('66','Signature on file'))
+    fields.append(('68','Signature on file'))
+
+    now = datetime.datetime.now()
+    fields.append(('67',str(now.month)+"|"+str(now.day)+"|"+str(now.year)))
+
+    # PDF generation
     fdf = forge_fdf("",fields,[],[],[])
-    fdf_file = open(data_filename,"w")
+    fdf_file = open("data.fdf","w")
     fdf_file.write(fdf)
     fdf_file.close()
-    #process = subprocess.Popen(['pdftk', 'CMS1500.pdf', 'fill_form','data.fdf','output','output.pdf'])
-    #r = subprocess.call("pdftk CMS1500.pdf fill_form data.fdf output output.pdf",Shell=True)
-    os.system('pdftk ' + CMS_form_filename + ' fill_form ' + data_filename + ' output ' + output_filename)
-    os.remove(data_filename)
-    with open(output_filename, 'rb') as pdf:
+    os.system('pdftk CMS1500.pdf fill_form data.fdf output output.pdf')
+	os.remove('data.fdf')
+    with open('output.pdf', 'rb') as pdf:
         response = HttpResponse(pdf.read(), content_type='application/pdf')
         response['Content-Disposition'] = 'inline;filename=some_file.pdf'
         return response
     pdf.closed
     
     return True
-    
-    
     
 
 #Old Stuff
