@@ -80,6 +80,10 @@ def print_form(bar):
     fields.append(('14',bar['birth_date'].split('/')[0]))
     fields.append(('13',bar['birth_date'].split('/')[2]))
     fields.append(('10',bar['insured_idnumber']))
+    fields.append(('txt8',bar['pat_reservednucc1']))
+    fields.append(('56_1',bar['claim_codes']))
+    fields.append(('17_A','DN'))
+    
 
     if(bar['pat_sex']=='M'):
         fields.append(('15',True))
@@ -93,6 +97,29 @@ def print_form(bar):
         fields.append(('26',True))
     else:
         fields.append(('27',True))
+
+    if('insured_other_benifit_plan' in bar):
+        if(bar['insured_other_benifit_plan']=='on'):
+            fields.append(('64',True))
+    else:
+        fields.append(('65',True))
+
+    if('pat_relation_emp' in bar):
+        if(bar['pat_relation_emp']=='on'):
+            fields.append(('49',True))
+    else:
+        fields.append(('50',True))
+    if('pat_relation_auto_accident' in bar):
+        if(bar['pat_relation_auto_accident']=='on'):
+            fields.append(('51',True))
+    else:
+        fields.append(('52',True))
+    if('pat_relation_other_accident' in bar):
+        if(bar['pat_relation_other_accident']=='on'):
+            fields.append(('54',True))
+    else:
+        fields.append(('55',True))
+    
 
     # Payer Information
     fields.append(('2',bar['payer_name']+"\n"+bar['payer_address']))
@@ -132,26 +159,39 @@ def print_form(bar):
     fields.append(('29',bar['insured_city']))
     fields.append(('30',bar['insured_state']))
     fields.append(('31',bar['insured_zip']))
-    
-
     fields.append(('32',bar['insured_telephone'].split('-')[0]))
     fields.append(('33',bar['insured_telephone'].split('-')[1]+"-"+bar['insured_telephone'].split('-')[2]))
-
     fields.append(('63',bar['insured_plan_name_program'].split('-')[0]))
 
     if(bar['insured_sex']=='M'):
         fields.append(('60',True))
     else:
         fields.append(('61',True))
-
-
-    
     fields.append(('57',bar['insured_birth_date'].split('/')[1]))
     fields.append(('59',bar['insured_birth_date'].split('/')[0]))
     fields.append(('58',bar['insured_birth_date'].split('/')[2]))
     fields.append(('56_2',bar['insured_other_insured_policy']))
     fields.append(('62',bar['other_cliam_id']))
 
+    if(bar['health_plan']=='Medicare'):
+        fields.append(('3',True))
+    elif(bar['health_plan']=='Medicaid'):
+        fields.append(('4',True))
+    elif(bar['health_plan']=='Tricare'):
+        fields.append(('5',True))
+    elif(bar['health_plan']=='Champva'):
+        fields.append(('6',True))
+    elif(bar['health_plan']=='GroupHealthPlan'):
+        fields.append(('7',True))
+    elif(bar['health_plan']=='FECA_Blk_Lung'):
+        fields.append(('8',True))
+    elif(bar['health_plan']=='Other'):
+        fields.append(('9',True))
+    fields.append(('66','Signature on file'))
+    fields.append(('68','Signature on file'))
+
+    now = datetime.datetime.now()
+    fields.append(('67',str(now.month)+"|"+str(now.day)+"|"+str(now.year)))
 
     # PDF generation
     fdf = forge_fdf("",fields,[],[],[])
