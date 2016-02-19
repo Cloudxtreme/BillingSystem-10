@@ -12,10 +12,14 @@
         <script src="{% static 'js/bootstrap.min.js' %}"></script>
         <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
         <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">
+        <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+
+        {% block head %}
+        {% endblock head %}
     </head>
 
     <body>
-    {% block body %}
-    {% endblock body %}
+        {% block body %}
+        {% endblock body %}
     </body>
 </html>

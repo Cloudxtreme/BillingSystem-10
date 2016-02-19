@@ -41,7 +41,7 @@ INSTALLED_APPS = (
     'django_countries',
     'localflavor',
     'claims.apps.ClaimsConfig',
-    'accounts.apps.AccountsConfig',
+    'accounts',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -63,7 +63,7 @@ TEMPLATES = [
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
             os.path.join(BASE_DIR, 'infoGatherer/templates/'),
-            os.path.join(BASE_DIR, 'static/'),
+            os.path.join(BASE_DIR, 'templates/'),
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -93,21 +93,15 @@ DATABASES = {
         'PASSWORD': 'Xenonhealth',
     }
 }
-"""
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
-"""
+
 if DEBUG:
-    EMAIL_HOST = 'localhost'
-    EMAIL_PORT = 1025
-    EMAIL_HOST_USER = ''
-    EMAIL_HOST_PASSWORD = ''
-    EMAIL_USE_TLS = False
-    DEFAULT_FROM_EMAIL = 'ami.mehta@xenonhealth.com'
+    EMAIL_HOST = 'smtp.office365.com'
+    EMAIL_PORT = 587
+    EMAIL_HOST_USER = 'ekasit.jarussinvichai@xenonhealth.com'
+    EMAIL_HOST_PASSWORD = 'H@ppy001'
+    EMAIL_USE_TLS = True
+    DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
 

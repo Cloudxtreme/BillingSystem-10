@@ -1,73 +1,20 @@
-{% extends "html/global_base.html" %}
+{% extends "project_base.html" %}
+
+{% load staticfiles %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'accounts/css/accounts.css' %}">
+{% endblock head %}
 
 {% block body %}
-<div class="container" id="login">
+<div class="container">
     <form class="form-signin" method="post">{% csrf_token %}
-        <h2 class="form-signing-heading"><span class="fa fa-lock"></span> Sign in</h2>
+        <h2 class="form-signing-heading"><i class="fa fa-lock"></i> Sign In</h2>
         <fieldset>
             {{ form.as_p }}
             <p><input type="submit" value="Sign In" class="btn btn-block"></p>
+            <a href="{% url 'accounts:password_reset' %}">Forgot your password?</a>
         </fieldset>
     </form>
 </div>
-
-<style type="text/css">
-    body {
-        background-color: #C0C0C0;
-        color: #000;
-        line-height: 1.5em;
-    }
-
-    #login {
-        margin: 50px auto;
-        width: 400px;
-    }
-
-    #login h2 {
-        background-color: #1E8FD6;
-        -webkit-border-radius: 20px 20px 0 0;
-        -moz-border-radius: 20px 20px 0 0;
-        border-radius: 20px 20px 0 0;
-        color: #fff;
-        font-size: 2em;
-        padding: 20px 26px;
-        margin: 0px;
-    }
-
-    #login h2 span[class*="fa-"] {
-        margin-right: 14px;
-    }
-
-    #login fieldset {
-        background-color: #fff;
-        -webkit-border-radius: 0 0 20px 20px;
-        -moz-border-radius: 0 0 20px 20px;
-        border-radius: 0 0 20px 20px;
-        padding: 20px 26px;
-    }
-
-    #login fieldset p {
-        color: #777;
-        margin-bottom: 15px;
-    }
-
-    #login fieldset input {
-        -webkit-border-radius: 3px;
-        -moz-border-radius: 3px;
-        border-radius: 3px;
-        font-size: 1.2em;
-        height: 40px;
-    }
-
-    #login fieldset input[type="submit"] {
-        background-color: #1E8FD6;
-        color: #fff;
-        display: block;
-        margin: auto;
-        margin-top: 25px;
-        padding: 4px 0;
-    }
-
-</style>
 {% endblock body %}
-
