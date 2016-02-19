@@ -79,6 +79,8 @@ def print_form(bar):
     fields.append(('12',bar['birth_date'].split('/')[1]))
     fields.append(('14',bar['birth_date'].split('/')[0]))
     fields.append(('13',bar['birth_date'].split('/')[2]))
+    fields.append(('10',bar['insured_idnumber']))
+
     if(bar['pat_sex']=='M'):
         fields.append(('15',True))
     else:
@@ -92,6 +94,61 @@ def print_form(bar):
         fields.append(('26',True))
     else:
         fields.append(('27',True))
+    fields.append(('53',bar['pat_auto_accident_state']))
+
+    fields.append(('42',bar['pat_reservednucc2']))
+    fields.append(('47',bar['pat_reservednucc3']))
+    
+    fields.append(('48',bar['pat_insuranceplanname']))
+
+    fields.append(('56',bar['claim_codes']))
+    fields.append(('40',bar['pat_other_insured_name']))
+    fields.append(('41',bar['pat_other_insured_policy']))
+    fields.append(('17',bar['insured_name']))
+    fields.append(('28',bar['insured_streetaddress']))
+    fields.append(('29',bar['insured_city']))
+    fields.append(('30',bar['insured_state']))
+    fields.append(('31',bar['insured_zip']))
+    
+
+    fields.append(('32',bar['insured_telephone'].split('-')[0]))
+    fields.append(('33',bar['insured_telephone'].split('-')[1]+"-"+bar['insured_telephone'].split('-')[2]))
+
+    fields.append(('63',bar['insured_plan_name_program'].split('-')[0]))
+
+    if(bar['insured_sex']=='M'):
+        fields.append(('60',True))
+    else:
+        fields.append(('61',True))
+
+
+    
+    fields.append(('57',bar['insured_birth_date'].split('/')[1]))
+    fields.append(('59',bar['insured_birth_date'].split('/')[0]))
+    fields.append(('58',bar['insured_birth_date'].split('/')[2]))
+    fields.append(('56_2',bar['insured_other_insured_policy']))
+    fields.append(('62',bar['other_cliam_id']))
+
+    
+
+
+
+    
+
+
+    
+    
+
+    
+
+    
+
+    
+    
+    
+    
+    
+
         
     # ('22',bar['pat_telephone'].split('-')[0]),('23',bar['pat_telephone'].split(-)[1]+bar['pat_telephone'].split(-)[2]),(,bar['pat_sex'])]
     fdf = forge_fdf("",fields,[],[],[])

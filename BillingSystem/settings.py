@@ -98,7 +98,7 @@ DATABASES = {
 }
 """
 if DEBUG:
-    EMAIL_HOST = 'localhost'
+    EMAIL_HOST = '127.0.0.1'
     EMAIL_PORT = 1025
     EMAIL_HOST_USER = ''
     EMAIL_HOST_PASSWORD = ''
