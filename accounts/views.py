@@ -63,6 +63,8 @@ def register(request):
     form = Registration_Form(data=request.POST or None)
     if form.is_valid():
         user = form.save(commit=False)
+        user.is_staff = True;
+        user.is_superuser = True;
         user.save()
         return redirect(reverse('accounts:success'))
 

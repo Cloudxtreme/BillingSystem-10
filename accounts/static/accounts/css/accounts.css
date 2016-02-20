@@ -1,5 +1,4 @@
 body {
-    color: #000;
     line-height: 1.5em;
 }
 
@@ -24,7 +23,7 @@ body {
 }
 
 .container fieldset {
-    background-color: #fff;
+    background-color: #F5F5F5;
     -webkit-border-radius: 0 0 20px 20px;
     -moz-border-radius: 0 0 20px 20px;
     border-radius: 0 0 20px 20px;
