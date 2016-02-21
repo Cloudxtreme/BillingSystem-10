@@ -267,6 +267,11 @@ class Provider(models.Model):
     npi = models.IntegerField(default='')
     speciality = models.CharField(max_length=128,default='')
     role = models.CharField(choices=PROVIDER_ROLE_CHOICES,max_length=10,default='Rendering')
+    provider_address = models.CharField(max_length=128, default='')
+    provider_city = models.CharField(max_length=128, default='')
+    provider_phone = models.CharField(max_length=128, default='')
+    provider_state = models.CharField(max_length=128, default='')
+    provider_zip = models.CharField(max_length=128, default='')
      
     def __unicode__(self):
         return self.provider_name
