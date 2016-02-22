@@ -15,7 +15,6 @@ from django.forms import formset_factory
 
 from django.views.generic import FormView
 from django.template.loader import get_template
-from django.core.serializers.json import DjangoJSONEncoder
 from django.core import serializers
 from django.forms.models import model_to_dict
 from django.contrib.auth.decorators import login_required
@@ -23,7 +22,7 @@ from django.contrib.auth.decorators import login_required
 from fdfgen import forge_fdf
 
 from infoGatherer.forms import PostAdForm, PatientForm, GuarantorForm, InsuranceForm, ReferringProviderForm, dxForm, OtherProviderForm
-from infoGatherer.models import PostAd, Guarantor_Information, Insurance_Information, Personal_Information, Payer
+from infoGatherer.models import PostAd, Guarantor_Information, Insurance_Information, Personal_Information, Payer, ReferringProvider
 
 
 @login_required
@@ -37,22 +36,15 @@ def PostAdPage(request):
         return var
     return render(request, 'post_ad.html', {'form': form, 'form2':form2, 'form3':form3, 'form4': form4})
 
-        
 def get_make_claim_extra_context(request):
     p_set = Personal_Information.objects.values('chart_no', 'first_name', 'last_name', 'address', 'city').order_by('first_name')
-    extra_context = {
-        'patient_list': list(p_set),
-    }
-
-    return JsonResponse(data=json.dumps(extra_context), safe=False);
+    context = {'patients': list(p_set),}
+    return JsonResponse(data=context);
 
 def get_json_personal_info(request):
-    personal_set = Personal_Information.objects.filter(pk=request.POST['personal_chart_no'])
-    content = {
-        "personal_information": list(personal_set.values()),
-    }
-
-    return JsonResponse(data=json.dumps(content, cls=DjangoJSONEncoder), safe=False);
+    personal_q_set = Personal_Information.objects.filter(pk=request.POST['personal_chart_no'])
+    context = {"personal_information": list(personal_q_set.values()),}
+    return JsonResponse(data=context)
 
 def get_json_personal_and_insurance_info(request):
     personal_set = Personal_Information.objects.filter(pk=request.POST['personal_chart_no'])
@@ -63,15 +55,17 @@ def get_json_personal_and_insurance_info(request):
     for i in range(len(i_set)):
         i_set[i]["payer"] = model_to_dict(insurance_set[i].payer)
 
-    content = {
+    context = {
         "personal_information": list(personal_set.values()),
         "insurance_list": i_set,
     }
 
-    return JsonResponse(data=json.dumps(content, cls=DjangoJSONEncoder), safe=False);
+    return JsonResponse(data=context);
 
-def get_json_physician_information(request):
-    pass
+def get_json_physician_info(request):
+    phy_q_set = ReferringProvider.objects.all()
+    context = {"physicians": list(phy_q_set.values()),}
+    return JsonResponse(data=context)
 
 def view_in_between(request):
     return render(request, 'test.html')

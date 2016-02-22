@@ -9,33 +9,32 @@ function autocomplete_claim(api_urls) {
     // Prepare auto suggestion in name fields of both patient and insured
     $.ajax({
         url: api_urls[0],
-    }).done(function(data) {
-        var jObj = JSON.parse(data);
-        var patient_list = jObj.patient_list;
-        var patient_list_obj = [];
+    }).done(function(obj) {
+        var patient_lookup = [];
 
-        for(var patient of patient_list)
-            patient_list_obj.push({
-                value: patient.first_name + " " + patient.last_name,
-                data: patient.chart_no,
-                hintAddress: patient.address + ", " + patient.city,
+        for(var p of obj['patients'])
+            patient_lookup.push({
+                value: p.first_name + " " + p.last_name,
+                data: p.chart_no,
+                hint: p.address + ", " + p.city,
             })
 
         // Set auto suggestion for patient's name
         $("#id_pat_name").autocomplete({
             minChars: 0,
-            lookup: patient_list_obj,
+            lookup: patient_lookup,
             formatResult: function(suggestion, currentValue) {
-                return suggestion.value + detailString(suggestion.hintAddress);
+                return suggestion.value + detailString(suggestion.hint);
             },
             onSelect: function (suggestion) {
                 // Get patient information
                 $.post(
                     api_urls[1],
                     {personal_chart_no: suggestion.data},
-                    function(patient_info_str) {
+                    function(obj) {
+                        var patient_info = obj['personal_information'][0];
+
                         // Auto populate fields in patient section
-                        var patient_info = JSON.parse(patient_info_str)["personal_information"][0];
                         var birth_date_str = patient_info.dob.substr(0,4) + "/" + patient_info.dob.substr(5,2) + "/" + patient_info.dob.substr(8,2);
                         $("#id_pat_streetaddress").val(patient_info.address);
                         $("#id_pat_city").val(patient_info.city);
@@ -52,18 +51,18 @@ function autocomplete_claim(api_urls) {
         // Set auto suggestion for insured's name
         $("#id_insured_name").autocomplete({
             minChars: 0,
-            lookup: patient_list_obj,
+            lookup: patient_lookup,
             formatResult: function(suggestion, currentValue) {
-                return suggestion.value + detailString(suggestion.hintAddress);
+                return suggestion.value + detailString(suggestion.hint);
             },
             onSelect: function (suggestion) {
                 // Get insured information and insurance according to that person
                 $.post(
                     api_urls[2],
                     {personal_chart_no: suggestion.data},
-                    function(insured_info_str) {
+                    function(obj) {
                         // Auto populate fields in insured section
-                        var insured_info = JSON.parse(insured_info_str)["personal_information"][0];
+                        var insured_info = obj["personal_information"][0];
                         var birth_date_str = insured_info.dob.substr(0,4) + "/" + insured_info.dob.substr(5,2) + "/" + insured_info.dob.substr(8,2);
                         $("#id_insured_streetaddress").val(insured_info.address);
                         $("#id_insured_city").val(insured_info.city);
@@ -74,7 +73,7 @@ function autocomplete_claim(api_urls) {
                         $("#id_insured_sex").val(insured_info.sex.substr(0,1));
 
                         // Set auto suggestion for insurance id number
-                        var insurance_list = JSON.parse(insured_info_str)["insurance_list"];
+                        var insurance_list = obj["insurance_list"];
                         var insuranceNumberListObj = [];
                         for(i of insurance_list)
                             insuranceNumberListObj.push({value: i.insurance_id, insurance_data: i});
@@ -119,6 +118,33 @@ function autocomplete_claim(api_urls) {
                     }
                 );
             }
+        });
+    });
+
+    // Prepare auto-suggestion for physician information
+    $.ajax({
+        url: api_urls[3],
+    }).done(function(obj) {
+        var physicians_lookup = [];
+        for(var p of obj.physicians) {
+            physicians_lookup.push({
+                value: p.last_name + ", " + p.first_name,
+                data: p,
+                hint: p.city + ", " + p.state + ", NPI: " + p.NPI,
+            });
+        }
+
+        // Set auto suggestion for patient's name
+        $("#id_first_name").autocomplete({
+            minChars: 0,
+            lookup: physicians_lookup,
+            formatResult: function(suggestion, currentValue) {
+                return suggestion.value + detailString(suggestion.hint);
+            },
+            onSelect: function (suggestion) {
+                $('#id_first_name').val(suggestion.value);
+                $('#id_NPI').val(suggestion.data.NPI);
+            },
         });
     });
 
