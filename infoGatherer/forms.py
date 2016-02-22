@@ -1,7 +1,7 @@
 from django.forms import ModelForm
 from infoGatherer.models import Personal_Information, Guarantor_Information, Insurance_Information
 from django import forms  
-from infoGatherer.models import PostAd, ReferingProvider, dx, Provider, CPT
+from infoGatherer.models import PostAd, ReferringProvider, dx, Provider, CPT
 from infoGatherer.models import Personal_Information, Payer
 
 

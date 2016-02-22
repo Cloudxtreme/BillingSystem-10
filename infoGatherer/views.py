@@ -21,7 +21,7 @@ from django.contrib.auth.decorators import login_required
 
 from fdfgen import forge_fdf
 
-from infoGatherer.forms import PostAdForm, PatientForm, GuarantorForm, InsuranceForm, ReferringProviderForm, dxForm, OtherProviderForm
+from infoGatherer.forms import PostAdForm, PatientForm, GuarantorForm, InsuranceForm, ReferringProviderForm, dxForm, OtherProviderForm, CptForms
 from infoGatherer.models import PostAd, Guarantor_Information, Insurance_Information, Personal_Information, Payer, ReferringProvider
 
 
