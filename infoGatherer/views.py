@@ -6,7 +6,7 @@ from django.contrib.auth import authenticate
 from django.template.context import RequestContext
 from infoGatherer.models import PostAd, Guarantor_Information, Insurance_Information, Personal_Information, Payer
 from django.contrib.auth.decorators import login_required
-from infoGatherer.forms import PostAdForm, PatientForm, GuarantorForm, InsuranceForm, ReferringProviderForm, dxForm
+from infoGatherer.forms import PostAdForm, PatientForm, GuarantorForm, InsuranceForm, ReferringProviderForm, dxForm, OtherProviderForm
 import re
 from django.shortcuts import redirect
 from django.forms import formset_factory
@@ -27,10 +27,11 @@ def PostAdPage(request):
     form=PostAdForm()
     form2=ReferringProviderForm()
     form3=dxForm()
+    form4=OtherProviderForm()
     if 'pat_name' in request.GET and request.GET['pat_name']:
         var=print_form(request.GET);
         return var
-    return render(request, 'post_ad.html', {'form': form, 'form2':form2, 'form3':form3})
+    return render(request, 'post_ad.html', {'form': form, 'form2':form2, 'form3':form3, 'form4': form4})
 
         
 def get_make_claim_extra_context(request):

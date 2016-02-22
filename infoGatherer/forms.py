@@ -1,7 +1,7 @@
 from django.forms import ModelForm
 from infoGatherer.models import Personal_Information, Guarantor_Information, Insurance_Information
 from django import forms  
-from infoGatherer.models import PostAd, RefferingProvider, dx
+from infoGatherer.models import PostAd, RefferingProvider, dx, Provider
 from infoGatherer.models import Personal_Information, Payer
 
 
@@ -32,6 +32,12 @@ REL_INSUR = (
     ('Child', 'Child'),
     ('Other', 'Other'),
 )
+
+class OtherProviderForm(ModelForm):
+    class Meta:
+        model = Provider
+        fields = '__all__'
+
 
 class ReferringProviderForm(ModelForm):
     class Meta:

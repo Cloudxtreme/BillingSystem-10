@@ -66,7 +66,7 @@ PAYER_TYPE_CHOICE = (('M','Medicare'),('C','Commercial'))
 
 RELATION_CHOICES = (('Self','Self'),('Other','Other'))
 
-PROVIDER_ROLE_CHOICES = (('Billing','Billing'),('Rendering','Rendering'),('Dual','Dual'))
+PROVIDER_ROLE_CHOICES = (('Billing','Billing'),('Rendering','Rendering'),('Dual','Dual'),('Location','Location'))
 
 POS_CHOICES = (('Home','Home'),('Hospital','Hospital'),('Office','Office'))
 
@@ -263,10 +263,16 @@ class Locations(models.Model):
 
 class Provider(models.Model):
     provider_name = models.CharField(max_length=128,default='')
-    tax_id = models.IntegerField(default='')
-    npi = models.IntegerField(default='')
-    speciality = models.CharField(max_length=128,default='')
+    tax_id = models.IntegerField(default='',null=True, blank=True)
+    npi = models.IntegerField(default='',null=True, blank=True)
+    speciality = models.CharField(max_length=128,default='',null=True, blank=True)
     role = models.CharField(choices=PROVIDER_ROLE_CHOICES,max_length=10,default='Rendering')
+    provider_address = models.CharField(max_length=256, default='',null=True, blank=True)
+    provider_city = models.CharField(max_length=128,default='',null=True, blank=True)   
+    provider_state = USStateField(default='',null=True, blank=True)
+    provider_phone = PhoneNumberField(null=True, blank=True, help_text='XXX-XXX-XXXX',)
+    provider_zip = models.IntegerField(default='',null=True, blank=True)
+
      
     def __unicode__(self):
         return self.provider_name
