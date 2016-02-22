@@ -20,9 +20,10 @@ import json
 from django.core.serializers.json import DjangoJSONEncoder
 from django.core import serializers
 from django.forms.models import model_to_dict
+from django.contrib.auth.decorators import login_required
 
 # New Stuff
-
+@login_required
 def PostAdPage(request):
     form=PostAdForm()
     form2=ReferringProviderForm()
@@ -200,12 +201,13 @@ def print_form(bar):
     fdf_file.write(fdf)
     fdf_file.close()
     os.system('pdftk CMS1500.pdf fill_form data.fdf output output.pdf')
+    os.remove('data.fdf')
     with open('output.pdf', 'rb') as pdf:
         response = HttpResponse(pdf.read(), content_type='application/pdf')
         response['Content-Disposition'] = 'inline;filename=some_file.pdf'
         return response
     pdf.closed
-    os.remove('data.fdf')
+    
     return True
     
 

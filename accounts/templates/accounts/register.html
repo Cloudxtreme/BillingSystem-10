@@ -1,0 +1,20 @@
+{% extends "project_base.html" %}
+
+{% load staticfiles %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'accounts/css/accounts.css' %}">
+{% endblock head %}
+
+{% block body %}
+<div class="container">
+    <form method="post">{% csrf_token %}
+        <h2 class="form-signing-heading"><i class="fa fa-user-md"></i> Create Account</h2>
+        <fieldset>
+            {{ form.as_p }}
+            <p><input type="submit" class="btn btn-block" value="Register"></p>
+            <a href="{% url 'accounts:success' %}">Cancel</a>
+        </fieldset>
+    </form>
+</div>
+{% endblock body %}

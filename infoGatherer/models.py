@@ -127,8 +127,8 @@ class PostAd(models.Model):
     
 
 class RefferingProvider(models.Model):
-    first_name = models.CharField(max_length=200,primary_key=True)
-    last_name = models.CharField(max_length=200,primary_key=True)
+    first_name = models.CharField(max_length=200)
+    last_name = models.CharField(max_length=200)
     address1 = models.CharField(max_length=200)
     address2 = models.CharField(max_length=200,null=True, blank=True)
     city= models.CharField(max_length=200)

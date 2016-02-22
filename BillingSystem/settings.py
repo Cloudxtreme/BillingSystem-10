@@ -41,6 +41,7 @@ INSTALLED_APPS = (
     'django_countries',
     'localflavor',
     'claims.apps.ClaimsConfig',
+    'accounts',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -60,7 +61,10 @@ ROOT_URLCONF = 'BillingSystem.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['C:\Users\Utsav\Documents\BillingApp\infoGatherer\\templates'],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'infoGatherer/templates/'),
+            os.path.join(BASE_DIR, 'templates/'),
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -68,7 +72,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'django.core.context_processors.request',
+                'django.template.context_processors.request',
             ],
         },
     },
@@ -89,21 +93,15 @@ DATABASES = {
         'PASSWORD': 'Xenonhealth',
     }
 }
-"""
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
-"""
+
 if DEBUG:
-    EMAIL_HOST = '127.0.0.1'
-    EMAIL_PORT = 1025
-    EMAIL_HOST_USER = ''
-    EMAIL_HOST_PASSWORD = ''
-    EMAIL_USE_TLS = False
-    DEFAULT_FROM_EMAIL = 'ami.mehta@xenonhealth.com'
+    EMAIL_HOST = 'smtp.office365.com'
+    EMAIL_PORT = 587
+    EMAIL_HOST_USER = 'ekasit.jarussinvichai@xenonhealth.com'
+    EMAIL_HOST_PASSWORD = 'Xenonhealth'
+    EMAIL_USE_TLS = True
+    DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
 
@@ -122,3 +120,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = '/static/'
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static/')]
+
+AUTH_USER_MODEL = 'accounts.User'
+
+LOGIN_URL = '/accounts/sign_in/'
