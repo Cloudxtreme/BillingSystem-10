@@ -1,7 +1,7 @@
 from django.forms import ModelForm
 from infoGatherer.models import Personal_Information, Guarantor_Information, Insurance_Information
 from django import forms  
-from infoGatherer.models import PostAd, RefferingProvider, dx, Provider
+from infoGatherer.models import PostAd, ReferringProvider, dx, Provider
 from infoGatherer.models import Personal_Information, Payer
 
 
@@ -41,7 +41,7 @@ class OtherProviderForm(ModelForm):
 
 class ReferringProviderForm(ModelForm):
     class Meta:
-        model = RefferingProvider
+        model = ReferringProvider
         fields = '__all__'
 
 class dxForm(ModelForm):

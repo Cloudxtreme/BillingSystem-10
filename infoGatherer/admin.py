@@ -1,5 +1,5 @@
 from django.contrib import admin
-from infoGatherer.models import Payer,Personal_Information, Guarantor_Information, Insurance_Information, Diagnosis_Codes, Procedure_Codes,dx, Provider, Locations, RefferingProvider
+from infoGatherer.models import Payer,Personal_Information, Guarantor_Information, Insurance_Information, Diagnosis_Codes, Procedure_Codes,dx, Provider, Locations, ReferringProvider
       
 
 class PayerAdmin(admin.ModelAdmin):
@@ -47,7 +47,7 @@ admin.site.register(Guarantor_Information, GuarantorAdmin)
 admin.site.register(Insurance_Information, InsuranceAdmin)
 
 #new stuff
-admin.site.register(RefferingProvider, RP)
+admin.site.register(ReferringProvider, RP)
 admin.site.register(dx, DX)
 
 # admin.site.register(Test,Test_Admin)

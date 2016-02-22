@@ -1,28 +1,31 @@
-from django.shortcuts import render, render_to_response
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
-from django.contrib.auth.views import login, logout, password_reset,\
-    password_reset_confirm, password_reset_done, password_reset_complete
-from django.contrib.auth import authenticate
-from django.template.context import RequestContext
-from infoGatherer.models import PostAd, Guarantor_Information, Insurance_Information, Personal_Information, Payer
-from django.contrib.auth.decorators import login_required
-from infoGatherer.forms import PostAdForm, PatientForm, GuarantorForm, InsuranceForm, ReferringProviderForm, dxForm, OtherProviderForm
 import re
-from django.shortcuts import redirect
-from django.forms import formset_factory
-from fdfgen import forge_fdf
 import os
 import datetime
 import subprocess
+import json
+
+from django.shortcuts import render, render_to_response
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.contrib.auth.views import login, logout, password_reset, password_reset_confirm, password_reset_done, password_reset_complete
+from django.contrib.auth import authenticate
+from django.template.context import RequestContext
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import redirect
+from django.forms import formset_factory
+
 from django.views.generic import FormView
 from django.template.loader import get_template
-import json
 from django.core.serializers.json import DjangoJSONEncoder
 from django.core import serializers
 from django.forms.models import model_to_dict
 from django.contrib.auth.decorators import login_required
 
-# New Stuff
+from fdfgen import forge_fdf
+
+from infoGatherer.forms import PostAdForm, PatientForm, GuarantorForm, InsuranceForm, ReferringProviderForm, dxForm, OtherProviderForm
+from infoGatherer.models import PostAd, Guarantor_Information, Insurance_Information, Personal_Information, Payer
+
+
 @login_required
 def PostAdPage(request):
     form=PostAdForm()
@@ -66,6 +69,9 @@ def get_json_personal_and_insurance_info(request):
     }
 
     return JsonResponse(data=json.dumps(content, cls=DjangoJSONEncoder), safe=False);
+
+def get_json_physician_information(request):
+    pass
 
 def view_in_between(request):
     return render(request, 'test.html')

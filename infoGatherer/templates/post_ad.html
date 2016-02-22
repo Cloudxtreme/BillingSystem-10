@@ -2,16 +2,23 @@
 
 {% load staticfiles %}
 
-{% block body %}
-
+{% block script %}
 <script src="{% static 'infoGatherer/js/autocomplete_claim.js' %}"></script>
-
 <script src="{% static 'infoGatherer/js/jquery.autocomplete.min.js' %}"></script>
+{% endblock script %}
+
+
+{% block link %}
 <link rel="stylesheet" href="{% static 'infoGatherer/css/autocomplete.css' %}">
 <link href="{% static 'infoGatherer/open-iconic/font/css/open-iconic-bootstrap.css' %}" rel="stylesheet">
 <link href="{% static 'infoGatherer/open-iconic/font/css/open-iconic.css' %}" rel="stylesheet">
+<style type="text/css">
+    @media (min-width: 1200px) { .container { width: 700px !important; }}
+</style>
+{% endblock link %}
 
-<style type="text/css">@media (min-width: 1200px) { .container { width: 700px !important; }}</style>
+
+{% block body %}
 
 <div class="container" id="hideAll" style="display:none">
 
