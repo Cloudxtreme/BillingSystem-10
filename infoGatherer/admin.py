@@ -1,6 +1,6 @@
 from django.contrib import admin
-from infoGatherer.models import Payer,Personal_Information, Guarantor_Information, Insurance_Information, Diagnosis_Codes, Procedure_Codes,dx, Provider, Locations, ReferringProvider
-      
+# from infoGatherer.models import Payer,Personal_Information, CPT, Guarantor_Information, Insurance_Information, Diagnosis_Codes, Procedure_Codes,dx, Provider, Locations, RefferingProvider
+from infoGatherer.models import *      
 
 class PayerAdmin(admin.ModelAdmin):
     list_display = ('code','name','address','city','state','zip','phone','type',)
@@ -37,6 +37,10 @@ class DX(admin.ModelAdmin):
     list_display = ('ICD_10','description')
     search_fields = ['ICD_10','description',]
 
+class CPT_codes(admin.ModelAdmin):
+    list_display = ('cpt_code','cpt_description','cpt_mod_a','cpt_mod_b','cpt_mod_c','cpt_mod_d','cpt_charge')
+    search_fields = ['cpt_code','cpt_description','cpt_mod_a','cpt_mod_b','cpt_mod_c','cpt_mod_d','cpt_charge']
+
 admin.site.register(Payer, PayerAdmin)
 admin.site.register(Diagnosis_Codes,DiagnosisCodes_Admin)
 admin.site.register(Procedure_Codes,ProcedureCodes_Admin)
@@ -49,5 +53,6 @@ admin.site.register(Insurance_Information, InsuranceAdmin)
 #new stuff
 admin.site.register(ReferringProvider, RP)
 admin.site.register(dx, DX)
+admin.site.register(CPT, CPT_codes)
 
 # admin.site.register(Test,Test_Admin)
