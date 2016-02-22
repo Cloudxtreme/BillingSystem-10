@@ -6,7 +6,16 @@ function autocomplete_claim(api_urls) {
         return false;
     });
 
-    // Prepare auto suggestion in name fields of both patient and insured
+    // Autocomplete causes binded field to clear its value when page is loaded from back and forward button.
+    // Workaround is to have hidden field to store previous value and assign to that field if available
+    $("#id_pat_name").val($('#hidden_pat_name').val())
+    $("#id_insured_name").val($('#hidden_insured_name').val())
+    $("#id_insured_idnumber").val($('#hidden_id_insured_id').val())
+    $("#id_payer_num").val($('#hidden_id_payer_num').val())
+    $("#id_payer_name").val($('#hidden_id_payer_name').val())
+    $("#id_first_name").val($('#hidden_id_first_name').val())
+
+    // Make ajax call for auto-suggestion
     $.ajax({
         url: api_urls[0],
     }).done(function(obj) {
@@ -43,6 +52,8 @@ function autocomplete_claim(api_urls) {
                         $("#id_pat_telephone").val(patient_info.home_phone);
                         $("#id_birth_date").val(birth_date_str);
                         $("#id_pat_sex").val(patient_info.sex.substr(0,1));
+
+                        $('#hidden_pat_name').val(suggestion.value);
                     }
                 );
             },
@@ -71,6 +82,8 @@ function autocomplete_claim(api_urls) {
                         $("#id_insured_telephone").val(insured_info.home_phone);
                         $("#id_insured_birth_date").val(birth_date_str);
                         $("#id_insured_sex").val(insured_info.sex.substr(0,1));
+
+                        $('#hidden_insured_name').val(suggestion.value);
 
                         // Set auto suggestion for insurance id number
                         var insurance_list = obj["insurance_list"];
@@ -144,6 +157,8 @@ function autocomplete_claim(api_urls) {
             onSelect: function (suggestion) {
                 $('#id_first_name').val(suggestion.value);
                 $('#id_NPI').val(suggestion.data.NPI);
+
+                $('#hidden_id_first_name').val(suggestion.value);
             },
         });
     });
@@ -157,6 +172,10 @@ function autocomplete_claim(api_urls) {
         $("#id_payer_num").val(insurance.payer.code);
         $("#id_payer_name").val(insurance.payer.name);
         $("#id_payer_address").val(fullAddress);
+
+        $("#hidden_id_insured_id").val(insurance.insurance_id);
+        $("#hidden_id_payer_num").val(insurance.payer.code);
+        $("#hidden_id_payer_name").val(insurance.payer.name);
     }
 
     function detailString(text) {

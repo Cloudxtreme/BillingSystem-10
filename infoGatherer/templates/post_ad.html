@@ -38,7 +38,7 @@
     <div class="fieldWrapper ">
         <label for="id_pat_name">Patient's name</label>
         {{ form.pat_name }}
-        <input type="hidden" name="patient_chart_no" id="patient_chart_no" data-patient-chart-no>
+        <input type="hidden" id="hidden_pat_name">
     </div>
 
     <!-- *Patients Address -->
@@ -139,16 +139,18 @@
     <div class="fieldWrapper ">
         <label for="id_insured_name">Insured's name</label>
         {{ form.insured_name }}
-        <input type="hidden" name="insured_chart_no" id="insured_chart_no" data-insured-chart-no>
+        <input type="hidden" id="hidden_insured_name">
     </div>
     <!-- *Payer Number -->
     <div class="fieldWrapper ">
         <label for="id_payer_num">Payer Number</label>
         {{ form.payer_num }}
+        <input type="hidden" id="hidden_id_payer_num">
     </div>
     <div class="fieldWrapper ">
         <label for="id_payer_name">Payer Name</label>
         {{ form.payer_name }}
+        <input type="hidden" id="hidden_id_payer_name">
     </div>
     <div class="fieldWrapper ">
         <label for="id_payer_name">Payer Address</label>
@@ -165,6 +167,7 @@
     <div class="fieldWrapper " >
         <label for="id_insured_idnumber">Insured's id number</label>
         {{ form.insured_idnumber }}
+        <input type="hidden" id="hidden_id_insured_id">
     </div>
     
     <!-- *insured Address -->
@@ -210,6 +213,7 @@
     <div class="fieldWrapper ">
         <label for="id_first_name">First name</label>
         {{ form2.first_name }}
+        <input type="hidden" id="hidden_id_first_name">
     </div>  
     <div class="fieldWrapper ">
         <label for="id_last_name">Last name</label>
