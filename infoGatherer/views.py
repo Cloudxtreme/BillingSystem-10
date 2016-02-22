@@ -6,7 +6,7 @@ from django.contrib.auth import authenticate
 from django.template.context import RequestContext
 from infoGatherer.models import PostAd, Guarantor_Information, Insurance_Information, Personal_Information, Payer
 from django.contrib.auth.decorators import login_required
-from infoGatherer.forms import PostAdForm, PatientForm, GuarantorForm, InsuranceForm, ReferringProviderForm, dxForm, OtherProviderForm
+from infoGatherer.forms import PostAdForm, PatientForm, GuarantorForm, InsuranceForm, ReferringProviderForm, dxForm, OtherProviderForm, CptForms
 import re
 from django.shortcuts import redirect
 from django.forms import formset_factory
@@ -29,10 +29,12 @@ def PostAdPage(request):
     form2=ReferringProviderForm()
     form3=dxForm()
     form4=OtherProviderForm()
+    form5=CptForms()
     if 'pat_name' in request.GET and request.GET['pat_name']:
-        var=print_form(request.GET);
-        return var
-    return render(request, 'post_ad.html', {'form': form, 'form2':form2, 'form3':form3, 'form4': form4})
+        if form.is_valid():
+            var=print_form(request.GET);
+            return var
+    return render(request, 'post_ad.html', {'form': form, 'form2':form2, 'form3':form3, 'form4': form4, 'cptform': form5})
 
         
 def get_make_claim_extra_context(request):
@@ -85,8 +87,6 @@ def print_form(bar):
     fields.append(('txt8',bar['pat_reservednucc1']))
     fields.append(('56_1',bar['claim_codes']))
     fields.append(('17_A','DN'))
-    
-
     if(bar['pat_sex']=='M'):
         fields.append(('15',True))
     else:
@@ -122,7 +122,6 @@ def print_form(bar):
     else:
         fields.append(('55',True))
     
-
     # Payer Information
     fields.append(('2',bar['payer_name']+"\n"+bar['payer_address']))
 
@@ -144,15 +143,13 @@ def print_form(bar):
     fields.append(('104',bar['ICD_10_10']))
     fields.append(('105',bar['ICD_10_11']))
     fields.append(('106',bar['ICD_10_12']))
+    # fields.append(('122',bar['cpt_code']))
 
 	# Insured
     fields.append(('53',bar['pat_auto_accident_state']))
-
     fields.append(('42',bar['pat_reservednucc2']))
     fields.append(('47',bar['pat_reservednucc3']))
-    
     fields.append(('48',bar['pat_insuranceplanname']))
-
     fields.append(('56',bar['claim_codes']))
     fields.append(('40',bar['pat_other_insured_name']))
     fields.append(('41',bar['pat_other_insured_policy']))
@@ -191,7 +188,6 @@ def print_form(bar):
         fields.append(('9',True))
     fields.append(('66','Signature on file'))
     fields.append(('68','Signature on file'))
-
     now = datetime.datetime.now()
     fields.append(('67',str(now.month)+"|"+str(now.day)+"|"+str(now.year)))
 

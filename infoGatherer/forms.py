@@ -1,7 +1,7 @@
 from django.forms import ModelForm
 from infoGatherer.models import Personal_Information, Guarantor_Information, Insurance_Information
 from django import forms  
-from infoGatherer.models import PostAd, RefferingProvider, dx, Provider
+from infoGatherer.models import PostAd, RefferingProvider, dx, Provider, CPT
 from infoGatherer.models import Personal_Information, Payer
 
 
@@ -32,6 +32,14 @@ REL_INSUR = (
     ('Child', 'Child'),
     ('Other', 'Other'),
 )
+
+class CptForms(forms.ModelForm):
+    cpt_charge = forms.CharField(required=True, widget=forms.TextInput(attrs={'placeholder': 'Charges ($)'}))
+    cpt_code = forms.CharField(required=True, widget=forms.TextInput(attrs={'placeholder': 'CPT/HCPCS code'}))
+    class Meta:
+        model = CPT
+        fields = '__all__'
+        widgets = {}
 
 class OtherProviderForm(ModelForm):
     class Meta:

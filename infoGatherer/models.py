@@ -85,6 +85,17 @@ LOCATIONS = (
     ('STN', 'Staten Island'),
 )
 
+class CPT(models.Model):
+    cpt_code=   models.CharField(max_length=50)
+    cpt_description=    models.CharField(max_length=200)
+    cpt_mod_a=  models.CharField(max_length=10, null=True, blank=True)
+    cpt_mod_b=  models.CharField(max_length=10, null=True, blank=True)
+    cpt_mod_c=  models.CharField(max_length=10, null=True, blank=True)
+    cpt_mod_d=  models.CharField(max_length=10, null=True, blank=True)
+    cpt_charge= models.FloatField()
+    def __unicode__(self):
+        return self.cpt_code+" "+self.cpt_description
+
 
 class PostAd(models.Model):  
     name        = models.CharField(max_length=50)
