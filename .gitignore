@@ -3,5 +3,10 @@
 *.fdf
 ~$*.*x
 .DS_Store
-migrations/*.py
-!migrations/__init__.py
+
+
+# ignore migration files everywhere because it is specific to computer.
+# However, I will keep __init__.py for ease of makemigration command
+
+**/migrations/*.py
+!**/migrations/__init__.py
