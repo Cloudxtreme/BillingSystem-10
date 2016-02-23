@@ -27,15 +27,18 @@ from infoGatherer.models import PostAd, Guarantor_Information, Insurance_Informa
 
 @login_required
 def PostAdPage(request):
-    form=PostAdForm()
-    form2=ReferringProviderForm()
-    form3=dxForm()
-    form4=OtherProviderForm()
-    form5=CptForms()
+    form=PostAdForm(request.GET or None)
+    form2=ReferringProviderForm(request.GET or None)
+    form3=dxForm(request.GET or None)
+    form4=OtherProviderForm(request.GET or None)
+    form5=CptForms(request.GET or None)
+
     if 'pat_name' in request.GET and request.GET['pat_name']:
-        if form.is_valid():
+        if form5.is_valid():
             var=print_form(request.GET);
             return var
+        else:
+            print form5.errors
     return render(request, 'post_ad.html', {'form': form, 'form2':form2, 'form3':form3, 'form4': form4, 'cptform': form5})
 
 def get_make_claim_extra_context(request):
@@ -80,9 +83,9 @@ def print_form(bar):
 
     # Patient Information
     fields = [('11',bar['pat_name']),('18',bar['pat_streetaddress']),('19',bar['pat_city']),('20',bar['pat_state']),('21',bar['pat_zip']),('22',bar['pat_telephone'].split('-')[0]),('23',bar['pat_telephone'].split('-')[1]+"-"+bar['pat_telephone'].split('-')[2])]
-    fields.append(('12',bar['birth_date'].split('/')[1]))
-    fields.append(('14',bar['birth_date'].split('/')[0]))
-    fields.append(('13',bar['birth_date'].split('/')[2]))
+    fields.append(('12',bar['birth_date'].split('-')[1]))
+    fields.append(('14',bar['birth_date'].split('-')[0]))
+    fields.append(('13',bar['birth_date'].split('-')[2]))
     fields.append(('10',bar['insured_idnumber']))
     fields.append(('txt8',bar['pat_reservednucc1']))
     fields.append(('56_1',bar['claim_codes']))
@@ -166,9 +169,9 @@ def print_form(bar):
         fields.append(('60',True))
     else:
         fields.append(('61',True))
-    fields.append(('57',bar['insured_birth_date'].split('/')[1]))
-    fields.append(('59',bar['insured_birth_date'].split('/')[0]))
-    fields.append(('58',bar['insured_birth_date'].split('/')[2]))
+    fields.append(('57',bar['insured_birth_date'].split('-')[1]))
+    fields.append(('59',bar['insured_birth_date'].split('-')[0]))
+    fields.append(('58',bar['insured_birth_date'].split('-')[2]))
     fields.append(('56_2',bar['insured_other_insured_policy']))
     fields.append(('62',bar['other_cliam_id']))
 

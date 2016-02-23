@@ -70,20 +70,7 @@ PROVIDER_ROLE_CHOICES = (('Billing','Billing'),('Rendering','Rendering'),('Dual'
 
 POS_CHOICES = (('Home','Home'),('Hospital','Hospital'),('Office','Office'))
 
-#New stuff
-CATEGORIES = (  
-    ('LAB', 'labor'),
-    ('CAR', 'cars'),
-    ('TRU', 'trucks'),
-    ('WRI', 'writing'),
-)
-LOCATIONS = (  
-    ('BRO', 'Bronx'),
-    ('BRK', 'Brooklyn'),
-    ('QNS', 'Queens'),
-    ('MAN', 'Manhattan'),
-    ('STN', 'Staten Island'),
-)
+#New stuf
 
 class CPT(models.Model):
     cpt_code=   models.CharField(max_length=50)
@@ -98,10 +85,9 @@ class CPT(models.Model):
 
 
 class PostAd(models.Model):  
-    name        = models.CharField(max_length=50)
     insured_idnumber= models.CharField(max_length=50)
     insured_name= models.CharField(max_length=100)
-    insured_address= models.CharField(max_length=100)
+    insured_address= models.CharField(max_length=100, null=True, blank=True)
     insured_streetaddress = models.TextField(max_length=100)
     insured_city    = models.TextField(max_length=50)
     insured_zip     = models.CharField(max_length=5,default='')
@@ -112,11 +98,6 @@ class PostAd(models.Model):
     other_cliam_id  = models.TextField(max_length=50)
     insured_plan_name_program= models.TextField(max_length=100)
     claim_codes= models.TextField(max_length=50)
-    email       = models.EmailField()
-    gist        = models.CharField(max_length=50)
-    category    = models.CharField(max_length=3, choices=CATEGORIES)
-    location    = models.CharField(max_length=3, choices=LOCATIONS)
-    expire      = models.DateField()
     birth_date  = models.DateField()
     pat_streetaddress = models.TextField(max_length=100)
     pat_city    = models.TextField(max_length=50)
@@ -140,15 +121,15 @@ class PostAd(models.Model):
 class ReferringProvider(models.Model):
     first_name = models.CharField(max_length=200)
     last_name = models.CharField(max_length=200)
-    address1 = models.CharField(max_length=200)
+    address1 = models.CharField(max_length=200,default='', blank=True)
     address2 = models.CharField(max_length=200,null=True, blank=True)
-    city= models.CharField(max_length=200)
-    state=USStateField(default='')
-    zip=models.IntegerField()
-    phone_work=PhoneNumberField()
+    city= models.CharField(max_length=200,default='',null=True, blank=True)
+    state=USStateField(default='',null=True, blank=True)
+    zip=models.IntegerField(default='',null=True, blank=True)
+    phone_work=PhoneNumberField(default='',null=True, blank=True)
     fax=models.CharField(max_length=100,null=True, blank=True)
     email=models.CharField(max_length=100,null=True, blank=True)
-    taxonomy=models.CharField(max_length=100)
+    taxonomy=models.CharField(max_length=100,default='',null=True, blank=True)
     NPI=models.IntegerField()
     tax_id=models.CharField(max_length=100,null=True, blank=True)
     def __unicode__(self):
