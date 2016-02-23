@@ -24,4 +24,5 @@ urlpatterns = [
     url(r'^get_json_personal_info$', views.get_json_personal_info, name="get_json_personal_info"),
     url(r'^get_json_personal_and_insurance_info$', views.get_json_personal_and_insurance_info, name="get_json_personal_and_insurance_info"),
     url(r'^get_json_physician_info$', views.get_json_physician_info, name="get_json_physician_info"),
+    url(r'^get_json_provider_info$', views.get_json_provider_info, name="get_json_provider_info"),
 ]
