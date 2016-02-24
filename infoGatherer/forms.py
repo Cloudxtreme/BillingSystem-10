@@ -51,6 +51,7 @@ class OtherProviderForm(ModelForm):
 
 
 class ReferringProviderForm(ModelForm):
+    last_name=forms.CharField(required=False)
 
     class Meta:
         model = ReferringProvider

@@ -34,11 +34,12 @@ def PostAdPage(request):
     form5=CptForms(request.GET or None)
 
     if 'pat_name' in request.GET and request.GET['pat_name']:
-        if form5.is_valid():
+        if form.is_valid() and form2.is_valid() and form3.is_valid() and form4.is_valid() and form5.is_valid() :
             var=print_form(request.GET);
             return var
         else:
-            print form5.errors
+            print form.errors and form2.errors and form3.errors and form4.errors and form5.errors
+
     return render(request, 'post_ad.html', {'form': form, 'form2':form2, 'form3':form3, 'form4': form4, 'cptform': form5})
 
 def get_make_claim_extra_context(request):
@@ -139,7 +140,7 @@ def print_form(bar):
     fields.append(('2',bar['payer_name']+"\n"+bar['payer_address']))
 
     # Physician Information
-    fields.append(('81',bar['last_name']+", "+bar['first_name']))
+    fields.append(('81',bar['first_name']))
     fields.append(('84',bar['NPI']))
     fields.append(('93',True))
     fields.append(('94','0.00'))
@@ -156,7 +157,43 @@ def print_form(bar):
     fields.append(('104',bar['ICD_10_10']))
     fields.append(('105',bar['ICD_10_11']))
     fields.append(('106',bar['ICD_10_12']))
-    # fields.append(('122',bar['cpt_code']))
+
+    # Providers
+    # Billing provider
+    bill_p=Provider.objects.filter(provider_name=bar['billing_provider_name']).values()[0]
+    n="";
+    fields.append(('272',bill_p['npi']))
+    fields.append(('267',bill_p['provider_phone'].split('-')[0]))
+    fields.append(('268',bill_p['provider_phone'].split('-')[1]+"-"+bill_p['provider_phone'].split('-')[2]))
+    n=n+str(bill_p['provider_name'])
+    n=n+" "+str(bill_p['provider_address'])
+    n=n+" "+str(bill_p['provider_city'])
+    n=n+" "+str(bill_p['provider_state'])
+    n=n+" "+str(bill_p['provider_zip'])
+    fields.append(('269',n))
+
+    # Location provider
+    location_p=Provider.objects.filter(provider_name=bar['location_provider_name']).values()[0]
+    n="";
+    fields.append(('265',location_p['npi']))
+    n=n+str(location_p['provider_name'])
+    n=n+" "+str(location_p['provider_address'])
+    n=n+" "+str(location_p['provider_city'])
+    n=n+" "+str(location_p['provider_state'])
+    n=n+" "+str(location_p['provider_zip'])
+    fields.append(('262',n))
+
+    # Rendering Provider
+    rendering_p=Provider.objects.filter(provider_name=bar['rendering_provider_name']).values()[0]
+    rp=rendering_p['provider_name'].split()
+    if(len(rp)>1):
+        fields.append(('260',rp[1]+", "+rp[0]))
+    else:
+        fields.append(('260',rendering_p['provider_name']))
+    now = datetime.datetime.now()
+    fields.append(('260A',str(now.month)+"|"+str(now.day)+"|"+str(now.year)))
+
+
 
 	# Insured
     fields.append(('53',bar['pat_auto_accident_state']))
@@ -185,6 +222,7 @@ def print_form(bar):
     fields.append(('56_2',bar['insured_other_insured_policy']))
     fields.append(('62',bar['other_cliam_id']))
 
+    # Health Plan and signatures
     if(bar['health_plan']=='Medicare'):
         fields.append(('3',True))
     elif(bar['health_plan']=='Medicaid'):

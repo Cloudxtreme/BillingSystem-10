@@ -164,7 +164,6 @@ function autocomplete_claim(api_urls) {
     $.ajax({
         url: api_urls[4],
     }).done(function(obj) {
-
         // For billing provider
         var billing_p_lookup = [];
         for(var p of obj['Billing']) {
