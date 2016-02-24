@@ -1,0 +1,81 @@
+<div class="row">
+    <div class="col-xs-4">
+        <input id="id_service_start_date_{{i}}" name="service_start_date_{{i}}" type="date">
+    </div>
+    <div class="col-xs-3">
+        <input id="id_place_of_service_{{i}}" name="place_of_service_{{i}}" placeholder="Place of Service" type="text">
+    </div>
+    <div class="col-xs-2">
+        <input name="emg_{{i}}" placeholder="EMG" type="text">
+    </div>
+    <div class="col-xs-3">
+        <input id="id_cpt_charge_{{i}}" name="cpt_charge_{{i}}" placeholder="Charges ($)" type="text" class=" form-control">
+    </div>
+</div>
+<p></p>
+<div class="row">
+    <div class="col-xs-4">
+        <input id="id_cpt_code_{{i}}" class="cpt_code" name="cpt_code_{{i}}" placeholder="CPT/HCPCS code" type="text" class=" form-control">
+    </div>
+    <div class="col-xs-2">
+        <input type="text" name="mod_a_{{i}}" id="id_mod_a_{{i}}" placeholder="Mod A">
+    </div>
+    <div class="col-xs-2">
+        <input type="text" name="mod_b_{{i}}" id="id_mod_b_{{i}}" placeholder="Mod B">
+    </div>
+    <div class="col-xs-2">
+        <input type="text" name="mod_c_{{i}}" id="id_mod_c_{{i}}" placeholder="Mod C">
+    </div>
+    <div class="col-xs-2">
+        <input type="text" name="mod_d_{{i}}" id="id_mod_d_{{i}}" placeholder="Mod D">
+    </div>
+</div>
+<p></p>
+<div class="row">
+    <div class="col-xs-4" style="padding-top:7px;margin-bottom:7px;">Diagnonsis Pointer</div>
+    <div class="col-xs-2">
+        <select name="dx_pt_s1_{{i}}" required>
+            <option selected disabled>---</option>
+            {% for dx_pt in dx_pt_range %}
+            <option value="{{dx_pt}}">{{ dx_pt }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-xs-2">
+        <select name="dx_pt_s2_{{i}}">
+            <option selected disabled>---</option>
+            {% for dx_pt in dx_pt_range %}
+            <option value="{{dx_pt}}">{{ dx_pt }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-xs-2">
+        <select name="dx_pt_s3_{{i}}">
+            <option selected disabled>---</option>
+            {% for dx_pt in dx_pt_range %}
+            <option value="{{dx_pt}}">{{ dx_pt }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-xs-2">
+        <select name="dx_pt_s4_{{i}}">
+            <option selected disabled>---</option>
+            {% for dx_pt in dx_pt_range %}
+            <option value="{{dx_pt}}">{{ dx_pt }}</option>
+            {% endfor %}
+        </select>
+    </div>
+</div>
+<p></p>
+<div class="row">
+    <div class="col-xs-2">
+        <button class="btn btn-default" type="button">Description</button>
+    </div>
+    <div class="col-xs-2">
+        <button class="btn btn-primary" type="button">Calculator</button>
+    </div>
+    <div class="col-xs-8">
+        <input type="text" name="note_{{i}}" id="id_note_{{i}}" placeholder="Note">
+    </div>
+</div>
+<hr>

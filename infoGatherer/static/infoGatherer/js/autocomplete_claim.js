@@ -1,10 +1,12 @@
 function autocomplete_claim(api_urls) {
-    "use strict";
+    // "use strict";
 
     // Disable default behavior when submit form
     $('#make-claims-form').submit(function(e) {
         return false;
     });
+
+    $('#id_insured_other_benifit_plan').prop('checked', false);
 
     // Autocomplete causes binded field to clear its value when page is loaded from back and forward button.
     // Workaround is to have hidden field to store previous value and assign to that field if available
@@ -17,6 +19,7 @@ function autocomplete_claim(api_urls) {
     $("#id_billing_provider_name").val($('#hidden_id_billing_provider_name').val() || $("#id_billing_provider_name").attr('value'));
     $("#id_location_provider_name").val($('#hidden_id_location_provider_name').val() || $("#id_location_provider_name").attr('value'));
     $("#id_rendering_provider_name").val($('#hidden_id_rendering_provider_name').val() || $("#id_rendering_provider_name").attr('value'));
+    $("#id_pat_other_insured_name").val($('#hidden_id_pat_other_insured_name').val() || $("#id_pat_other_insured_name").attr('value'));
 
     // Make ajax call for auto-suggestion
     $.ajax({
@@ -26,7 +29,7 @@ function autocomplete_claim(api_urls) {
 
         for(var p of obj['patients'])
             patient_lookup.push({
-                value: p.first_name + " " + p.last_name,
+                value: p.last_name + ", " + p.first_name,
                 data: p.chart_no,
                 hint: p.address + ", " + p.city,
             })
@@ -131,6 +134,16 @@ function autocomplete_claim(api_urls) {
                 );
             }
         });
+
+        // Set auto suggestion for other insured's name
+        $("#id_pat_other_insured_name").autocomplete({
+            minChars: 0,
+            lookup: patient_lookup,
+            formatResult: addHint,
+            onSelect: function (suggestion) {
+                $('#hidden_id_pat_other_insured_name').val(suggestion.value);
+            },
+        });
     });
 
     // Prepare auto-suggestion for physician information
@@ -219,6 +232,34 @@ function autocomplete_claim(api_urls) {
             formatResult: addHint,
             onSelect: function (suggestion) {
                 $('#hidden_id_rendering_provider_name').val(suggestion.value);
+            },
+        });
+    });
+
+    // Prepare auto-suggestion for CPT parts
+    $.ajax({
+        url: api_urls[5],
+    }).done(function(obj) {
+        var cpt_lookup = [];
+        for(var p of obj['cpts']) {
+            cpt_lookup.push({
+                value: p.cpt_code,
+                data: p,
+                hint: p.cpt_description,
+            });
+        }
+
+        $(".cpt_code").autocomplete({
+            minChars: 0,
+            lookup: cpt_lookup,
+            formatResult: addHint,
+            onSelect: function (suggestion) {
+                // Populate modifier of its own line
+                var cpt = suggestion.data;
+                $($(this).parent().parent().children()[1]).children().val(cpt.cpt_mod_a);
+                $($(this).parent().parent().children()[2]).children().val(cpt.cpt_mod_b);
+                $($(this).parent().parent().children()[3]).children().val(cpt.cpt_mod_c);
+                $($(this).parent().parent().children()[4]).children().val(cpt.cpt_mod_d);
             },
         });
     });

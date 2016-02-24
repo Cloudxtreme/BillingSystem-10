@@ -26,7 +26,7 @@ from infoGatherer.forms import (
     ReferringProviderForm, dxForm, OtherProviderForm, CptForms)
 from infoGatherer.models import (
     PostAd, Guarantor_Information, Insurance_Information, Personal_Information,
-    Payer, ReferringProvider, Provider, PROVIDER_ROLE_CHOICES)
+    Payer, ReferringProvider, Provider, PROVIDER_ROLE_CHOICES, CPT)
 
 
 @login_required
@@ -37,12 +37,21 @@ def PostAdPage(request):
     form4=OtherProviderForm(request.GET or None)
     form5=CptForms(request.GET or None)
 
+    dx_pt_range = [chr(i + ord('A')) for i in range(0,12)]
+
     if 'pat_name' in request.GET and request.GET['pat_name']:
         if form.is_valid():
             var=print_form(request.GET);
             return var
 
-    return render(request, 'post_ad.html', {'form': form, 'form2':form2, 'form3':form3, 'form4': form4, 'cptform': form5})
+    return render(request, 'post_ad.html', {
+        'form': form,
+        'form2':form2,
+        'form3':form3,
+        'form4': form4,
+        'cptform': form5,
+        'dx_pt_range': dx_pt_range
+    })
 
 def get_make_claim_extra_context(request):
     p_set = Personal_Information.objects.values('chart_no', 'first_name', 'last_name', 'address', 'city').order_by('first_name')
@@ -83,6 +92,11 @@ def get_json_provider_info(request):
         provider_q_set = Provider.objects.filter(role=key)
         context[value] = list(provider_q_set.values())
     
+    return JsonResponse(data=context)
+
+def get_json_cpt(request):
+    cpt_q_set = CPT.objects.all()
+    context = {'cpts': list(cpt_q_set.values()),}
     return JsonResponse(data=context)
 
 def view_in_between(request):

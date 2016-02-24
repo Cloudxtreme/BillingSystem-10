@@ -124,6 +124,7 @@
         <div class="fieldWrapper">
             <label for="id_pat_other_insured_name">Other Insured's Name</label>
             {{ form.pat_other_insured_name }}
+            <input type="hidden" id="hidden_id_pat_other_insured_name"></input>
         </div>
         <div class="fieldWrapper">
             <label for="id_pat_other_insured_policy">Other Insured's Policy/Group Number</label>
@@ -336,102 +337,24 @@
     <!-- Service Date -->
     <div class="group fieldWrapper">
         <label for="id_service_start_date_1">Service Information</label>
-        <div class="row">
-            <div class="col-xs-3">
-                <input id="id_service_start_date_1" name="service_start_date_1" placeholder="From: MM/DD/YYYY" type="text" class=" form-control">
-            </div>
-            <div class="col-xs-3">
-                <input id="id_service_end_date_1" name="service_end_date_1" placeholder="To: MM/DD/YYYY" type="text" class=" form-control">
-            </div>
-            <div class="col-xs-3">
-                <input id="id_cpt_code_1" name="cpt_code_1" placeholder="CPT/HCPCS code" type="text" class=" form-control">
-            </div>
-            <div class="col-xs-3">
-                <input id="id_cpt_charge_1" name="cpt_charge_1" placeholder="Charges ($)" type="text" class=" form-control">
-            </div>
-        </div>
-    </div>
-    <div class="group fieldWrapper service2" style="display:none">
-        <div class="row">
-            <div class="col-xs-3">
-                <input id="id_service_start_date_2" name="service_start_date_2" placeholder="From: MM/DD/YYYY" type="text" class=" form-control">
-            </div>
-            <div class="col-xs-3">
-                <input id="id_service_end_date_2" name="service_end_date_2" placeholder="To: MM/DD/YYYY" type="text" class=" form-control">
-            </div>
-            <div class="col-xs-3">
-                <input id="id_cpt_code_2" name="cpt_code_2" placeholder="CPT/HCPCS code" type="text" class=" form-control">
-            </div>
-            <div class="col-xs-3">
-                <input id="id_cpt_charge_2" name="cpt_charge_2" placeholder="Charges ($)" type="text" class=" form-control">
-            </div>
-        </div>
-    </div>
-    <div class="group fieldWrapper service3" style="display:none">
-        <div class="row">
-            <div class="col-xs-3">
-                <input id="id_service_start_date_3" name="service_start_date_3" placeholder="From: MM/DD/YYYY" type="text" class=" form-control">
-            </div>
-            <div class="col-xs-3">
-                <input id="id_service_end_date_3" name="service_end_date_3" placeholder="To: MM/DD/YYYY" type="text" class=" form-control">
-            </div>
-            <div class="col-xs-3">
-                <input id="id_cpt_code_3" name="cpt_code_3" placeholder="CPT/HCPCS code" type="text" class=" form-control">
-            </div>
-            <div class="col-xs-3">
-                <input id="id_cpt_charge_3" name="cpt_charge_3" placeholder="Charges ($)" type="text" class=" form-control">
-            </div>
-        </div>
-    </div>
-    <div class="group fieldWrapper service4" style="display:none">
-        <div class="row">
-            <div class="col-xs-3">
-                <input id="id_service_start_date_4" name="service_start_date_4" placeholder="From: MM/DD/YYYY" type="text" class=" form-control">
-            </div>
-            <div class="col-xs-3">
-                <input id="id_service_end_date_4" name="service_end_date_4" placeholder="To: MM/DD/YYYY" type="text" class=" form-control">
-            </div>
-            <div class="col-xs-3">
-                <input id="id_cpt_code_4" name="cpt_code_4" placeholder="CPT/HCPCS code" type="text" class=" form-control">
-            </div>
-            <div class="col-xs-3">
-                <input id="id_cpt_charge_4" name="cpt_charge_4" placeholder="Charges ($)" type="text" class=" form-control">
-            </div>
-        </div>
-    </div>
-    <div class="group fieldWrapper service5" style="display:none">
-        <div class="row">
-            <div class="col-xs-3">
-                <input id="id_service_start_date_5" name="service_start_date_5" placeholder="From: MM/DD/YYYY" type="text" class=" form-control">
-            </div>
-            <div class="col-xs-3">
-                <input id="id_service_end_date_5" name="service_end_date_5" placeholder="To: MM/DD/YYYY" type="text" class=" form-control">
-            </div>
-            <div class="col-xs-3">
-                <input id="id_cpt_code_5" name="cpt_code_5" placeholder="CPT/HCPCS code" type="text" class=" form-control">
-            </div>
-            <div class="col-xs-3">
-                <input id="id_cpt_charge_5" name="cpt_charge_5" placeholder="Charges ($)" type="text" class=" form-control">
-            </div>
-        </div>
-    </div>
-    <div class="group fieldWrapper service6" style="display:none">
-        <div class="row">
-            <div class="col-xs-3">
-                <input id="id_service_start_date_6" name="service_start_date_6" placeholder="From: MM/DD/YYYY" type="text" class=" form-control">
-            </div>
-            <div class="col-xs-3">
-                <input id="id_service_end_date_6" name="service_end_date_6" placeholder="To: MM/DD/YYYY" type="text" class=" form-control">
-            </div>
-            <div class="col-xs-3">
-                <input id="id_cpt_code_6" name="cpt_code_6" placeholder="CPT/HCPCS code" type="text" class=" form-control">
-            </div>
-            <div class="col-xs-3">
-                <input id="id_cpt_charge_6" name="cpt_charge_6" placeholder="Charges ($)" type="text" class=" form-control">
-            </div>
-        </div>
+        {% include "infoGatherer/physician_info.html" with i=1 dx_pt_range=dx_pt_range %}
     </div>
 
+    <div class="group fieldWrapper service2" style="display:none">
+        {% include "infoGatherer/physician_info.html" with i=2 dx_pt_range=dx_pt_range %}
+    </div>
+    <div class="group fieldWrapper service3" style="display:none">
+        {% include "infoGatherer/physician_info.html" with i=3 dx_pt_range=dx_pt_range %}
+    </div>
+    <div class="group fieldWrapper service4" style="display:none">
+        {% include "infoGatherer/physician_info.html" with i=4 dx_pt_range=dx_pt_range %}
+    </div>
+    <div class="group fieldWrapper service5" style="display:none">
+        {% include "infoGatherer/physician_info.html" with i=5 dx_pt_range=dx_pt_range %}
+    </div>
+    <div class="group fieldWrapper service6" style="display:none">
+        {% include "infoGatherer/physician_info.html" with i=6 dx_pt_range=dx_pt_range %}
+    </div>
 
     <div style="width:110px">
         <div class="input-group">
@@ -464,6 +387,7 @@
         "{% url 'infoGatherer:get_json_personal_and_insurance_info' %}",
         "{% url 'infoGatherer:get_json_physician_info' %}",
         "{% url 'infoGatherer:get_json_provider_info' %}",
+        "{% url 'infoGatherer:get_json_cpt' %}",
     ]);
 </script>
 
@@ -496,6 +420,7 @@
             // Input tags
             var d = document.getElementsByTagName("input");
             for(i=0;i<d.length;i++){
+                if(d[i].type !== 'checkbox')
                     d[i].className+=" form-control";
                     //d[i].setAttribute("required", "");
             }
