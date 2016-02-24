@@ -1,0 +1,9 @@
+.placeholder {
+    color: #999 !important;
+}
+
+.label-placeholder {
+    padding-top: 7px;
+    margin-bottom: 7px;
+    padding-left: 27px !important;
+}
