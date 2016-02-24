@@ -8,15 +8,15 @@ function autocomplete_claim(api_urls) {
 
     // Autocomplete causes binded field to clear its value when page is loaded from back and forward button.
     // Workaround is to have hidden field to store previous value and assign to that field if available
-    $("#id_pat_name").val($('#hidden_pat_name').val())
-    $("#id_insured_name").val($('#hidden_insured_name').val())
-    $("#id_insured_idnumber").val($('#hidden_id_insured_id').val())
-    $("#id_payer_num").val($('#hidden_id_payer_num').val())
-    $("#id_payer_name").val($('#hidden_id_payer_name').val())
-    $("#id_first_name").val($('#hidden_id_first_name').val())
-    $("#id_billing_provider_name").val($('#hidden_id_billing_provider_name').val())
-    $("#id_location_provider_name").val($('#hidden_id_location_provider_name').val())
-    $("#id_rendering_provider_name").val($('#hidden_id_rendering_provider_name').val())
+    $("#id_pat_name").val($('#hidden_id_pat_name').val() || $("#id_pat_name").attr('value'));
+    $("#id_insured_name").val($('#hidden_id_insured_name').val() || $("#id_insured_idnumber").attr('value'));
+    $("#id_insured_idnumber").val($('#hidden_id_insured_id').val() || $("#id_payer_num").attr('value'));
+    $("#id_payer_num").val($('#hidden_id_payer_num').val() || $("#id_payer_num").attr('value'));
+    $("#id_payer_name").val($('#hidden_id_payer_name').val() || $("#id_payer_name").attr('value'));
+    $("#id_first_name").val($('#hidden_id_first_name').val() || $("#id_first_name").attr('value'));
+    $("#id_billing_provider_name").val($('#hidden_id_billing_provider_name').val() || $("#id_billing_provider_name").attr('value'));
+    $("#id_location_provider_name").val($('#hidden_id_location_provider_name').val() || $("#id_location_provider_name").attr('value'));
+    $("#id_rendering_provider_name").val($('#hidden_id_rendering_provider_name').val() || $("#id_rendering_provider_name").attr('value'));
 
     // Make ajax call for auto-suggestion
     $.ajax({
@@ -54,7 +54,7 @@ function autocomplete_claim(api_urls) {
                         $("#id_birth_date").val(birth_date_str);
                         $("#id_pat_sex").val(patient_info.sex.substr(0,1));
 
-                        $('#hidden_pat_name').val(suggestion.value);
+                        $('#hidden_id_pat_name').val(suggestion.value);
                     }
                 );
             },
@@ -82,7 +82,7 @@ function autocomplete_claim(api_urls) {
                         $("#id_insured_birth_date").val(birth_date_str);
                         $("#id_insured_sex").val(insured_info.sex.substr(0,1));
 
-                        $('#hidden_insured_name').val(suggestion.value);
+                        $('#hidden_id_insured_name').val(suggestion.value);
 
                         // Set auto suggestion for insurance id number
                         var insurance_list = obj["insurance_list"];

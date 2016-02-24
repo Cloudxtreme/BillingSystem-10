@@ -38,8 +38,20 @@
     <div class="fieldWrapper ">
         <label for="id_pat_name">Patient's name</label>
         {{ form.pat_name }}
-        <input type="hidden" id="hidden_pat_name">
+        <input type="hidden" id="hidden_id_pat_name">
     </div>
+
+
+
+
+    <div class="fieldWrapper ">
+        <label for="memo">Memo</label>
+        <input type="text" name="memo" id="id_memo">
+        <input type="hidden" id="hidden_id_memo">
+    </div>
+
+
+
 
     <!-- *Patients Address -->
     <div class="fieldWrapper ">
@@ -139,7 +151,7 @@
     <div class="fieldWrapper ">
         <label for="id_insured_name">Insured's name</label>
         {{ form.insured_name }}
-        <input type="hidden" id="hidden_insured_name">
+        <input type="hidden" id="hidden_id_insured_name">
     </div>
     <!-- *Payer Number -->
     <div class="fieldWrapper ">
@@ -305,7 +317,8 @@
     <!-- Billing Provider -->
     <div class="fieldWrapper ">
         <label for="id_billing_provider_name">Billing Provider's name</label>
-        <input id="id_billing_provider_name" maxlength="128" name="billing_provider_name" type="text" class=" ">
+        <!-- <input id="id_billing_provider_name" maxlength="128" name="billing_provider_name" type="text" class=" "> -->
+        {{ form6.billing_provider_name }}
         <input type="hidden" id="hidden_id_billing_provider_name">
     </div>
     <!-- Location Provider -->

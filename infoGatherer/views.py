@@ -21,22 +21,30 @@ from django.contrib.auth.decorators import login_required
 
 from fdfgen import forge_fdf
 
-from infoGatherer.forms import PostAdForm, PatientForm, GuarantorForm, InsuranceForm, ReferringProviderForm, dxForm, OtherProviderForm, CptForms
-from infoGatherer.models import PostAd, Guarantor_Information, Insurance_Information, Personal_Information, Payer, ReferringProvider, Provider, PROVIDER_ROLE_CHOICES
+from infoGatherer.forms import (
+    PostAdForm, PatientForm, GuarantorForm, InsuranceForm,
+    ReferringProviderForm, dxForm, OtherProviderForm, CptForms,
+    BillingProviderForm,)
+from infoGatherer.models import (
+    PostAd, Guarantor_Information, Insurance_Information, Personal_Information,
+    Payer, ReferringProvider, Provider, PROVIDER_ROLE_CHOICES)
 
 
 @login_required
 def PostAdPage(request):
-    form=PostAdForm()
-    form2=ReferringProviderForm()
-    form3=dxForm()
-    form4=OtherProviderForm()
-    form5=CptForms()
+    form=PostAdForm(request.GET or None)
+    form2=ReferringProviderForm(request.GET or None)
+    form3=dxForm(request.GET or None)
+    form4=OtherProviderForm(request.GET or None)
+    form5=CptForms(request.GET or None)
+    form6=BillingProviderForm(request.GET or None)
+
     if 'pat_name' in request.GET and request.GET['pat_name']:
         if form.is_valid():
             var=print_form(request.GET);
             return var
-    return render(request, 'post_ad.html', {'form': form, 'form2':form2, 'form3':form3, 'form4': form4, 'cptform': form5})
+
+    return render(request, 'post_ad.html', {'form': form, 'form2':form2, 'form3':form3, 'form4': form4, 'cptform': form5, 'form6': form6})
 
 def get_make_claim_extra_context(request):
     p_set = Personal_Information.objects.values('chart_no', 'first_name', 'last_name', 'address', 'city').order_by('first_name')

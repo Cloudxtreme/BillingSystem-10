@@ -47,6 +47,15 @@ class OtherProviderForm(ModelForm):
         fields = '__all__'
 
 
+class BillingProviderForm(forms.Form):
+    billing_provider_name = forms.CharField()
+    # location_provider_name = Provider.provider_name
+    # rendering_provider_name = Provider.provider_name
+
+    class Meta:
+        fields = ['billing_provider_name',]
+
+
 class ReferringProviderForm(ModelForm):
     class Meta:
         model = ReferringProvider
