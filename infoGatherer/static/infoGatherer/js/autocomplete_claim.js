@@ -48,7 +48,7 @@ function autocomplete_claim(api_urls) {
                         var patient_info = obj['personal_information'][0];
 
                         // Auto populate fields in patient section
-                        var birth_date_str = patient_info.dob.substr(0,4) + "/" + patient_info.dob.substr(5,2) + "/" + patient_info.dob.substr(8,2);
+                        var birth_date_str = patient_info.dob.substr(0,4) + "-" + patient_info.dob.substr(5,2) + "-" + patient_info.dob.substr(8,2);
                         $("#id_pat_streetaddress").val(patient_info.address);
                         $("#id_pat_city").val(patient_info.city);
                         $("#id_pat_state").val(patient_info.state);
@@ -76,7 +76,7 @@ function autocomplete_claim(api_urls) {
                     function(obj) {
                         // Auto populate fields in insured section
                         var insured_info = obj["personal_information"][0];
-                        var birth_date_str = insured_info.dob.substr(0,4) + "/" + insured_info.dob.substr(5,2) + "/" + insured_info.dob.substr(8,2);
+                        var birth_date_str = insured_info.dob.substr(0,4) + "-" + insured_info.dob.substr(5,2) + "-" + insured_info.dob.substr(8,2);
                         $("#id_insured_streetaddress").val(insured_info.address);
                         $("#id_insured_city").val(insured_info.city);
                         $("#id_insured_state").val(insured_info.state);
@@ -177,7 +177,6 @@ function autocomplete_claim(api_urls) {
     $.ajax({
         url: api_urls[4],
     }).done(function(obj) {
-
         // For billing provider
         var billing_p_lookup = [];
         for(var p of obj['Billing']) {

@@ -5,26 +5,33 @@
 {% block script %}
 <script src="{% static 'infoGatherer/js/autocomplete_claim.js' %}"></script>
 <script src="{% static 'infoGatherer/js/jquery.autocomplete.min.js' %}"></script>
+<script src="{% static 'infoGatherer/js/bootstrap-timepicker.min.js' %}"></script>
+
 {% endblock script %}
 
 
 {% block link %}
 <link rel="stylesheet" href="{% static 'infoGatherer/css/autocomplete.css' %}">
+<link rel="stylesheet" href="{% static 'infoGatherer/css/bootstrap-timepicker.min.css' %}">
 <link href="{% static 'infoGatherer/open-iconic/font/css/open-iconic-bootstrap.css' %}" rel="stylesheet">
 <link href="{% static 'infoGatherer/open-iconic/font/css/open-iconic.css' %}" rel="stylesheet">
+
 <style type="text/css">
-    @media (min-width: 1200px) { .container { width: 700px !important; }}
+    @media (min-width: 1200px) { .container { width: 800px !important; }}
 </style>
 {% endblock link %}
 
+
+{% if form.errors %}
+    {{form.errors}}
+    <p style="color: red;">Please submit a search term.</p>
+{% endif %}
 
 {% block body %}
 
 <div class="container" id="hideAll" style="display:none">
 
-{% if form.error %}
-    <p style="color: red;">Please submit a search term.</p>
-{% endif %}
+
 
 <form id="myForm" action="pdf" method="get" data-toggle="validator">
     {% csrf_token %}
@@ -224,14 +231,10 @@
     <br/>
     <h1>Physician Informaiton</h1><br/><br/>
     <div class="fieldWrapper ">
-        <label for="id_first_name">First name</label>
+        <label for="id_first_name">Name</label>
         {{ form2.first_name }}
         <input type="hidden" id="hidden_id_first_name">
-    </div>  
-    <div class="fieldWrapper ">
-        <label for="id_last_name">Last name</label>
-        {{ form2.last_name }}
-    </div>  
+    </div> 
     <div class="fieldWrapper ">
         <label for="id_NPI">NPI</label>
         {{ form2.NPI }}
@@ -356,7 +359,8 @@
         {% include "infoGatherer/physician_info.html" with i=6 dx_pt_range=dx_pt_range %}
     </div>
 
-    <div style="width:110px">
+
+    <div class="form-group" style="width:140px">
         <div class="input-group">
             <span class="input-group-btn">
                 <button type="button" class="btn btn-danger btn-number" disabled="disabled" data-type="minus" data-field="quant[1]">
@@ -372,6 +376,53 @@
         </div>
     </div>
 
+    <div class="form-group fieldWrapper">
+        <button type="button" class="btn btn-info-outline btn-sm"  data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">Calculator</button>
+        <button type="button" class="btn btn-secondary btn-sm">Drug Information</button>
+    </div>
+        <div class="collapse" id="collapseExample">
+            <div class="well row">
+                <div class="col-lg-3 col-md-3">
+                    <div class="form-group">
+                        <label for="id_start_time">Start Time</label>
+                        <div class="input-group bootstrap-timepicker timepicker">
+                            <input id="id_start_time" type="text" class="form-control input-small">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <div class="form-group">
+                        <label for="id_end_time">End Time</label>
+                        <div class="input-group bootstrap-timepicker timepicker">
+                            <input id="id_end_time" type="text" class="form-control input-small">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2">
+                    <div class="form-group">
+                        <label for="id_base_units">Base Units</label>
+                        <input id="id_base_units" value="5">
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2">
+                    <div class="form-group">
+                        <label for="id_time_units">Time Units</label>
+                        <input id="id_time_units" disabled>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2">
+                    <div class="form-group">
+                        <label for="id_fees">Fees</label>
+                        <input id="id_fees">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    
+    
 
 
     <br/>
@@ -392,13 +443,38 @@
 </script>
 
 <script>
-        // function valid(){
-        //     console.log("asfasdf");
 
-        //     if(document.getElementById("id_insured_other_benifit_plan").checked==true){
-        //         document.getElementById('show_hide').style.display = "block";
-        //     }
-        // }
+        // Time dropdown
+        $('#id_start_time').timepicker({
+            minuteStep: 1,
+            appendWidgetTo: 'body',
+            showSeconds: false,
+            showMeridian: false,
+            defaultTime: false
+        });
+        $('#id_end_time').timepicker({
+            minuteStep: 1,
+            appendWidgetTo: 'body',
+            showSeconds: false,
+            showMeridian: false,
+            defaultTime: false
+        });
+         $('#timepicker1').timepicker();
+        var year = '2013';
+        var month = '04';
+        var day = '18';
+
+        $( 'body' ).click(function() {
+            if($('#id_start_time').val().length>0 && $('#id_end_time').val().length>0){
+                var reserv1 = new Date(year,month,day,$('#id_end_time').val().split(":")[0],$('#id_end_time').val().split(":")[1]);
+                var reserv2 = new Date(year,month,day,$('#id_start_time').val().split(":")[0],$('#id_start_time').val().split(":")[1]);
+                $('#id_time_units').prop('disabled', false);
+                $('#id_time_units').val(Math.ceil((reserv1-reserv2)/(1000*60*15)));
+                $('#id_time_units').prop('disabled', true);
+            }   
+        });
+        
+                        
 
         function init(){
             

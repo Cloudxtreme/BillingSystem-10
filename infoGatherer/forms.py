@@ -34,24 +34,31 @@ REL_INSUR = (
 )
 
 class CptForms(forms.ModelForm):
-    cpt_charge = forms.CharField(required=True, widget=forms.TextInput(attrs={'placeholder': 'Charges ($)'}))
-    cpt_code = forms.CharField(required=True, widget=forms.TextInput(attrs={'placeholder': 'CPT/HCPCS code'}))
+    cpt_charge = forms.CharField(required=False, widget=forms.TextInput(attrs={'placeholder': 'Charges ($)'}))
+    cpt_code = forms.CharField(required=False, widget=forms.TextInput(attrs={'placeholder': 'CPT/HCPCS code'}))
+    cpt_description=forms.CharField(required=False)
     class Meta:
         model = CPT
         fields = '__all__'
         widgets = {}
 
 class OtherProviderForm(ModelForm):
+    provider_name=forms.CharField(required=False)
+    role=forms.CharField(required=False)
     class Meta:
         model = Provider
         fields = '__all__'
 
 class ReferringProviderForm(ModelForm):
+    last_name=forms.CharField(required=False)
+
     class Meta:
         model = ReferringProvider
         fields = '__all__'
 
 class dxForm(ModelForm):
+    ICD_10 = forms.CharField(required=False)
+    description = forms.CharField(required=False)
     class Meta:
         model = dx
         fields = '__all__'
@@ -69,13 +76,13 @@ class PostAdForm(forms.ModelForm):
     #pat_name = forms.ModelChoiceField(queryset=patient_list, empty_label="(Select Name)" )
     pat_sex = forms.ChoiceField(choices=SEX, required=False )
     pat_relationship=forms.ChoiceField(choices=REL_INSUR, required=False )
-    pat_relation_emp = forms.BooleanField(initial=False)
-    pat_relation_other_accident =forms.BooleanField(initial=False)
-    pat_relation_auto_accident = forms.BooleanField(initial=False)
+    pat_relation_emp = forms.BooleanField(initial=False, required=False)
+    pat_relation_other_accident =forms.BooleanField(initial=False, required=False)
+    pat_relation_auto_accident = forms.BooleanField(initial=False, required=False)
 
     #Insured's Info
     insured_sex = forms.ChoiceField(choices=SEX, required=False )
-    insured_other_benifit_plan=forms.BooleanField(initial=False)
+    insured_other_benifit_plan=forms.BooleanField(initial=False, required=False)
     
     # Not required fields
     insured_name=forms.CharField(required=False)
