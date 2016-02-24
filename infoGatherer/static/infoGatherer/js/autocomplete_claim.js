@@ -14,6 +14,9 @@ function autocomplete_claim(api_urls) {
     $("#id_payer_num").val($('#hidden_id_payer_num').val())
     $("#id_payer_name").val($('#hidden_id_payer_name').val())
     $("#id_first_name").val($('#hidden_id_first_name').val())
+    $("#id_billing_provider_name").val($('#hidden_id_billing_provider_name').val())
+    $("#id_location_provider_name").val($('#hidden_id_location_provider_name').val())
+    $("#id_rendering_provider_name").val($('#hidden_id_rendering_provider_name').val())
 
     // Make ajax call for auto-suggestion
     $.ajax({
@@ -32,9 +35,7 @@ function autocomplete_claim(api_urls) {
         $("#id_pat_name").autocomplete({
             minChars: 0,
             lookup: patient_lookup,
-            formatResult: function(suggestion, currentValue) {
-                return suggestion.value + detailString(suggestion.hint);
-            },
+            formatResult: addHint,
             onSelect: function (suggestion) {
                 // Get patient information
                 $.post(
@@ -63,9 +64,7 @@ function autocomplete_claim(api_urls) {
         $("#id_insured_name").autocomplete({
             minChars: 0,
             lookup: patient_lookup,
-            formatResult: function(suggestion, currentValue) {
-                return suggestion.value + detailString(suggestion.hint);
-            },
+            formatResult: addHint,
             onSelect: function (suggestion) {
                 // Get insured information and insurance according to that person
                 $.post(
@@ -151,9 +150,7 @@ function autocomplete_claim(api_urls) {
         $("#id_first_name").autocomplete({
             minChars: 0,
             lookup: physicians_lookup,
-            formatResult: function(suggestion, currentValue) {
-                return suggestion.value + detailString(suggestion.hint);
-            },
+            formatResult: addHint,
             onSelect: function (suggestion) {
                 $('#id_first_name').val(suggestion.value);
                 $('#id_NPI').val(suggestion.data.NPI);
@@ -162,6 +159,70 @@ function autocomplete_claim(api_urls) {
             },
         });
     });
+
+    // Prepare auto-suggestion for provider section
+    $.ajax({
+        url: api_urls[4],
+    }).done(function(obj) {
+
+        // For billing provider
+        var billing_p_lookup = [];
+        for(var p of obj['Billing']) {
+            billing_p_lookup.push({
+                value: p.provider_name,
+                data: p.provider_name,
+                hint: p.provider_city + ", " + p.provider_state,
+            });
+        }
+
+        $("#id_billing_provider_name").autocomplete({
+            minChars: 0,
+            lookup: billing_p_lookup,
+            formatResult: addHint,
+            onSelect: function (suggestion) {
+                $('#hidden_id_billing_provider_name').val(suggestion.value);
+            },
+        });
+
+        // For location provider
+        var billing_p_lookup = [];
+        for(var p of obj['Location']) {
+            billing_p_lookup.push({
+                value: p.provider_name,
+                data: p.provider_name,
+                hint: p.provider_city + ", " + p.provider_state,
+            });
+        }
+
+        $("#id_location_provider_name").autocomplete({
+            minChars: 0,
+            lookup: billing_p_lookup,
+            formatResult: addHint,
+            onSelect: function (suggestion) {
+                $('#hidden_id_location_provider_name').val(suggestion.value);
+            },
+        });
+
+        // For billing provider
+        var billing_p_lookup = [];
+        for(var p of obj['Rendering']) {
+            billing_p_lookup.push({
+                value: p.provider_name,
+                data: p.provider_name,
+                hint: p.provider_city + ", " + p.provider_state,
+            });
+        }
+
+        $("#id_rendering_provider_name").autocomplete({
+            minChars: 0,
+            lookup: billing_p_lookup,
+            formatResult: addHint,
+            onSelect: function (suggestion) {
+                $('#hidden_id_rendering_provider_name').val(suggestion.value);
+            },
+        });
+    });
+
 
     function populateInsuranceSection(suggestion) {
         // Auto populate fields in insurance section
@@ -180,6 +241,10 @@ function autocomplete_claim(api_urls) {
 
     function detailString(text) {
         return "<span class='detail'>" + text + "</span>"
+    }
+
+    function addHint(suggestion, currentValue) {
+        return suggestion.value + detailString(suggestion.hint);
     }
 
 };

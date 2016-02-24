@@ -22,7 +22,7 @@ from django.contrib.auth.decorators import login_required
 from fdfgen import forge_fdf
 
 from infoGatherer.forms import PostAdForm, PatientForm, GuarantorForm, InsuranceForm, ReferringProviderForm, dxForm, OtherProviderForm, CptForms
-from infoGatherer.models import PostAd, Guarantor_Information, Insurance_Information, Personal_Information, Payer, ReferringProvider
+from infoGatherer.models import PostAd, Guarantor_Information, Insurance_Information, Personal_Information, Payer, ReferringProvider, Provider, PROVIDER_ROLE_CHOICES
 
 
 @login_required
@@ -70,6 +70,16 @@ def get_json_personal_and_insurance_info(request):
 def get_json_physician_info(request):
     phy_q_set = ReferringProvider.objects.all()
     context = {"physicians": list(phy_q_set.values()),}
+    return JsonResponse(data=context)
+
+def get_json_provider_info(request):
+    context = {}
+    for choice in PROVIDER_ROLE_CHOICES:
+        key = choice[0]
+        value = choice[1]
+        provider_q_set = Provider.objects.filter(role=key)
+        context[value] = list(provider_q_set.values())
+    
     return JsonResponse(data=context)
 
 def view_in_between(request):
