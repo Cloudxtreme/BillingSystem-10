@@ -56,14 +56,7 @@
 
 <div class="row">
     <div class="col-xs-4">
-        
-
-
-        <!-- <input id="id_service_start_date_{{i}}" name="service_start_date_{{i}}" type="date"> -->
         <input type="date" id="id_service_start_date_{{i}}" name="service_start_date_{{i}}" class="placeholder">
-
-
-
     </div>
     <div class="col-xs-3">
         <input id="id_place_of_service_{{i}}" name="place_of_service_{{i}}" placeholder="Place of Service" type="text">
@@ -78,11 +71,9 @@
 <p></p>
 
 <div class="row">
-    <div class="col-xs-2">
-        <button class="btn btn-default" type="button">Description</button>
-    </div>
-    <div class="col-xs-2">
-        <button class="btn btn-primary" type="button">Calculator</button>
+    <div class="col-xs-4">
+        <button type="button" class="btn btn-info-outline btn-sm"  data-toggle="collapse" data-target="#collapse_{{i}}" aria-expanded="false" aria-controls="collapse_{{i}}">Calculator</button>
+        <button type="button" class="btn btn-secondary btn-sm">Drug Information</button>
     </div>
     <div class="col-xs-8">
         <input type="text" name="note_{{i}}" id="id_note_{{i}}" placeholder="Note">
@@ -106,4 +97,78 @@
             }
         });
     })();
+</script>
+
+
+<div class="collapse" id="collapse_{{i}}">
+    <div class="well row">
+        <div class="col-lg-3 col-md-3">
+            <div class="form-group">
+                <label for="id_start_time_{{i}}">Start Time</label>
+                <div class="input-group bootstrap-timepicker timepicker">
+                    <input id="id_start_time_{{i}}" type="text" class="form-control input-small">
+                    <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-3">
+            <div class="form-group">
+                <label for="id_end_time_{{i}}">End Time</label>
+                <div class="input-group bootstrap-timepicker timepicker">
+                    <input id="id_end_time_{{i}}" type="text" class="form-control input-small">
+                    <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2 col-md-2">
+            <div class="form-group">
+                <label for="id_base_units">Base Units</label>
+                <input id="id_base_units" value="5">
+            </div>
+        </div>
+        <div class="col-lg-2 col-md-2">
+            <div class="form-group">
+                <label for="id_time_units">Time Units</label>
+                <input id="id_time_units" disabled>
+            </div>
+        </div>
+        <div class="col-lg-2 col-md-2">
+            <div class="form-group">
+                <label for="id_fees">Fees</label>
+                <input id="id_fees">
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Time dropdown
+        $('#id_start_time_{{i}}').timepicker({
+            minuteStep: 1,
+            appendWidgetTo: 'body',
+            showSeconds: false,
+            showMeridian: false,
+            defaultTime: false
+        });
+        $('#id_end_time_{{i}}').timepicker({
+            minuteStep: 1,
+            appendWidgetTo: 'body',
+            showSeconds: false,
+            showMeridian: false,
+            defaultTime: false
+        });
+         $('#timepicker1').timepicker();
+        var year = '2013';
+        var month = '04';
+        var day = '18';
+
+        $( 'body' ).click(function() {
+            if($('#id_start_time_{{i}}').val().length>0 && $('#id_end_time_{{i}}').val().length>0){
+                var reserv1 = new Date(year,month,day,$('#id_end_time_{{i}}').val().split(":")[0],$('#id_end_time_{{i}}').val().split(":")[1]);
+                var reserv2 = new Date(year,month,day,$('#id_start_time_{{i}}').val().split(":")[0],$('#id_start_time_{{i}}').val().split(":")[1]);
+                $('#id_time_units').prop('disabled', false);
+                $('#id_time_units').val(Math.ceil((reserv1-reserv2)/(1000*60*15)));
+                $('#id_time_units').prop('disabled', true);
+            }   
+        });
 </script>
