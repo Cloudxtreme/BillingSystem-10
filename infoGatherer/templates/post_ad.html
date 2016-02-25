@@ -364,6 +364,91 @@
         </div>
     </div>
 
+    <div class="form-group fieldWrapper">
+        <button type="button" class="btn btn-info-outline btn-sm"  data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">Calculator</button>
+        <button type="button" class="btn btn-secondary btn-sm" data-toggle="collapse" data-target="#collapseExample2" aria-expanded="false" aria-controls="collapseExample2">Drug Information</button>
+    </div>
+
+    <div class="collapse" id="collapseExample2">
+        <div class="well row">
+            <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                    <label for="id_proc_code">Proc. code description</label>
+                    <input id="id_proc_code" type="text" class="form-control input-small">
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                    <label for="id_ndc">NDC</label>
+                    <input id="id_ndc" type="text" class="form-control input-small">
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                    <label for="id_qty">Quantity</label>
+                    <input id="id_qty" type="number" class="form-control input-small" min="0">
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                    <label for="id_unit_measure">Unit of Measure</label>
+                    <select id="sel1">
+                        <option>International Unit</option>
+                        <option>Gram</option>
+                        <option>Milliliter</option>
+                        <option>Unit</option>
+                        <option selected="selected">Milligram</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="collapse" id="collapseExample">
+        <div class="well row">
+            <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                    <label for="id_start_time">Start Time</label>
+                    <div class="input-group bootstrap-timepicker timepicker">
+                        <input id="id_start_time" type="text" class="form-control input-small">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                    <label for="id_end_time">End Time</label>
+                    <div class="input-group bootstrap-timepicker timepicker">
+                        <input id="id_end_time" type="text" class="form-control input-small">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-2">
+                <div class="form-group">
+                    <label for="id_base_units">Base Units</label>
+                    <input id="id_base_units" value="5" type="number" min="0">
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-2">
+                <div class="form-group">
+                    <label for="id_time_units">Time Units</label>
+                    <input id="id_time_units" disabled>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-2">
+                <div class="form-group">
+                    <label for="id_fees">Fees</label>
+                    <input id="id_fees">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+    
+
 
     <br/>
     <button type="submit" class="btn btn-primary btn-md" value="Submit Button">Print Please!</button>
@@ -383,6 +468,38 @@
 </script>
 
 <script>
+
+        // Time dropdown
+        $('#id_start_time').timepicker({
+            minuteStep: 1,
+            appendWidgetTo: 'body',
+            showSeconds: false,
+            showMeridian: false,
+            defaultTime: false
+        });
+        $('#id_end_time').timepicker({
+            minuteStep: 1,
+            appendWidgetTo: 'body',
+            showSeconds: false,
+            showMeridian: false,
+            defaultTime: false
+        });
+        var year = '2013';
+        var month = '04';
+        var day = '18';
+
+        $( 'body' ).click(function() {
+            if($('#id_start_time').val().length>0 && $('#id_end_time').val().length>0){
+                var reserv1 = new Date(year,month,day,$('#id_end_time').val().split(":")[0],$('#id_end_time').val().split(":")[1]);
+                var reserv2 = new Date(year,month,day,$('#id_start_time').val().split(":")[0],$('#id_start_time').val().split(":")[1]);
+                $('#id_time_units').prop('disabled', false);
+                $('#id_time_units').val(Math.ceil((reserv1-reserv2)/(1000*60*15)));
+                $('#id_time_units').prop('disabled', true);
+            }   
+        });
+        
+                        
+
         function init(){
             
             document.getElementById('show_hide').style.display='none';
