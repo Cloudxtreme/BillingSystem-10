@@ -1,85 +1,177 @@
-<div class="row">
-    <div class="col-xs-4 placeholder label-placeholder">Diagnonsis Pointer</div>
-    <div class="col-xs-2">
-        <select name="dx_pt_s1_{{i}}" required>
-            <option selected disabled>---</option>
-            {% for dx_pt in dx_pt_range %}
-            <option value="{{dx_pt}}">{{ dx_pt }}</option>
-            {% endfor %}
-        </select>
+<div id="procedure_line_{{i}}">
+    <div class="row">
+        <div class="col-xs-4 placeholder label-placeholder">Diagnonsis Pointer</div>
+        <div class="col-xs-2">
+            <select name="dx_pt_s1_{{i}}" required>
+                <option selected disabled>---</option>
+                {% for dx_pt in dx_pt_range %}
+                <option value="{{dx_pt}}">{{ dx_pt }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-xs-2">
+            <select name="dx_pt_s2_{{i}}">
+                <option selected>---</option>
+                {% for dx_pt in dx_pt_range %}
+                <option value="{{dx_pt}}">{{ dx_pt }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-xs-2">
+            <select name="dx_pt_s3_{{i}}">
+                <option selected>---</option>
+                {% for dx_pt in dx_pt_range %}
+                <option value="{{dx_pt}}">{{ dx_pt }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-xs-2">
+            <select name="dx_pt_s4_{{i}}">
+                <option selected>---</option>
+                {% for dx_pt in dx_pt_range %}
+                <option value="{{dx_pt}}">{{ dx_pt }}</option>
+                {% endfor %}
+            </select>
+        </div>
     </div>
-    <div class="col-xs-2">
-        <select name="dx_pt_s2_{{i}}">
-            <option selected>---</option>
-            {% for dx_pt in dx_pt_range %}
-            <option value="{{dx_pt}}">{{ dx_pt }}</option>
-            {% endfor %}
-        </select>
-    </div>
-    <div class="col-xs-2">
-        <select name="dx_pt_s3_{{i}}">
-            <option selected>---</option>
-            {% for dx_pt in dx_pt_range %}
-            <option value="{{dx_pt}}">{{ dx_pt }}</option>
-            {% endfor %}
-        </select>
-    </div>
-    <div class="col-xs-2">
-        <select name="dx_pt_s4_{{i}}">
-            <option selected>---</option>
-            {% for dx_pt in dx_pt_range %}
-            <option value="{{dx_pt}}">{{ dx_pt }}</option>
-            {% endfor %}
-        </select>
-    </div>
-</div>
-<p></p>
+    <p></p>
 
-<div class="row">
-    <div class="col-xs-4">
-        <input id="id_cpt_code_{{i}}" class="cpt_code" name="cpt_code_{{i}}" placeholder="CPT/HCPCS code" type="text" class=" form-control">
+    <div class="row">
+        <div class="col-xs-4">
+            <input id="id_cpt_code_{{i}}" class="cpt_code" name="cpt_code_{{i}}" placeholder="CPT/HCPCS code" type="text" class=" form-control">
+        </div>
+        <div class="col-xs-2">
+            <input type="text" name="mod_a_{{i}}" id="id_mod_a_{{i}}" placeholder="Mod A">
+        </div>
+        <div class="col-xs-2">
+            <input type="text" name="mod_b_{{i}}" id="id_mod_b_{{i}}" placeholder="Mod B">
+        </div>
+        <div class="col-xs-2">
+            <input type="text" name="mod_c_{{i}}" id="id_mod_c_{{i}}" placeholder="Mod C">
+        </div>
+        <div class="col-xs-2">
+            <input type="text" name="mod_d_{{i}}" id="id_mod_d_{{i}}" placeholder="Mod D">
+        </div>
     </div>
-    <div class="col-xs-2">
-        <input type="text" name="mod_a_{{i}}" id="id_mod_a_{{i}}" placeholder="Mod A">
-    </div>
-    <div class="col-xs-2">
-        <input type="text" name="mod_b_{{i}}" id="id_mod_b_{{i}}" placeholder="Mod B">
-    </div>
-    <div class="col-xs-2">
-        <input type="text" name="mod_c_{{i}}" id="id_mod_c_{{i}}" placeholder="Mod C">
-    </div>
-    <div class="col-xs-2">
-        <input type="text" name="mod_d_{{i}}" id="id_mod_d_{{i}}" placeholder="Mod D">
-    </div>
-</div>
-<p></p>
+    <p></p>
 
-<div class="row">
-    <div class="col-xs-4">
-        <input type="date" id="id_service_start_date_{{i}}" name="service_start_date_{{i}}" class="placeholder">
+    <div class="row">
+        <div class="col-xs-4">
+            <input type="date" id="id_service_start_date_{{i}}" name="service_start_date_{{i}}" class="placeholder">
+        </div>
+        <div class="col-xs-3">
+            <input id="id_place_of_service_{{i}}" name="place_of_service_{{i}}" placeholder="Place of Service" type="text">
+        </div>
+        <div class="col-xs-2">
+            <input name="emg_{{i}}" placeholder="EMG" type="text">
+        </div>
+        <div class="col-xs-3">
+            <input id="id_cpt_charge_{{i}}" name="cpt_charge_{{i}}" placeholder="Charges ($)" type="text" class=" form-control">
+        </div>
     </div>
-    <div class="col-xs-3">
-        <input id="id_place_of_service_{{i}}" name="place_of_service_{{i}}" placeholder="Place of Service" type="text">
-    </div>
-    <div class="col-xs-2">
-        <input name="emg_{{i}}" placeholder="EMG" type="text">
-    </div>
-    <div class="col-xs-3">
-        <input id="id_cpt_charge_{{i}}" name="cpt_charge_{{i}}" placeholder="Charges ($)" type="text" class=" form-control">
-    </div>
-</div>
-<p></p>
+    <p></p>
 
-<div class="row">
-    <div class="col-xs-4">
-        <button type="button" class="btn btn-info-outline btn-sm"  data-toggle="collapse" data-target="#collapse_{{i}}" aria-expanded="false" aria-controls="collapse_{{i}}">Calculator</button>
-        <button type="button" class="btn btn-secondary btn-sm" data-toggle="collapse" data-target="#collapse2_{{i}}" aria-expanded="false" aria-controls="collapse2_{{i}}">Drug Information</button>
+    <div class="row">
+        <div class="col-xs-4">
+            <button type="button" class="btn btn-info-outline btn-sm"  data-toggle="collapse" data-target="#collapse_{{i}}" aria-expanded="false" aria-controls="collapse_{{i}}">Calculator</button>
+            <button type="button" class="btn btn-secondary btn-sm" data-toggle="collapse" data-target="#collapse2_{{i}}" aria-expanded="false" aria-controls="collapse2_{{i}}">Drug Information</button>
+        </div>
+        <div class="col-xs-8">
+            <input type="text" name="note_{{i}}" id="id_note_{{i}}" placeholder="Note">
+        </div>
     </div>
-    <div class="col-xs-8">
-        <input type="text" name="note_{{i}}" id="id_note_{{i}}" placeholder="Note">
+    <p></p>
+
+    <div class="collapse" id="collapse_{{i}}">
+        <div class="well row">
+            <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                    <label for="id_start_time_{{i}}">Start Time</label>
+                    <div class="input-group bootstrap-timepicker timepicker">
+                        <input id="id_start_time_{{i}}" type="text" class="form-control input-small">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                    <label for="id_end_time_{{i}}">End Time</label>
+                    <div class="input-group bootstrap-timepicker timepicker">
+                        <input id="id_end_time_{{i}}" type="text" class="form-control input-small">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-2">
+                <div class="form-group">
+                    <label for="id_base_units_{{i}}">Base Units</label>
+                    <input id="id_base_units_{{i}}" value="5">
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-2">
+                <div class="form-group">
+                    <label for="id_time_units_{{i}}">Time Units</label>
+                    <input id="id_time_units_{{i}}" disabled>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-2">
+                <div class="form-group">
+                    <label for="id_fees_{{i}}">Fees</label>
+                    <input id="id_fees_{{i}}">
+                </div>
+            </div>
+        </div>
     </div>
+
+
+    <div class="collapse" id="collapse2_{{i}}">
+        <div class="well row">
+            <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                    <label for="id_proc_code_{{i}}">Proc. code description</label>
+                    <input id="id_proc_code_{{i}}" type="text" class="form-control input-small">
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                    <label for="id_ndc_{{i}}">NDC</label>
+                    <input id="id_ndc_{{i}}" type="text" class="form-control input-small">
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                    <label for="id_qty_{{i}}">Quantity</label>
+                    <input id="id_qty_{{i}}" type="number" class="form-control input-small" min="0">
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                    <label for="id_unit_measure">Unit of Measure</label>
+                    <select id="sel1">
+                        <option>International Unit</option>
+                        <option>Gram</option>
+                        <option>Milliliter</option>
+                        <option>Unit</option>
+                        <option selected="selected">Milligram</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <p></p>
+
+    <div class="row">
+        <div class="col-xs-4 pull-right">
+            <input type="text" disabled id="total_{{i}}">
+        </div>
+        <div class="col-xs-2 pull-right" style="text-align:right;">
+            <label style="height:34px;line-height:34px;">Total</label>
+        </div>
+    </div>
+
+    <hr>
 </div>
-<hr>
+
 
 <script>
     (function() {
@@ -99,49 +191,8 @@
     })();
 </script>
 
-
-<div class="collapse" id="collapse_{{i}}">
-    <div class="well row">
-        <div class="col-lg-3 col-md-3">
-            <div class="form-group">
-                <label for="id_start_time_{{i}}">Start Time</label>
-                <div class="input-group bootstrap-timepicker timepicker">
-                    <input id="id_start_time_{{i}}" type="text" class="form-control input-small">
-                    <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-3 col-md-3">
-            <div class="form-group">
-                <label for="id_end_time_{{i}}">End Time</label>
-                <div class="input-group bootstrap-timepicker timepicker">
-                    <input id="id_end_time_{{i}}" type="text" class="form-control input-small">
-                    <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-2 col-md-2">
-            <div class="form-group">
-                <label for="id_base_units">Base Units</label>
-                <input id="id_base_units" value="5">
-            </div>
-        </div>
-        <div class="col-lg-2 col-md-2">
-            <div class="form-group">
-                <label for="id_time_units">Time Units</label>
-                <input id="id_time_units" disabled>
-            </div>
-        </div>
-        <div class="col-lg-2 col-md-2">
-            <div class="form-group">
-                <label for="id_fees">Fees</label>
-                <input id="id_fees">
-            </div>
-        </div>
-    </div>
-</div>
-
 <script>
+    (function() {
     // Time dropdown
         $('#id_start_time_{{i}}').timepicker({
             minuteStep: 1,
@@ -162,49 +213,22 @@
         var month = '04';
         var day = '18';
 
-        $( 'body' ).click(function() {
+        $('#procedure_line_{{i}}').focusout(function() {
             if($('#id_start_time_{{i}}').val().length>0 && $('#id_end_time_{{i}}').val().length>0){
                 var reserv1 = new Date(year,month,day,$('#id_end_time_{{i}}').val().split(":")[0],$('#id_end_time_{{i}}').val().split(":")[1]);
                 var reserv2 = new Date(year,month,day,$('#id_start_time_{{i}}').val().split(":")[0],$('#id_start_time_{{i}}').val().split(":")[1]);
-                $('#id_time_units').prop('disabled', false);
-                $('#id_time_units').val(Math.ceil((reserv1-reserv2)/(1000*60*15)));
-                $('#id_time_units').prop('disabled', true);
+                // $('#id_time_units_{{i}}').prop('disabled', false);
+                $('#id_time_units_{{i}}').val(Math.ceil((reserv1-reserv2)/(1000*60*15)));
+                // $('#id_time_units_{{i}}').prop('disabled', true);
+
+                // Calculate total charge
+                var time_unit = $('#id_time_units_{{i}}').val();
+                var base_unit = $('#id_base_units_{{i}}').val();
+                var fee_charge = $('#id_fees_{{i}}').val();
+
+                if(time_unit && base_unit && fee_charge)
+                    $('#total_{{i}}').val((time_unit + base_unit) * fee_charge);
             }   
         });
+    })();
 </script>
-
-
-<div class="collapse" id="collapse2_{{i}}">
-    <div class="well row">
-        <div class="col-lg-3 col-md-3">
-            <div class="form-group">
-                <label for="id_proc_code_{{i}}">Proc. code description</label>
-                <input id="id_proc_code_{{i}}" type="text" class="form-control input-small">
-            </div>
-        </div>
-        <div class="col-lg-3 col-md-3">
-            <div class="form-group">
-                <label for="id_ndc_{{i}}">NDC</label>
-                <input id="id_ndc_{{i}}" type="text" class="form-control input-small">
-            </div>
-        </div>
-        <div class="col-lg-3 col-md-3">
-            <div class="form-group">
-                <label for="id_qty_{{i}}">Quantity</label>
-                <input id="id_qty_{{i}}" type="number" class="form-control input-small" min="0">
-            </div>
-        </div>
-        <div class="col-lg-3 col-md-3">
-            <div class="form-group">
-                <label for="id_unit_measure">Unit of Measure</label>
-                <select id="sel1">
-                    <option>International Unit</option>
-                    <option>Gram</option>
-                    <option>Milliliter</option>
-                    <option>Unit</option>
-                    <option selected="selected">Milligram</option>
-                </select>
-            </div>
-        </div>
-    </div>
-</div>

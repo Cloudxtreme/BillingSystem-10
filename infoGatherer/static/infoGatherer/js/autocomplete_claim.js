@@ -261,6 +261,7 @@ function autocomplete_claim(api_urls) {
                 $('#id_mod_c_' + line_no).val(cpt.cpt_mod_c);
                 $('#id_mod_d_' + line_no).val(cpt.cpt_mod_d);
                 $('#id_cpt_charge_' + line_no).val(cpt.cpt_charge);
+                $('#id_fees_' + line_no).val(cpt.cpt_charge);
             },
         });
     });
