@@ -255,10 +255,12 @@ function autocomplete_claim(api_urls) {
             onSelect: function (suggestion) {
                 // Populate modifier of its own line
                 var cpt = suggestion.data;
-                $($(this).parent().parent().children()[1]).children().val(cpt.cpt_mod_a);
-                $($(this).parent().parent().children()[2]).children().val(cpt.cpt_mod_b);
-                $($(this).parent().parent().children()[3]).children().val(cpt.cpt_mod_c);
-                $($(this).parent().parent().children()[4]).children().val(cpt.cpt_mod_d);
+                var line_no = this.name.substr(this.name.lastIndexOf('_')+1);
+                $('#id_mod_a_' + line_no).val(cpt.cpt_mod_a);
+                $('#id_mod_b_' + line_no).val(cpt.cpt_mod_b);
+                $('#id_mod_c_' + line_no).val(cpt.cpt_mod_c);
+                $('#id_mod_d_' + line_no).val(cpt.cpt_mod_d);
+                $('#id_cpt_charge_' + line_no).val(cpt.cpt_charge);
             },
         });
     });
