@@ -73,7 +73,7 @@
 <div class="row">
     <div class="col-xs-4">
         <button type="button" class="btn btn-info-outline btn-sm"  data-toggle="collapse" data-target="#collapse_{{i}}" aria-expanded="false" aria-controls="collapse_{{i}}">Calculator</button>
-        <button type="button" class="btn btn-secondary btn-sm">Drug Information</button>
+        <button type="button" class="btn btn-secondary btn-sm" data-toggle="collapse" data-target="#collapse2_{{i}}" aria-expanded="false" aria-controls="collapse2_{{i}}">Drug Information</button>
     </div>
     <div class="col-xs-8">
         <input type="text" name="note_{{i}}" id="id_note_{{i}}" placeholder="Note">
@@ -172,3 +172,39 @@
             }   
         });
 </script>
+
+
+<div class="collapse" id="collapse2_{{i}}">
+    <div class="well row">
+        <div class="col-lg-3 col-md-3">
+            <div class="form-group">
+                <label for="id_proc_code_{{i}}">Proc. code description</label>
+                <input id="id_proc_code_{{i}}" type="text" class="form-control input-small">
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-3">
+            <div class="form-group">
+                <label for="id_ndc_{{i}}">NDC</label>
+                <input id="id_ndc_{{i}}" type="text" class="form-control input-small">
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-3">
+            <div class="form-group">
+                <label for="id_qty_{{i}}">Quantity</label>
+                <input id="id_qty_{{i}}" type="number" class="form-control input-small" min="0">
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-3">
+            <div class="form-group">
+                <label for="id_unit_measure">Unit of Measure</label>
+                <select id="sel1">
+                    <option>International Unit</option>
+                    <option>Gram</option>
+                    <option>Milliliter</option>
+                    <option>Unit</option>
+                    <option selected="selected">Milligram</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
