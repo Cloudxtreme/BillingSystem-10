@@ -347,14 +347,63 @@ function bindCollapse(i) {
     });
 }
 
+function updateNote(i) {
+    var text = '';
+    if($('#collapse_' + i).attr('aria-expanded') == 'true') {
+        var start = $('#id_start_time_' + i).val();
+        var end = $('#id_end_time_' + i).val();
+
+        if(start && end) {
+            var startDate = new Date(1, 1, 1, start.split(":")[0], start.split(":")[1]);
+            var endDate = new Date(1, 1, 1, end.split(":")[0], end.split(":")[1]);
+            var diffTime = Math.ceil((endDate-startDate)/(1000*60));
+
+            start = start.split(':');
+            end = end.split(':');
+            startSuffix = convert24To12(start);
+            endSuffix = convert24To12(end);
+
+            text += 'start ' + start[0] + start[1] + ' ' + startSuffix + ' ';
+            text += 'end ' + end[0] + end[1] + ' ' + endSuffix + ', ';
+            text += 'total ' + diffTime + ' min';
+            text = text.toUpperCase();
+
+            $('#id_note_' + i).val(text);
+        }
+
+    }
+    else if($('#collapse2_' + i).attr('aria-expanded') == 'true') {
+        var desc = $('#id_proc_code_' + i).val();
+        var ndc = $('#id_ndc_' + i).val();
+
+        var quantity = $('#id_qty_' + i).val();
+        var unit = $('#id_unit_' + i).val();
+
+        if(desc && ndc && quantity && unit) {
+            text = desc + ' ' + 'N4' + ndc + ' ' + unit + quantity;
+            text = text.toUpperCase();
+
+            $('#id_note_' + i).val(text);
+        }
+    }
+}
+
+function convert24To12(arrTime) {
+    if(arrTime[0] > 12) {
+        arrTime[0] -= 12;
+        return 'PM';
+    }
+    else {
+        return 'AM';
+    }
+}
+
 function calculateTotal(i) {
     var baseUnits = parseInt($('#id_base_units_' + i).val());
     var TimeUnits = parseInt($('#id_time_units_' + i).val());
     var fees = parseInt($('#id_fees_' + i).val());
     var cptCharge = parseInt($('#id_cpt_charge_' + i).val());
     var total;
-
-    xxx = $('#collapse_' + i).attr('aria-expanded');
 
     if($('#collapse_' + i).attr('aria-expanded') == 'true' && baseUnits && TimeUnits && fees) {
         total = (baseUnits + TimeUnits) * fees;
@@ -364,6 +413,8 @@ function calculateTotal(i) {
     }
 
     $('#total_' + i).val(total);
+
+    updateNote(i);
 }
 
 function dropDown(a,i){
