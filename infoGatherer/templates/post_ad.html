@@ -4,13 +4,16 @@
 
 {% block script %}
 <script src="{% static 'infoGatherer/js/autocomplete_claim.js' %}"></script>
-<script src="{% static 'infoGatherer/js/bootstrap-timepicker.min.js' %}"></script>
 <script src="{% static 'infoGatherer/js/jquery.autocomplete.min.js' %}"></script>
+<script src="{% static 'infoGatherer/js/bootstrap-timepicker.min.js' %}"></script>
+<script src="{% static 'infoGatherer/js/bootstrap-toggle.min.js' %}"></script>
+
 {% endblock script %}
 
 
 {% block link %}
 <link rel="stylesheet" href="{% static 'infoGatherer/css/autocomplete.css' %}">
+<link rel="stylesheet" href="{% static 'infoGatherer/css/bootstrap-toggle.min.css' %}">
 <link rel="stylesheet" href="{% static 'infoGatherer/css/bootstrap-timepicker.min.css' %}">
 <link href="{% static 'infoGatherer/open-iconic/font/css/open-iconic-bootstrap.css' %}" rel="stylesheet">
 <link href="{% static 'infoGatherer/open-iconic/font/css/open-iconic.css' %}" rel="stylesheet">
@@ -363,7 +366,6 @@
         </div>
     </div>
 
-
     <br/>
     <button type="submit" class="btn btn-primary btn-md" value="Submit Button">Print Please!</button>
     <br/><br/>
@@ -520,6 +522,13 @@
                 }
             });
 
+            // default dropdown of calculator
+            {% for i in "123456" %}
+                $('#btn_calc_{{i}}').trigger( "click" );
+            {% endfor %}
+            $("div.toggle").width("124px");
+            $("div.toggle-group").width("290px");
+            
 
         }
         window.onload = init;

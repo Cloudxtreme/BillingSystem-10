@@ -71,16 +71,22 @@
     </div>
     <p></p>
 
+
     <div class="row">
         <div class="col-xs-4">
-            <button type="button" class="btn btn-info-outline btn-sm"  data-toggle="collapse" data-target="#collapse_{{i}}" aria-expanded="false" aria-controls="collapse_{{i}}">Calculator</button>
-            <button type="button" class="btn btn-secondary btn-sm" data-toggle="collapse" data-target="#collapse2_{{i}}" aria-expanded="false" aria-controls="collapse2_{{i}}">Drug Information</button>
+            <button type="button" class="btn btn-info-outline btn-sm" id="btn_calc_{{i}}" data-toggle="collapse" data-target="#collapse_{{i}}" aria-expanded="false" aria-controls="collapse_{{i}}" style="display:none">Calculator</button>
+            <button type="button" class="btn btn-secondary btn-sm" id="btn_druginfo_{{i}}" data-toggle="collapse" data-target="#collapse2_{{i}}" aria-expanded="false" aria-controls="collapse2_{{i}}" style="display:none">Drug Information</button>
+            <label for="trigger_{{i}}" onclick="dropDown(this,{{i}});">
+                <input type="checkbox" id="trigger_{{i}}" checked data-toggle="toggle" data-on="Calculator" data-off="Drug Information" data-onstyle="success" data-offstyle="danger" style="width:100px">
+            </label>
+            <input id="trigger_calc_{{i}}" style="display:none">
+            <input id="trigger_drug_{{i}}" style="display:none">
         </div>
         <div class="col-xs-8">
             <input type="text" name="note_{{i}}" id="id_note_{{i}}" placeholder="Note">
         </div>
     </div>
-    <p></p>
+    <hr>
 
 
     <div class="collapse" id="collapse_{{i}}">

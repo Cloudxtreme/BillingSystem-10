@@ -261,7 +261,10 @@ function autocomplete_claim(api_urls) {
                 $('#id_mod_c_' + line_no).val(cpt.cpt_mod_c);
                 $('#id_mod_d_' + line_no).val(cpt.cpt_mod_d);
                 $('#id_cpt_charge_' + line_no).val(cpt.cpt_charge);
-                $('#id_fees_' + line_no).val(cpt.cpt_charge);
+                
+                // Will not override if this field is already set
+                if(!$('#id_fees_' + line_no).val())
+                    $('#id_fees_' + line_no).val(cpt.cpt_charge);
 
                 calculateTotal(line_no);
             },
@@ -334,20 +337,20 @@ function bindCollapse(i) {
                     var endDate = new Date(1, 1, 1, end.split(":")[0], end.split(":")[1]);
 
                     var unitDiff = Math.ceil((endDate-startDate)/(1000*60*15));
-                    $('#id_time_units_' + i).val(unitDiff);
-
-                    calculateTotal(i);
+                    $('#id_time_units_' + i).val(Math.max(unitDiff, 0));
                 }
-            }, 200);
+
+                calculateTotal(i);
+            }, 100);
         });
     })();
 }
 
 function calculateTotal(i) {
-    var baseUnits = $('#id_base_units_' + i).val();
-    var TimeUnits = $('#id_time_units_' + i).val();
-    var fees = $('#id_fees_' + i).val();
-    var cptCharge = $('#id_cpt_charge_' + i).val();
+    var baseUnits = parseInt($('#id_base_units_' + i).val());
+    var TimeUnits = parseInt($('#id_time_units_' + i).val());
+    var fees = parseInt($('#id_fees_' + i).val());
+    var cptCharge = parseInt($('#id_cpt_charge_' + i).val());
     var total;
 
     xxx = $('#collapse_' + i).attr('aria-expanded');
@@ -361,3 +364,18 @@ function calculateTotal(i) {
 
     $('#total_' + i).val(total);
 }
+
+function dropDown(a,i){
+    $( "#trigger_calc_"+i).on( "click", function() {
+        $('#btn_calc_'+i).trigger( "click" );
+    });
+    $( "#trigger_drug_"+i ).on( "click", function() {
+        $('#btn_druginfo_'+i).trigger( "click" );
+    });
+
+    var child = a.children[0];
+    $( "#trigger_calc_"+i ).trigger( "click" );
+    $( "#trigger_drug_"+i ).trigger( "click" );
+
+    calculateTotal(i);
+};
