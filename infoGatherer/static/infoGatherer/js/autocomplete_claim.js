@@ -263,7 +263,7 @@ function autocomplete_claim(api_urls) {
                 $('#id_cpt_charge_' + line_no).val(cpt.cpt_charge);
                 $('#id_fees_' + line_no).val(cpt.cpt_charge);
 
-
+                calculateTotal(line_no);
             },
         });
     });
@@ -311,7 +311,7 @@ function bindCollapse(i) {
     })();
 
     (function() {
-    // Time dropdown
+        // Time dropdown
         var timepickerConfig = {
             minuteStep: 1,
             appendWidgetTo: 'body',
@@ -324,39 +324,40 @@ function bindCollapse(i) {
         $('#timepicker1').timepicker();
         
         $('#procedure_line_' + i).focusout(function() {
-            var start = $('#id_start_time_' + i).val();
-            var end = $('#id_end_time_' + i).val();
+            // Need to delay the unit diff calculation for clock widget to format the string first
+            setTimeout(function() {
+                var start = $('#id_start_time_' + i).val();
+                var end = $('#id_end_time_' + i).val();
 
-            console.log('start: ', start, ' ', start.length);
-            console.log('end: ', end, ' ', end.length);
+                if(start.length>0 && end.length>0) {
+                    var startDate = new Date(1, 1, 1, start.split(":")[0], start.split(":")[1]);
+                    var endDate = new Date(1, 1, 1, end.split(":")[0], end.split(":")[1]);
 
-            if(start.length>0 && end.length>0) {
-                var startDate = new Date(1, 1, 1, start.split(":")[0], start.split(":")[1]);
-                var endDate = new Date(1, 1, 1, end.split(":")[0], end.split(":")[1]);
+                    var unitDiff = Math.ceil((endDate-startDate)/(1000*60*15));
+                    $('#id_time_units_' + i).val(unitDiff);
 
-                var unitDiff = Math.ceil((endDate-startDate)/(1000*60*15));
-                $('#id_time_units_' + i).val(unitDiff);
-
-                console.log('startDate: ', startDate);
-                console.log('endDate: ', endDate);
-
-                // Calculate total charge
-                // calculateTotal(i);
-            }
+                    calculateTotal(i);
+                }
+            }, 200);
         });
     })();
 }
 
 function calculateTotal(i) {
-    var baseUnits = $('#id_base_units_' + i).val();    
+    var baseUnits = $('#id_base_units_' + i).val();
+    var TimeUnits = $('#id_time_units_' + i).val();
+    var fees = $('#id_fees_' + i).val();
+    var cptCharge = $('#id_cpt_charge_' + i).val();
+    var total;
 
-    $('#id_time_units_' + i).val(unitDiff);
-    var time_unit = $('#id_time_units_' + i).val();
-    var base_unit = $('#id_base_units_' + i).val();
-    var fee_charge = $('#id_fees_' + i).val();
+    xxx = $('#collapse_' + i).attr('aria-expanded');
 
-    if(time_unit && base_unit && fee_charge)
-        $('#total_' + i).val((time_unit + base_unit) * fee_charge);
+    if($('#collapse_' + i).attr('aria-expanded') == 'true' && baseUnits && TimeUnits && fees) {
+        total = (baseUnits + TimeUnits) * fees;
+    }
+    else {
+        total = $('#id_cpt_charge_' + i).val();
+    }
 
-    $('#id_cpt_code_' + i)
+    $('#total_' + i).val(total);
 }
