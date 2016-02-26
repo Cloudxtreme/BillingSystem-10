@@ -399,10 +399,10 @@ function convert24To12(arrTime) {
 }
 
 function calculateTotal(i) {
-    var baseUnits = parseInt($('#id_base_units_' + i).val());
-    var TimeUnits = parseInt($('#id_time_units_' + i).val());
-    var fees = parseInt($('#id_fees_' + i).val());
-    var cptCharge = parseInt($('#id_cpt_charge_' + i).val());
+    var baseUnits = parseFloat($('#id_base_units_' + i).val());
+    var TimeUnits = parseFloat($('#id_time_units_' + i).val());
+    var fees = parseFloat($('#id_fees_' + i).val());
+    var cptCharge = parseFloat($('#id_cpt_charge_' + i).val());
     var total;
 
     if($('#collapse_' + i).attr('aria-expanded') == 'true' && baseUnits && TimeUnits && fees) {
@@ -412,6 +412,7 @@ function calculateTotal(i) {
         total = $('#id_cpt_charge_' + i).val();
     }
 
+    total = Math.round(total * 100) / 100
     $('#total_' + i).val(total);
 
     updateNote(i);
