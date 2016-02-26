@@ -263,7 +263,7 @@ def print_form(bar):
     # Service Information
     npi=Provider.objects.filter(provider_name=bar['rendering_provider_name']).values()[0]
     rendering_p_npi=rendering_p['npi']
-    
+    charge=[0,0,0,0,0,0]
     for i in range(1,7):
 
         # date field
@@ -290,8 +290,8 @@ def print_form(bar):
         # CPT code and charge
         code=bar['cpt_code_'+str(i)]
         fields.append((str(122+(23*i-23)),code))
-        # charge=bar['total_'+str(i)]
-        # fields.append((str(128+(23*i-23)),charge))
+        charge[i]=bar['total_'+str(i)]
+        fields.append((str(128+(23*i-23)),charge[i]))
 
         # Modifiers
         fields.append((str(123+(23*i-23)),bar['mod_a_'+str(i)]))
@@ -309,7 +309,7 @@ def print_form(bar):
         #Provider ID
         if(len(code)>0):
             fields.append((str(132+(23*i-23)),rendering_p_npi))
-        
+    fields.append(('254',sum(charge)))
 
 
     # PDF generation
