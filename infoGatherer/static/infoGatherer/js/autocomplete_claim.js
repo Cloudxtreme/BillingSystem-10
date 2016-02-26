@@ -417,6 +417,7 @@ function calculateTotal(i) {
     }
 
     total = Math.round(total * 100) / 100
+    $('#total_show_' + i).val(total);
     $('#total_' + i).val(total);
 
     updateNote(i);

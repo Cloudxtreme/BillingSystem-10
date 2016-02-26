@@ -263,7 +263,7 @@ def print_form(bar):
     # Service Information
     npi=Provider.objects.filter(provider_name=bar['rendering_provider_name']).values()[0]
     rendering_p_npi=rendering_p['npi']
-    
+    charge=[0,0,0,0,0,0]
     for i in range(1,7):
 
         # date field
