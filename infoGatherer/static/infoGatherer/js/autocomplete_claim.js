@@ -399,13 +399,17 @@ function convert24To12(arrTime) {
 }
 
 function calculateTotal(i) {
-    var baseUnits = parseFloat($('#id_base_units_' + i).val());
-    var TimeUnits = parseFloat($('#id_time_units_' + i).val());
-    var fees = parseFloat($('#id_fees_' + i).val());
-    var cptCharge = parseFloat($('#id_cpt_charge_' + i).val());
+    var baseUnits = $('#id_base_units_' + i).val();
+    var TimeUnits = $('#id_time_units_' + i).val();
+    var fees = $('#id_fees_' + i).val();
+    var cptCharge = $('#id_cpt_charge_' + i).val();
     var total;
 
     if($('#collapse_' + i).attr('aria-expanded') == 'true' && baseUnits && TimeUnits && fees) {
+        var baseUnits = parseFloat(baseUnits);
+        var TimeUnits = parseFloat(TimeUnits);
+        var fees = parseFloat(fees);
+        var cptCharge = parseFloat(cptCharge);
         total = (baseUnits + TimeUnits) * fees;
     }
     else {
