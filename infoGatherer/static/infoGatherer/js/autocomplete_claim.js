@@ -262,10 +262,11 @@ function autocomplete_claim(api_urls) {
                 $('#id_mod_d_' + line_no).val(cpt.cpt_mod_d);
                 $('#id_cpt_charge_' + line_no).val(cpt.cpt_charge);
                 $('#id_fees_' + line_no).val(cpt.cpt_charge);
+
+
             },
         });
     });
-
 
     function populateInsuranceSection(suggestion) {
         // Auto populate fields in insurance section
@@ -291,3 +292,71 @@ function autocomplete_claim(api_urls) {
     }
 
 };
+
+function bindCollapse(i) {
+    (function() {
+        self = $('#id_service_start_date_' + i);
+
+        self.click(function(e) {
+            e.preventDefault();
+        });
+
+        var picker = new Pikaday({
+            field: self[0],
+            onSelect: function(date) {
+                self.val(this.toString('YYYY-MM-DD'));
+                self.removeClass('placeholder');
+            }
+        });
+    })();
+
+    (function() {
+    // Time dropdown
+        var timepickerConfig = {
+            minuteStep: 1,
+            appendWidgetTo: 'body',
+            showSeconds: false,
+            showMeridian: false,
+            defaultTime: false
+        };
+        $('#id_start_time_' + i).timepicker(timepickerConfig);
+        $('#id_end_time_' + i).timepicker(timepickerConfig);
+        $('#timepicker1').timepicker();
+        
+        $('#procedure_line_' + i).focusout(function() {
+            var start = $('#id_start_time_' + i).val();
+            var end = $('#id_end_time_' + i).val();
+
+            console.log('start: ', start, ' ', start.length);
+            console.log('end: ', end, ' ', end.length);
+
+            if(start.length>0 && end.length>0) {
+                var startDate = new Date(1, 1, 1, start.split(":")[0], start.split(":")[1]);
+                var endDate = new Date(1, 1, 1, end.split(":")[0], end.split(":")[1]);
+
+                var unitDiff = Math.ceil((endDate-startDate)/(1000*60*15));
+                $('#id_time_units_' + i).val(unitDiff);
+
+                console.log('startDate: ', startDate);
+                console.log('endDate: ', endDate);
+
+                // Calculate total charge
+                // calculateTotal(i);
+            }
+        });
+    })();
+}
+
+function calculateTotal(i) {
+    var baseUnits = $('#id_base_units_' + i).val();    
+
+    $('#id_time_units_' + i).val(unitDiff);
+    var time_unit = $('#id_time_units_' + i).val();
+    var base_unit = $('#id_base_units_' + i).val();
+    var fee_charge = $('#id_fees_' + i).val();
+
+    if(time_unit && base_unit && fee_charge)
+        $('#total_' + i).val((time_unit + base_unit) * fee_charge);
+
+    $('#id_cpt_code_' + i)
+}

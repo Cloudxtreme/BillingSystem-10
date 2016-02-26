@@ -82,6 +82,7 @@
     </div>
     <p></p>
 
+
     <div class="collapse" id="collapse_{{i}}">
         <div class="well row">
             <div class="col-lg-3 col-md-3">
@@ -160,6 +161,7 @@
     </div>
     <p></p>
 
+
     <div class="row">
         <div class="col-xs-4 pull-right">
             <input type="text" disabled id="total_{{i}}">
@@ -174,61 +176,5 @@
 
 
 <script>
-    (function() {
-        var self = $('#id_service_start_date_{{i}}');
-
-        self.click(function(e) {
-            e.preventDefault();
-        });
-
-        var picker = new Pikaday({
-            field: self[0],
-            onSelect: function(date) {
-                self.val(this.toString('YYYY-MM-DD'));
-                self.removeClass('placeholder');
-            }
-        });
-    })();
-</script>
-
-<script>
-    (function() {
-    // Time dropdown
-        $('#id_start_time_{{i}}').timepicker({
-            minuteStep: 1,
-            appendWidgetTo: 'body',
-            showSeconds: false,
-            showMeridian: false,
-            defaultTime: false
-        });
-        $('#id_end_time_{{i}}').timepicker({
-            minuteStep: 1,
-            appendWidgetTo: 'body',
-            showSeconds: false,
-            showMeridian: false,
-            defaultTime: false
-        });
-         $('#timepicker1').timepicker();
-        var year = '2013';
-        var month = '04';
-        var day = '18';
-
-        $('#procedure_line_{{i}}').focusout(function() {
-            if($('#id_start_time_{{i}}').val().length>0 && $('#id_end_time_{{i}}').val().length>0){
-                var reserv1 = new Date(year,month,day,$('#id_end_time_{{i}}').val().split(":")[0],$('#id_end_time_{{i}}').val().split(":")[1]);
-                var reserv2 = new Date(year,month,day,$('#id_start_time_{{i}}').val().split(":")[0],$('#id_start_time_{{i}}').val().split(":")[1]);
-                // $('#id_time_units_{{i}}').prop('disabled', false);
-                $('#id_time_units_{{i}}').val(Math.ceil((reserv1-reserv2)/(1000*60*15)));
-                // $('#id_time_units_{{i}}').prop('disabled', true);
-
-                // Calculate total charge
-                var time_unit = $('#id_time_units_{{i}}').val();
-                var base_unit = $('#id_base_units_{{i}}').val();
-                var fee_charge = $('#id_fees_{{i}}').val();
-
-                if(time_unit && base_unit && fee_charge)
-                    $('#total_{{i}}').val((time_unit + base_unit) * fee_charge);
-            }   
-        });
-    })();
+    bindCollapse({{i}});
 </script>
