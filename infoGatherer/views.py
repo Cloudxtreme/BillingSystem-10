@@ -291,8 +291,8 @@ def print_form(bar):
         # CPT code and charge
         code=bar['cpt_code_'+str(i)]
         fields.append((str(122+(23*i-23)),code))
-        # charge[i]=bar['total_'+str(i)]
-        # fields.append((str(128+(23*i-23)),charge[i]))
+        charge[i]=bar['total_'+str(i)]
+        fields.append((str(128+(23*i-23)),charge[i]))
 
         # Modifiers
         fields.append((str(123+(23*i-23)),bar['mod_a_'+str(i)]))
@@ -311,7 +311,7 @@ def print_form(bar):
         if(len(code)>0):
             fields.append((str(132+(23*i-23)),rendering_p_npi))
     
-    # fields.append(('254',sum(charge)))
+    fields.append(('254',sum(charge)))
 
 
     # PDF generation
