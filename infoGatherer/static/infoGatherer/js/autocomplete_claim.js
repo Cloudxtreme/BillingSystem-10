@@ -322,28 +322,29 @@ function bindCollapse(i) {
             showMeridian: false,
             defaultTime: false
         };
-        $('#id_start_time_' + i).timepicker(timepickerConfig);
-        $('#id_end_time_' + i).timepicker(timepickerConfig);
-        $('#timepicker1').timepicker();
-        
-        $('#procedure_line_' + i).focusout(function() {
-            // Need to delay the unit diff calculation for clock widget to format the string first
-            setTimeout(function() {
-                var start = $('#id_start_time_' + i).val();
-                var end = $('#id_end_time_' + i).val();
+        $('#id_start_time_' + i).timepicker(timepickerConfig).on('changeTime.timepicker', calculateUnitDiff);
+        $('#id_end_time_' + i).timepicker(timepickerConfig).on('changeTime.timepicker', calculateUnitDiff);
 
-                if(start.length>0 && end.length>0) {
-                    var startDate = new Date(1, 1, 1, start.split(":")[0], start.split(":")[1]);
-                    var endDate = new Date(1, 1, 1, end.split(":")[0], end.split(":")[1]);
+        function calculateUnitDiff() {
+            var start = $('#id_start_time_' + i).val();
+            var end = $('#id_end_time_' + i).val();
 
-                    var unitDiff = Math.ceil((endDate-startDate)/(1000*60*15));
-                    $('#id_time_units_' + i).val(Math.max(unitDiff, 0));
-                }
+            if(start.length>0 && end.length>0) {
+                var startDate = new Date(1, 1, 1, start.split(":")[0], start.split(":")[1]);
+                var endDate = new Date(1, 1, 1, end.split(":")[0], end.split(":")[1]);
+
+                var unitDiff = Math.ceil((endDate-startDate)/(1000*60*15));
+                $('#id_time_units_' + i).val(Math.max(unitDiff, 0));
 
                 calculateTotal(i);
-            }, 100);
-        });
+            }
+        }
     })();
+
+    // Bind auto calculation for total charge
+    $('#procedure_line_' + i).focusout(function() {
+        calculateTotal(i);
+    });
 }
 
 function calculateTotal(i) {
