@@ -1,3 +1,4 @@
+<div id="procedure_line_{{i}}">
 <div class="row">
     <div class="col-xs-4 placeholder label-placeholder">Diagnonsis Pointer</div>
     <div class="col-xs-2">
@@ -35,213 +36,151 @@
 </div>
 <p></p>
 
-<div class="row">
-    <div class="col-xs-4">
-        <input id="id_cpt_code_{{i}}" class="cpt_code" name="cpt_code_{{i}}" placeholder="CPT/HCPCS code" type="text" class=" form-control">
+    <div class="row">
+        <div class="col-xs-4">
+            <input id="id_cpt_code_{{i}}" class="cpt_code" name="cpt_code_{{i}}" placeholder="CPT/HCPCS code" type="text" class=" form-control">
+        </div>
+        <div class="col-xs-2">
+            <input type="text" name="mod_a_{{i}}" id="id_mod_a_{{i}}" placeholder="Mod A">
+        </div>
+        <div class="col-xs-2">
+            <input type="text" name="mod_b_{{i}}" id="id_mod_b_{{i}}" placeholder="Mod B">
+        </div>
+        <div class="col-xs-2">
+            <input type="text" name="mod_c_{{i}}" id="id_mod_c_{{i}}" placeholder="Mod C">
+        </div>
+        <div class="col-xs-2">
+            <input type="text" name="mod_d_{{i}}" id="id_mod_d_{{i}}" placeholder="Mod D">
+        </div>
     </div>
-    <div class="col-xs-2">
-        <input type="text" name="mod_a_{{i}}" id="id_mod_a_{{i}}" placeholder="Mod A">
-    </div>
-    <div class="col-xs-2">
-        <input type="text" name="mod_b_{{i}}" id="id_mod_b_{{i}}" placeholder="Mod B">
-    </div>
-    <div class="col-xs-2">
-        <input type="text" name="mod_c_{{i}}" id="id_mod_c_{{i}}" placeholder="Mod C">
-    </div>
-    <div class="col-xs-2">
-        <input type="text" name="mod_d_{{i}}" id="id_mod_d_{{i}}" placeholder="Mod D">
-    </div>
-</div>
-<p></p>
+    <p></p>
 
-<div class="row">
-    <div class="col-xs-4">
-        <input type="date" id="id_service_start_date_{{i}}" name="service_start_date_{{i}}" class="placeholder">
+    <div class="row">
+        <div class="col-xs-4">
+            <input type="date" id="id_service_start_date_{{i}}" name="service_start_date_{{i}}" class="placeholder">
+        </div>
+        <div class="col-xs-3">
+            <input id="id_place_of_service_{{i}}" name="place_of_service_{{i}}" placeholder="Place of Service" type="text">
+        </div>
+        <div class="col-xs-2">
+            <input name="emg_{{i}}" placeholder="EMG" type="text">
+        </div>
+        <div class="col-xs-3">
+            <input id="id_cpt_charge_{{i}}" name="cpt_charge_{{i}}" placeholder="Charges ($)" type="text" class=" form-control">
+        </div>
     </div>
-    <div class="col-xs-3">
-        <input id="id_place_of_service_{{i}}" name="place_of_service_{{i}}" placeholder="Place of Service" type="text">
-    </div>
-    <div class="col-xs-2">
-        <input name="emg_{{i}}" placeholder="EMG" type="text">
-    </div>
-    <div class="col-xs-3">
-        <input id="id_cpt_charge_{{i}}" name="cpt_charge_{{i}}" placeholder="Charges ($)" type="text" class=" form-control">
-    </div>
-</div>
-<p></p>
-
-
-<div class="row">
-    <div class="col-xs-4">
-        <button type="button" class="btn btn-info-outline btn-sm" id="btn_calc_{{i}}" data-toggle="collapse" data-target="#collapse_{{i}}" aria-expanded="false" aria-controls="collapse_{{i}}" style="display:none">Calculator</button>
-        <button type="button" class="btn btn-secondary btn-sm" id="btn_druginfo_{{i}}" data-toggle="collapse" data-target="#collapse2_{{i}}" aria-expanded="false" aria-controls="collapse2_{{i}}" style="display:none">Drug Information</button>
-        <label for="trigger_{{i}}" onclick="dropDown(this,{{i}});">
-            <input type="checkbox" id="trigger_{{i}}" checked data-toggle="toggle" data-on="Calculator" data-off="Drug Information" data-onstyle="success" data-offstyle="danger" style="width:100px">
-        </label>
-        <input id="trigger_calc_{{i}}" style="display:none">
-        <input id="trigger_drug_{{i}}" style="display:none">
-    </div>
-    <div class="col-xs-8">
-        <input type="text" name="note_{{i}}" id="id_note_{{i}}" placeholder="Note">
-    </div>
-</div>
-
-<script>
-    function dropDown(a,i){
-        console.log('a',a);
-        $( "#trigger_calc_"+i).on( "click", function() {
-            $('#btn_calc_'+i).trigger( "click" );
-        });
-        $( "#trigger_drug_"+i ).on( "click", function() {
-            $('#btn_druginfo_'+i).trigger( "click" );
-        });
-        console.log(a);
-        var child=a.children[0];
-        if($(child).hasClass( "off" )){
-            // console.log("has class off");
-            // console.log(i);
-            $( "#trigger_calc_"+i ).trigger( "click" );
-            $( "#trigger_drug_"+i ).trigger( "click" );
-        }else{
-            $( "#trigger_calc_"+i ).trigger( "click" );
-            $( "#trigger_drug_"+i ).trigger( "click" );
-        }
-    };
-</script>
+    <p></p>
 
 
-<hr>
-
-<script>
-    (function() {
-        var self = $('#id_service_start_date_{{i}}');
-
-        self.click(function(e) {
-            e.preventDefault();
-        });
-
-        var picker = new Pikaday({
-            field: self[0],
-            onSelect: function(date) {
-                self.val(this.toString('YYYY-MM-DD'));
-                self.removeClass('placeholder');
-            }
-        });
-    })();
-</script>
+    <div class="row">
+        <div class="col-xs-4">
+            <button type="button" class="btn btn-info-outline btn-sm" id="btn_calc_{{i}}" data-toggle="collapse" data-target="#collapse_{{i}}" aria-expanded="false" aria-controls="collapse_{{i}}" style="display:none">Calculator</button>
+            <button type="button" class="btn btn-secondary btn-sm" id="btn_druginfo_{{i}}" data-toggle="collapse" data-target="#collapse2_{{i}}" aria-expanded="false" aria-controls="collapse2_{{i}}" style="display:none">Drug Information</button>
+            <label for="trigger_{{i}}" onclick="dropDown(this,{{i}});">
+                <input type="checkbox" id="trigger_{{i}}" checked data-toggle="toggle" data-on="Calculator" data-off="Drug Information" data-onstyle="success" data-offstyle="danger" style="width:100px">
+            </label>
+            <input id="trigger_calc_{{i}}" style="display:none">
+            <input id="trigger_drug_{{i}}" style="display:none">
+        </div>
+        <div class="col-xs-8">
+            <input type="text" name="note_{{i}}" id="id_note_{{i}}" placeholder="Note">
+        </div>
+    </div>
+    <hr>
 
 
-<div class="collapse" id="collapse_{{i}}">
-    <div class="well row">
-        <div class="col-lg-3 col-md-3">
-            <div class="form-group">
-                <label for="id_start_time_{{i}}">Start Time</label>
-                <div class="input-group bootstrap-timepicker timepicker">
-                    <input id="id_start_time_{{i}}" type="text" class="form-control input-small">
-                    <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
+    <div class="collapse" id="collapse_{{i}}">
+        <div class="well row">
+            <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                    <label for="id_start_time_{{i}}">Start Time</label>
+                    <div class="input-group bootstrap-timepicker timepicker">
+                        <input id="id_start_time_{{i}}" type="text" class="form-control input-small">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                    <label for="id_end_time_{{i}}">End Time</label>
+                    <div class="input-group bootstrap-timepicker timepicker">
+                        <input id="id_end_time_{{i}}" type="text" class="form-control input-small">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-2">
+                <div class="form-group">
+                    <label for="id_base_units_{{i}}">Base Units</label>
+                    <input id="id_base_units_{{i}}" value="5">
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-2">
+                <div class="form-group">
+                    <label for="id_time_units_{{i}}">Time Units</label>
+                    <input id="id_time_units_{{i}}" disabled>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-2">
+                <div class="form-group">
+                    <label for="id_fees_{{i}}">Fees</label>
+                    <input id="id_fees_{{i}}">
                 </div>
             </div>
         </div>
-        <div class="col-lg-3 col-md-3">
-            <div class="form-group">
-                <label for="id_end_time_{{i}}">End Time</label>
-                <div class="input-group bootstrap-timepicker timepicker">
-                    <input id="id_end_time_{{i}}" type="text" class="form-control input-small">
-                    <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
+    </div>
+
+
+    <div class="collapse" id="collapse2_{{i}}">
+        <div class="well row">
+            <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                    <label for="id_proc_code_{{i}}">Proc. code description</label>
+                    <input id="id_proc_code_{{i}}" type="text" class="form-control input-small">
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                    <label for="id_ndc_{{i}}">NDC</label>
+                    <input id="id_ndc_{{i}}" type="text" class="form-control input-small">
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                    <label for="id_qty_{{i}}">Quantity</label>
+                    <input id="id_qty_{{i}}" type="number" class="form-control input-small" min="0">
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                    <label for="id_unit_measure">Unit of Measure</label>
+                    <select id="sel1">
+                        <option>International Unit</option>
+                        <option>Gram</option>
+                        <option>Milliliter</option>
+                        <option>Unit</option>
+                        <option selected="selected">Milligram</option>
+                    </select>
                 </div>
             </div>
         </div>
-        <div class="col-lg-2 col-md-2">
-            <div class="form-group">
-                <label for="id_base_units">Base Units</label>
-                <input id="id_base_units" value="5">
-            </div>
+    </div>
+    <p></p>
+
+
+    <div class="row">
+        <div class="col-xs-4 pull-right">
+            <input type="text" disabled id="total_{{i}}">
         </div>
-        <div class="col-lg-2 col-md-2">
-            <div class="form-group">
-                <label for="id_time_units">Time Units</label>
-                <input id="id_time_units" disabled>
-            </div>
-        </div>
-        <div class="col-lg-2 col-md-2">
-            <div class="form-group">
-                <label for="id_fees">Fees</label>
-                <input id="id_fees">
-            </div>
+        <div class="col-xs-2 pull-right" style="text-align:right;">
+            <label style="height:34px;line-height:34px;">Total</label>
         </div>
     </div>
+
+    <hr>
 </div>
+
 
 <script>
-    // Time dropdown
-        $('#id_start_time_{{i}}').timepicker({
-            minuteStep: 1,
-            appendWidgetTo: 'body',
-            showSeconds: false,
-            showMeridian: false,
-            defaultTime: false
-        });
-        $('#id_end_time_{{i}}').timepicker({
-            minuteStep: 1,
-            appendWidgetTo: 'body',
-            showSeconds: false,
-            showMeridian: false,
-            defaultTime: false
-        });
-         $('#timepicker1').timepicker();
-        var year = '2013';
-        var month = '04';
-        var day = '18';
-
-        $( 'body' ).click(function() {
-            if($('#id_start_time_{{i}}').val().length>0 && $('#id_end_time_{{i}}').val().length>0){
-                var reserv1 = new Date(year,month,day,$('#id_end_time_{{i}}').val().split(":")[0],$('#id_end_time_{{i}}').val().split(":")[1]);
-                var reserv2 = new Date(year,month,day,$('#id_start_time_{{i}}').val().split(":")[0],$('#id_start_time_{{i}}').val().split(":")[1]);
-                if(reserv1-reserv2>0){
-                    $('#id_time_units').prop('disabled', false);
-                    $('#id_time_units').val(Math.ceil((reserv1-reserv2)/(1000*60*15)));
-                    $('#id_time_units').prop('disabled', true);
-                }else{
-                    $('#id_time_units').prop('disabled', false);
-                    $('#id_time_units').val("0");
-                    $('#id_time_units').prop('disabled', true);
-                }
-            }   
-        });
+    bindCollapse({{i}});
 </script>
-
-
-<div class="collapse" id="collapse2_{{i}}">
-    <div class="well row">
-        <div class="col-lg-3 col-md-3">
-            <div class="form-group">
-                <label for="id_proc_code_{{i}}">Proc. code description</label>
-                <input id="id_proc_code_{{i}}" type="text" class="form-control input-small">
-            </div>
-        </div>
-        <div class="col-lg-3 col-md-3">
-            <div class="form-group">
-                <label for="id_ndc_{{i}}">NDC</label>
-                <input id="id_ndc_{{i}}" type="text" class="form-control input-small">
-            </div>
-        </div>
-        <div class="col-lg-3 col-md-3">
-            <div class="form-group">
-                <label for="id_qty_{{i}}">Quantity</label>
-                <input id="id_qty_{{i}}" type="number" class="form-control input-small" min="0">
-            </div>
-        </div>
-        <div class="col-lg-3 col-md-3">
-            <div class="form-group">
-                <label for="id_unit_measure">Unit of Measure</label>
-                <select id="sel1">
-                    <option>International Unit</option>
-                    <option>Gram</option>
-                    <option>Milliliter</option>
-                    <option>Unit</option>
-                    <option selected="selected">Milligram</option>
-                </select>
-            </div>
-        </div>
-    </div>
-</div>

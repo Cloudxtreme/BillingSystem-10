@@ -255,14 +255,21 @@ function autocomplete_claim(api_urls) {
             onSelect: function (suggestion) {
                 // Populate modifier of its own line
                 var cpt = suggestion.data;
-                $($(this).parent().parent().children()[1]).children().val(cpt.cpt_mod_a);
-                $($(this).parent().parent().children()[2]).children().val(cpt.cpt_mod_b);
-                $($(this).parent().parent().children()[3]).children().val(cpt.cpt_mod_c);
-                $($(this).parent().parent().children()[4]).children().val(cpt.cpt_mod_d);
+                var line_no = this.name.substr(this.name.lastIndexOf('_')+1);
+                $('#id_mod_a_' + line_no).val(cpt.cpt_mod_a);
+                $('#id_mod_b_' + line_no).val(cpt.cpt_mod_b);
+                $('#id_mod_c_' + line_no).val(cpt.cpt_mod_c);
+                $('#id_mod_d_' + line_no).val(cpt.cpt_mod_d);
+                $('#id_cpt_charge_' + line_no).val(cpt.cpt_charge);
+                
+                // Will not override if this field is already set
+                if(!$('#id_fees_' + line_no).val())
+                    $('#id_fees_' + line_no).val(cpt.cpt_charge);
+
+                calculateTotal(line_no);
             },
         });
     });
-
 
     function populateInsuranceSection(suggestion) {
         // Auto populate fields in insurance section
@@ -287,4 +294,89 @@ function autocomplete_claim(api_urls) {
         return suggestion.value + detailString(suggestion.hint);
     }
 
+};
+
+function bindCollapse(i) {
+    (function() {
+        self = $('#id_service_start_date_' + i);
+
+        self.click(function(e) {
+            e.preventDefault();
+        });
+
+        var picker = new Pikaday({
+            field: self[0],
+            onSelect: function(date) {
+                self.val(this.toString('YYYY-MM-DD'));
+                self.removeClass('placeholder');
+            }
+        });
+    })();
+
+    (function() {
+        // Time dropdown
+        var timepickerConfig = {
+            minuteStep: 1,
+            appendWidgetTo: 'body',
+            showSeconds: false,
+            showMeridian: false,
+            defaultTime: false
+        };
+        $('#id_start_time_' + i).timepicker(timepickerConfig).on('changeTime.timepicker', calculateUnitDiff);
+        $('#id_end_time_' + i).timepicker(timepickerConfig).on('changeTime.timepicker', calculateUnitDiff);
+
+        function calculateUnitDiff() {
+            var start = $('#id_start_time_' + i).val();
+            var end = $('#id_end_time_' + i).val();
+
+            if(start.length>0 && end.length>0) {
+                var startDate = new Date(1, 1, 1, start.split(":")[0], start.split(":")[1]);
+                var endDate = new Date(1, 1, 1, end.split(":")[0], end.split(":")[1]);
+
+                var unitDiff = Math.ceil((endDate-startDate)/(1000*60*15));
+                $('#id_time_units_' + i).val(Math.max(unitDiff, 0));
+
+                calculateTotal(i);
+            }
+        }
+    })();
+
+    // Bind auto calculation for total charge
+    $('#procedure_line_' + i).focusout(function() {
+        calculateTotal(i);
+    });
+}
+
+function calculateTotal(i) {
+    var baseUnits = parseInt($('#id_base_units_' + i).val());
+    var TimeUnits = parseInt($('#id_time_units_' + i).val());
+    var fees = parseInt($('#id_fees_' + i).val());
+    var cptCharge = parseInt($('#id_cpt_charge_' + i).val());
+    var total;
+
+    xxx = $('#collapse_' + i).attr('aria-expanded');
+
+    if($('#collapse_' + i).attr('aria-expanded') == 'true' && baseUnits && TimeUnits && fees) {
+        total = (baseUnits + TimeUnits) * fees;
+    }
+    else {
+        total = $('#id_cpt_charge_' + i).val();
+    }
+
+    $('#total_' + i).val(total);
+}
+
+function dropDown(a,i){
+    $( "#trigger_calc_"+i).on( "click", function() {
+        $('#btn_calc_'+i).trigger( "click" );
+    });
+    $( "#trigger_drug_"+i ).on( "click", function() {
+        $('#btn_druginfo_'+i).trigger( "click" );
+    });
+
+    var child = a.children[0];
+    $( "#trigger_calc_"+i ).trigger( "click" );
+    $( "#trigger_drug_"+i ).trigger( "click" );
+
+    calculateTotal(i);
 };
