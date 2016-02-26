@@ -70,15 +70,46 @@
 </div>
 <p></p>
 
+
 <div class="row">
     <div class="col-xs-4">
-        <button type="button" class="btn btn-info-outline btn-sm"  data-toggle="collapse" data-target="#collapse_{{i}}" aria-expanded="false" aria-controls="collapse_{{i}}">Calculator</button>
-        <button type="button" class="btn btn-secondary btn-sm" data-toggle="collapse" data-target="#collapse2_{{i}}" aria-expanded="false" aria-controls="collapse2_{{i}}">Drug Information</button>
+        <button type="button" class="btn btn-info-outline btn-sm" id="btn_calc_{{i}}" data-toggle="collapse" data-target="#collapse_{{i}}" aria-expanded="false" aria-controls="collapse_{{i}}" style="display:none">Calculator</button>
+        <button type="button" class="btn btn-secondary btn-sm" id="btn_druginfo_{{i}}" data-toggle="collapse" data-target="#collapse2_{{i}}" aria-expanded="false" aria-controls="collapse2_{{i}}" style="display:none">Drug Information</button>
+        <label for="trigger_{{i}}" onclick="dropDown(this,{{i}});">
+            <input type="checkbox" id="trigger_{{i}}" checked data-toggle="toggle" data-on="Calculator" data-off="Drug Information" data-onstyle="success" data-offstyle="danger" style="width:100px">
+        </label>
+        <input id="trigger_calc_{{i}}" style="display:none">
+        <input id="trigger_drug_{{i}}" style="display:none">
     </div>
     <div class="col-xs-8">
         <input type="text" name="note_{{i}}" id="id_note_{{i}}" placeholder="Note">
     </div>
 </div>
+
+<script>
+    function dropDown(a,i){
+        console.log('a',a);
+        $( "#trigger_calc_"+i).on( "click", function() {
+            $('#btn_calc_'+i).trigger( "click" );
+        });
+        $( "#trigger_drug_"+i ).on( "click", function() {
+            $('#btn_druginfo_'+i).trigger( "click" );
+        });
+        console.log(a);
+        var child=a.children[0];
+        if($(child).hasClass( "off" )){
+            // console.log("has class off");
+            // console.log(i);
+            $( "#trigger_calc_"+i ).trigger( "click" );
+            $( "#trigger_drug_"+i ).trigger( "click" );
+        }else{
+            $( "#trigger_calc_"+i ).trigger( "click" );
+            $( "#trigger_drug_"+i ).trigger( "click" );
+        }
+    };
+</script>
+
+
 <hr>
 
 <script>
@@ -166,9 +197,15 @@
             if($('#id_start_time_{{i}}').val().length>0 && $('#id_end_time_{{i}}').val().length>0){
                 var reserv1 = new Date(year,month,day,$('#id_end_time_{{i}}').val().split(":")[0],$('#id_end_time_{{i}}').val().split(":")[1]);
                 var reserv2 = new Date(year,month,day,$('#id_start_time_{{i}}').val().split(":")[0],$('#id_start_time_{{i}}').val().split(":")[1]);
-                $('#id_time_units').prop('disabled', false);
-                $('#id_time_units').val(Math.ceil((reserv1-reserv2)/(1000*60*15)));
-                $('#id_time_units').prop('disabled', true);
+                if(reserv1-reserv2>0){
+                    $('#id_time_units').prop('disabled', false);
+                    $('#id_time_units').val(Math.ceil((reserv1-reserv2)/(1000*60*15)));
+                    $('#id_time_units').prop('disabled', true);
+                }else{
+                    $('#id_time_units').prop('disabled', false);
+                    $('#id_time_units').val("0");
+                    $('#id_time_units').prop('disabled', true);
+                }
             }   
         });
 </script>
