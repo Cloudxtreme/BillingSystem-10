@@ -1,40 +1,40 @@
 <div id="procedure_line_{{i}}">
-    <div class="row">
-        <div class="col-xs-4 placeholder label-placeholder">Diagnonsis Pointer</div>
-        <div class="col-xs-2">
-            <select name="dx_pt_s1_{{i}}" required>
-                <option selected disabled>---</option>
-                {% for dx_pt in dx_pt_range %}
-                <option value="{{dx_pt}}">{{ dx_pt }}</option>
-                {% endfor %}
-            </select>
-        </div>
-        <div class="col-xs-2">
-            <select name="dx_pt_s2_{{i}}">
-                <option selected>---</option>
-                {% for dx_pt in dx_pt_range %}
-                <option value="{{dx_pt}}">{{ dx_pt }}</option>
-                {% endfor %}
-            </select>
-        </div>
-        <div class="col-xs-2">
-            <select name="dx_pt_s3_{{i}}">
-                <option selected>---</option>
-                {% for dx_pt in dx_pt_range %}
-                <option value="{{dx_pt}}">{{ dx_pt }}</option>
-                {% endfor %}
-            </select>
-        </div>
-        <div class="col-xs-2">
-            <select name="dx_pt_s4_{{i}}">
-                <option selected>---</option>
-                {% for dx_pt in dx_pt_range %}
-                <option value="{{dx_pt}}">{{ dx_pt }}</option>
-                {% endfor %}
-            </select>
-        </div>
+<div class="row">
+    <div class="col-xs-4 placeholder label-placeholder">Diagnonsis Pointer</div>
+    <div class="col-xs-2">
+        <select name="dx_pt_s1_{{i}}" >
+            <option selected >---</option>
+            {% for dx_pt in dx_pt_range %}
+            <option value="{{dx_pt}}">{{ dx_pt }}</option>
+            {% endfor %}
+        </select>
     </div>
-    <p></p>
+    <div class="col-xs-2">
+        <select name="dx_pt_s2_{{i}}">
+            <option selected>---</option>
+            {% for dx_pt in dx_pt_range %}
+            <option value="{{dx_pt}}">{{ dx_pt }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-xs-2">
+        <select name="dx_pt_s3_{{i}}">
+            <option selected>---</option>
+            {% for dx_pt in dx_pt_range %}
+            <option value="{{dx_pt}}">{{ dx_pt }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-xs-2">
+        <select name="dx_pt_s4_{{i}}">
+            <option selected>---</option>
+            {% for dx_pt in dx_pt_range %}
+            <option value="{{dx_pt}}">{{ dx_pt }}</option>
+            {% endfor %}
+        </select>
+    </div>
+</div>
+<p></p>
 
     <div class="row">
         <div class="col-xs-4">
