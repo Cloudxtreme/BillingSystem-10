@@ -32,39 +32,46 @@
     </select>
     <br>
     <br>
+
+    <input type="text" name="normal name" value="normal value">
+    <input type="text" disabled name="disable name" value="dis value">
+    <input type="text" readonly name="read name" value="read value">
+    <input type="hidden" name="hid name" value="hid value">
+
+    
     <input type="submit" value="Make a form">
 </form>
 
 
 <script>
-    $(function() {
-        var availablePatient = [];
+    // $(function() {
+    //     var availablePatient = [];
         
-        $.ajax({
-            url: "{% url 'infoGatherer:get_make_claim_extra_context' %}",
-        }).done(function(data) {
-            jObj = JSON.parse(data);
-            patient_list = jObj.patient_list;
+    //     $.ajax({
+    //         url: "{% url 'infoGatherer:get_make_claim_extra_context' %}",
+    //     }).done(function(data) {
+    //         jObj = JSON.parse(data);
+    //         patient_list = jObj.patient_list;
 
-            for(patient of patient_list)
-                availablePatient.push({value: patient.first_name + ' ' + patient.last_name, data: patient.chart_no})
+    //         for(patient of patient_list)
+    //             availablePatient.push({value: patient.first_name + ' ' + patient.last_name, data: patient.chart_no})
 
-            console.log('availablePatient', availablePatient);
+    //         console.log('availablePatient', availablePatient);
 
-            $("#id_pat_name").autocomplete({
-                lookup: availablePatient,
-                onSelect: function (suggestion) {
-                    console.log(suggestion.value);
-                    $("#patient_chart_no").val(suggestion.data);
-                }
-            });
-        });
+    //         $("#id_pat_name").autocomplete({
+    //             lookup: availablePatient,
+    //             onSelect: function (suggestion) {
+    //                 console.log(suggestion.value);
+    //                 $("#patient_chart_no").val(suggestion.data);
+    //             }
+    //         });
+    //     });
 
-    });
+    // });
 </script>
 
 <style type="text/css">
-    .autocomplete-suggestions { border: 1px solid #999; background: #fff; cursor: default; overflow: auto; }
+    /*.autocomplete-suggestions { border: 1px solid #999; background: #fff; cursor: default; overflow: auto; }
     .autocomplete-suggestion { padding: 10px 5px; font-size: 1.2em; white-space: nowrap; overflow: hidden; }
     .autocomplete-selected { background: #f0f0f0; }
     .autocomplete-suggestions strong { font-weight: normal; color: #3399ff; }
@@ -95,5 +102,5 @@
     #searchfield form .biginput:focus {
         color: #858585;
     }
-    
+    */
 </style>
