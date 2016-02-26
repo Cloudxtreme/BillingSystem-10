@@ -260,6 +260,58 @@ def print_form(bar):
     now = datetime.datetime.now()
     fields.append(('67',str(now.month)+"|"+str(now.day)+"|"+str(now.year)))
 
+    # Service Information
+    npi=Provider.objects.filter(provider_name=bar['rendering_provider_name']).values()[0]
+    rendering_p_npi=rendering_p['npi']
+    
+    for i in range(1,7):
+
+        # date field
+        # print ('service_start_date_'+str(i))
+        # print bar['service_start_date_'+str(i)]
+        if(len(bar['service_start_date_'+str(i)])!=0):
+            da=bar['service_start_date_'+str(i)]
+            # print (114+str(23*i-23))
+            fields.append((str(114+(23*i-23)),da.split("-")[1]))
+            fields.append((str(117+(23*i-23)),da.split("-")[1]))
+            fields.append((str(115+(23*i-23)),da.split("-")[2]))
+            fields.append((str(118+(23*i-23)),da.split("-")[2]))
+            fields.append((str(116+(23*i-23)),da.split("-")[0][-2:]))
+            fields.append((str(119+(23*i-23)),da.split("-")[0][-2:]))
+
+        # Place of service
+        da=bar['place_of_service_'+str(i)]
+        fields.append((str(120+(23*i-23)),da))
+
+        # EMG
+        da=bar['emg_'+str(i)]
+        fields.append((str(121+(23*i-23)),da))
+
+        # CPT code and charge
+        code=bar['cpt_code_'+str(i)]
+        fields.append((str(122+(23*i-23)),code))
+        # charge=bar['total_'+str(i)]
+        # fields.append((str(128+(23*i-23)),charge))
+
+        # Modifiers
+        fields.append((str(123+(23*i-23)),bar['mod_a_'+str(i)]))
+        fields.append((str(124+(23*i-23)),bar['mod_b_'+str(i)]))
+        fields.append((str(125+(23*i-23)),bar['mod_c_'+str(i)]))
+        fields.append((str(126+(23*i-23)),bar['mod_d_'+str(i)]))
+
+        # Diagnostic pointer
+        diag=(bar['dx_pt_s1_'+str(i)] if bar['dx_pt_s1_'+str(i)]!='---' else '')+(bar['dx_pt_s2_'+str(i)] if bar['dx_pt_s2_'+str(i)]!='---' else '')+(bar['dx_pt_s3_'+str(i)] if bar['dx_pt_s3_'+str(i)]!='---' else '')+(bar['dx_pt_s4_'+str(i)] if bar['dx_pt_s4_'+str(i)]!='---' else '')
+        fields.append((str(127+(23*i-23)),diag))
+
+        # Note
+        fields.append((str(110+(23*i-23)),bar['note_'+str(i)]))
+
+        #Provider ID
+        if(len(code)>0):
+            fields.append((str(132+(23*i-23)),rendering_p_npi))
+        
+
+
     # PDF generation
     fdf = forge_fdf("",fields,[],[],[])
     fdf_file = open("data.fdf","w")
