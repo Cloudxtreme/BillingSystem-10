@@ -38,6 +38,7 @@ def PostAdPage(request):
     form5=CptForms(request.GET or None)
 
     dx_pt_range = [chr(i + ord('A')) for i in range(0,12)]
+    loop_times= range(0, 12)
 
     if 'pat_name' in request.GET and request.GET['pat_name']:
         if form.is_valid() and form2.is_valid() and form3.is_valid() and form4.is_valid() and form5.is_valid() :
@@ -52,7 +53,8 @@ def PostAdPage(request):
         'form3':form3,
         'form4': form4,
         'cptform': form5,
-        'dx_pt_range': dx_pt_range
+        'dx_pt_range': dx_pt_range,
+        'loop_times' : loop_times
     })
 
 def get_make_claim_extra_context(request):
@@ -310,6 +312,16 @@ def print_form(bar):
         #Provider ID
         if(len(code)>0):
             fields.append((str(132+(23*i-23)),rendering_p_npi))
+
+        #units
+        if(len(bar['note_'+str(i)])>0):
+            txt=bar['note_'+str(i)]
+            if(txt.split()[0]=='START'):
+                fields.append((str(130+(23*i-23)),txt.split()[7]))
+            else:
+                fields.append((str(130+(23*i-23)),txt.split()[2][-2:]))
+                
+
     # Total charge
     fields.append(('254',sum(charge)))
 
