@@ -23,3 +23,26 @@ urlpatterns = [
     url(r'^claims/', include('claims.urls')),
     url(r'^accounts/', include('accounts.urls')),
 ]
+
+
+# Initial Administrator account once server run
+from django.conf import settings
+from config import config
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
+
+if not User.objects.filter(email=config.get('default_admin_email')).exists():
+    admin = User.objects.create_superuser(
+        email=config.get('default_admin_email'),
+        password=config.get('default_admin_password'),
+        first_name=config.get('default_admin_first_name'),
+        last_name=config.get('default_admin_last_name')
+    );
+
+    print '\n'
+    print 'Default admin has been created.  Account\'s details are as follow:'
+    print 'Email\t\t:\t%s' % (admin.email)
+    print 'Password\t:\t%s' % (config.get('default_admin_password'))
+    print 'Full Name\t:\t%s' % (admin.get_full_name())
+    print '\n\n\n'
