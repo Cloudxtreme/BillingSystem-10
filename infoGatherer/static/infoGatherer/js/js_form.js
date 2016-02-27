@@ -49,6 +49,15 @@ function init(){
     // render page only after script has loaded
     document.getElementById("hideAll").style.display = "block";
             
+    // Custom Validation
+    // jQuery.validator.addMethod("selectnic", function(value, element){
+    //     if (/^[0-9]{9}[vVxX]$/.test(value)) {
+    //         return false;
+    //     } else {
+    //         return true;
+    //     };
+    // }, "wrong nic number"); 
+
 
     // form validation
     $('form').validate({
