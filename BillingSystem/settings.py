@@ -42,6 +42,7 @@ INSTALLED_APPS = (
     'localflavor',
     'claims.apps.ClaimsConfig',
     'accounts',
+    'dashboard',
 )
 
 MIDDLEWARE_CLASSES = (

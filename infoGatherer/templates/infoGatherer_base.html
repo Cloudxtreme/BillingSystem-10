@@ -1,0 +1,13 @@
+{% if user.is_authenticated %}
+    <p>Welcome, {{ user.username }}  <a href="/info/logout">[logout]</a></p>
+    <a href="/info/patient/new/">Add a New Patient </a>
+    <br>
+    <a href="/info/view/all/">Modify an Existing Patient </a>
+    {% block content %}
+        
+    {% endblock %}
+{% else %}
+   {% block data %}
+    <a href="{% url views.user_login %}?next={% firstof request.path '/' %}">Login</a>
+   {% endblock %}
+{% endif %}
