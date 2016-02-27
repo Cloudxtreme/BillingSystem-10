@@ -102,10 +102,23 @@ function init(){
             },
             first_name: "required",
             last_name: "required",
-            NPI: "required"
+            NPI: "required",
+            billing_provider_name: "required",
+            location_provider_name: "required",
+            rendering_provider_name: "required",
+            cpt_code_1: "required",
+            service_start_date_1: "required"
         },
         highlight: function(element) {
-            $(element).closest('.form-group').addClass('has-error');
+            console.log($(element));
+            if($(element).attr("id")===("id_cpt_code_1")){
+                console.log("123");
+
+                // not working
+                $(element).addClass('has-error');
+            }else{
+                $(element).closest('.form-group').addClass('has-error');
+            }
         },
         unhighlight: function(element) {
             $(element).closest('.form-group').removeClass('has-error');
