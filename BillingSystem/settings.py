@@ -101,7 +101,7 @@ if DEBUG:
     EMAIL_HOST = 'smtp.office365.com'
     EMAIL_PORT = 587
     EMAIL_HOST_USER = 'ekasit.jarussinvichai@xenonhealth.com'
-    EMAIL_HOST_PASSWORD = 'Xenonhealth'
+    EMAIL_HOST_PASSWORD = 'H@ppy001'
     EMAIL_USE_TLS = True
     DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 

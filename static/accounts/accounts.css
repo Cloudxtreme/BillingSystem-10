@@ -1,0 +1,27 @@
+.form-accounts h3 {
+    background-color: #1E8FD6;
+    border-radius: 15px 15px 0 0;
+    color: #fff;
+    padding: 20px 30px;
+    margin: 0px;
+}
+
+.form-accounts fieldset {
+    background-color: #e7e7e7;
+    border-radius: 0 0 15px 15px;
+    padding: 20px;
+}
+
+.form-accounts fieldset input {
+    font-size: 1.2em;
+}
+
+.form-accounts fieldset input[type="submit"] {
+    background-color: #1E8FD6;
+    color: #fff;
+    margin-top: 25px;
+}
+
+.form-accounts a {
+    float: right;
+}

@@ -12,12 +12,9 @@ from django.template.context import RequestContext
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 from django.forms import formset_factory
-
 from django.views.generic import FormView
 from django.template.loader import get_template
-from django.core import serializers
 from django.forms.models import model_to_dict
-from django.contrib.auth.decorators import login_required
 
 from fdfgen import forge_fdf
 

@@ -15,8 +15,8 @@
         <link rel="stylesheet" href="{% static 'css/custom.css' %}">
 
         
-        <script src="{% static 'js/bootstrap.min.js' %}"></script>
         <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+        <script src="{% static 'js/bootstrap.min.js' %}"></script>
 
         <script src="{% static 'js/moment.js' %}"></script>
         <script src="{% static 'js/pikaday.js' %}"></script>
@@ -28,6 +28,8 @@
     </head>
 
     <body>
+        {% include "navbar.html" %}
+
         {% block body %}
         {% endblock body %}
     </body>

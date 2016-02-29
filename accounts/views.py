@@ -23,7 +23,7 @@ def sign_in(request):
 
         if user is not None and user.is_active:
             auth.login(request, user)
-            return redirect(request.GET.get('next', reverse('accounts:success')))
+            return redirect(request.GET.get('next', reverse('dashboard:dashboard')))
         else:
             return render(request, 'accounts/failure.html')
 
