@@ -380,7 +380,7 @@ function updateNote(i) {
         var unit = $('#id_unit_' + i).val();
 
         if(desc && ndc && quantity && unit) {
-            text = desc + ' ' + 'N4' + ndc + ' ' + unit + quantity;
+            text = desc + ' ' + 'N4' + ndc + ' ' + unit+ quantity;
             text = text.toUpperCase();
 
             $('#id_note_' + i).val(text);
