@@ -64,7 +64,7 @@ function init(){
     jQuery.validator.addMethod("validation_date", function(value, element){
         if(value.length==0){
             var num=$(element).attr("id").substr($(element).attr("id").length - 1);
-            console.log($("#id_cpt_code_"+num).val().length);
+            // console.log($("#id_cpt_code_"+num).val().length);
             if($("#id_cpt_code_"+num).val().length!=0){
                 return false;
             }
@@ -123,7 +123,7 @@ function init(){
             cpt_charge_1: "required"
         },
         highlight: function(element) {
-            console.log($(element));
+            // console.log($(element));
             if($(element).attr("id")===("id_cpt_code_1")){
                 $(element).parent().addClass('has-error');
             }
@@ -133,9 +133,9 @@ function init(){
             else if($(element).attr("id").substring(3, 5)==="dx"){
                 for(i=1;i<=4;i++){
                     var s="id_dx_pt_s"+i; // regex match
-                    console.log($(element).attr("id").substring(0,11), s);
+                    // console.log($(element).attr("id").substring(0,11), s);
                     if($(element).attr("id").substring(0,11).localeCompare(s)==0){
-                        console.log("matched!");
+                        // console.log("matched!");
                         $(element).parent().addClass('has-error');
                     }
                 }
