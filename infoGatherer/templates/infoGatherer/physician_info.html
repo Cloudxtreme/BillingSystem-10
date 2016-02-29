@@ -2,7 +2,7 @@
 <div class="row">
     <div class="col-xs-4 placeholder label-placeholder">Diagnonsis Pointer</div>
     <div class="col-xs-2">
-        <select name="dx_pt_s1_{{i}}" >
+        <select class="dropValidation" name="dx_pt_s1_{{i}}" id="id_dx_pt_s1_{{i}}" >
             <option selected >---</option>
             {% for dx_pt in dx_pt_range %}
                 <option value="{{dx_pt}}">{{ dx_pt }}</option>
@@ -10,7 +10,7 @@
         </select>
     </div>
     <div class="col-xs-2">
-        <select name="dx_pt_s2_{{i}}">
+        <select class="dropValidation" name="dx_pt_s2_{{i}}" id="id_dx_pt_s2_{{i}}">
             <option selected>---</option>
             {% for dx_pt in dx_pt_range %}
             <option value="{{dx_pt}}">{{ dx_pt }}</option>
@@ -18,7 +18,7 @@
         </select>
     </div>
     <div class="col-xs-2">
-        <select name="dx_pt_s3_{{i}}">
+        <select class="dropValidation" name="dx_pt_s3_{{i}}" id="id_dx_pt_s3_{{i}}">
             <option selected>---</option>
             {% for dx_pt in dx_pt_range %}
                 <option value="{{dx_pt}}">{{ dx_pt }}</option>
@@ -26,13 +26,14 @@
         </select>
     </div>
     <div class="col-xs-2">
-        <select name="dx_pt_s4_{{i}}">
+        <select class="dropValidation" name="dx_pt_s4_{{i}}" id="id_dx_pt_s4_{{i}}">
             <option selected>---</option>
             {% for dx_pt in dx_pt_range %}
                 <option value="{{dx_pt}}">{{ dx_pt }}</option>
             {% endfor %}
         </select>
     </div>
+   
 </div>
 <p></p>
 
@@ -57,7 +58,7 @@
 
     <div class="row">
         <div class="col-xs-4">
-            <input type="date" id="id_service_start_date_{{i}}" name="service_start_date_{{i}}" class="placeholder">
+            <input type="date" id="id_service_start_date_{{i}}" name="service_start_date_{{i}}" class="placeholder dateValidation">
         </div>
         <div class="col-xs-3">
             <input id="id_place_of_service_{{i}}" name="place_of_service_{{i}}" placeholder="Place of Service" type="text">

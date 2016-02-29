@@ -50,14 +50,27 @@ function init(){
     document.getElementById("hideAll").style.display = "block";
             
     // Custom Validation
-    // jQuery.validator.addMethod("selectnic", function(value, element){
-    //     if (/^[0-9]{9}[vVxX]$/.test(value)) {
-    //         return false;
-    //     } else {
-    //         return true;
-    //     };
-    // }, "wrong nic number"); 
+    jQuery.validator.addMethod("validation_diagnosis", function(value, element){
+        if(value.charCodeAt(0)>=65 && value.charCodeAt(0)<=76){
+            var s="#id_ICD_10_"+(value.charCodeAt(0)-"A".charCodeAt(0)+1).toString();
+            // console.log(s);
+            if($(s).val().length==0){
+                return false;
+            }
+        }
+        return true;
+    }); 
 
+    jQuery.validator.addMethod("validation_date", function(value, element){
+        if(value.length==0){
+            var num=$(element).attr("id").substr($(element).attr("id").length - 1);
+            console.log($("#id_cpt_code_"+num).val().length);
+            if($("#id_cpt_code_"+num).val().length!=0){
+                return false;
+            }
+        }
+        return true;
+    });
 
     // form validation
     $('form').validate({
@@ -107,24 +120,50 @@ function init(){
             location_provider_name: "required",
             rendering_provider_name: "required",
             cpt_code_1: "required",
-            service_start_date_1: "required"
+            cpt_charge_1: "required"
         },
         highlight: function(element) {
             console.log($(element));
             if($(element).attr("id")===("id_cpt_code_1")){
-                console.log("123");
-
-                // not working
-                $(element).addClass('has-error');
-            }else{
+                $(element).parent().addClass('has-error');
+            }
+            else if($(element).attr("id")===("id_cpt_charge_1")){
+                $(element).parent().addClass('has-error');
+            }
+            else if($(element).attr("id").substring(3, 5)==="dx"){
+                for(i=1;i<=4;i++){
+                    var s="id_dx_pt_s"+i; // regex match
+                    console.log($(element).attr("id").substring(0,11), s);
+                    if($(element).attr("id").substring(0,11).localeCompare(s)==0){
+                        console.log("matched!");
+                        $(element).parent().addClass('has-error');
+                    }
+                }
+            }
+            else if($(element).attr("id").substring(3,16)==="service_start"){
+                $(element).parent().addClass('has-error');
+            }
+            else{
                 $(element).closest('.form-group').addClass('has-error');
             }
+            
         },
         unhighlight: function(element) {
             $(element).closest('.form-group').removeClass('has-error');
+            $(element).parent().removeClass('has-error');
         }
 
     });
+    jQuery.validator.addClassRules('dropValidation', {
+        validation_diagnosis : true
+    });
+    jQuery.validator.addClassRules('dateValidation', {
+        validation_date : true
+    });
+    
+
+
+
 
     // Hide-Display block for service
     (function($){
@@ -167,74 +206,3 @@ function init(){
 
 }
 window.onload = init;
-$('.btn-number').click(function(e){
-    e.preventDefault();
-    
-    fieldName = $(this).attr('data-field');
-    type      = $(this).attr('data-type');
-    var input = $("input[name='"+fieldName+"']");
-    var currentVal = parseInt(input.val());
-    if (!isNaN(currentVal)) {
-        if(type == 'minus') {
-            
-            if(currentVal > input.attr('min')) {
-                input.val(currentVal - 1).change();
-            } 
-            if(parseInt(input.val()) == input.attr('min')) {
-                $(this).attr('disabled', true);
-            }
-
-        } else if(type == 'plus') {
-
-            if(currentVal < input.attr('max')) {
-                input.val(currentVal + 1).change();
-            }
-            if(parseInt(input.val()) == input.attr('max')) {
-                $(this).attr('disabled', true);
-            }
-
-        }
-    } else {
-        input.val(0);
-    }
-});
-$('.input-number').focusin(function(){
-   $(this).data('oldValue', $(this).val());
-});
-$('.input-number').change(function() {
-    
-    minValue =  parseInt($(this).attr('min'));
-    maxValue =  parseInt($(this).attr('max'));
-    valueCurrent = parseInt($(this).val());
-    
-    name = $(this).attr('name');
-    if(valueCurrent >= minValue) {
-        $(".btn-number[data-type='minus'][data-field='"+name+"']").removeAttr('disabled')
-    } else {
-        alert('Sorry, the minimum value was reached');
-        $(this).val($(this).data('oldValue'));
-    }
-    if(valueCurrent <= maxValue) {
-        $(".btn-number[data-type='plus'][data-field='"+name+"']").removeAttr('disabled')
-    } else {
-        alert('Sorry, the maximum value was reached');
-        $(this).val($(this).data('oldValue'));
-    }
-    
-    
-});
-$(".input-number").keydown(function (e) {
-        // Allow: backspace, delete, tab, escape, enter and .
-        if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 190]) !== -1 ||
-             // Allow: Ctrl+A
-            (e.keyCode == 65 && e.ctrlKey === true) || 
-             // Allow: home, end, left, right
-            (e.keyCode >= 35 && e.keyCode <= 39)) {
-                 // let it happen, don't do anything
-                 return;
-        }
-        // Ensure that it is a number and stop the keypress
-        if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
-            e.preventDefault();
-        }
-    });
