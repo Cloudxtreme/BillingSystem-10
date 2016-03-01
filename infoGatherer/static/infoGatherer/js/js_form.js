@@ -161,10 +161,6 @@ function init(){
         validation_date : true
     });
     
-
-
-
-
     // Hide-Display block for service
     (function($){
         var originalVal = $('.input-number').val;
@@ -203,6 +199,55 @@ function init(){
     $("div.toggle").width("124px");
     $("div.toggle-group").width("295px");
     
+
+    // Javascript validation for diagnosis - service information
+
+    var cells = [1,0,0,0,0,0,0,0,0,0,0,0];
+
+
+    
+    var element="#id_dx_pt_s1_1";
+    var val=($(element).val()).charCodeAt(0)-"A".charCodeAt(0);
+    console.log($(element).val());
+    if(cells[val]!=1){
+        cells[val]=1;
+    }
+    else{
+        console.log("123123");
+        element.parent().addClass('has-error');
+        // Red the box
+    }
+    
+    
+    // $("#selectBox option[value='option1']").remove();
+    var cells = [1,0,0,0,0,0,0,0,0,0,0,0];
+    //Define a onchange handler:
+    var changeHandler = function() {
+        //You can alert the value of the selected option, using this:
+        var val=this.value.charCodeAt(0)-"A".charCodeAt(0);
+        console.log(this.value);
+        if(cells[val]!=1){
+            cells[val]=1;
+        }
+        else{
+            console.log("123123");
+            console.log($($(this).attr("id")));
+            $($(this).attr("id")).parent().addClass('has-error');
+            // Red the box
+        }
+        console.log(cells);
+
+
+    }
+    var filter=document.getElementById("id_dx_pt_s1_1");
+    if(filter.addEventListener)
+      filter.addEventListener("change", changeHandler, false);
+    //If it doesn't exist, try attachEvent, the IE way:
+    else if(filter.attachEvent)
+      filter.attachEvent("onchange", changeHandler);
+    //Just use onchange if neither exist
+    else
+      filter.onchange = changeHandler;
 
 }
 window.onload = init;

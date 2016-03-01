@@ -26,6 +26,9 @@ from infoGatherer.models import (
     Payer, ReferringProvider, Provider, PROVIDER_ROLE_CHOICES, CPT)
 
 
+def TrackCharges(request):
+    return render(request, 'track_charges.html')
+
 @login_required
 def PostAdPage(request):
     form=PostAdForm(request.GET or None)
