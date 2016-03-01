@@ -20,7 +20,8 @@ from fdfgen import forge_fdf
 
 from infoGatherer.forms import (
     PostAdForm, PatientForm, GuarantorForm, InsuranceForm,
-    ReferringProviderForm, dxForm, OtherProviderForm, CptForms)
+    ReferringProviderForm, dxForm, OtherProviderForm, CptForms,
+    ProcedureForm)
 from infoGatherer.models import (
     PostAd, Guarantor_Information, Insurance_Information, Personal_Information,
     Payer, ReferringProvider, Provider, PROVIDER_ROLE_CHOICES, CPT)
@@ -29,29 +30,35 @@ from infoGatherer.models import (
 @login_required
 def PostAdPage(request):
     form=PostAdForm(request.GET or None)
-    form2=ReferringProviderForm(request.GET or None)
     form3=dxForm(request.GET or None)
     form4=OtherProviderForm(request.GET or None)
     form5=CptForms(request.GET or None)
+
+
+    procedure_form = [ProcedureForm(i) for i in xrange(6)]
+
+    print procedure_form[1]
+
+
 
     dx_pt_range = [chr(i + ord('A')) for i in range(0,12)]
     loop_times= range(0, 12)
 
     if 'pat_name' in request.GET and request.GET['pat_name']:
-        if form.is_valid() and form2.is_valid() and form3.is_valid() and form4.is_valid() and form5.is_valid() :
+        if form.is_valid() and form3.is_valid() and form4.is_valid() and form5.is_valid() :
             var=print_form(request.GET);
             return var
         else:
-            print form.errors and form2.errors and form3.errors and form4.errors and form5.errors
+            print form.errors and form3.errors and form4.errors and form5.errors
 
     return render(request, 'post_ad.html', {
         'form': form,
-        'form2':form2,
         'form3':form3,
         'form4': form4,
         'cptform': form5,
         'dx_pt_range': dx_pt_range,
-        'loop_times' : loop_times
+        'loop_times' : loop_times,
+        'procedure_form': procedure_form,
     })
 
 def get_make_claim_extra_context(request):
@@ -110,10 +117,18 @@ def search_form(request):
 def print_form(bar):
 
     # Patient Information
-    fields = [('11',bar['pat_name']),('18',bar['pat_streetaddress']),('19',bar['pat_city']),('20',bar['pat_state']),('21',bar['pat_zip']),('22',bar['pat_telephone'].split('-')[0]),('23',bar['pat_telephone'].split('-')[1]+"-"+bar['pat_telephone'].split('-')[2])]
-    fields.append(('12',bar['birth_date'].split('-')[1]))
-    fields.append(('14',bar['birth_date'].split('-')[0]))
-    fields.append(('13',bar['birth_date'].split('-')[2]))
+    fields = [
+        ('11',bar['pat_name']),
+        ('18',bar['pat_streetaddress']),
+        ('19',bar['pat_city']),
+        ('20',bar['pat_state']),
+        ('21',bar['pat_zip']),
+        ('22',bar['pat_telephone'].split('-')[0]),
+        ('23',bar['pat_telephone'].split('-')[1]+"-"+bar['pat_telephone'].split('-')[2])
+    ]
+    fields.append(('12',bar['pat_birth_date'].split('-')[1]))
+    fields.append(('14',bar['pat_birth_date'].split('-')[0]))
+    fields.append(('13',bar['pat_birth_date'].split('-')[2]))
     fields.append(('10',bar['insured_idnumber']))
     fields.append(('txt8',bar['pat_reservednucc1']))
     fields.append(('56_1',bar['claim_codes']))
@@ -157,7 +172,7 @@ def print_form(bar):
     fields.append(('2',bar['payer_name']+"\n"+bar['payer_address']))
 
     # Physician Information
-    fields.append(('81',bar['first_name']))
+    fields.append(('81',bar['referring_name']))
     fields.append(('84',bar['NPI']))
     fields.append(('93',True))
     fields.append(('94','0.00'))
@@ -216,7 +231,7 @@ def print_form(bar):
     fields.append(('53',bar['pat_auto_accident_state']))
     fields.append(('42',bar['pat_reservednucc2']))
     fields.append(('47',bar['pat_reservednucc3']))
-    fields.append(('48',bar['pat_insuranceplanname']))
+    fields.append(('48',bar['other_insured_insur_plan_name']))
     fields.append(('56',bar['claim_codes']))
     fields.append(('40',bar['pat_other_insured_name']))
     fields.append(('41',bar['pat_other_insured_policy']))
@@ -227,7 +242,7 @@ def print_form(bar):
     fields.append(('31',bar['insured_zip']))
     fields.append(('32',bar['insured_telephone'].split('-')[0]))
     fields.append(('33',bar['insured_telephone'].split('-')[1]+"-"+bar['insured_telephone'].split('-')[2]))
-    fields.append(('63',bar['insured_plan_name_program'].split('-')[0]))
+    fields.append(('63',bar['insured_insur_plan_name'].split('-')[0]))
 
     if(bar['insured_sex']=='M'):
         fields.append(('60',True))

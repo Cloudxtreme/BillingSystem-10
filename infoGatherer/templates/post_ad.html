@@ -61,8 +61,8 @@
     </div>
     <!-- Birth Date -->
     <div class="fieldWrapper ">
-        <label for="id_birth_date">Birth Date</label>
-        {{ form.birth_date }}
+        <label for="id_pat_birth_date">Birth Date</label>
+        {{ form.pat_birth_date }}
     </div>
     <!-- *Patient sex -->
     <div class="fieldWrapper ">
@@ -71,9 +71,9 @@
     </div>
     <!-- *Patient Relationship to Insured -->
     <div class="fieldWrapper">
-        {{ form.pat_relationship.errors }}
-        <label for="id_pat_relationship">Patient's Relationship to Insured</label>
-        {{ form.pat_relationship }}
+        {{ form.pat_relationship_insured.errors }}
+        <label for="id_pat_relationship_insured">Patient's Relationship to Insured</label>
+        {{ form.pat_relationship_insured }}
     </div>
     
     <div class="fieldWrapper">
@@ -126,8 +126,8 @@
         </div>
         <!-- Insurance plan name or program name -->
         <div class="fieldWrapper">
-            <label for="id_pat_insuranceplanname">Insurance plan name or program name</label>
-            {{ form.pat_insuranceplanname }}
+            <label for="id_other_insured_insur_plan_name">Insurance plan name or program name</label>
+            {{ form.other_insured_insur_plan_name }}
         </div>
     </div>
 
@@ -187,8 +187,8 @@
         {{ form.insured_telephone }}
     </div>
     <div class="fieldWrapper ">
-        <label for="id_insured_other_insured_policy">Insured's Policy/Group Number</label>
-        {{ form.insured_other_insured_policy }}
+        <label for="id_insured_policy">Insured's Policy/Group Number</label>
+        {{ form.insured_policy }}
     </div>
     <!-- Birth Date -->
     <div class="fieldWrapper ">
@@ -205,20 +205,20 @@
         {{ form.other_cliam_id }}
     </div>
     <div class="fieldWrapper ">
-        <label for="id_insured_plan_name_program">Insurance plan name or program name</label>
-        {{ form.insured_plan_name_program }}
+        <label for="id_insured_insur_plan_name">Insurance plan name or program name</label>
+        {{ form.insured_insur_plan_name }}
     </div>
     
     <br/>
     <h1>Physician Informaiton</h1><br/><br/>
     <div class="fieldWrapper ">
-        <label for="id_first_name">Name</label>
-        {{ form2.first_name }}
-        <input type="hidden" id="hidden_id_first_name">
+        <label for="id_referring_name">Name</label>
+        {{ form.referring_name }}
+        <input type="hidden" id="hidden_id_referring_name">
     </div> 
     <div class="fieldWrapper ">
         <label for="id_NPI">NPI</label>
-        {{ form2.NPI }}
+        {{ form.NPI }}
     </div>  
     
     <div class="form-group fieldWrapper">
@@ -239,19 +239,19 @@
     <!-- Billing Provider -->
     <div class="fieldWrapper ">
         <label for="id_billing_provider_name">Billing Provider's name</label>
-        <input id="id_billing_provider_name" maxlength="128" name="billing_provider_name" type="text" class=" ">
+        {{  form.billing_provider_name }}
         <input type="hidden" id="hidden_id_billing_provider_name">
     </div>
     <!-- Location Provider -->
     <div class="fieldWrapper ">
         <label for="id_location_provider_name">Location Provider's name</label>
-        <input id="id_location_provider_name" maxlength="128" name="location_provider_name" type="text" class=" ">
+        {{  form.location_provider_name }}
         <input type="hidden" id="hidden_id_location_provider_name">
     </div>
     <!-- Rendering Provider -->
     <div class="fieldWrapper ">
         <label for="id_rendering_provider_name">Rendering Provider's name</label>
-        <input id="id_rendering_provider_name" maxlength="128" name="rendering_provider_name" type="text" class=" ">
+        {{  form.rendering_provider_name }}
         <input type="hidden" id="hidden_id_rendering_provider_name">
     </div>
 

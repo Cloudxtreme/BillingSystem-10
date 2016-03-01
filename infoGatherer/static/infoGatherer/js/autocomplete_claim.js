@@ -15,7 +15,7 @@ function autocomplete_claim(api_urls) {
     $("#id_insured_idnumber").val($('#hidden_id_insured_id').val() || $("#id_payer_num").attr('value'));
     $("#id_payer_num").val($('#hidden_id_payer_num').val() || $("#id_payer_num").attr('value'));
     $("#id_payer_name").val($('#hidden_id_payer_name').val() || $("#id_payer_name").attr('value'));
-    $("#id_first_name").val($('#hidden_id_first_name').val() || $("#id_first_name").attr('value'));
+    $("#id_referring_name").val($('#hidden_id_referring_name').val() || $("#id_referring_name").attr('value'));
     $("#id_billing_provider_name").val($('#hidden_id_billing_provider_name').val() || $("#id_billing_provider_name").attr('value'));
     $("#id_location_provider_name").val($('#hidden_id_location_provider_name').val() || $("#id_location_provider_name").attr('value'));
     $("#id_rendering_provider_name").val($('#hidden_id_rendering_provider_name').val() || $("#id_rendering_provider_name").attr('value'));
@@ -54,7 +54,7 @@ function autocomplete_claim(api_urls) {
                         $("#id_pat_state").val(patient_info.state);
                         $("#id_pat_zip").val(patient_info.zip);
                         $("#id_pat_telephone").val(patient_info.home_phone);
-                        $("#id_birth_date").val(birth_date_str);
+                        $("#id_pat_birth_date").val(birth_date_str);
                         $("#id_pat_sex").val(patient_info.sex.substr(0,1));
 
                         $('#hidden_id_pat_name').val(suggestion.value);
@@ -160,15 +160,15 @@ function autocomplete_claim(api_urls) {
         }
 
         // Set auto suggestion for patient's name
-        $("#id_first_name").autocomplete({
+        $("#id_referring_name").autocomplete({
             minChars: 0,
             lookup: physicians_lookup,
             formatResult: addHint,
             onSelect: function (suggestion) {
-                $('#id_first_name').val(suggestion.value);
+                $('#id_referring_name').val(suggestion.value);
                 $('#id_NPI').val(suggestion.data.NPI);
 
-                $('#hidden_id_first_name').val(suggestion.value);
+                $('#hidden_id_referring_name').val(suggestion.value);
             },
         });
     });

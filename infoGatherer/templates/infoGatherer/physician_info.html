@@ -1,13 +1,11 @@
+{% with xx=procedure_form.i %}
+{% print xx %}
+
 <div id="procedure_line_{{i}}">
 <div class="row">
     <div class="col-xs-4 placeholder label-placeholder">Diagnonsis Pointer</div>
     <div class="col-xs-2">
-        <select class="dropValidation" name="dx_pt_s1_{{i}}" id="id_dx_pt_s1_{{i}}" >
-            <option selected >---</option>
-            {% for dx_pt in dx_pt_range %}
-                <option value="{{dx_pt}}">{{ dx_pt }}</option>
-            {% endfor %}
-        </select>
+        {{ xx.dx_pt_1 }}
     </div>
     <div class="col-xs-2">
         <select class="dropValidation" name="dx_pt_s2_{{i}}" id="id_dx_pt_s2_{{i}}">
@@ -186,3 +184,5 @@
 <script>
     bindCollapse({{i}});
 </script>
+
+{% endwith %}
