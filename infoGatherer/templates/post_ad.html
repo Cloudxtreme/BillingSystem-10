@@ -27,13 +27,15 @@
 {% block body %}
 <div class="container" id="hideAll" style="display:none">
 
-
+<ul class="nav nav-tabs">
+  <li role="presentation" class="active"><a href="#">Patient Information</a></li>
+  <li role="presentation"><a href="#">Insured Information</a></li>
+  <li role="presentation"><a href="#">Physical Information</a></li>
+</ul>
 
 <form id="myForm" action="pdf" method="get" data-toggle="validator">
     {% csrf_token %}
     <br/>
-
-
 
     <h1>Patient</h1><br/><br/>
     
@@ -212,12 +214,12 @@
     <br/>
     <h1>Physician Informaiton</h1><br/><br/>
     <div class="fieldWrapper ">
-        <label for="id_first_name">Name</label>
+        <label for="id_first_name">Referring Provider's name</label>
         {{ form2.first_name }}
         <input type="hidden" id="hidden_id_first_name">
     </div> 
     <div class="fieldWrapper ">
-        <label for="id_NPI">NPI</label>
+        <label for="id_NPI">Referring Provider's NPI</label>
         {{ form2.NPI }}
     </div>  
     

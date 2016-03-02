@@ -16,8 +16,8 @@
                 {% if user.is_authenticated %}
                     <li {%if request.path == dashboard%} class="active" {%endif%} ><a href="{{ dashboard }}">Dashboard</a></li>
                     <li {%if request.path == make_claim%} class="active" {%endif%} ><a href="{{ make_claim }}">Make Claim</a></li>
-                    <li {%if request.path == track_charges%} class="active" {%endif%} ><a href="{{ track_charges }}">Audit Log</a></li>
-                    <li><a href="/def/">Pending Claims</a></li>
+                    <li><a href="/abc/">Audit Log</a></li>
+                    <li {%if request.path == track_charges%} class="active" {%endif%} ><a href="{{ track_charges }}">Pending Claims</a></li>
                     <li><a href="/admin/">Database</a></li>
                     <li><a href="{{ sign_out }}">Sign Out</a></li>
                 {% else %}
