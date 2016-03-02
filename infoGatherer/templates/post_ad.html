@@ -28,276 +28,282 @@
 <div class="container" id="hideAll" style="display:none">
 
 <ul class="nav nav-tabs">
-  <li role="presentation" class="active"><a href="#">Patient Information</a></li>
-  <li role="presentation"><a href="#">Insured Information</a></li>
-  <li role="presentation"><a href="#">Physical Information</a></li>
+    <li role="presentation" id="nav_patient" class="active"><a href="#"><strong>Patient Information</strong></a></li>
+    <li role="presentation" id="nav_insurance"><a href="#" ><strong>Insured Information</strong></a></li>
+    <li role="presentation" id="nav_physician"><a href="#" ><strong>Physical Information</strong></a></li>
 </ul>
 
 <form id="myForm" action="pdf" method="get" data-toggle="validator">
     {% csrf_token %}
     <br/>
-
-    <h1>Patient</h1><br/><br/>
-    
-    <!-- *Patients name -->
-    <div class="fieldWrapper ">
-        <label for="id_pat_name">Patient's name</label>
-        {{ form.pat_name }}
-        <input type="hidden" id="hidden_id_pat_name">
-    </div>
-
-    <!-- *Patients Address -->
-    <div class="fieldWrapper ">
-        <label for="id_pat_streetaddress">Patient's Address</label>
-        {{ form.pat_streetaddress }}
-        <label for="id_pat_city"></label>
-        {{ form.pat_city }}
-        <label for="id_pat_state"></label>
-        {{ form.pat_state }}
-        <label for="id_pat_zip"></label>
-        {{ form.pat_zip }}
-    </div>
-    <div class="fieldWrapper " >
-        <label for="id_pat_telephone">Phone No.</label>
-        {{ form.pat_telephone }}
-    </div>
-    <!-- Birth Date -->
-    <div class="fieldWrapper ">
-        <label for="id_birth_date">Birth Date</label>
-        {{ form.birth_date }}
-    </div>
-    <!-- *Patient sex -->
-    <div class="fieldWrapper ">
-        <label for="id_pat_sex">Patient's sex</label>
-        {{ form.pat_sex }}
-    </div>
-    <!-- *Patient Relationship to Insured -->
-    <div class="fieldWrapper">
-        {{ form.pat_relationship.errors }}
-        <label for="id_pat_relationship">Patient's Relationship to Insured</label>
-        {{ form.pat_relationship }}
-    </div>
-    
-    <div class="fieldWrapper">
-        <label for="id_pat_reservednucc1">Reserved for NUCC use</label>
-        {{ form.pat_reservednucc1 }}
-    </div>
-    
-
-    <div class="fieldWrapper">
-        <label>Is Patients Condition related to:</label> 
-        <div class="checkbox">
-            <label>{{ form.pat_relation_emp }}Emploment</label>
+    <div id="patient">
+        <!-- <h1>Patient</h1><br/><br/> -->
+        
+        <!-- *Patients name -->
+        <div class="fieldWrapper ">
+            <label for="id_pat_name">Patient's name</label>
+            {{ form.pat_name }}
+            <input type="hidden" id="hidden_id_pat_name">
         </div>
-        <div class="checkbox">
-            <label>{{ form.pat_relation_auto_accident }}Auto Accident</label>
-            <label id="input_show_hide" style="display:none">{{ form.pat_auto_accident_state }}</label>
-            
-        </div>
-        <div class="checkbox">
-            <label>{{ form.pat_relation_other_accident }}Other Accident</label>
-            
-        </div>
-    </div>
-    <div class="fieldWrapper">
-        <label for="id_claim_codes">Claim Codes</label>
-        {{ form.claim_codes }}
-    </div>
-    <div class="fieldWrapper">
-        <div class="checkbox">
-            <label>{{ form.insured_other_benifit_plan }}Is there another health benifit plan?</label>
-        </div>
-    </div>
 
-    <div id="show_hide" style="display:none">
-        <!-- Others insured name -->
+        <!-- *Patients Address -->
+        <div class="fieldWrapper ">
+            <label for="id_pat_streetaddress">Patient's Address</label>
+            {{ form.pat_streetaddress }}
+            <label for="id_pat_city"></label>
+            {{ form.pat_city }}
+            <label for="id_pat_state"></label>
+            {{ form.pat_state }}
+            <label for="id_pat_zip"></label>
+            {{ form.pat_zip }}
+        </div>
+        <div class="fieldWrapper " >
+            <label for="id_pat_telephone">Phone No.</label>
+            {{ form.pat_telephone }}
+        </div>
+        <!-- Birth Date -->
+        <div class="fieldWrapper ">
+            <label for="id_birth_date">Birth Date</label>
+            {{ form.birth_date }}
+        </div>
+        <!-- *Patient sex -->
+        <div class="fieldWrapper ">
+            <label for="id_pat_sex">Patient's sex</label>
+            {{ form.pat_sex }}
+        </div>
+        <!-- *Patient Relationship to Insured -->
         <div class="fieldWrapper">
-            <label for="id_pat_other_insured_name">Other Insured's Name</label>
-            {{ form.pat_other_insured_name }}
-            <input type="hidden" id="hidden_id_pat_other_insured_name"></input>
+            {{ form.pat_relationship.errors }}
+            <label for="id_pat_relationship">Patient's Relationship to Insured</label>
+            {{ form.pat_relationship }}
         </div>
+        
         <div class="fieldWrapper">
-            <label for="id_pat_other_insured_policy">Other Insured's Policy/Group Number</label>
-            {{ form.pat_other_insured_policy }}
+            <label for="id_pat_reservednucc1">Reserved for NUCC use</label>
+            {{ form.pat_reservednucc1 }}
         </div>
+        
+
         <div class="fieldWrapper">
-            <label for="id_pat_reservednucc2">Reserved for NUCC use</label>
-                {{ form.pat_reservednucc2 }}
-            <label for="id_pat_reservednucc3"></label>
-                {{ form.pat_reservednucc3 }}
-        </div>
-        <!-- Insurance plan name or program name -->
-        <div class="fieldWrapper">
-            <label for="id_pat_insuranceplanname">Insurance plan name or program name</label>
-            {{ form.pat_insuranceplanname }}
-        </div>
-    </div>
-
-    <br/>
-    <h1>Insured</h1>
-    <br/><br/>
-
-
-    <!-- *insured name -->
-    <div class="fieldWrapper ">
-        <label for="id_insured_name">Insured's name</label>
-        {{ form.insured_name }}
-        <input type="hidden" id="hidden_id_insured_name">
-    </div>
-    <!-- *Payer Number -->
-    <div class="fieldWrapper ">
-        <label for="id_payer_num">Payer Number</label>
-        {{ form.payer_num }}
-        <input type="hidden" id="hidden_id_payer_num">
-    </div>
-    <div class="fieldWrapper ">
-        <label for="id_payer_name">Payer Name</label>
-        {{ form.payer_name }}
-        <input type="hidden" id="hidden_id_payer_name">
-    </div>
-    <div class="fieldWrapper ">
-        <label for="id_payer_name">Payer Address</label>
-        {{ form.payer_address }}
-    </div>
-    
-
-    <!-- *Health Plan -->
-    <div class="fieldWrapper ">
-        <label for="id_health_plan">Health Plan</label>
-        {{ form.health_plan }}
-    </div>
-    <!-- Insured id number -->
-    <div class="fieldWrapper " >
-        <label for="id_insured_idnumber">Insured's id number</label>
-        {{ form.insured_idnumber }}
-        <input type="hidden" id="hidden_id_insured_id">
-    </div>
-    
-    <!-- *insured Address -->
-    <div class="fieldWrapper ">
-        <label for="id_insured_streetaddress">Insured's Address</label>
-        {{ form.insured_streetaddress }}
-        <label for="id_insured_city"></label>
-        {{ form.insured_city }}
-        <label for="id_insured_state"></label>
-        {{ form.insured_state }}
-        <label for="id_insured_zip"></label>
-        {{ form.insured_zip }}
-    </div>
-    <div class="fieldWrapper ">
-        <label for="id_insured_telephone">Phone No.</label>
-        {{ form.insured_telephone }}
-    </div>
-    <div class="fieldWrapper ">
-        <label for="id_insured_other_insured_policy">Insured's Policy/Group Number</label>
-        {{ form.insured_other_insured_policy }}
-    </div>
-    <!-- Birth Date -->
-    <div class="fieldWrapper ">
-        <label for="id_insured_birth_date">Insured's Birth Date</label>
-        {{ form.insured_birth_date }}
-    </div>
-    <!-- *Insured sex -->
-    <div class="fieldWrapper ">
-        <label for="id_insured_sex">Insured's sex</label>
-        {{ form.insured_sex }}
-    </div>
-    <div class="fieldWrapper">
-        <label for="id_other_cliam_id">Other claim id</label>
-        {{ form.other_cliam_id }}
-    </div>
-    <div class="fieldWrapper ">
-        <label for="id_insured_plan_name_program">Insurance plan name or program name</label>
-        {{ form.insured_plan_name_program }}
-    </div>
-    
-    <br/>
-    <h1>Physician Informaiton</h1><br/><br/>
-    <div class="fieldWrapper ">
-        <label for="id_first_name">Referring Provider's name</label>
-        {{ form2.first_name }}
-        <input type="hidden" id="hidden_id_first_name">
-    </div> 
-    <div class="fieldWrapper ">
-        <label for="id_NPI">Referring Provider's NPI</label>
-        {{ form2.NPI }}
-    </div>  
-    
-    <div class="form-group fieldWrapper">
-        <label for="id_ICD_10">Diagnosis</label>
-        <div class="row">
-            {% for i in loop_times %}
-            <div class="col-xs-2" style="margin-top:5px"  >
-                <div class="input-group">
-                    <div class="input-group-addon">{{ dx_pt_range|lookup:i }}</div>
-                    <input type="text" name="ICD_10_{{i|add_num:"1"}}" id="id_ICD_10_{{i|add_num:"1"}}" >
-                </div>
+            <label>Is Patients Condition related to:</label> 
+            <div class="checkbox">
+                <label>{{ form.pat_relation_emp }}Emploment</label>
             </div>
-            {% endfor %}
+            <div class="checkbox">
+                <label>{{ form.pat_relation_auto_accident }}Auto Accident</label>
+                <label id="input_show_hide" style="display:none">{{ form.pat_auto_accident_state }}</label>
+                
+            </div>
+            <div class="checkbox">
+                <label>{{ form.pat_relation_other_accident }}Other Accident</label>
+                
+            </div>
+        </div>
+        <div class="fieldWrapper">
+            <label for="id_claim_codes">Claim Codes</label>
+            {{ form.claim_codes }}
+        </div>
+        <div class="fieldWrapper">
+            <div class="checkbox">
+                <label>{{ form.insured_other_benifit_plan }}Is there another health benifit plan?</label>
+            </div>
         </div>
 
+        <div id="show_hide" style="display:none">
+            <!-- Others insured name -->
+            <div class="fieldWrapper">
+                <label for="id_pat_other_insured_name">Other Insured's Name</label>
+                {{ form.pat_other_insured_name }}
+                <input type="hidden" id="hidden_id_pat_other_insured_name"></input>
+            </div>
+            <div class="fieldWrapper">
+                <label for="id_pat_other_insured_policy">Other Insured's Policy/Group Number</label>
+                {{ form.pat_other_insured_policy }}
+            </div>
+            <div class="fieldWrapper">
+                <label for="id_pat_reservednucc2">Reserved for NUCC use</label>
+                    {{ form.pat_reservednucc2 }}
+                <label for="id_pat_reservednucc3"></label>
+                    {{ form.pat_reservednucc3 }}
+            </div>
+            <!-- Insurance plan name or program name -->
+            <div class="fieldWrapper">
+                <label for="id_pat_insuranceplanname">Insurance plan name or program name</label>
+                {{ form.pat_insuranceplanname }}
+            </div>
+        </div>
+        </br> 
     </div>
 
-    <!-- Billing Provider -->
-    <div class="fieldWrapper ">
-        <label for="id_billing_provider_name">Billing Provider's name</label>
-        <input id="id_billing_provider_name" maxlength="128" name="billing_provider_name" type="text" class=" ">
-        <input type="hidden" id="hidden_id_billing_provider_name">
-    </div>
-    <!-- Location Provider -->
-    <div class="fieldWrapper ">
-        <label for="id_location_provider_name">Location Provider's name</label>
-        <input id="id_location_provider_name" maxlength="128" name="location_provider_name" type="text" class=" ">
-        <input type="hidden" id="hidden_id_location_provider_name">
-    </div>
-    <!-- Rendering Provider -->
-    <div class="fieldWrapper ">
-        <label for="id_rendering_provider_name">Rendering Provider's name</label>
-        <input id="id_rendering_provider_name" maxlength="128" name="rendering_provider_name" type="text" class=" ">
-        <input type="hidden" id="hidden_id_rendering_provider_name">
-    </div>
-
-    <!-- Service Date -->
-    <div class="group fieldWrapper">
-        <label for="id_service_start_date_1">Service Information</label>
-        {% include "infoGatherer/physician_info.html" with i=1 dx_pt_range=dx_pt_range %}
-    </div>
-    <div class="group fieldWrapper service2" style="display:none">
-        {% include "infoGatherer/physician_info.html" with i=2 dx_pt_range=dx_pt_range %}
-    </div>
-    <div class="group fieldWrapper service3" style="display:none">
-        {% include "infoGatherer/physician_info.html" with i=3 dx_pt_range=dx_pt_range %}
-    </div>
-    <div class="group fieldWrapper service4" style="display:none">
-        {% include "infoGatherer/physician_info.html" with i=4 dx_pt_range=dx_pt_range %}
-    </div>
-    <div class="group fieldWrapper service5" style="display:none">
-        {% include "infoGatherer/physician_info.html" with i=5 dx_pt_range=dx_pt_range %}
-    </div>
-    <div class="group fieldWrapper service6" style="display:none">
-        {% include "infoGatherer/physician_info.html" with i=6 dx_pt_range=dx_pt_range %}
-    </div>
+    <div id="insured">
+        <!-- <h1>Insured</h1> -->
+        <!-- <br/><br/> -->
 
 
-    <div class="form-group" style="width:140px">
-        <div class="input-group">
-            <span class="input-group-btn">
-                <button type="button" class="btn btn-danger btn-number" disabled="disabled" data-type="minus" data-field="quant[1]">
-                    <span class="glyphicon glyphicon-minus"></span>
-                </button>
-            </span>
-            <input type="text" name="quant[1]" class="form-control input-number" value="1" min="1" max="6">
+        <!-- *insured name -->
+        <div class="fieldWrapper ">
+            <label for="id_insured_name">Insured's name</label>
+            {{ form.insured_name }}
+            <input type="hidden" id="hidden_id_insured_name">
+        </div>
+        <!-- *Payer Number -->
+        <div class="fieldWrapper ">
+            <label for="id_payer_num">Payer Number</label>
+            {{ form.payer_num }}
+            <input type="hidden" id="hidden_id_payer_num">
+        </div>
+        <div class="fieldWrapper ">
+            <label for="id_payer_name">Payer Name</label>
+            {{ form.payer_name }}
+            <input type="hidden" id="hidden_id_payer_name">
+        </div>
+        <div class="fieldWrapper ">
+            <label for="id_payer_name">Payer Address</label>
+            {{ form.payer_address }}
+        </div>
+        
+
+        <!-- *Health Plan -->
+        <div class="fieldWrapper ">
+            <label for="id_health_plan">Health Plan</label>
+            {{ form.health_plan }}
+        </div>
+        <!-- Insured id number -->
+        <div class="fieldWrapper " >
+            <label for="id_insured_idnumber">Insured's id number</label>
+            {{ form.insured_idnumber }}
+            <input type="hidden" id="hidden_id_insured_id">
+        </div>
+        
+        <!-- *insured Address -->
+        <div class="fieldWrapper ">
+            <label for="id_insured_streetaddress">Insured's Address</label>
+            {{ form.insured_streetaddress }}
+            <label for="id_insured_city"></label>
+            {{ form.insured_city }}
+            <label for="id_insured_state"></label>
+            {{ form.insured_state }}
+            <label for="id_insured_zip"></label>
+            {{ form.insured_zip }}
+        </div>
+        <div class="fieldWrapper ">
+            <label for="id_insured_telephone">Phone No.</label>
+            {{ form.insured_telephone }}
+        </div>
+        <div class="fieldWrapper ">
+            <label for="id_insured_other_insured_policy">Insured's Policy/Group Number</label>
+            {{ form.insured_other_insured_policy }}
+        </div>
+        <!-- Birth Date -->
+        <div class="fieldWrapper ">
+            <label for="id_insured_birth_date">Insured's Birth Date</label>
+            {{ form.insured_birth_date }}
+        </div>
+        <!-- *Insured sex -->
+        <div class="fieldWrapper ">
+            <label for="id_insured_sex">Insured's sex</label>
+            {{ form.insured_sex }}
+        </div>
+        <div class="fieldWrapper">
+            <label for="id_other_cliam_id">Other claim id</label>
+            {{ form.other_cliam_id }}
+        </div>
+        <div class="fieldWrapper ">
+            <label for="id_insured_plan_name_program">Insurance plan name or program name</label>
+            {{ form.insured_plan_name_program }}
+        </div>
+        </br> 
+    </div>
+
+    <div id="physician">
+        <!-- <h1>Physician Informaiton</h1><br/><br/> -->
+
+        <div class="fieldWrapper ">
+            <label for="id_first_name">Referring Provider's name</label>
+            {{ form2.first_name }}
+            <input type="hidden" id="hidden_id_first_name">
+        </div> 
+        <div class="fieldWrapper ">
+            <label for="id_NPI">Referring Provider's NPI</label>
+            {{ form2.NPI }}
+        </div>  
+        
+        <div class="form-group fieldWrapper">
+            <label for="id_ICD_10">Diagnosis</label>
+            <div class="row">
+                {% for i in loop_times %}
+                <div class="col-xs-2" style="margin-top:5px"  >
+                    <div class="input-group">
+                        <div class="input-group-addon">{{ dx_pt_range|lookup:i }}</div>
+                        <input type="text" name="ICD_10_{{i|add_num:"1"}}" id="id_ICD_10_{{i|add_num:"1"}}" >
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+        </div>
+
+        <!-- Billing Provider -->
+        <div class="fieldWrapper ">
+            <label for="id_billing_provider_name">Billing Provider's name</label>
+            <input id="id_billing_provider_name" maxlength="128" name="billing_provider_name" type="text" class=" ">
+            <input type="hidden" id="hidden_id_billing_provider_name">
+        </div>
+        <!-- Location Provider -->
+        <div class="fieldWrapper ">
+            <label for="id_location_provider_name">Location Provider's name</label>
+            <input id="id_location_provider_name" maxlength="128" name="location_provider_name" type="text" class=" ">
+            <input type="hidden" id="hidden_id_location_provider_name">
+        </div>
+        <!-- Rendering Provider -->
+        <div class="fieldWrapper ">
+            <label for="id_rendering_provider_name">Rendering Provider's name</label>
+            <input id="id_rendering_provider_name" maxlength="128" name="rendering_provider_name" type="text" class=" ">
+            <input type="hidden" id="hidden_id_rendering_provider_name">
+        </div>
+
+        <!-- Service Date -->
+        <div class="group fieldWrapper">
+            <label for="id_service_start_date_1">Service Information</label>
+            {% include "infoGatherer/physician_info.html" with i=1 dx_pt_range=dx_pt_range %}
+        </div>
+        <div class="group fieldWrapper service2" style="display:none">
+            {% include "infoGatherer/physician_info.html" with i=2 dx_pt_range=dx_pt_range %}
+        </div>
+        <div class="group fieldWrapper service3" style="display:none">
+            {% include "infoGatherer/physician_info.html" with i=3 dx_pt_range=dx_pt_range %}
+        </div>
+        <div class="group fieldWrapper service4" style="display:none">
+            {% include "infoGatherer/physician_info.html" with i=4 dx_pt_range=dx_pt_range %}
+        </div>
+        <div class="group fieldWrapper service5" style="display:none">
+            {% include "infoGatherer/physician_info.html" with i=5 dx_pt_range=dx_pt_range %}
+        </div>
+        <div class="group fieldWrapper service6" style="display:none">
+            {% include "infoGatherer/physician_info.html" with i=6 dx_pt_range=dx_pt_range %}
+        </div>
+
+
+        <div class="form-group" style="width:140px">
+            <div class="input-group">
                 <span class="input-group-btn">
-                <button type="button" class="btn btn-danger btn-number" data-type="plus" data-field="quant[1]">
-                    <span class="glyphicon glyphicon-plus"></span>
-                </button>
-            </span>
+                    <button type="button" class="btn btn-danger btn-number" disabled="disabled" data-type="minus" data-field="quant[1]">
+                        <span class="glyphicon glyphicon-minus"></span>
+                    </button>
+                </span>
+                <input type="text" name="quant[1]" class="form-control input-number" value="1" min="1" max="6">
+                    <span class="input-group-btn">
+                    <button type="button" class="btn btn-danger btn-number" data-type="plus" data-field="quant[1]">
+                        <span class="glyphicon glyphicon-plus"></span>
+                    </button>
+                </span>
+            </div>
         </div>
-    </div>
 
-    <br/>
-    <button type="submit" class="btn btn-primary btn-md" value="Submit Button">Print Please!</button>
-    <br/><br/>
+        <br/>
+        <button type="submit" class="btn btn-primary btn-md" value="Submit Button">Print Please!</button>
+        <br/><br/>
+    </div>
 </form>
 </div>
 <script>
