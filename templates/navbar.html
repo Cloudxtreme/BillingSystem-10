@@ -2,6 +2,7 @@
 
 {% url 'dashboard:dashboard' as dashboard %}
 {% url 'infoGatherer:post_ad' as make_claim %}
+{% url 'infoGatherer:track_charges' as track_charges %}
 {% url 'accounts:sign_out' as sign_out %}
 {% url 'accounts:sign_in' as sign_in %}
 
@@ -16,7 +17,7 @@
                     <li {%if request.path == dashboard%} class="active" {%endif%} ><a href="{{ dashboard }}">Dashboard</a></li>
                     <li {%if request.path == make_claim%} class="active" {%endif%} ><a href="{{ make_claim }}">Make Claim</a></li>
                     <li><a href="/abc/">Audit Log</a></li>
-                    <li><a href="/def/">Pending Claims</a></li>
+                    <li {%if request.path == track_charges%} class="active" {%endif%} ><a href="{{ track_charges }}">Pending Claims</a></li>
                     <li><a href="/admin/">Database</a></li>
                     <li><a href="{{ sign_out }}">Sign Out</a></li>
                 {% else %}

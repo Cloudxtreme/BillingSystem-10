@@ -21,7 +21,8 @@ class ProcedureCodes_Admin(admin.ModelAdmin):
     search_fields = ['procedure_code','procedure_name',]
     
 class Provider_Admin(admin.ModelAdmin):
-    pass
+    class Media:
+        js = ('js/jquery.min.js','js/model/provider.js')
 
 # class Test_Admin(admin.ModelAdmin):
 #     pass
