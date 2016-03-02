@@ -29,35 +29,23 @@ from infoGatherer.models import (
 
 @login_required
 def PostAdPage(request):
-    form=PostAdForm(request.GET or None)
-    form3=dxForm(request.GET or None)
-    form4=OtherProviderForm(request.GET or None)
-    form5=CptForms(request.GET or None)
-
-
-    procedure_form = [ProcedureForm(i) for i in xrange(6)]
-
-    print procedure_form[1]
-
-
-
+    loop_times= xrange(12)
     dx_pt_range = [chr(i + ord('A')) for i in range(0,12)]
-    loop_times= range(0, 12)
+
+    form=PostAdForm(loop_times, request.GET or None)
+    procedure_form = ProcedureForm(6, 4, request.GET or None)
 
     if 'pat_name' in request.GET and request.GET['pat_name']:
-        if form.is_valid() and form3.is_valid() and form4.is_valid() and form5.is_valid() :
-            var=print_form(request.GET);
+        if form.is_valid() and procedure_form.is_valid() :
+            var = print_form(request.GET);
             return var
         else:
-            print form.errors and form3.errors and form4.errors and form5.errors
+            print form.errors and procedure_form.errors
 
     return render(request, 'post_ad.html', {
-        'form': form,
-        'form3':form3,
-        'form4': form4,
-        'cptform': form5,
         'dx_pt_range': dx_pt_range,
         'loop_times' : loop_times,
+        'form': form,
         'procedure_form': procedure_form,
     })
 

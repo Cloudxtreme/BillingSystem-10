@@ -52,6 +52,14 @@ DX_PT = (
     ('K', 'K'),
     ('L', 'L'),
 )
+UNIT = (  
+    ('ME', 'Milligram'),
+    ('F2', 'International Unit'),
+    ('GR', 'Gram'),
+    ('ML', 'Milliliter'),
+    ('UN', 'Unit'),
+)
+
 
 class CptForms(forms.ModelForm):
     cpt_charge = forms.CharField(required=False, widget=forms.TextInput(attrs={'placeholder': 'Charges ($)'}))
@@ -183,19 +191,6 @@ class PostAdForm(forms.ModelForm):
     NPI = forms.CharField(max_length=15)
 
 
-    # Diagnosis section
-    ICD_10_1 = forms.CharField(max_length=8)
-    ICD_10_2 = forms.CharField(max_length=8, required=False)
-    ICD_10_3 = forms.CharField(max_length=8, required=False)
-    ICD_10_4 = forms.CharField(max_length=8, required=False)
-    ICD_10_5 = forms.CharField(max_length=8, required=False)
-    ICD_10_6 = forms.CharField(max_length=8, required=False)
-    ICD_10_7 = forms.CharField(max_length=8, required=False)
-    ICD_10_8 = forms.CharField(max_length=8, required=False)
-    ICD_10_9 = forms.CharField(max_length=8, required=False)
-    ICD_10_10 = forms.CharField(max_length=8, required=False)
-
-
     # Provider section
     billing_provider_name = forms.CharField(max_length=100)
     billing_provider_address = forms.CharField(max_length=255)
@@ -210,30 +205,60 @@ class PostAdForm(forms.ModelForm):
     rendering_provider_npi = forms.CharField(max_length=15)
 
 
-    # Procedure section
-    dx_pt_s1_1 = forms.ChoiceField(choices=DX_PT)
-    dx_pt_s1_2 = forms.ChoiceField(choices=DX_PT)
-    dx_pt_s1_3 = forms.ChoiceField(choices=DX_PT)
-    dx_pt_s1_4 = forms.ChoiceField(choices=DX_PT)
+    # Procedure section will be in separate form
 
+
+    def __init__(self, loop_times, *args, **kwargs):
+        super(PostAdForm, self).__init__(*args, **kwargs)
+        # Diagnosis section
+        for i in loop_times:
+            self.fields['ICD_10_%s' % (i+1)] = forms.CharField(max_length=8, required=False)
 
     class Meta:
         model = PostAd
         fields = '__all__'
 
 
-
 class ProcedureForm(forms.Form):
-    def __init__(self, lines, *args, **kwargs):
+    def __init__(self, lines, column, *args, **kwargs):
         super(ProcedureForm, self).__init__(*args, **kwargs)
-        for i in xrange(lines):
-            if i == 1:
-                cpt_code = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'CPT/HCPCS code'}))
-            else:
-                cpt_code = forms.CharField(required=False, widget=forms.TextInput(attrs={'placeholder': 'CPT/HCPCS code'}))
+        for i in xrange(1, lines+1):
+            self.fields['cpt_code_%s' % i] = forms.CharField(required=False, widget=forms.TextInput(attrs={'placeholder': 'CPT/HCPCS code'}))
+            self.fields['service_start_date_%s' % i] = forms.DateField(required=False, widget=forms.DateInput(attrs={
+                'class': 'placeholder dateValidation',
+                'placeholder': 'YYYY/MM/DD',
+            }))
+            self.fields['place_of_service_%s' % i] = forms.CharField(required=False, widget=forms.TextInput(attrs={'placeholder': 'Place of Service'}))
+            self.fields['emg_%s' % i] = forms.CharField(required=False, widget=forms.TextInput(attrs={'placeholder': 'EMG'}))
+            self.fields['cpt_charge_%s' % i] = forms.FloatField(required=False, widget=forms.NumberInput(attrs={
+                'placeholder': 'Charges ($)',
+                'step': '0.01'
+            }))
+            self.fields['note_%s' % i] = forms.CharField(required=False, widget=forms.TextInput(attrs={'placeholder': 'Note'}))
+            self.fields['start_time_%s' % i] = forms.CharField(required=False, widget=forms.TextInput(attrs={'class': 'input-small'}))
+            self.fields['end_time_%s' % i] = forms.CharField(required=False, widget=forms.TextInput(attrs={'class': 'input-small'}))
+            self.fields['base_units_%s' % i] = forms.IntegerField(required=False, widget=forms.NumberInput(attrs={'value': 5}))
+            self.fields['time_units_%s' % i] = forms.IntegerField(required=False, widget=forms.NumberInput(attrs={'readonly': True}))
+            self.fields['fees_%s' % i] = forms.FloatField(required=False, widget=forms.NumberInput(attrs={'step': '0.01'}))
+            self.fields['proc_code_%s' % i] = forms.CharField(required=False, widget=forms.TextInput(attrs={'class': 'input-small'}))
+            self.fields['ndc_%s' % i] = forms.CharField(required=False, widget=forms.TextInput(attrs={'class': 'input-small'}))
+            self.fields['qty_%s' % i] = forms.FloatField(required=False, widget=forms.NumberInput(attrs={
+                'step': '0.01',
+                'min': 0,
+                'class': 'input-small',
+            }))
+            self.fields['unit_%s' % i] = forms.ChoiceField(choices=UNIT)
+            self.fields['total_%s' % i] = forms.FloatField(widget=forms.NumberInput(attrs={
+                'value': 0,
+                'readonly': True,
+            }))
 
-            for j in xrange(4):
-                self.fields['dx_pt_%d' % (j+1)] = forms.ChoiceField(choices=DX_PT)
+            for j in xrange(1, column+1):
+                self.fields['dx_pt_s%s_%s' % (i, j)] = forms.ChoiceField(choices=DX_PT)
+                self.fields['mod_%s_%s' % ( chr(ord('a')+j-1), i )] = forms.CharField(
+                    required=False,
+                    widget=forms.TextInput(attrs={'placeholder': 'Mod ' + chr(ord('A')+j-1)})
+                )
 
 
 class PatientForm(ModelForm):

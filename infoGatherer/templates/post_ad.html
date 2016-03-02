@@ -228,12 +228,13 @@
             <div class="col-xs-2" style="margin-top:5px"  >
                 <div class="input-group">
                     <div class="input-group-addon">{{ dx_pt_range|lookup:i }}</div>
-                    <input type="text" name="ICD_10_{{i|add_num:"1"}}" id="id_ICD_10_{{i|add_num:"1"}}" >
+                    {% with 'ICD_10_'|prePlusConcat:i as fieldName %}
+                    {{ form|getField:fieldName }}
+                    {% endwith %}
                 </div>
             </div>
             {% endfor %}
         </div>
-
     </div>
 
     <!-- Billing Provider -->
@@ -258,22 +259,22 @@
     <!-- Service Date -->
     <div class="group fieldWrapper">
         <label for="id_service_start_date_1">Service Information</label>
-        {% include "infoGatherer/physician_info.html" with i=1 dx_pt_range=dx_pt_range %}
+        {% include "infoGatherer/physician_info.html" with i='1' dx_pt_range=dx_pt_range %}
     </div>
     <div class="group fieldWrapper service2" style="display:none">
-        {% include "infoGatherer/physician_info.html" with i=2 dx_pt_range=dx_pt_range %}
+        {% include "infoGatherer/physician_info.html" with i='2' dx_pt_range=dx_pt_range %}
     </div>
     <div class="group fieldWrapper service3" style="display:none">
-        {% include "infoGatherer/physician_info.html" with i=3 dx_pt_range=dx_pt_range %}
+        {% include "infoGatherer/physician_info.html" with i='3' dx_pt_range=dx_pt_range %}
     </div>
     <div class="group fieldWrapper service4" style="display:none">
-        {% include "infoGatherer/physician_info.html" with i=4 dx_pt_range=dx_pt_range %}
+        {% include "infoGatherer/physician_info.html" with i='4' dx_pt_range=dx_pt_range %}
     </div>
     <div class="group fieldWrapper service5" style="display:none">
-        {% include "infoGatherer/physician_info.html" with i=5 dx_pt_range=dx_pt_range %}
+        {% include "infoGatherer/physician_info.html" with i='5' dx_pt_range=dx_pt_range %}
     </div>
     <div class="group fieldWrapper service6" style="display:none">
-        {% include "infoGatherer/physician_info.html" with i=6 dx_pt_range=dx_pt_range %}
+        {% include "infoGatherer/physician_info.html" with i='6' dx_pt_range=dx_pt_range %}
     </div>
 
 

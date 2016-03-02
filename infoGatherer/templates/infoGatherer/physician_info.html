@@ -1,71 +1,80 @@
-{% with xx=procedure_form.i %}
-{% print xx %}
+{% load tags_extra %}
 
 <div id="procedure_line_{{i}}">
-<div class="row">
-    <div class="col-xs-4 placeholder label-placeholder">Diagnonsis Pointer</div>
-    <div class="col-xs-2">
-        {{ xx.dx_pt_1 }}
-    </div>
-    <div class="col-xs-2">
-        <select class="dropValidation" name="dx_pt_s2_{{i}}" id="id_dx_pt_s2_{{i}}">
-            <option selected>---</option>
-            {% for dx_pt in dx_pt_range %}
-            <option value="{{dx_pt}}">{{ dx_pt }}</option>
-            {% endfor %}
-        </select>
-    </div>
-    <div class="col-xs-2">
-        <select class="dropValidation" name="dx_pt_s3_{{i}}" id="id_dx_pt_s3_{{i}}">
-            <option selected>---</option>
-            {% for dx_pt in dx_pt_range %}
-                <option value="{{dx_pt}}">{{ dx_pt }}</option>
-            {% endfor %}
-        </select>
-    </div>
-    <div class="col-xs-2">
-        <select class="dropValidation" name="dx_pt_s4_{{i}}" id="id_dx_pt_s4_{{i}}">
-            <option selected>---</option>
-            {% for dx_pt in dx_pt_range %}
-                <option value="{{dx_pt}}">{{ dx_pt }}</option>
-            {% endfor %}
-        </select>
-    </div>
-   
-</div>
-<p></p>
-
     <div class="row">
-        <div class="col-xs-4">
-            <input id="id_cpt_code_{{i}}" class="cpt_code" name="cpt_code_{{i}}" placeholder="CPT/HCPCS code" type="text" class=" form-control">
+        <div class="col-xs-4 placeholder label-placeholder">Diagnonsis Pointer</div>
+        <div class="col-xs-2">
+            {% with 'dx_pt_s'|add:i|add:'_1' as fieldName %}
+            {{ procedure_form|getField:fieldName }}
+            {% endwith %}
         </div>
         <div class="col-xs-2">
-            <input type="text" name="mod_a_{{i}}" id="id_mod_a_{{i}}" placeholder="Mod A">
+            {% with 'dx_pt_s'|add:i|add:'_2' as fieldName %}
+            {{ procedure_form|getField:fieldName }}
+            {% endwith %}
         </div>
         <div class="col-xs-2">
-            <input type="text" name="mod_b_{{i}}" id="id_mod_b_{{i}}" placeholder="Mod B">
+            {% with 'dx_pt_s'|add:i|add:'_3' as fieldName %}
+            {{ procedure_form|getField:fieldName }}
+            {% endwith %}
         </div>
         <div class="col-xs-2">
-            <input type="text" name="mod_c_{{i}}" id="id_mod_c_{{i}}" placeholder="Mod C">
-        </div>
-        <div class="col-xs-2">
-            <input type="text" name="mod_d_{{i}}" id="id_mod_d_{{i}}" placeholder="Mod D">
+            {% with 'dx_pt_s'|add:i|add:'_4' as fieldName %}
+            {{ procedure_form|getField:fieldName }}
+            {% endwith %}
         </div>
     </div>
     <p></p>
 
     <div class="row">
         <div class="col-xs-4">
-            <input type="date" id="id_service_start_date_{{i}}" name="service_start_date_{{i}}" class="placeholder dateValidation">
-        </div>
-        <div class="col-xs-3">
-            <input id="id_place_of_service_{{i}}" name="place_of_service_{{i}}" placeholder="Place of Service" type="text">
+            {% with 'cpt_code_'|add:i as fieldName %}
+            {{ procedure_form|getField:fieldName }}
+            {% endwith %}
         </div>
         <div class="col-xs-2">
-            <input name="emg_{{i}}" placeholder="EMG" type="text">
+            {% with 'mod_a_'|add:i as fieldName %}
+            {{ procedure_form|getField:fieldName }}
+            {% endwith %}
+        </div>
+        <div class="col-xs-2">
+            {% with 'mod_b_'|add:i as fieldName %}
+            {{ procedure_form|getField:fieldName }}
+            {% endwith %}
+        </div>
+        <div class="col-xs-2">
+            {% with 'mod_c_'|add:i as fieldName %}
+            {{ procedure_form|getField:fieldName }}
+            {% endwith %}
+        </div>
+        <div class="col-xs-2">
+            {% with 'mod_d_'|add:i as fieldName %}
+            {{ procedure_form|getField:fieldName }}
+            {% endwith %}
+        </div>
+    </div>
+    <p></p>
+
+    <div class="row">
+        <div class="col-xs-4">
+            {% with 'service_start_date_'|add:i as fieldName %}
+            {{ procedure_form|getField:fieldName }}
+            {% endwith %}
         </div>
         <div class="col-xs-3">
-            <input id="id_cpt_charge_{{i}}" name="cpt_charge_{{i}}" placeholder="Charges ($)" type="text" class=" form-control">
+            {% with 'place_of_service_'|add:i as fieldName %}
+            {{ procedure_form|getField:fieldName }}
+            {% endwith %}
+        </div>
+        <div class="col-xs-2">
+            {% with 'emg_'|add:i as fieldName %}
+            {{ procedure_form|getField:fieldName }}
+            {% endwith %}
+        </div>
+        <div class="col-xs-3">
+            {% with 'cpt_charge_'|add:i as fieldName %}
+            {{ procedure_form|getField:fieldName }}
+            {% endwith %}
         </div>
     </div>
     <p></p>
@@ -82,7 +91,9 @@
             <input id="trigger_drug_{{i}}" style="display:none">
         </div>
         <div class="col-xs-8">
-            <input type="text" name="note_{{i}}" id="id_note_{{i}}" placeholder="Note">
+            {% with 'note_'|add:i as fieldName %}
+            {{ procedure_form|getField:fieldName }}
+            {% endwith %}
         </div>
     </div>
     <hr>
@@ -94,7 +105,9 @@
                 <div class="form-group">
                     <label for="id_start_time_{{i}}">Start Time</label>
                     <div class="input-group bootstrap-timepicker timepicker">
-                        <input id="id_start_time_{{i}}" type="text" class="form-control input-small">
+                        {% with 'start_time_'|add:i as fieldName %}
+                        {{ procedure_form|getField:fieldName }}
+                        {% endwith %}
                         <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
                     </div>
                 </div>
@@ -103,7 +116,9 @@
                 <div class="form-group">
                     <label for="id_end_time_{{i}}">End Time</label>
                     <div class="input-group bootstrap-timepicker timepicker">
-                        <input id="id_end_time_{{i}}" type="text" class="form-control input-small">
+                        {% with 'end_time_'|add:i as fieldName %}
+                        {{ procedure_form|getField:fieldName }}
+                        {% endwith %}
                         <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
                     </div>
                 </div>
@@ -111,19 +126,25 @@
             <div class="col-lg-2 col-md-2">
                 <div class="form-group">
                     <label for="id_base_units_{{i}}">Base Units</label>
-                    <input id="id_base_units_{{i}}" value="5">
+                    {% with 'base_units_'|add:i as fieldName %}
+                    {{ procedure_form|getField:fieldName }}
+                    {% endwith %}
                 </div>
             </div>
             <div class="col-lg-2 col-md-2">
                 <div class="form-group">
                     <label for="id_time_units_{{i}}">Time Units</label>
-                    <input id="id_time_units_{{i}}" disabled>
+                    {% with 'time_units_'|add:i as fieldName %}
+                    {{ procedure_form|getField:fieldName }}
+                    {% endwith %}
                 </div>
             </div>
             <div class="col-lg-2 col-md-2">
                 <div class="form-group">
                     <label for="id_fees_{{i}}">Fees</label>
-                    <input id="id_fees_{{i}}">
+                    {% with 'fees_'|add:i as fieldName %}
+                    {{ procedure_form|getField:fieldName }}
+                    {% endwith %}
                 </div>
             </div>
         </div>
@@ -135,31 +156,33 @@
             <div class="col-lg-3 col-md-3">
                 <div class="form-group">
                     <label for="id_proc_code_{{i}}">Proc. code description</label>
-                    <input id="id_proc_code_{{i}}" type="text" class="form-control input-small">
+                    {% with 'proc_code_'|add:i as fieldName %}
+                    {{ procedure_form|getField:fieldName }}
+                    {% endwith %}
                 </div>
             </div>
             <div class="col-lg-3 col-md-3">
                 <div class="form-group">
                     <label for="id_ndc_{{i}}">NDC</label>
-                    <input id="id_ndc_{{i}}" type="text" class="form-control input-small">
+                    {% with 'ndc_'|add:i as fieldName %}
+                    {{ procedure_form|getField:fieldName }}
+                    {% endwith %}
                 </div>
             </div>
             <div class="col-lg-3 col-md-3">
                 <div class="form-group">
                     <label for="id_qty_{{i}}">Quantity</label>
-                    <input id="id_qty_{{i}}" type="number" class="form-control input-small" min="0">
+                    {% with 'qty_'|add:i as fieldName %}
+                    {{ procedure_form|getField:fieldName }}
+                    {% endwith %}
                 </div>
             </div>
             <div class="col-lg-3 col-md-3">
                 <div class="form-group">
                     <label for="id_unit_measure">Unit of Measure</label>
-                    <select id="id_unit_{{i}}">
-                        <option value="F2">International Unit</option>
-                        <option value="GR">Gram</option>
-                        <option value="ML">Milliliter</option>
-                        <option value="UN">Unit</option>
-                        <option selected value="ME">Milligram</option>
-                    </select>
+                    {% with 'unit_'|add:i as fieldName %}
+                    {{ procedure_form|getField:fieldName }}
+                    {% endwith %}
                 </div>
             </div>
         </div>
@@ -169,8 +192,9 @@
 
     <div class="row">
         <div class="col-xs-4 pull-right">
-            <input type="number" readonly id="total_show_{{i}}" value="0" name="total_{{i}}">
-            <!-- <input type="hidden" id="total_{{i}}" value="0"> -->
+            {% with 'total_'|add:i as fieldName %}
+            {{ procedure_form|getField:fieldName }}
+            {% endwith %}
         </div>
         <div class="col-xs-2 pull-right" style="text-align:right;">
             <label style="height:34px;line-height:34px;">Total</label>
@@ -184,5 +208,3 @@
 <script>
     bindCollapse({{i}});
 </script>
-
-{% endwith %}

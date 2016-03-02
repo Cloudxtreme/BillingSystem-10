@@ -1,5 +1,5 @@
 function autocomplete_claim(api_urls) {
-    // "use strict";
+    "use strict";
 
     // Disable default behavior when submit form
     $('#make-claims-form').submit(function(e) {
@@ -248,7 +248,7 @@ function autocomplete_claim(api_urls) {
             });
         }
 
-        $(".cpt_code").autocomplete({
+        $("input[name^=cpt_code]").autocomplete({
             minChars: 0,
             lookup: cpt_lookup,
             formatResult: addHint,
@@ -298,7 +298,7 @@ function autocomplete_claim(api_urls) {
 
 function bindCollapse(i) {
     (function() {
-        self = $('#id_service_start_date_' + i);
+        var self = $('#id_service_start_date_' + i);
 
         self.click(function(e) {
             e.preventDefault();
@@ -307,7 +307,7 @@ function bindCollapse(i) {
         var picker = new Pikaday({
             field: self[0],
             onSelect: function(date) {
-                self.val(this.toString('YYYY-MM-DD'));
+                self.val(this.toString('YYYY/MM/DD'));
                 self.removeClass('placeholder');
             }
         });
@@ -417,8 +417,7 @@ function calculateTotal(i) {
     }
 
     total = Math.round(total * 100) / 100
-    $('#total_show_' + i).val(total);
-    $('#total_' + i).val(total);
+    $('#id_total_' + i).val(total);
 
     updateNote(i);
 }
