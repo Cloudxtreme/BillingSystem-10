@@ -91,21 +91,27 @@ class dxForm(ModelForm):
         model = dx
         fields = '__all__'
 
-class PostAdForm(forms.ModelForm):  
+class PostAdForm(forms.Form):  
     error_css_class = 'error'
 
     #Get entries from databse
     patient_list = Personal_Information.objects.order_by('first_name')
 
 
+    # Customize state options to start with not select
     CUSTOM_STATE_CHOICES = list(STATE_CHOICES)
     CUSTOM_STATE_CHOICES.insert(0, ('', '---------'))
 
 
-    pat_id = forms.ModelMultipleChoiceField(queryset=Personal_Information.objects.all())
-    insured_id = forms.ModelMultipleChoiceField(queryset=Personal_Information.objects.all())
-    other_insured_id = forms.ModelMultipleChoiceField(queryset=Personal_Information.objects.all())
-    payer_id = forms.ModelMultipleChoiceField(queryset=Payer.objects.all())
+    # Id hidden fields for linking records in the database
+    pat_id = forms.ModelChoiceField(queryset=Personal_Information.objects.all(), widget=forms.HiddenInput())
+    insured_id = forms.ModelChoiceField(queryset=Personal_Information.objects.all(), widget=forms.HiddenInput())
+    other_insured_id = forms.ModelChoiceField(required=False, queryset=Personal_Information.objects.all(), widget=forms.HiddenInput())
+    payer_id = forms.ModelChoiceField(queryset=Payer.objects.all(), widget=forms.HiddenInput())
+    referring_provider_id = forms.ModelChoiceField(queryset=ReferringProvider.objects.all(), widget=forms.HiddenInput())
+    billing_provider_id = forms.ModelChoiceField(queryset=Provider.objects.filter(role='Billing'), widget=forms.HiddenInput())
+    location_provider_id = forms.ModelChoiceField(queryset=Provider.objects.filter(role='Location'), widget=forms.HiddenInput())
+    rendering_provider_id = forms.ModelChoiceField(queryset=Provider.objects.filter(role='Rendering'), widget=forms.HiddenInput())
 
 
     # Payer section    
@@ -131,7 +137,7 @@ class PostAdForm(forms.ModelForm):
     pat_state = USStateField(widget=forms.Select(choices=CUSTOM_STATE_CHOICES))
     pat_zip = USZipCodeField(widget=forms.TextInput(attrs={'placeholder': 'Zip'}))
     pat_telephone = USPhoneNumberField()
-    pat_birth_date = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'MM/DD/YYYY'}))
+    pat_birth_date = forms.DateField(widget=forms.DateInput(attrs={'placeholder': 'MM/DD/YYYY'}))
     pat_sex = forms.ChoiceField(choices=SEX)
     pat_relationship_insured = forms.ChoiceField(choices=REL_INSUR, required=False)
     pat_relation_emp = forms.BooleanField(initial=False, required=False)
@@ -162,7 +168,7 @@ class PostAdForm(forms.ModelForm):
         required=False,
         widget=forms.TextInput(attrs={'placeholder': ''})
     )
-    insured_birth_date = forms.DateField(widget=forms.DateInput())
+    insured_birth_date = forms.DateField(widget=forms.DateInput(attrs={'placeholder': 'MM/DD/YYYY'}))
     insured_sex = forms.ChoiceField(choices=SEX)
 
 
@@ -214,9 +220,9 @@ class PostAdForm(forms.ModelForm):
         for i in loop_times:
             self.fields['ICD_10_%s' % (i+1)] = forms.CharField(max_length=8, required=False)
 
-    class Meta:
-        model = PostAd
-        fields = '__all__'
+    # class Meta:
+    #     model = PostAd
+    #     fields = '__all__'
 
 
 class ProcedureForm(forms.Form):
@@ -225,8 +231,8 @@ class ProcedureForm(forms.Form):
         for i in xrange(1, lines+1):
             self.fields['cpt_code_%s' % i] = forms.CharField(required=False, widget=forms.TextInput(attrs={'placeholder': 'CPT/HCPCS code'}))
             self.fields['service_start_date_%s' % i] = forms.DateField(required=False, widget=forms.DateInput(attrs={
-                'class': 'placeholder dateValidation',
-                'placeholder': 'YYYY/MM/DD',
+                'class': 'dateValidation',
+                'placeholder': 'MM/DD/YYYY',
             }))
             self.fields['place_of_service_%s' % i] = forms.CharField(required=False, widget=forms.TextInput(attrs={'placeholder': 'Place of Service'}))
             self.fields['emg_%s' % i] = forms.CharField(required=False, widget=forms.TextInput(attrs={'placeholder': 'EMG'}))
@@ -254,7 +260,7 @@ class ProcedureForm(forms.Form):
             }))
 
             for j in xrange(1, column+1):
-                self.fields['dx_pt_s%s_%s' % (i, j)] = forms.ChoiceField(choices=DX_PT)
+                self.fields['dx_pt_s%s_%s' % (i, j)] = forms.ChoiceField(required=False, choices=DX_PT)
                 self.fields['mod_%s_%s' % ( chr(ord('a')+j-1), i )] = forms.CharField(
                     required=False,
                     widget=forms.TextInput(attrs={'placeholder': 'Mod ' + chr(ord('A')+j-1)})

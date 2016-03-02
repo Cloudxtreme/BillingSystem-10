@@ -1,5 +1,5 @@
 function autocomplete_claim(api_urls) {
-    "use strict";
+    'use strict';
 
     // Disable default behavior when submit form
     $('#make-claims-form').submit(function(e) {
@@ -10,17 +10,23 @@ function autocomplete_claim(api_urls) {
 
     // Autocomplete causes binded field to clear its value when page is loaded from back and forward button.
     // Workaround is to have hidden field to store previous value and assign to that field if available
-    $("#id_pat_name").val($('#hidden_id_pat_name').val() || $("#id_pat_name").attr('value'));
-    $("#id_insured_name").val($('#hidden_id_insured_name').val() || $("#id_insured_idnumber").attr('value'));
-    $("#id_insured_idnumber").val($('#hidden_id_insured_id').val() || $("#id_payer_num").attr('value'));
-    $("#id_payer_num").val($('#hidden_id_payer_num').val() || $("#id_payer_num").attr('value'));
-    $("#id_payer_name").val($('#hidden_id_payer_name').val() || $("#id_payer_name").attr('value'));
-    $("#id_referring_name").val($('#hidden_id_referring_name').val() || $("#id_referring_name").attr('value'));
-    $("#id_billing_provider_name").val($('#hidden_id_billing_provider_name').val() || $("#id_billing_provider_name").attr('value'));
-    $("#id_location_provider_name").val($('#hidden_id_location_provider_name').val() || $("#id_location_provider_name").attr('value'));
-    $("#id_rendering_provider_name").val($('#hidden_id_rendering_provider_name').val() || $("#id_rendering_provider_name").attr('value'));
-    $("#id_pat_other_insured_name").val($('#hidden_id_pat_other_insured_name').val() || $("#id_pat_other_insured_name").attr('value'));
+    var autocompleteFields = [
+        'id_pat_name',
+        'id_insured_name',
+        'id_insured_idnumber',
+        'id_payer_num',
+        'id_payer_name',
+        'id_referring_name',
+        'id_billing_provider_name',
+        'id_location_provider_name',
+        'id_rendering_provider_name',
+        'id_pat_other_insured_name',
+    ];
+    for(var i=0; i<autocompleteFields.length; i++) {
+        $('#' + autocompleteFields[i]).val($('#hidden_' + autocompleteFields[i]).val() || $('#' + autocompleteFields[i]).attr('value'));
+    }
 
+    
     // Make ajax call for auto-suggestion
     $.ajax({
         url: api_urls[0],
@@ -48,7 +54,8 @@ function autocomplete_claim(api_urls) {
                         var patient_info = obj['personal_information'][0];
 
                         // Auto populate fields in patient section
-                        var birth_date_str = patient_info.dob.substr(0,4) + "-" + patient_info.dob.substr(5,2) + "-" + patient_info.dob.substr(8,2);
+                        $('#id_pat_id').val(patient_info.chart_no);
+                        var birth_date_str = patient_info.dob.substr(5,2) + "/" + patient_info.dob.substr(8,2) + "/" + patient_info.dob.substr(0,4);
                         $("#id_pat_streetaddress").val(patient_info.address);
                         $("#id_pat_city").val(patient_info.city);
                         $("#id_pat_state").val(patient_info.state);
@@ -74,9 +81,11 @@ function autocomplete_claim(api_urls) {
                     api_urls[2],
                     {personal_chart_no: suggestion.data},
                     function(obj) {
-                        // Auto populate fields in insured section
                         var insured_info = obj["personal_information"][0];
-                        var birth_date_str = insured_info.dob.substr(0,4) + "-" + insured_info.dob.substr(5,2) + "-" + insured_info.dob.substr(8,2);
+
+                        // Auto populate fields in insured section
+                        $('#id_insured_id').val(insured_info.chart_no);
+                        var birth_date_str = insured_info.dob.substr(5,2) + "/" + insured_info.dob.substr(8,2) + "/" + insured_info.dob.substr(0,4);
                         $("#id_insured_streetaddress").val(insured_info.address);
                         $("#id_insured_city").val(insured_info.city);
                         $("#id_insured_state").val(insured_info.state);
@@ -276,6 +285,7 @@ function autocomplete_claim(api_urls) {
         var insurance = suggestion.insurance_data;
         var payer = insurance.payer;
         var fullAddress = payer.address + ' ' + payer.city + ' ' + payer.state + ' ' + payer.zip;
+        $("#id_payer_id").val(insurance.payer.id);
         $("#id_insured_idnumber").val(insurance.insurance_id);
         $("#id_payer_num").val(insurance.payer.code);
         $("#id_payer_name").val(insurance.payer.name);
@@ -306,9 +316,9 @@ function bindCollapse(i) {
 
         var picker = new Pikaday({
             field: self[0],
+            format: 'MM/DD/YYYY',
             onSelect: function(date) {
-                self.val(this.toString('YYYY/MM/DD'));
-                self.removeClass('placeholder');
+                self.val(this.toString());
             }
         });
     })();

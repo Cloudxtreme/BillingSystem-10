@@ -33,14 +33,31 @@
     {% csrf_token %}
     <br/>
 
+    {% if form.errors %}
+        <p>{{ form.errors }}</p>
+    {% endif %}
+
+    {% if procedure_form.errors %}
+        <p>{{ procedure_form.errors }}</p>
+    {% endif %}
+
+
+    {{ form.pat_id }}
+    {{ form.insured_id }}
+    {{ form.other_insured_id }}
+    {{ form.payer_id }}
+    {{ form.referring_provider_id }}
+    {{ form.billing_provider_id }}
+    {{ form.location_provider_id }}
+    {{ form.rendering_provider_id }}
 
 
     <h1>Patient</h1><br/><br/>
-    
     <!-- *Patients name -->
     <div class="fieldWrapper ">
         <label for="id_pat_name">Patient's name</label>
         {{ form.pat_name }}
+
         <input type="hidden" id="hidden_id_pat_name">
     </div>
 
