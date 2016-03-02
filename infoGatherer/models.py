@@ -272,7 +272,7 @@ class Provider(models.Model):
 
     def __unicode__(self):
         return self.provider_name
-    def clean(self, *args, **kwargs):
+    def full_clean(self, *args, **kwargs):
         dic={}
         if self.npi is None:
             dic['npi']='Please provide npi'

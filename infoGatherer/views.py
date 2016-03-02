@@ -41,11 +41,11 @@ def PostAdPage(request):
     loop_times= range(0, 12)
 
     if 'pat_name' in request.GET and request.GET['pat_name']:
-        if form.is_valid() and form2.is_valid() and form3.is_valid() and form4.is_valid() and form5.is_valid() :
-            var=print_form(request.GET);
-            return var
-        else:
-            print form.errors and form2.errors and form3.errors and form4.errors and form5.errors
+        # if form.is_valid() and form2.is_valid() and form3.is_valid() and form4.is_valid() and form5.is_valid():
+        var=print_form(request.GET);
+        return var
+        # else:
+            # print (form.errors and form2.errors and form3.errors and form4.errors and form5.errors)
 
     return render(request, 'post_ad.html', {
         'form': form,
@@ -191,6 +191,16 @@ def print_form(bar):
     n=n+" "+str(bill_p['provider_state'])
     n=n+" "+str(bill_p['provider_zip'])
     fields.append(('269',n))
+    # Billing provider tax id
+    fields.append(('248',bill_p['tax_id']))
+    # Billing provider ssn and ein
+    if(len(bill_p['provider_ssn'])!=0):
+        fields.append(('249',True))
+    
+    if(len(bill_p['provider_ein'])!=0):
+        fields.append(('250',True))
+    
+
 
     # Location provider
     location_p=Provider.objects.filter(provider_name=bar['location_provider_name']).values()[0]
@@ -212,8 +222,6 @@ def print_form(bar):
         fields.append(('260',rendering_p['provider_name']))
     now = datetime.datetime.now()
     fields.append(('260A',str(now.month)+"|"+str(now.day)+"|"+str(now.year)))
-
-
 
 	# Insured
     fields.append(('53',bar['pat_auto_accident_state']))
@@ -320,11 +328,14 @@ def print_form(bar):
                 fields.append((str(130+(23*i-23)),txt.split()[7]))
             else:
                 fields.append((str(130+(23*i-23)),txt.split()[2][-2:]))
-                
+
 
     # Total charge
     fields.append(('254',sum(charge)))
-
+    # Amount paid
+    fields.append(('256','0.00'))
+    # Accept assignment
+    fields.append(('252',True))
 
     # PDF generation
     fdf = forge_fdf("",fields,[],[],[])
