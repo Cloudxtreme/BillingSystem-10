@@ -208,12 +208,12 @@ function init(){
     
     var element="#id_dx_pt_s1_1";
     var val=($(element).val()).charCodeAt(0)-"A".charCodeAt(0);
-    console.log($(element).val());
+    // console.log($(element).val());
     if(cells[val]!=1){
         cells[val]=1;
     }
     else{
-        console.log("123123");
+        // console.log("123123");
         element.parent().addClass('has-error');
         // Red the box
     }
@@ -225,17 +225,17 @@ function init(){
     var changeHandler = function() {
         //You can alert the value of the selected option, using this:
         var val=this.value.charCodeAt(0)-"A".charCodeAt(0);
-        console.log(this.value);
+        // console.log(this.value);
         if(cells[val]!=1){
             cells[val]=1;
         }
         else{
-            console.log("123123");
-            console.log($($(this).attr("id")));
+            // console.log("123123");
+            // console.log($($(this).attr("id")));
             $($(this).attr("id")).parent().addClass('has-error');
             // Red the box
         }
-        console.log(cells);
+        // console.log(cells);
 
 
     }
