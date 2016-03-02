@@ -4,22 +4,22 @@
     <div class="row">
         <div class="col-xs-4 placeholder label-placeholder">Diagnonsis Pointer</div>
         <div class="col-xs-2">
-            {% with 'dx_pt_s'|add:i|add:'_1' as fieldName %}
+            {% with 'dx_pt_s1_'|add:i as fieldName %}
             {{ procedure_form|getField:fieldName }}
             {% endwith %}
         </div>
         <div class="col-xs-2">
-            {% with 'dx_pt_s'|add:i|add:'_2' as fieldName %}
+            {% with 'dx_pt_s2_'|add:i as fieldName %}
             {{ procedure_form|getField:fieldName }}
             {% endwith %}
         </div>
         <div class="col-xs-2">
-            {% with 'dx_pt_s'|add:i|add:'_3' as fieldName %}
+            {% with 'dx_pt_s3_'|add:i as fieldName %}
             {{ procedure_form|getField:fieldName }}
             {% endwith %}
         </div>
         <div class="col-xs-2">
-            {% with 'dx_pt_s'|add:i|add:'_4' as fieldName %}
+            {% with 'dx_pt_s4_'|add:i as fieldName %}
             {{ procedure_form|getField:fieldName }}
             {% endwith %}
         </div>

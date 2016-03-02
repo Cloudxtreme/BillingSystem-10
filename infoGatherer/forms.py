@@ -260,7 +260,7 @@ class ProcedureForm(forms.Form):
             }))
 
             for j in xrange(1, column+1):
-                self.fields['dx_pt_s%s_%s' % (i, j)] = forms.ChoiceField(required=False, choices=DX_PT)
+                self.fields['dx_pt_s%s_%s' % (j, i)] = forms.ChoiceField(required=False, choices=DX_PT)
                 self.fields['mod_%s_%s' % ( chr(ord('a')+j-1), i )] = forms.CharField(
                     required=False,
                     widget=forms.TextInput(attrs={'placeholder': 'Mod ' + chr(ord('A')+j-1)})

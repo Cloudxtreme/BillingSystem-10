@@ -117,9 +117,10 @@ def print_form(bar):
         ('22',bar['pat_telephone'].split('-')[0]),
         ('23',bar['pat_telephone'].split('-')[1]+"-"+bar['pat_telephone'].split('-')[2])
     ]
-    fields.append(('12',bar['pat_birth_date'].split('-')[1]))
-    fields.append(('14',bar['pat_birth_date'].split('-')[0]))
-    fields.append(('13',bar['pat_birth_date'].split('-')[2]))
+    month, day, year = bar['pat_birth_date'].split('/')
+    fields.append(('12', month))
+    fields.append(('13', day))
+    fields.append(('14', year))
     fields.append(('10',bar['insured_idnumber']))
     fields.append(('txt8',bar['pat_reservednucc1']))
     fields.append(('56_1',bar['claim_codes']))
@@ -128,11 +129,11 @@ def print_form(bar):
         fields.append(('15',True))
     else:
         fields.append(('16',True))
-    if(bar['pat_relationship']=='Self'):
+    if(bar['pat_relationship_insured']=='Self'):
         fields.append(('24',True))
-    elif(bar['pat_relationship']=='Spouse'):
+    elif(bar['pat_relationship_insured']=='Spouse'):
         fields.append(('25',True))
-    elif(bar['pat_relationship']=='Child'):
+    elif(bar['pat_relationship_insured']=='Child'):
         fields.append(('26',True))
     else:
         fields.append(('27',True))
@@ -247,10 +248,13 @@ def print_form(bar):
         fields.append(('60',True))
     else:
         fields.append(('61',True))
-    fields.append(('57',bar['insured_birth_date'].split('-')[1]))
-    fields.append(('59',bar['insured_birth_date'].split('-')[0]))
-    fields.append(('58',bar['insured_birth_date'].split('-')[2]))
-    fields.append(('56_2',bar['insured_other_insured_policy']))
+
+    month, day, year = bar['insured_birth_date'].split('/')
+    fields.append(('57', month))
+    fields.append(('58', day))
+    fields.append(('59', year))
+
+    fields.append(('56_2',bar['insured_policy']))
     fields.append(('62',bar['other_cliam_id']))
 
     # Health Plan and signatures
@@ -285,12 +289,15 @@ def print_form(bar):
         if(len(bar['service_start_date_'+str(i)])!=0):
             da=bar['service_start_date_'+str(i)]
             # print (114+str(23*i-23))
-            fields.append((str(114+(23*i-23)),da.split("-")[1]))
-            fields.append((str(117+(23*i-23)),da.split("-")[1]))
-            fields.append((str(115+(23*i-23)),da.split("-")[2]))
-            fields.append((str(118+(23*i-23)),da.split("-")[2]))
-            fields.append((str(116+(23*i-23)),da.split("-")[0][-2:]))
-            fields.append((str(119+(23*i-23)),da.split("-")[0][-2:]))
+
+            month, day, year = da.split('/')
+            fields.append((str(114+(23*i-23)),month))
+            fields.append((str(115+(23*i-23)),day))
+            fields.append((str(116+(23*i-23)),year))
+
+            fields.append((str(117+(23*i-23)),month))
+            fields.append((str(118+(23*i-23)),day))
+            fields.append((str(119+(23*i-23)),year))
 
         # Place of service
         da=bar['place_of_service_'+str(i)]
