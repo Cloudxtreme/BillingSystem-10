@@ -1,8 +1,10 @@
 from django.db import models
 from django_countries.fields import CountryField
+from django.core.exceptions import ValidationError
 from django_languages.fields import LanguageField
 from localflavor.us.models import USStateField, USSocialSecurityNumberField, PhoneNumberField
 from django.utils import timezone
+from django.utils.translation import ugettext_lazy as _
 from audit_log.models.managers import AuditLog
 from django.forms.models import model_to_dict
 
@@ -53,6 +55,7 @@ ACCOUNT_TYPE_CHOICES = (('9','09: Self-pay'),
 ('WC','WC: Workers Compensation'),
 ('Blank','')
 )
+
 
 ACCOUNT_STATUS_CHOICES = (('Current','Current'),('Archived','Archived'))
 
@@ -255,19 +258,42 @@ class Locations(models.Model):
 
 class Provider(models.Model):
     provider_name = models.CharField(max_length=128,default='')
+    role = models.CharField(choices=PROVIDER_ROLE_CHOICES,max_length=10,default='Rendering')
     tax_id = models.IntegerField(default='',null=True, blank=True)
     npi = models.IntegerField(default='',null=True, blank=True)
+    provider_ssn= models.CharField(max_length=128,default='',null=True, blank=True)
+    provider_ein= models.CharField(max_length=128,default='',null=True, blank=True)
     speciality = models.CharField(max_length=128,default='',null=True, blank=True)
-    role = models.CharField(choices=PROVIDER_ROLE_CHOICES,max_length=10,default='Rendering')
     provider_address = models.CharField(max_length=256, default='',null=True, blank=True)
     provider_city = models.CharField(max_length=128,default='',null=True, blank=True)   
     provider_state = USStateField(default='',null=True, blank=True)
-    provider_phone = PhoneNumberField(null=True, blank=True, help_text='XXX-XXX-XXXX',)
     provider_zip = models.IntegerField(default='',null=True, blank=True)
+    provider_phone = PhoneNumberField(null=True, blank=True, help_text='XXX-XXX-XXXX',)
 
-     
     def __unicode__(self):
         return self.provider_name
+    def clean(self, *args, **kwargs):
+        dic={}
+        if self.npi is None:
+            dic['npi']='Please provide npi'
+        if len(self.provider_address)==0:
+            dic['provider_address']='Please provide address'
+        if len(self.provider_city)==0:
+            dic['provider_city']='Please provide city'
+        if self.provider_state is None:
+            dic['provider_state']='Please provide state'
+        if self.provider_zip is None:
+            dic['provider_zip']='Please provide zip'
+        if len(self.provider_phone)==0:
+            dic['provider_phone']='Please provide phone number'
+
+        if self.role == 'Billing' or self.role == 'Dual' or self.role == 'Rendering': 
+            if self.tax_id is None:
+                dic['tax_id']='Please provide tax id'
+            if len(self.speciality)==0:
+                dic['speciality']='Please provide speciality'
+        raise ValidationError(dic)
+
     
 class Procedure_Codes(models.Model):
     procedure_name = models.CharField(max_length=128,default='')
