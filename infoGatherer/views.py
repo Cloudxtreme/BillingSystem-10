@@ -20,8 +20,7 @@ from fdfgen import forge_fdf
 
 from infoGatherer.forms import (
     PostAdForm, PatientForm, GuarantorForm, InsuranceForm,
-    ReferringProviderForm, dxForm, OtherProviderForm, CptForms,
-    ProcedureForm)
+    ReferringProviderForm, dxForm, OtherProviderForm, CptForms)
 from infoGatherer.models import (
     PostAd, Guarantor_Information, Insurance_Information, Personal_Information,
     Payer, ReferringProvider, Provider, PROVIDER_ROLE_CHOICES, CPT)
@@ -36,20 +35,19 @@ def PostAdPage(request):
     dx_pt_range = [chr(i + ord('A')) for i in range(0,12)]
 
     form=PostAdForm(loop_times, request.GET or None)
-    procedure_form = ProcedureForm(6, 4, request.GET or None)
 
     if 'pat_name' in request.GET and request.GET['pat_name']:
-        if procedure_form.is_valid() and form.is_valid() :
+        if form.is_valid() :
             var = print_form(request.GET);
             return var
         else:
-           print form.errors and procedure_form.errors
+           print form.errors
 
     return render(request, 'post_ad.html', {
         'dx_pt_range': dx_pt_range,
         'loop_times' : loop_times,
         'form': form,
-        'procedure_form': procedure_form,
+        'procedure_form': form,
     })
 
 def get_make_claim_extra_context(request):

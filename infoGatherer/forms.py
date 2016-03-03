@@ -7,6 +7,7 @@ from infoGatherer.models import Personal_Information, Payer
 from localflavor.us.forms import USZipCodeField, USStateSelect, USPhoneNumberField, USStateField
 from localflavor.us.us_states import STATE_CHOICES
 import datetime
+from django.forms.utils import ErrorList
 
 
 """
@@ -100,7 +101,7 @@ class PostAdForm(forms.Form):
 
     # Customize state options to start with not select
     CUSTOM_STATE_CHOICES = list(STATE_CHOICES)
-    CUSTOM_STATE_CHOICES.insert(0, ('', '---------'))
+    CUSTOM_STATE_CHOICES.insert(0, ('', 'Choose state'))
 
 
     # Id hidden fields to link records in the database
@@ -212,15 +213,16 @@ class PostAdForm(forms.Form):
 
     def __init__(self, loop_times, *args, **kwargs):
         super(PostAdForm, self).__init__(*args, **kwargs)
+        self.dx_times = 12
+        self.lines = 6
+        self.columns = 4
+
         # Diagnosis section
         for i in loop_times:
             self.fields['ICD_10_%s' % (i+1)] = forms.CharField(max_length=8, required=False)
 
-
-class ProcedureForm(forms.Form):
-    def __init__(self, lines, column, *args, **kwargs):
-        super(ProcedureForm, self).__init__(*args, **kwargs)
-        for i in xrange(1, lines+1):
+        # Procedure section
+        for i in xrange(1, self.lines+1):
             self.fields['cpt_code_%s' % i] = forms.CharField(required=False, widget=forms.TextInput(attrs={'placeholder': 'CPT/HCPCS code'}))
             self.fields['service_start_date_%s' % i] = forms.DateField(required=False, widget=forms.DateInput(attrs={
                 'class': 'dateValidation',
@@ -233,11 +235,26 @@ class ProcedureForm(forms.Form):
                 'step': '0.01'
             }))
             self.fields['note_%s' % i] = forms.CharField(required=False, widget=forms.TextInput(attrs={'placeholder': 'Note'}))
+            self.fields['total_%s' % i] = forms.FloatField(widget=forms.NumberInput(attrs={
+                'value': 0,
+                'readonly': True,
+            }))
+
+            for j in xrange(1, self.columns+1):
+                self.fields['dx_pt_s%s_%s' % (j, i)] = forms.ChoiceField(required=False, choices=DX_PT)
+                self.fields['mod_%s_%s' % ( chr(ord('a')+j-1), i )] = forms.CharField(
+                    required=False,
+                    widget=forms.TextInput(attrs={'placeholder': 'Mod ' + chr(ord('A')+j-1)})
+                )
+
+            # Calculator option
             self.fields['start_time_%s' % i] = forms.CharField(required=False, widget=forms.TextInput(attrs={'class': 'input-small'}))
             self.fields['end_time_%s' % i] = forms.CharField(required=False, widget=forms.TextInput(attrs={'class': 'input-small'}))
             self.fields['base_units_%s' % i] = forms.IntegerField(required=False, widget=forms.NumberInput(attrs={'value': 5}))
             self.fields['time_units_%s' % i] = forms.IntegerField(required=False, widget=forms.NumberInput(attrs={'readonly': True}))
             self.fields['fees_%s' % i] = forms.FloatField(required=False, widget=forms.NumberInput(attrs={'step': '0.01'}))
+            
+            # Drug information option
             self.fields['proc_code_%s' % i] = forms.CharField(required=False, widget=forms.TextInput(attrs={'class': 'input-small'}))
             self.fields['ndc_%s' % i] = forms.CharField(required=False, widget=forms.TextInput(attrs={'class': 'input-small'}))
             self.fields['qty_%s' % i] = forms.FloatField(required=False, widget=forms.NumberInput(attrs={
@@ -246,30 +263,23 @@ class ProcedureForm(forms.Form):
                 'class': 'input-small',
             }))
             self.fields['unit_%s' % i] = forms.ChoiceField(choices=UNIT)
-            self.fields['total_%s' % i] = forms.FloatField(widget=forms.NumberInput(attrs={
-                'value': 0,
-                'readonly': True,
-            }))
 
-            for j in xrange(1, column+1):
-                self.fields['dx_pt_s%s_%s' % (j, i)] = forms.ChoiceField(required=False, choices=DX_PT)
-                self.fields['mod_%s_%s' % ( chr(ord('a')+j-1), i )] = forms.CharField(
-                    required=False,
-                    widget=forms.TextInput(attrs={'placeholder': 'Mod ' + chr(ord('A')+j-1)})
-                )
 
     def is_valid(self):
-        valid = super(ProcedureForm, self).is_valid()
+        valid = super(PostAdForm, self).is_valid()
         if not valid:
-            return valid
+            valid = False
 
-        print '\n\n\n\n'
-        print self.cleaned_data['start_time_1']
-        print self.cleaned_data['end_time_1']
+        for i in xrange(1, self.lines+1):
+            if self.cleaned_data['start_time_%s' % i] and not self.cleaned_data['end_time_%s' % i]:
+                self._errors['end_time_%s' % i] = ErrorList(['There is start period but not end period.'])
+                valid = False
+            if not self.cleaned_data['start_time_%s' % i] and self.cleaned_data['end_time_%s' % i]:
+                self._errors['start_time_%s' % i] = ErrorList(['There is end period but not start period.'])
+                valid = False
 
-        if self.cleaned_data['start_time_1'] and not self.cleaned_data['end_time_1']:
-            self._errors['no end time'] = 'No end time but has start time'
-            return False
+        return valid
+
         
 
 
