@@ -195,6 +195,14 @@ function init(){
         validation_date : true
     });
     
+    // function(var element){
+    //     var ele=$(element);
+    //     while(ele.attr("id")!="patient"){
+    //         ele = ele.parent();
+    //     }
+        
+    // }
+
     // Hide-Display block for service
     (function($){
         var originalVal = $('.input-number').val;
