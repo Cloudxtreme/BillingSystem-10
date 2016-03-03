@@ -136,7 +136,7 @@ class PostAdForm(forms.Form):
     pat_telephone = USPhoneNumberField()
     pat_birth_date = forms.DateField(widget=forms.DateInput(attrs={'placeholder': 'MM/DD/YYYY'}))
     pat_sex = forms.ChoiceField(choices=SEX)
-    pat_relationship_insured = forms.ChoiceField(choices=REL_INSUR, required=False)
+    pat_relationship_insured = forms.ChoiceField(choices=REL_INSUR)
     pat_relation_emp = forms.BooleanField(initial=False, required=False)
     pat_relation_other_accident =forms.BooleanField(initial=False, required=False)
     pat_relation_auto_accident = forms.BooleanField(initial=False, required=False)
@@ -161,9 +161,9 @@ class PostAdForm(forms.Form):
     insured_zip = USZipCodeField(widget=forms.TextInput(attrs={'placeholder': 'Zip'}))
     insured_telephone = USPhoneNumberField()
     insured_policy = forms.CharField(
-        max_length=100,
         required=False,
-        widget=forms.TextInput(attrs={'placeholder': ''})
+        max_length=100,
+        widget=forms.TextInput(attrs={'placeholder': '', 'value': 'None'})
     )
     insured_birth_date = forms.DateField(widget=forms.DateInput(attrs={'placeholder': 'MM/DD/YYYY'}))
     insured_sex = forms.ChoiceField(choices=SEX)
@@ -277,6 +277,23 @@ class PostAdForm(forms.Form):
             if not self.cleaned_data['start_time_%s' % i] and self.cleaned_data['end_time_%s' % i]:
                 self._errors['start_time_%s' % i] = ErrorList(['There is end period but not start period.'])
                 valid = False
+
+            for j in xrange(1, self.columns+1):
+                if self.cleaned_data['dx_pt_s1_%s' % i]:
+                    char = self.cleaned_data['dx_pt_s%s_%s' % (j, i)]
+                    num = ord(char.upper()) - ord('A') + 1
+                    if not self.cleaned_data['ICD_10_%s' % num]:
+                        self.error['ICD_10_%s' % num] = ErrorList(['Diagnonsis pointer points to empty element in CPT list'])
+                        valid = False
+
+
+        if self.cleaned_data['pat_relation_auto_accident'] == True and not self.cleaned_data['pat_auto_accident_state']:
+            self._errors['pat_auto_accident_state'] = ErrorList(['Auto accident must select state.'])
+            valid = False
+
+        if not self.cleaned_data['insured_policy']:
+            self.cleaned_data['insured_policy'] = 'None'
+
 
         return valid
 
