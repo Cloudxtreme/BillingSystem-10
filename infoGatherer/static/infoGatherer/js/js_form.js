@@ -159,9 +159,11 @@ function init(){
             // console.log($(element));
             if($(element).attr("id")===("id_cpt_code_1")){
                 $(element).parent().addClass('has-error');
+                runToTop(element);
             }
             else if($(element).attr("id")===("id_cpt_charge_1")){
                 $(element).parent().addClass('has-error');
+                runToTop(element);
             }
             else if($(element).attr("id").substring(3, 5)==="dx"){
                 // console.log(123);
@@ -171,14 +173,17 @@ function init(){
                     if($(element).attr("id").substring(0,11).localeCompare(s)==0){
                         // console.log("matched!");
                         $(element).parent().addClass('has-error');
+                        runToTop(element);
                     }
                 }
             }
             else if($(element).attr("id").substring(3,16)==="service_start"){
                 $(element).parent().addClass('has-error');
+                runToTop(element);
             }
             else{
                 $(element).closest('.form-group').addClass('has-error');
+                runToTop(element);
             }
             
         },
@@ -195,13 +200,17 @@ function init(){
         validation_date : true
     });
     
-    // function(var element){
-    //     var ele=$(element);
-    //     while(ele.attr("id")!="patient"){
-    //         ele = ele.parent();
-    //     }
-        
-    // }
+    function runToTop (element){
+        if($(element).closest("#physician")){
+            $("#nav_physician").children("a").css("color","#BB4442");
+        }
+         if($(element).closest("#patient")){
+            $("#nav_patient").children("a").css("color","#BB4442");
+        }
+         if($(element).closest("#insured")){
+            $("#nav_insurance").children("a").css("color","#BB4442");
+        }
+    }
 
     // Hide-Display block for service
     (function($){
