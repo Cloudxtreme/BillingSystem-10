@@ -83,6 +83,7 @@ function init(){
             
     // Custom Validation
     jQuery.validator.addMethod("validation_diagnosis", function(value, element){
+        
         if(value.charCodeAt(0)>=65 && value.charCodeAt(0)<=76){
             var s="#id_ICD_10_"+(value.charCodeAt(0)-"A".charCodeAt(0)+1).toString();
             // console.log(s);
@@ -107,6 +108,7 @@ function init(){
     // form validation
     $('form').validate({
         errorPlacement: function(error, element) {},
+        ignore: [],
         rules: {
             pat_name: "required",
             pat_streetaddress: "required",
@@ -145,8 +147,7 @@ function init(){
             payer_address: {
                 required: false
             },
-            first_name: "required",
-            last_name: "required",
+            referring_name: "required",
             NPI: "required",
             billing_provider_name: "required",
             location_provider_name: "required",
@@ -163,6 +164,7 @@ function init(){
                 $(element).parent().addClass('has-error');
             }
             else if($(element).attr("id").substring(3, 5)==="dx"){
+                // console.log(123);
                 for(i=1;i<=4;i++){
                     var s="id_dx_pt_s"+i; // regex match
                     // console.log($(element).attr("id").substring(0,11), s);
@@ -193,6 +195,14 @@ function init(){
         validation_date : true
     });
     
+    // function(var element){
+    //     var ele=$(element);
+    //     while(ele.attr("id")!="patient"){
+    //         ele = ele.parent();
+    //     }
+        
+    // }
+
     // Hide-Display block for service
     (function($){
         var originalVal = $('.input-number').val;
@@ -234,52 +244,52 @@ function init(){
 
     // Javascript validation for diagnosis - service information
 
-    var cells = [1,0,0,0,0,0,0,0,0,0,0,0];
+    // var cells = [1,0,0,0,0,0,0,0,0,0,0,0];
 
 
     
-    var element="#id_dx_pt_s1_1";
-    var val=($(element).val()).charCodeAt(0)-"A".charCodeAt(0);
-    // console.log($(element).val());
-    if(cells[val]!=1){
-        cells[val]=1;
-    }
-    else{
-        // console.log("123123");
-        element.parent().addClass('has-error');
-        // Red the box
-    }
+    // var element="#id_dx_pt_s1_1";
+    // var val=($(element).val()).charCodeAt(0)-"A".charCodeAt(0);
+    // // console.log($(element).val());
+    // if(cells[val]!=1){
+    //     cells[val]=1;
+    // }
+    // else{
+    //     // console.log("123123");
+    //     element.parent().addClass('has-error');
+    //     // Red the box
+    // }
     
     
-    // $("#selectBox option[value='option1']").remove();
-    var cells = [1,0,0,0,0,0,0,0,0,0,0,0];
-    //Define a onchange handler:
-    var changeHandler = function() {
-        //You can alert the value of the selected option, using this:
-        var val=this.value.charCodeAt(0)-"A".charCodeAt(0);
-        // console.log(this.value);
-        if(cells[val]!=1){
-            cells[val]=1;
-        }
-        else{
-            // console.log("123123");
-            // console.log($($(this).attr("id")));
-            $($(this).attr("id")).parent().addClass('has-error');
-            // Red the box
-        }
-        // console.log(cells);
+    // // $("#selectBox option[value='option1']").remove();
+    // var cells = [1,0,0,0,0,0,0,0,0,0,0,0];
+    // //Define a onchange handler:
+    // var changeHandler = function() {
+    //     //You can alert the value of the selected option, using this:
+    //     var val=this.value.charCodeAt(0)-"A".charCodeAt(0);
+    //     // console.log(this.value);
+    //     if(cells[val]!=1){
+    //         cells[val]=1;
+    //     }
+    //     else{
+    //         // console.log("123123");
+    //         // console.log($($(this).attr("id")));
+    //         $($(this).attr("id")).parent().addClass('has-error');
+    //         // Red the box
+    //     }
+    //     // console.log(cells);
 
 
-    }
-    var filter=document.getElementById("id_dx_pt_s1_1");
-    if(filter.addEventListener)
-      filter.addEventListener("change", changeHandler, false);
-    //If it doesn't exist, try attachEvent, the IE way:
-    else if(filter.attachEvent)
-      filter.attachEvent("onchange", changeHandler);
-    //Just use onchange if neither exist
-    else
-      filter.onchange = changeHandler;
+    // }
+    // var filter=document.getElementById("id_dx_pt_s1_1");
+    // if(filter.addEventListener)
+    //   filter.addEventListener("change", changeHandler, false);
+    // //If it doesn't exist, try attachEvent, the IE way:
+    // else if(filter.attachEvent)
+    //   filter.attachEvent("onchange", changeHandler);
+    // //Just use onchange if neither exist
+    // else
+    //   filter.onchange = changeHandler;
 
 }
 window.onload = init;
