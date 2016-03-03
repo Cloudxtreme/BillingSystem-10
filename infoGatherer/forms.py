@@ -103,18 +103,14 @@ class PostAdForm(forms.Form):
     CUSTOM_STATE_CHOICES.insert(0, ('', '---------'))
 
 
-    # Id hidden fields for linking records in the database
+    # Id hidden fields to link records in the database
     pat_id = forms.ModelChoiceField(queryset=Personal_Information.objects.all(), widget=forms.HiddenInput())
     insured_id = forms.ModelChoiceField(queryset=Personal_Information.objects.all(), widget=forms.HiddenInput())
     other_insured_id = forms.ModelChoiceField(required=False, queryset=Personal_Information.objects.all(), widget=forms.HiddenInput())
     payer_id = forms.ModelChoiceField(queryset=Payer.objects.all(), widget=forms.HiddenInput())
-    referring_provider_id = forms.ModelChoiceField(queryset=ReferringProvider.objects.all(), widget=forms.HiddenInput())
-    billing_provider_id = forms.ModelChoiceField(queryset=Provider.objects.filter(role='Billing'), widget=forms.HiddenInput())
-    location_provider_id = forms.ModelChoiceField(queryset=Provider.objects.filter(role='Location'), widget=forms.HiddenInput())
-    rendering_provider_id = forms.ModelChoiceField(queryset=Provider.objects.filter(role='Rendering'), widget=forms.HiddenInput())
 
 
-    # Payer section    
+    # Payer section
     health_plan = forms.ChoiceField(choices=HEALTHPLAN, required=False)
     payer_num = forms.CharField()
     payer_name = forms.CharField()
@@ -220,10 +216,6 @@ class PostAdForm(forms.Form):
         for i in loop_times:
             self.fields['ICD_10_%s' % (i+1)] = forms.CharField(max_length=8, required=False)
 
-    # class Meta:
-    #     model = PostAd
-    #     fields = '__all__'
-
 
 class ProcedureForm(forms.Form):
     def __init__(self, lines, column, *args, **kwargs):
@@ -265,6 +257,20 @@ class ProcedureForm(forms.Form):
                     required=False,
                     widget=forms.TextInput(attrs={'placeholder': 'Mod ' + chr(ord('A')+j-1)})
                 )
+
+    def is_valid(self):
+        valid = super(ProcedureForm, self).is_valid()
+        if not valid:
+            return valid
+
+        print '\n\n\n\n'
+        print self.cleaned_data['start_time_1']
+        print self.cleaned_data['end_time_1']
+
+        if self.cleaned_data['start_time_1'] and not self.cleaned_data['end_time_1']:
+            self._errors['no end time'] = 'No end time but has start time'
+            return False
+        
 
 
 class PatientForm(ModelForm):

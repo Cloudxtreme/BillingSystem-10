@@ -39,11 +39,11 @@ def PostAdPage(request):
     procedure_form = ProcedureForm(6, 4, request.GET or None)
 
     if 'pat_name' in request.GET and request.GET['pat_name']:
-        #if form.is_valid() and procedure_form.is_valid() :
-        var = print_form(request.GET);
-        return var
-        #else:
-        #    print form.errors and procedure_form.errors
+        if procedure_form.is_valid() and form.is_valid() :
+            var = print_form(request.GET);
+            return var
+        else:
+           print form.errors and procedure_form.errors
 
     return render(request, 'post_ad.html', {
         'dx_pt_range': dx_pt_range,
