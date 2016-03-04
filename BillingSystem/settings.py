@@ -44,10 +44,13 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'infoGatherer',
+
     'django_countries',
     'localflavor',
-    'claims.apps.ClaimsConfig',
+    'widget_tweaks',
+
+    'infoGatherer',
+    'claims',
     'accounts',
     'dashboard',
 )
@@ -92,7 +95,13 @@ WSGI_APPLICATION = 'BillingSystem.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
-DATE_FORMAT = "Y/m/d"
+try:
+    import pymysql
+    pymysql.install_as_MySQLdb()
+except ImportError:
+    pass 
+
+DATE_FORMAT = "m/d/Y"
 
 DATABASES = {
     'default': {

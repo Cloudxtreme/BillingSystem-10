@@ -38,21 +38,22 @@ function init(){
     // Div tasgs
     var d = document.getElementsByClassName("fieldWrapper");
     for(i=0;i<d.length;i++){
-        d[i].className+=" form-group";
+        $(d[i]).addClass("form-group");
     }
 
     // Label tags
     var d = document.getElementsByTagName("label");
     for(i=0;i<d.length;i++){
-        d[i].className+=" control-label";
+        $(d[i]).addClass("control-label");
     }
 
     // Input tags
     var d = document.getElementsByTagName("input");
     for(i=0;i<d.length;i++){
-        if(d[i].type !== 'checkbox')
-            d[i].className+=" form-control";
-            //d[i].setAttribute("required", "");
+        if(d[i].type !== 'checkbox') {
+            // $(d[i]).addClass("form-control");
+            // d[i].setAttribute("required", "");
+        }
     }
     document.getElementById("id_pat_relation_emp").className="";
     document.getElementById("id_pat_relation_auto_accident").className="";

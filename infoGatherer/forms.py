@@ -68,22 +68,13 @@ class PostAdForm(forms.Form):
     
 
     # Patient section
-    pat_name = forms.CharField(
-        max_length=255,
-        widget=forms.TextInput(attrs={'placeholder': 'Last Name, First Name, Middle Initial'}),
-    )
-    pat_streetaddress = forms.CharField(
-        max_length=255,
-        widget=forms.TextInput(attrs={'placeholder': 'No., Street'}),
-    )
-    pat_city = forms.CharField(
-        max_length=50,
-        widget=forms.TextInput(attrs={'placeholder': 'City'}),
-    )
+    pat_name = forms.CharField(max_length=255)
+    pat_streetaddress = forms.CharField(max_length=255)
+    pat_city = forms.CharField(max_length=50)
     pat_state = USStateField(widget=forms.Select(choices=CUSTOM_STATE_CHOICES))
-    pat_zip = USZipCodeField(widget=forms.TextInput(attrs={'placeholder': 'Zip'}))
+    pat_zip = USZipCodeField()
     pat_telephone = USPhoneNumberField()
-    pat_birth_date = forms.DateField(widget=forms.DateInput(attrs={'placeholder': FORMAT_DATE}))
+    pat_birth_date = forms.DateField()
     pat_sex = forms.ChoiceField(choices=SEX)
     pat_relationship_insured = forms.ChoiceField(choices=PAT_RELA_TO_INSURED)
     pat_relation_emp = forms.BooleanField(initial=False, required=False)
@@ -94,49 +85,35 @@ class PostAdForm(forms.Form):
 
     # Insured section (id is id field in database whereas idnumber is number on insurance card)
     insured_idnumber = forms.CharField(max_length=255)
-    insured_name = forms.CharField(
-        max_length=255,
-        widget=forms.TextInput(attrs={'placeholder': 'Last Name, First Name, Middle Initial'}),
-    )
-    insured_streetaddress = forms.CharField(
-        max_length=255,
-        widget=forms.TextInput(attrs={'placeholder': 'No., Street'}),
-    )
-    insured_city = forms.CharField(
-        max_length=50,
-        widget=forms.TextInput(attrs={'placeholder': 'City'}),
-    )
+    insured_name = forms.CharField(max_length=255)
+    insured_streetaddress = forms.CharField(max_length=255)
+    insured_city = forms.CharField(max_length=50)
     insured_state = USStateField(widget=forms.Select(choices=CUSTOM_STATE_CHOICES))
-    insured_zip = USZipCodeField(widget=forms.TextInput(attrs={'placeholder': 'Zip'}))
+    insured_zip = USZipCodeField()
     insured_telephone = USPhoneNumberField()
     insured_policy = forms.CharField(
         required=False,
         max_length=100,
         initial=DEFAULT_NONE_POLICY,
-        widget=forms.TextInput(attrs={'placeholder': ''})
     )
-    insured_birth_date = forms.DateField(widget=forms.DateInput(attrs={'placeholder': FORMAT_DATE}))
+    insured_birth_date = forms.DateField()
     insured_sex = forms.ChoiceField(choices=SEX)
 
 
     # Other insured section
     insured_other_benifit_plan = forms.BooleanField(initial=False, required=False)
-    pat_other_insured_name = forms.CharField(
-        required=False,
-        max_length=255,
-        widget=forms.TextInput(attrs={'placeholder': 'Last Name, First Name, Middle Initial'}),
-    )
-    pat_other_insured_policy = forms.CharField(required=False, max_length=100,)
+    pat_other_insured_name = forms.CharField(required=False, max_length=255)
+    pat_other_insured_policy = forms.CharField(required=False, max_length=100)
 
 
     # Not required fields
-    pat_reservednucc1 = forms.CharField(max_length=100, required=False, widget=forms.TextInput(attrs={'placeholder': '8'}))
-    pat_reservednucc2 = forms.CharField(max_length=100, required=False, widget=forms.TextInput(attrs={'placeholder': '9 (b)'}))
-    pat_reservednucc3 = forms.CharField(max_length=100, required=False, widget=forms.TextInput(attrs={'placeholder': '9 (c)'}))
-    other_insured_insur_plan_name = forms.CharField(max_length=100, required=False, widget=forms.TextInput(attrs={'placeholder': '9 (d)'}))
-    claim_codes = forms.CharField(max_length=100, required=False, widget=forms.TextInput(attrs={'placeholder': '10 (d)'}))
-    other_cliam_id = forms.CharField(max_length=100, required=False, widget=forms.TextInput(attrs={'placeholder': '11 (b)'}))    
-    insured_insur_plan_name = forms.CharField(max_length=100, required=False, widget=forms.TextInput(attrs={'placeholder': '11 (c)'}))
+    pat_reservednucc1 = forms.CharField(max_length=100, required=False)
+    pat_reservednucc2 = forms.CharField(max_length=100, required=False)
+    pat_reservednucc3 = forms.CharField(max_length=100, required=False)
+    other_insured_insur_plan_name = forms.CharField(max_length=100, required=False)
+    claim_codes = forms.CharField(max_length=100, required=False)
+    other_cliam_id = forms.CharField(max_length=100, required=False)
+    insured_insur_plan_name = forms.CharField(max_length=100, required=False)
 
 
     # Physician section
@@ -171,81 +148,29 @@ class PostAdForm(forms.Form):
 
         # Procedure section
         for i in xrange(1, self.lines+1):
-            self.fields['cpt_code_%s' % i] = forms.CharField(
-                max_length=10,
-                required=False,
-                widget=forms.TextInput(attrs={'placeholder': 'CPT/HCPCS code'})
-            )
-            self.fields['service_start_date_%s' % i] = forms.DateField(widget=forms.DateInput(attrs={
-                'class': 'dateValidation',
-                'placeholder': FORMAT_DATE,
-            }))
-            self.fields['place_of_service_%s' % i] = forms.CharField(
-                max_length=5,
-                initial=11,
-                widget=forms.TextInput(attrs={'placeholder': 'Place of Service'})
-            )
-            self.fields['emg_%s' % i] = forms.CharField(
-                max_length=5,
-                required=False,
-                widget=forms.TextInput(attrs={'placeholder': 'EMG'})
-            )
-            self.fields['cpt_charge_%s' % i] = forms.FloatField(
-                required=False,
-                widget=forms.NumberInput(attrs={'placeholder': 'Charges ($)', 'step': '0.01'})
-            )
-            self.fields['note_%s' % i] = forms.CharField(
-                max_length=255,
-                required=False,
-                widget=forms.TextInput(attrs={'placeholder': 'Note'})
-            )
-            self.fields['total_%s' % i] = forms.FloatField(widget=forms.NumberInput(attrs={
-                'value': 0,
-                'step': '0.01',
-                'readonly': True,
-            }))
+            self.fields['cpt_code_%s' % i] = forms.CharField(max_length=10, required=False)
+            self.fields['service_start_date_%s' % i] = forms.DateField()
+            self.fields['place_of_service_%s' % i] = forms.CharField(max_length=5, initial=11)
+            self.fields['emg_%s' % i] = forms.CharField(max_length=5, required=False)
+            self.fields['cpt_charge_%s' % i] = forms.FloatField(required=False)
+            self.fields['note_%s' % i] = forms.CharField(max_length=255, required=False)
+            self.fields['total_%s' % i] = forms.FloatField(initial=0)
 
             for j in xrange(1, self.columns+1):
-                self.fields['dx_pt_s%s_%s' % (j, i)] = forms.ChoiceField(
-                    required=False,
-                    choices=DX_PT,
-                    widget=forms.Select(attrs={'class': 'dropValidation'})
-                )
-                self.fields['mod_%s_%s' % ( chr(ord('a')+j-1), i )] = forms.CharField(
-                    max_length=5,
-                    required=False,
-                    widget=forms.TextInput(attrs={'placeholder': 'Mod ' + chr(ord('A')+j-1)})
-                )
+                self.fields['dx_pt_s%s_%s' % (j, i)] = forms.ChoiceField(required=False, choices=DX_PT)
+                self.fields['mod_%s_%s' % ( chr(ord('a')+j-1), i )] = forms.CharField(max_length=5, required=False)
 
             # Calculator option
-            self.fields['start_time_%s' % i] = forms.TimeField(required=False, widget=forms.TextInput(attrs={
-                'class': 'input-small',
-                'placeholder': 'HH:MM',
-            }))
-            self.fields['end_time_%s' % i] = forms.TimeField(required=False, widget=forms.TextInput(attrs={
-                'class': 'input-small',
-                'placeholder': 'HH:MM',
-            }))
-            self.fields['base_units_%s' % i] = forms.IntegerField(required=False, initial=5, widget=forms.NumberInput())
-            self.fields['time_units_%s' % i] = forms.IntegerField(required=False, widget=forms.NumberInput(attrs={'readonly': True}))
-            self.fields['fees_%s' % i] = forms.FloatField(required=False, widget=forms.NumberInput(attrs={'step': '0.01'}))
+            self.fields['start_time_%s' % i] = forms.TimeField(required=False)
+            self.fields['end_time_%s' % i] = forms.TimeField(required=False)
+            self.fields['base_units_%s' % i] = forms.IntegerField(required=False, initial=5)
+            self.fields['time_units_%s' % i] = forms.IntegerField(required=False)
+            self.fields['fees_%s' % i] = forms.FloatField(required=False)
             
             # Drug information option
-            self.fields['proc_code_%s' % i] = forms.CharField(
-                max_length=100,
-                required=False,
-                widget=forms.TextInput(attrs={'class': 'input-small'})
-            )
-            self.fields['ndc_%s' % i] = forms.CharField(
-                max_length=20,
-                required=False,
-                widget=forms.TextInput(attrs={'class': 'input-small'})
-            )
-            self.fields['qty_%s' % i] = forms.FloatField(required=False, widget=forms.NumberInput(attrs={
-                'step': '0.01',
-                'min': 0,
-                'class': 'input-small',
-            }))
+            self.fields['proc_code_%s' % i] = forms.CharField(max_length=100, required=False)
+            self.fields['ndc_%s' % i] = forms.CharField(max_length=20, required=False)
+            self.fields['qty_%s' % i] = forms.FloatField(required=False)
             self.fields['unit_%s' % i] = forms.ChoiceField(choices=UNIT)
 
     def is_valid(self):
