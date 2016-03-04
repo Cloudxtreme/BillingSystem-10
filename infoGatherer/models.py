@@ -73,6 +73,60 @@ PROVIDER_ROLE_CHOICES = (('Billing','Billing'),('Rendering','Rendering'),('Dual'
 
 POS_CHOICES = (('Home','Home'),('Hospital','Hospital'),('Office','Office'))
 
+HEALTHPLAN = (
+    ('Medicare', 'Medicare'),
+    ('Medicaid', 'Medicaid'),
+    ('Tricare', 'Tricare'),
+    ('Champva', 'Champva'),
+    ('GroupHealthPlan', 'GroupHealthPlan'),
+    ('FECA_Blk_Lung', 'FECA Blk Lung'),
+    ('Other', 'Other'),
+)
+SEX = (
+    ('', '-----'),
+    ('M', 'Male'),
+    ('F', 'Female'),
+)
+PAT_RELA_TO_INSURED = (  
+    ('Self', 'Self'),
+    ('Spouse', 'Spouse'),
+    ('Child', 'Child'),
+    ('Other', 'Other'),
+)
+DX_PT = (
+    ('', '---'),
+    ('A', 'A'),
+    ('B', 'B'),
+    ('C', 'C'),
+    ('D', 'D'),
+    ('E', 'E'),
+    ('F', 'F'),
+    ('G', 'G'),
+    ('H', 'H'),
+    ('I', 'I'),
+    ('J', 'J'),
+    ('K', 'K'),
+    ('L', 'L'),
+)
+UNIT = (  
+    ('ME', 'Milligram'),
+    ('F2', 'International Unit'),
+    ('GR', 'Gram'),
+    ('ML', 'Milliliter'),
+    ('UN', 'Unit'),
+)
+
+
+"""
+CATEGORIES = (
+    ('LAB', 'labor'),
+    ('CAR', 'cars'),
+    ('TRU', 'trucks'),
+    ('WRI', 'writing'),
+)
+"""
+
+
 #New stuf
 
 class CPT(models.Model):

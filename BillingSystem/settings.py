@@ -16,6 +16,13 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
+# Access configparser to load variable values from config file
+from django.utils.six.moves import configparser
+CONFIG = configparser.SafeConfigParser(allow_no_value=True)
+CONFIG.read('config.cfg')
+CONFIG = CONFIG._sections
+
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
 
