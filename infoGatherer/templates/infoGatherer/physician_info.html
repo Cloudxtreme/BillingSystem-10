@@ -5,22 +5,22 @@
         <div class="col-xs-4 placeholder label-placeholder">Diagnonsis Pointer</div>
         <div class="col-xs-2">
             {% with 'dx_pt_s1_'|add:i as fieldName %}
-            {{ procedure_form|getField:fieldName }}
+            {{ form|getField:fieldName }}
             {% endwith %}
         </div>
         <div class="col-xs-2">
             {% with 'dx_pt_s2_'|add:i as fieldName %}
-            {{ procedure_form|getField:fieldName }}
+            {{ form|getField:fieldName }}
             {% endwith %}
         </div>
         <div class="col-xs-2">
             {% with 'dx_pt_s3_'|add:i as fieldName %}
-            {{ procedure_form|getField:fieldName }}
+            {{ form|getField:fieldName }}
             {% endwith %}
         </div>
         <div class="col-xs-2">
             {% with 'dx_pt_s4_'|add:i as fieldName %}
-            {{ procedure_form|getField:fieldName }}
+            {{ form|getField:fieldName }}
             {% endwith %}
         </div>
     </div>
@@ -29,27 +29,27 @@
     <div class="row">
         <div class="col-xs-4">
             {% with 'cpt_code_'|add:i as fieldName %}
-            {{ procedure_form|getField:fieldName }}
+            {{ form|getField:fieldName }}
             {% endwith %}
         </div>
         <div class="col-xs-2">
             {% with 'mod_a_'|add:i as fieldName %}
-            {{ procedure_form|getField:fieldName }}
+            {{ form|getField:fieldName }}
             {% endwith %}
         </div>
         <div class="col-xs-2">
             {% with 'mod_b_'|add:i as fieldName %}
-            {{ procedure_form|getField:fieldName }}
+            {{ form|getField:fieldName }}
             {% endwith %}
         </div>
         <div class="col-xs-2">
             {% with 'mod_c_'|add:i as fieldName %}
-            {{ procedure_form|getField:fieldName }}
+            {{ form|getField:fieldName }}
             {% endwith %}
         </div>
         <div class="col-xs-2">
             {% with 'mod_d_'|add:i as fieldName %}
-            {{ procedure_form|getField:fieldName }}
+            {{ form|getField:fieldName }}
             {% endwith %}
         </div>
     </div>
@@ -58,22 +58,22 @@
     <div class="row">
         <div class="col-xs-4">
             {% with 'service_start_date_'|add:i as fieldName %}
-            {{ procedure_form|getField:fieldName }}
+            {{ form|getField:fieldName }}
             {% endwith %}
         </div>
         <div class="col-xs-3">
             {% with 'place_of_service_'|add:i as fieldName %}
-            {{ procedure_form|getField:fieldName }}
+            {{ form|getField:fieldName }}
             {% endwith %}
         </div>
         <div class="col-xs-2">
             {% with 'emg_'|add:i as fieldName %}
-            {{ procedure_form|getField:fieldName }}
+            {{ form|getField:fieldName }}
             {% endwith %}
         </div>
         <div class="col-xs-3">
             {% with 'cpt_charge_'|add:i as fieldName %}
-            {{ procedure_form|getField:fieldName }}
+            {{ form|getField:fieldName }}
             {% endwith %}
         </div>
     </div>
@@ -92,7 +92,7 @@
         </div>
         <div class="col-xs-8">
             {% with 'note_'|add:i as fieldName %}
-            {{ procedure_form|getField:fieldName }}
+            {{ form|getField:fieldName }}
             {% endwith %}
         </div>
     </div>
@@ -106,7 +106,7 @@
                     <label for="id_start_time_{{i}}">Start Time</label>
                     <div class="input-group bootstrap-timepicker timepicker">
                         {% with 'start_time_'|add:i as fieldName %}
-                        {{ procedure_form|getField:fieldName }}
+                        {{ form|getField:fieldName }}
                         {% endwith %}
                         <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
                     </div>
@@ -117,7 +117,7 @@
                     <label for="id_end_time_{{i}}">End Time</label>
                     <div class="input-group bootstrap-timepicker timepicker">
                         {% with 'end_time_'|add:i as fieldName %}
-                        {{ procedure_form|getField:fieldName }}
+                        {{ form|getField:fieldName }}
                         {% endwith %}
                         <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
                     </div>
@@ -127,7 +127,7 @@
                 <div class="form-group">
                     <label for="id_base_units_{{i}}">Base Units</label>
                     {% with 'base_units_'|add:i as fieldName %}
-                    {{ procedure_form|getField:fieldName }}
+                    {{ form|getField:fieldName }}
                     {% endwith %}
                 </div>
             </div>
@@ -135,7 +135,7 @@
                 <div class="form-group">
                     <label for="id_time_units_{{i}}">Time Units</label>
                     {% with 'time_units_'|add:i as fieldName %}
-                    {{ procedure_form|getField:fieldName }}
+                    {{ form|getField:fieldName }}
                     {% endwith %}
                 </div>
             </div>
@@ -143,7 +143,7 @@
                 <div class="form-group">
                     <label for="id_fees_{{i}}">Fees</label>
                     {% with 'fees_'|add:i as fieldName %}
-                    {{ procedure_form|getField:fieldName }}
+                    {{ form|getField:fieldName }}
                     {% endwith %}
                 </div>
             </div>
@@ -157,7 +157,7 @@
                 <div class="form-group">
                     <label for="id_proc_code_{{i}}">Proc. code description</label>
                     {% with 'proc_code_'|add:i as fieldName %}
-                    {{ procedure_form|getField:fieldName }}
+                    {{ form|getField:fieldName }}
                     {% endwith %}
                 </div>
             </div>
@@ -165,7 +165,7 @@
                 <div class="form-group">
                     <label for="id_ndc_{{i}}">NDC</label>
                     {% with 'ndc_'|add:i as fieldName %}
-                    {{ procedure_form|getField:fieldName }}
+                    {{ form|getField:fieldName }}
                     {% endwith %}
                 </div>
             </div>
@@ -173,7 +173,7 @@
                 <div class="form-group">
                     <label for="id_qty_{{i}}">Quantity</label>
                     {% with 'qty_'|add:i as fieldName %}
-                    {{ procedure_form|getField:fieldName }}
+                    {{ form|getField:fieldName }}
                     {% endwith %}
                 </div>
             </div>
@@ -181,7 +181,7 @@
                 <div class="form-group">
                     <label for="id_unit_measure">Unit of Measure</label>
                     {% with 'unit_'|add:i as fieldName %}
-                    {{ procedure_form|getField:fieldName }}
+                    {{ form|getField:fieldName }}
                     {% endwith %}
                 </div>
             </div>
@@ -193,7 +193,7 @@
     <div class="row">
         <div class="col-xs-4 pull-right">
             {% with 'total_'|add:i as fieldName %}
-            {{ procedure_form|getField:fieldName }}
+            {{ form|getField:fieldName }}
             {% endwith %}
         </div>
         <div class="col-xs-2 pull-right" style="text-align:right;">

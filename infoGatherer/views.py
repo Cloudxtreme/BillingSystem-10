@@ -47,7 +47,6 @@ def PostAdPage(request):
         'dx_pt_range': dx_pt_range,
         'loop_times' : loop_times,
         'form': form,
-        'procedure_form': form,
     })
 
 def get_make_claim_extra_context(request):
