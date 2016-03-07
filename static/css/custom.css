@@ -1,3 +1,15 @@
+select.form-control.dx-pt {
+  -moz-appearance: none;
+   -webkit-appearance: none;
+   appearance: none;
+}
+
+.well-sm {
+    padding: 9px;
+    border-radius: 3px;
+    background-color: #f5f5f5;
+}
+
 .placeholder {
     color: #999 !important;
 }
@@ -49,6 +61,9 @@ select.input-sm {
 }
 
 
+.input-group.address-input {
+    /*margin: 0px 5px;*/
+}
 .address-input .form-control {
     border-right-width: 0px;
 }

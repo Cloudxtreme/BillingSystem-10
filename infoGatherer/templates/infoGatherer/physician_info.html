@@ -3,181 +3,176 @@
 
 <div id="procedure_line_{{i}}">
     <div class="row">
-        <div class="col-xs-3">
-            {% with 'service_start_date_'|add:i as fieldName %}
-            {{ form|getField:fieldName|add_class:"form-control dateValidation"|attr:"placeholder:MM/DD/YYYY" }}
-            {% endwith %}
-        </div>
-        <div class="col-xs-3">
-            {% with 'place_of_service_'|add:i as fieldName %}
-            {{ form|getField:fieldName|add_class:"form-control"|attr:"placeholder:Place of Service" }}
-            {% endwith %}
-        </div>
-        <div class="col-xs-1">
-            {% with 'emg_'|add:i as fieldName %}
-            {{ form|getField:fieldName|add_class:"form-control"|attr:"placeholder:EMG" }}
-            {% endwith %}
-        </div>
-        <div class="col-xs-3">
-            {% with 'cpt_code_'|add:i as fieldName %}
-            {{ form|getField:fieldName|add_class:"form-control"|attr:"placeholder:CPT/HCPCS code" }}
-            {% endwith %}
-        </div>
-        <div class="col-xs-2">
-            {% with 'cpt_charge_'|add:i as fieldName %}
-            {{ form|getField:fieldName|add_class:"form-control"|attr:"step:0.01"|append_attr:"placeholder:Charges ($)" }}
-            {% endwith %}
-        </div>
-    </div>
-    
-    <div class="row">
-        <div class="col-xs-12">
-            <label>Diagnosis Pointer</label>
-            <div class="input-group four-input">
-                {% with fieldName1='dx_pt_s1_'|add:i fieldName2='dx_pt_s2_'|add:i fieldName3='dx_pt_s3_'|add:i fieldName4='dx_pt_s4_'|add:i %}
-                {{ form|getField:fieldName1|add_class:"form-control dropValidation" }}
-                {{ form|getField:fieldName2|add_class:"form-control dropValidation" }}
-                {{ form|getField:fieldName3|add_class:"form-control dropValidation" }}
-                {{ form|getField:fieldName4|add_class:"form-control dropValidation" }}
-                {% endwith %}
+        <div class="col-md-6">
+            <div class="row">
+                <div class="col-sm-12">
+                    Procedure
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-3">
+                    {% with 'service_start_date_'|add:i as fieldName %}
+                    {{ form|getField:fieldName|add_class:"form-control dateValidation"|attr:"placeholder:MM/DD/YYYY" }}
+                    {% endwith %}
+                </div>
+                <div class="col-sm-3">
+                    {% with 'place_of_service_'|add:i as fieldName %}
+                    {{ form|getField:fieldName|add_class:"form-control"|attr:"placeholder:Place of Service" }}
+                    {% endwith %}
+                </div>
+                <div class="col-sm-1">
+                    {% with 'emg_'|add:i as fieldName %}
+                    {{ form|getField:fieldName|add_class:"form-control"|attr:"placeholder:EMG" }}
+                    {% endwith %}
+                </div>
+                <div class="col-sm-3">
+                    {% with 'cpt_code_'|add:i as fieldName %}
+                    {{ form|getField:fieldName|add_class:"form-control"|attr:"placeholder:CPT/HCPCS code" }}
+                    {% endwith %}
+                </div>
+                <div class="col-sm-2">
+                    {% with 'cpt_charge_'|add:i as fieldName %}
+                    {{ form|getField:fieldName|add_class:"form-control"|attr:"step:0.01"|append_attr:"placeholder:Charges ($)" }}
+                    {% endwith %}
+                </div>
             </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-xs-12">
-            <label>Modifer</label>
-            <div class="input-group four-input">
-                {% with fieldName1='mod_a_'|add:i fieldName2='mod_b_'|add:i fieldName3='mod_c_'|add:i fieldName4='mod_d_'|add:i %}
-                {{ form|getField:fieldName1|add_class:"form-control"|attr:"placeholder:Mod A" }}
-                {{ form|getField:fieldName2|add_class:"form-control"|attr:"placeholder:Mod B" }}
-                {{ form|getField:fieldName3|add_class:"form-control"|attr:"placeholder:Mod C" }}
-                {{ form|getField:fieldName4|add_class:"form-control"|attr:"placeholder:Mod D" }}
-                {% endwith %}
+        <div class="col-md-6">
+            <div class="row">
+                <div class="col-sm-4">
+                    Modifer
+                </div>
+                <div class="col-sm-4">
+                    Diagnosis Pointer
+                </div>
             </div>
-        </div>
-    </div>
-        
-
-
-
-    <div class="row">
-        <div class="col-xs-4">
-            <button type="button" class="btn btn-info-outline btn-sm" id="btn_calc_{{i}}" data-toggle="collapse" data-target="#collapse_{{i}}" aria-expanded="false" aria-controls="collapse_{{i}}" style="display:none">Calculator</button>
-            <button type="button" class="btn btn-secondary btn-sm" id="btn_druginfo_{{i}}" data-toggle="collapse" data-target="#collapse2_{{i}}" aria-expanded="false" aria-controls="collapse2_{{i}}" style="display:none">Drug Information</button>
-            <label for="trigger_{{i}}" onclick="dropDown(this,{{i}});">
-                <input type="checkbox" id="trigger_{{i}}" checked data-toggle="toggle" data-on="Calculator" data-off="Drug Information" data-onstyle="success" data-offstyle="danger" style="width:100px">
-            </label>
-            <input id="trigger_calc_{{i}}" style="display:none">
-            <input id="trigger_drug_{{i}}" style="display:none">
-        </div>
-        <div class="col-xs-8">
-            {% with 'note_'|add:i as fieldName %}
-            {{ form|getField:fieldName|add_class:"form-control"|attr:"placeholder:Note" }}
-            {% endwith %}
-        </div>
-    </div>
-    <hr>
-
-
-    <div class="collapse" id="collapse_{{i}}">
-        <div class="well row">
-            <div class="col-lg-3 col-md-3">
-                <div class="form-group">
-                    {% with 'start_time_'|add:i as fieldName %}
-                    <label for="{{ form|getFieldId:fieldName }}">Start Time</label>
-                    <div class="input-group bootstrap-timepicker timepicker">
-                        {{ form|getField:fieldName|add_class:"form-control input-small"|attr:"placeholder:HH:MM" }}
-                        <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="input-group four-input">
+                        {% with fieldName1='mod_a_'|add:i fieldName2='mod_b_'|add:i fieldName3='mod_c_'|add:i fieldName4='mod_d_'|add:i %}
+                        {{ form|getField:fieldName1|add_class:"form-control"|attr:"placeholder:A" }}
+                        {{ form|getField:fieldName2|add_class:"form-control"|attr:"placeholder:B" }}
+                        {{ form|getField:fieldName3|add_class:"form-control"|attr:"placeholder:C" }}
+                        {{ form|getField:fieldName4|add_class:"form-control"|attr:"placeholder:D" }}
+                        {% endwith %}
                     </div>
-                    {% endwith %}
                 </div>
-            </div>
-            <div class="col-lg-3 col-md-3">
-                <div class="form-group">
-                    {% with 'end_time_'|add:i as fieldName %}
-                    <label for="{{ form|getFieldId:fieldName }}">End Time</label>
-                    <div class="input-group bootstrap-timepicker timepicker">
-                        {{ form|getField:fieldName|add_class:"form-control input-small"|attr:"placeholder:HH:MM" }}
-                        <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
+                <div class="col-md-4">
+                    <div class="col-sm-12 input-group four-input">
+                        {% with fieldName1='dx_pt_s1_'|add:i fieldName2='dx_pt_s2_'|add:i fieldName3='dx_pt_s3_'|add:i fieldName4='dx_pt_s4_'|add:i %}
+                        {{ form|getField:fieldName1|add_class:"form-control dropValidation dx-pt" }}
+                        {{ form|getField:fieldName2|add_class:"form-control dropValidation dx-pt" }}
+                        {{ form|getField:fieldName3|add_class:"form-control dropValidation dx-pt" }}
+                        {{ form|getField:fieldName4|add_class:"form-control dropValidation dx-pt" }}
+                        {% endwith %}
                     </div>
-                    {% endwith %}
                 </div>
-            </div>
-            <div class="col-lg-2 col-md-2">
-                <div class="form-group">
-                    {% with 'base_units_'|add:i as fieldName %}
-                    <label for="{{ form|getFieldId:fieldName }}">Base Units</label>
-                    {{ form|getField:fieldName|add_class:"form-control" }}
-                    {% endwith %}
-                </div>
-            </div>
-            <div class="col-lg-2 col-md-2">
-                <div class="form-group">
-                    {% with 'time_units_'|add:i as fieldName %}
-                    <label for="">Time Units</label>
-                    {{ form|getField:fieldName|add_class:"form-control"|attr:"readonly" }}
-                    {% endwith %}
-                </div>
-            </div>
-            <div class="col-lg-2 col-md-2">
-                <div class="form-group">
-                    {% with 'fees_'|add:i as fieldName %}
-                    <label for="{{ form|getFieldId:fieldName }}">Fees</label>
-                    {{ form|getField:fieldName|add_class:"form-control"|attr:"step:0.01" }}
-                    {% endwith %}
+                <div class="col-md-4 pull-right">
+                    <button type="button" class="btn btn-info-outline btn-sm" id="btn_calc_{{i}}" data-toggle="collapse" data-target="#collapse_{{i}}" aria-expanded="false" aria-controls="collapse_{{i}}" style="display:none">Calculator</button>
+                    <button type="button" class="btn btn-secondary btn-sm" id="btn_druginfo_{{i}}" data-toggle="collapse" data-target="#collapse2_{{i}}" aria-expanded="false" aria-controls="collapse2_{{i}}" style="display:none">Drug Information</button>
+                    <label for="trigger_{{i}}" onclick="dropDown(this,{{i}});" class="pull-right">
+                        <input type="checkbox" id="trigger_{{i}}" checked data-toggle="toggle" data-on="Calculator" data-off="Drug Information" data-onstyle="success" data-offstyle="danger" style="width:100px">
+                    </label>
+                    <input id="trigger_calc_{{i}}" style="display:none">
+                    <input id="trigger_drug_{{i}}" style="display:none">
                 </div>
             </div>
         </div>
     </div>
-
-
-    <div class="collapse" id="collapse2_{{i}}">
-        <div class="well row">
-            <div class="col-md-4">
-                <div class="form-group">
-                    {% with 'proc_code_'|add:i as fieldName %}
-                    <label for="{{ form|getFieldId:fieldName }}">Proc. code description</label>
-                    {{ form|getField:fieldName|add_class:"form-control input-small" }}
-                    {% endwith %}
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="form-group">
-                    {% with 'ndc_'|add:i as fieldName %}
-                    <label for="{{ form|getFieldId:fieldName }}">NDC</label>
-                    {{ form|getField:fieldName|add_class:"form-control input-small" }}
-                    {% endwith %}
-                </div>
-            </div>
-            <div class="col-md-2">
-                <div class="form-group">
-                    {% with 'qty_'|add:i as fieldName %}
-                    <label for="{{ form|getFieldId:fieldName }}">Quantity</label>
-                    {{ form|getField:fieldName|add_class:"form-control input-small"|attr:"step:0.01"|append_attr:"min:0" }}
-                    {% endwith %}
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="form-group">
-                    {% with 'unit_'|add:i as fieldName %}
-                    <label for="{{ form|getFieldId:fieldName }}">Unit of Measure</label>
-                    {{ form|getField:fieldName|add_class:"form-control" }}
-                    {% endwith %}
-                </div>
-            </div>
-        </div>
-    </div>
-    <p></p>
-
 
     <div class="row">
-        <div class="col-xs-4 pull-right">
-            {% with 'total_'|add:i as fieldName %}
-            {{ form|getField:fieldName|add_class:"form-control"|attr:"step:0.01"|append_attr:"readonly" }}
-            {% endwith %}
+        <div class="col-sm-6">
+
+            <div class="collapse" id="collapse_{{i}}">
+                <div class="row">
+                    <div class="col-lg-3 col-sm-3">
+                        {% with 'start_time_'|add:i as fieldName %}
+                        <label for="{{ form|getFieldId:fieldName }}">Start Time</label>
+                        <div class="input-group bootstrap-timepicker timepicker">
+                            {{ form|getField:fieldName|add_class:"form-control input-small"|attr:"placeholder:HH:MM" }}
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
+                        </div>
+                        {% endwith %}
+                    </div>
+                    <div class="col-lg-3 col-sm-3">
+                        {% with 'end_time_'|add:i as fieldName %}
+                        <label for="{{ form|getFieldId:fieldName }}">End Time</label>
+                        <div class="input-group bootstrap-timepicker timepicker">
+                            {{ form|getField:fieldName|add_class:"form-control input-small"|attr:"placeholder:HH:MM" }}
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
+                        </div>
+                        {% endwith %}
+                    </div>
+                    <div class="col-lg-2 col-sm-2">
+                        {% with 'base_units_'|add:i as fieldName %}
+                        <label for="{{ form|getFieldId:fieldName }}">Base Units</label>
+                        {{ form|getField:fieldName|add_class:"form-control" }}
+                        {% endwith %}
+                    </div>
+                    <div class="col-lg-2 col-sm-2">
+                        {% with 'time_units_'|add:i as fieldName %}
+                        <label for="">Time Units</label>
+                        {{ form|getField:fieldName|add_class:"form-control"|attr:"readonly" }}
+                        {% endwith %}
+                    </div>
+                    <div class="col-lg-2 col-sm-2">
+                        {% with 'fees_'|add:i as fieldName %}
+                        <label for="{{ form|getFieldId:fieldName }}">Fees</label>
+                        {{ form|getField:fieldName|add_class:"form-control"|attr:"step:0.01" }}
+                        {% endwith %}
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="collapse" id="collapse2_{{i}}">
+                <div class="row">
+                    <div class="col-sm-4">
+                        {% with 'proc_code_'|add:i as fieldName %}
+                        <label for="{{ form|getFieldId:fieldName }}">Proc. code description</label>
+                        {{ form|getField:fieldName|add_class:"form-control input-small" }}
+                        {% endwith %}
+                    </div>
+                    <div class="col-sm-3">
+                        {% with 'ndc_'|add:i as fieldName %}
+                        <label for="{{ form|getFieldId:fieldName }}">NDC</label>
+                        {{ form|getField:fieldName|add_class:"form-control input-small" }}
+                        {% endwith %}
+                    </div>
+                    <div class="col-sm-2">
+                        {% with 'qty_'|add:i as fieldName %}
+                        <label for="{{ form|getFieldId:fieldName }}">Quantity</label>
+                        {{ form|getField:fieldName|add_class:"form-control input-small"|attr:"step:0.01"|append_attr:"min:0" }}
+                        {% endwith %}
+                    </div>
+                    <div class="col-sm-3">
+                        {% with 'unit_'|add:i as fieldName %}
+                        <label for="{{ form|getFieldId:fieldName }}">Unit of Measure</label>
+                        {{ form|getField:fieldName|add_class:"form-control" }}
+                        {% endwith %}
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="col-xs-2 pull-right" style="text-align:right;">
-            <label style="height:34px;line-height:34px;">Total</label>
+        <div class="col-sm-6">
+            <div class="row">
+                <label>&nbsp;</label>
+            </div>
+            <div class="row">
+                <div class="col-sm-8">
+                    {% with 'note_'|add:i as fieldName %}
+                    {{ form|getField:fieldName|add_class:"form-control"|attr:"placeholder:Note" }}
+                    {% endwith %}
+                </div>
+                <div class="col-sm-2 pull-right">
+                    {% with 'total_'|add:i as fieldName %}
+                    {{ form|getField:fieldName|add_class:"form-control"|attr:"step:0.01"|append_attr:"readonly" }}
+                    {% endwith %}
+                </div>
+                <div class="col-sm-2 pull-right" style="text-align:right;">
+                    <label style="height:34px;line-height:34px;">Total</label>
+                </div>
+            </div>
         </div>
     </div>
 

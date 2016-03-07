@@ -22,21 +22,21 @@
 
 
 {% block body %}
-<div class="container" id="hideAll">
-    <div class="col-sm-2">
+<div class="container-fluid" id="hideAll">
+    <div class="col-sm-1">
         {% if form.errors %}
         <p>{{ form.errors }}</p>
         {% endif %}
     </div>
-    <div class="col-sm-8">
+    <div class="col-sm-10">
         <form id="myForm" action="pdf" method="get" data-toggle="validator">{% csrf_token %}
             <ul class="nav nav-tabs">
-              <li role="presentation" class="active" id="nav_patient"><a href="#patient" data-toggle="tab"><strong>Patient Information</strong></a></li>
-              <li role="presentation" id="nav_insurance"><a href="#insurance" data-toggle="tab"><strong>Insured Information</strong></a></li>
-              <li role="presentation" id="nav_physician"><a href="#physician" data-toggle="tab"><strong>Physical Information</strong></a></li>
+              <li class="active"><a href="#patient" data-target="#patient, #insurance" data-toggle="tab"><strong>Patient &amp; Insured Information</strong></a></li>
+              <li><a href="#physician" data-target="#physician, #blank" data-toggle="tab"><strong>Physical Information</strong></a></li>
             </ul>
             <div class="tab-content">
-                <div id="patient" class="tab-pane fade ">
+                <br>
+                <div id="patient" class="col-sm-5 tab-pane fade in active">
                     <div class="row">
                         <div class="col-sm-12">
                             <label for="{{ form.pat_name.auto_id }}">Patient's name</label>
@@ -45,14 +45,16 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="input-group address-input">
+                        <div class="col-sm-12">
                             <label>Patient's Address</label>
                         </div>
-                        <div class="col-sm-12 input-group address-input">
-                            {{ form.pat_streetaddress|add_class:"form-control street"|attr:"placeholder:No., Street" }}
-                            {{ form.pat_city|add_class:"form-control city"|attr:"placeholder:City" }}
-                            {{ form.pat_state|add_class:"form-control state" }}
-                            {{ form.pat_zip|add_class:"form-control zip"|attr:"placeholder:Zip" }}
+                        <div class="col-sm-12">
+                            <div class="input-group address-input">
+                                {{ form.pat_streetaddress|add_class:"form-control street"|attr:"placeholder:No., Street" }}
+                                {{ form.pat_city|add_class:"form-control city"|attr:"placeholder:City" }}
+                                {{ form.pat_state|add_class:"form-control state" }}
+                                {{ form.pat_zip|add_class:"form-control zip"|attr:"placeholder:Zip" }}
+                            </div>
                         </div>
                     </div>
                     <div class="row">
@@ -137,8 +139,109 @@
                     </div>
                 </div><!-- end tab-content of id patient -->
 
+                <div id="physician" class="col-sm-12 tab-pane fade">
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <label for="{{ form.referring_name.auto_id }}">Referring Provider's name</label>
+                                    {{ form.referring_name|add_class:"form-control" }}
+                                </div>
+                                <div class="col-sm-6">
+                                    <label for="{{ form.NPI.auto_id }}">Referring Provider's NPI</label>
+                                    {{ form.NPI|add_class:"form-control" }}
+                                    <input type="hidden" id="hidden_id_referring_name">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <label for="{{ form.rendering_provider_name.auto_id }}">Rendering Provider's name</label>
+                                    {{  form.rendering_provider_name|add_class:"form-control" }}
+                                    <input type="hidden" id="hidden_id_rendering_provider_name">
+                                </div>
+                                <div class="col-sm-4">
+                                    <label for="{{ form.billing_provider_name.auto_id }}">Billing Provider's name</label>
+                                    {{  form.billing_provider_name|add_class:"form-control" }}
+                                    <input type="hidden" id="hidden_id_billing_provider_name">
+                                </div>
+                                <div class="col-sm-4">
+                                    <label for="{{ form.location_provider_name.auto_id }}">Location Provider's name</label>
+                                    {{  form.location_provider_name|add_class:"form-control" }}
+                                    <input type="hidden" id="hidden_id_location_provider_name">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="row">
+                                <label>Diagnosis</label>
+                            </div>
+                            <div class="row">
+                                {% for i in loop_times %}
+                                <div class="col-xs-3">
+                                    <div class="input-group">
+                                        <div class="input-group-addon" style="width: 30px;">{{ dx_pt_range|lookup:i }}</div>
+                                        {% with 'ICD_10_'|prePlusConcat:i as fieldName %}
+                                        {{ form|getField:fieldName|add_class:"form-control" }}
+                                        {% endwith %}
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <label>Service Information</label>
+                    <br>
+                    <div class="service 1">
+                        {% include "infoGatherer/physician_info.html" with i='1' dx_pt_range=dx_pt_range %}
+                    </div>
+                    <div class="service2" style="display:none">
+                        {% include "infoGatherer/physician_info.html" with i='2' dx_pt_range=dx_pt_range %}
+                    </div>
+                    <div class="service3" style="display:none">
+                        {% include "infoGatherer/physician_info.html" with i='3' dx_pt_range=dx_pt_range %}
+                    </div>
+                    <div class="service4" style="display:none">
+                        {% include "infoGatherer/physician_info.html" with i='4' dx_pt_range=dx_pt_range %}
+                    </div>
+                    <div class="service5" style="display:none">
+                        {% include "infoGatherer/physician_info.html" with i='5' dx_pt_range=dx_pt_range %}
+                    </div>
+                    <div class="service6" style="display:none">
+                        {% include "infoGatherer/physician_info.html" with i='6' dx_pt_range=dx_pt_range %}
+                    </div>
 
-                <div id="insurance" class="tab-pane fade">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group" style="width:100px">
+                                <div class="input-group">
+                                    <span class="input-group-btn">
+                                        <button type="button" class="btn btn-danger btn-number" disabled="disabled" data-type="minus" data-field="quant[1]">
+                                            <span class="glyphicon glyphicon-minus"></span>
+                                        </button>
+                                    </span>
+                                    <input type="text" name="quant[1]" class="form-control input-number text-center" value="1" min="1" max="6">
+                                        <span class="input-group-btn">
+                                        <button type="button" class="btn btn-danger btn-number" data-type="plus" data-field="quant[1]">
+                                            <span class="glyphicon glyphicon-plus"></span>
+                                        </button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <button type="submit" class="btn btn-primary btn-md pull-right" value="Submit Button">Print Please!</button>
+                        </div>
+                    </div>
+                </div><!-- end tab-content of id physician -->
+            </div><!-- end tab-content -->
+
+
+
+
+            <div class="tab-content">
+                <br>
+                <div id="insurance" class="col-sm-5 col-sm-offset-1 tab-pane fade in active">
                     <div class="row">
                         <div class="col-sm-6">
                             <label for="{{ form.insured_name.auto_id }}">Insured's name</label>
@@ -152,14 +255,16 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="input-group address-input">
+                        <div class="col-sm-12">
                             <label for="{{ form.insured_streetaddress.auto_id }}">Insured's Address</label>
                         </div>
-                        <div class="col-sm-12 input-group address-input">
-                            {{ form.insured_streetaddress|add_class:"form-control street"|attr:"placeholder:No., Street" }}
-                            {{ form.insured_city|add_class:"form-control city"|attr:"placeholder:City" }}
-                            {{ form.insured_state|add_class:"form-control state" }}
-                            {{ form.insured_zip|add_class:"form-control zip"|attr:"placeholder:Zip" }}
+                        <div class="col-sm-12">
+                            <div class="input-group address-input">
+                                {{ form.insured_streetaddress|add_class:"form-control street"|attr:"placeholder:No., Street" }}
+                                {{ form.insured_city|add_class:"form-control city"|attr:"placeholder:City" }}
+                                {{ form.insured_state|add_class:"form-control state" }}
+                                {{ form.insured_zip|add_class:"form-control zip"|attr:"placeholder:Zip" }}
+                            </div>
                         </div>
                     </div>
                     <div class="row">
@@ -215,98 +320,9 @@
                         </div>
                     </div>
                 </div><!-- end tab-content of id insurance -->
-
-
-
-
-
-
-                <div id="physician" class="tab-pane fade in active">
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <label for="{{ form.referring_name.auto_id }}">Referring Provider's name</label>
-                            {{ form.referring_name|add_class:"form-control" }}
-                        </div>
-                        <div class="col-sm-6">
-                            <label for="{{ form.NPI.auto_id }}">Referring Provider's NPI</label>
-                            {{ form.NPI|add_class:"form-control" }}
-                            <input type="hidden" id="hidden_id_referring_name">
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Diagnosis</label>
-                        <div class="row">
-                            {% for i in loop_times %}
-                            <div class="col-xs-2" style="margin-top:5px"  >
-                                <div class="input-group">
-                                    <div class="input-group-addon">{{ dx_pt_range|lookup:i }}</div>
-                                    {% with 'ICD_10_'|prePlusConcat:i as fieldName %}
-                                    {{ form|getField:fieldName|add_class:"form-control" }}
-                                    {% endwith %}
-                                </div>
-                            </div>
-                            {% endfor %}
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-4">
-                            <label for="{{ form.rendering_provider_name.auto_id }}">Rendering Provider's name</label>
-                            {{  form.rendering_provider_name|add_class:"form-control" }}
-                            <input type="hidden" id="hidden_id_rendering_provider_name">
-                        </div>
-                        <div class="col-sm-4">
-                            <label for="{{ form.billing_provider_name.auto_id }}">Billing Provider's name</label>
-                            {{  form.billing_provider_name|add_class:"form-control" }}
-                            <input type="hidden" id="hidden_id_billing_provider_name">
-                        </div>
-                        <div class="col-sm-4">
-                            <label for="{{ form.location_provider_name.auto_id }}">Location Provider's name</label>
-                            {{  form.location_provider_name|add_class:"form-control" }}
-                            <input type="hidden" id="hidden_id_location_provider_name">
-                        </div>
-                    </div>
-
-                    <!-- Service Date -->
-                    <div class="group fieldWrapper">
-                        <label for="id_service_start_date_1">Service Information</label>
-                        {% include "infoGatherer/physician_info.html" with i='1' dx_pt_range=dx_pt_range %}
-                    </div>
-                    <div class="group fieldWrapper service2" style="display:none">
-                        {% include "infoGatherer/physician_info.html" with i='2' dx_pt_range=dx_pt_range %}
-                    </div>
-                    <div class="group fieldWrapper service3" style="display:none">
-                        {% include "infoGatherer/physician_info.html" with i='3' dx_pt_range=dx_pt_range %}
-                    </div>
-                    <div class="group fieldWrapper service4" style="display:none">
-                        {% include "infoGatherer/physician_info.html" with i='4' dx_pt_range=dx_pt_range %}
-                    </div>
-                    <div class="group fieldWrapper service5" style="display:none">
-                        {% include "infoGatherer/physician_info.html" with i='5' dx_pt_range=dx_pt_range %}
-                    </div>
-                    <div class="group fieldWrapper service6" style="display:none">
-                        {% include "infoGatherer/physician_info.html" with i='6' dx_pt_range=dx_pt_range %}
-                    </div>
-
-                    <div class="form-group" style="width:140px">
-                        <div class="input-group">
-                            <span class="input-group-btn">
-                                <button type="button" class="btn btn-danger btn-number" disabled="disabled" data-type="minus" data-field="quant[1]">
-                                    <span class="glyphicon glyphicon-minus"></span>
-                                </button>
-                            </span>
-                            <input type="text" name="quant[1]" class="form-control input-number" value="1" min="1" max="6">
-                                <span class="input-group-btn">
-                                <button type="button" class="btn btn-danger btn-number" data-type="plus" data-field="quant[1]">
-                                    <span class="glyphicon glyphicon-plus"></span>
-                                </button>
-                            </span>
-                        </div>
-                    </div>
-                    <br>
-                    <button type="submit" class="btn btn-primary btn-md" value="Submit Button">Print Please!</button>
-                </div><!-- end tab-content of id physician -->
-            </div><!-- end tab-content -->
+                <div id="blank" class="tab-pane fade">
+                </div>
+            </div>
         </form>
     </div><!-- end col-sm-8 -->
 </div><!-- end container -->

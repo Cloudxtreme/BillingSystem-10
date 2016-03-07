@@ -221,8 +221,8 @@ function init(){
     for( i=1;i<=6;i++){
         $('#btn_calc_'+i).trigger( "click" );
     }
-    $("div.toggle").width("124px");
-    $("div.toggle-group").width("295px");
+    $("div.toggle").width("140px");
+    $("div.toggle-group").width("312px");
     
 
     // Javascript validation for diagnosis - service information
