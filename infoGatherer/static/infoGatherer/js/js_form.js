@@ -3,37 +3,6 @@ function init(){
     // document.getElementById('show_hide').style.display='none';
     // document.getElementById('input_show_hide').style.display='none';
 
-    // nav bars
-    function hideAllNavs(){
-        $("#patient").css('display','none');
-        $("#insured").css('display','none');
-        $("#physician").css('display','none');
-    }
-    function hideAllCLass(){
-        $("#nav_patient").removeClass("active");
-        $("#nav_insurance").removeClass("active");
-        $("#nav_physician").removeClass("active");
-    }
-    $( "#nav_insurance" ).click(function() {
-        hideAllNavs();
-        hideAllCLass();
-        $("#insured").css('display','block');
-        $("#nav_insurance").addClass("active");
-    });
-    $( "#nav_patient" ).click(function() {
-        hideAllNavs();
-        hideAllCLass();
-        $("#patient").css('display','block');
-        $("#nav_patient").addClass("active");
-    });
-    $( "#nav_physician" ).click(function() {
-        hideAllNavs();
-        hideAllCLass();
-        $("#physician").css('display','block');
-        $("#nav_physician").addClass("active");
-    });
-    hideAllNavs();
-    $("#patient").css('display','block');
 
     // Div tasgs
     var d = document.getElementsByClassName("fieldWrapper");
@@ -179,12 +148,14 @@ function init(){
                 $(element).parent().addClass('has-error');
             }
             else{
-                $(element).closest('.form-group').addClass('has-error');
+                // $(element).closest('.form-group').addClass('has-error');
+                $(element).parent().addClass('has-error');
             }
             
         },
         unhighlight: function(element) {
-            $(element).closest('.form-group').removeClass('has-error');
+            $(element).parent().removeClass('has-error');
+            // $(element).closest('.form-group').removeClass('has-error');
             $(element).parent().removeClass('has-error');
         }
 
