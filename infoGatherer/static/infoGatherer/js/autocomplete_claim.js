@@ -434,16 +434,8 @@ function calculateTotal(i) {
 }
 
 function dropDown(a,i){
-    $( "#trigger_calc_"+i).on( "click", function() {
-        $('#btn_calc_'+i).trigger( "click" );
-    });
-    $( "#trigger_drug_"+i ).on( "click", function() {
-        $('#btn_druginfo_'+i).trigger( "click" );
-    });
-
-    var child = a.children[0];
-    $( "#trigger_calc_"+i ).trigger( "click" );
-    $( "#trigger_drug_"+i ).trigger( "click" );
+    $('#btn_calc_'+i).trigger( "click" );
+    $('#btn_druginfo_'+i).trigger( "click" );
 
     calculateTotal(i);
 };

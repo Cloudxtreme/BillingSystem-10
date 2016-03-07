@@ -6,10 +6,10 @@
         <div class="col-xs-4 placeholder label-placeholder">Diagnonsis Pointer</div>
         <div class="col-xs-8 input-group four-input">
             {% with fieldName1='dx_pt_s1_'|add:i fieldName2='dx_pt_s2_'|add:i fieldName3='dx_pt_s3_'|add:i fieldName4='dx_pt_s4_'|add:i %}
-            {{ form|getField:fieldName1|add_class:"form-control dropValidation" }}
-            {{ form|getField:fieldName2|add_class:"form-control dropValidation" }}
-            {{ form|getField:fieldName3|add_class:"form-control dropValidation" }}
-            {{ form|getField:fieldName4|add_class:"form-control dropValidation" }}
+            <div>{{ form|getField:fieldName1|add_class:"form-control dropValidation" }}</div>
+            <div>{{ form|getField:fieldName2|add_class:"form-control dropValidation" }}</div>
+            <div>{{ form|getField:fieldName3|add_class:"form-control dropValidation" }}</div>
+            <div>{{ form|getField:fieldName4|add_class:"form-control dropValidation" }}</div>
             {% endwith %}
         </div>
     </div>
@@ -64,8 +64,6 @@
             <label for="trigger_{{i}}" onclick="dropDown(this,{{i}});">
                 <input type="checkbox" id="trigger_{{i}}" checked data-toggle="toggle" data-on="Calculator" data-off="Drug Information" data-onstyle="success" data-offstyle="danger" style="width:100px">
             </label>
-            <input id="trigger_calc_{{i}}" style="display:none">
-            <input id="trigger_drug_{{i}}" style="display:none">
         </div>
         <div class="col-xs-8">
             {% with 'note_'|add:i as fieldName %}

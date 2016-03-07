@@ -71,6 +71,12 @@ function init(){
             if($("#id_cpt_code_"+num).val().length!=0){
                 return false;
             }
+        }else{
+            console.log(value);
+            var timestamp=Date.parse(value);
+            if(isNaN(timestamp)){
+                return false;
+            }
         }
         return true;
     });
@@ -152,7 +158,6 @@ function init(){
             }
             else{
                 // $(element).closest('.form-group').addClass('has-error');
-                
                 $(element).parent().addClass('has-error');
             }
             
@@ -172,19 +177,18 @@ function init(){
     });
     
     function runToTop (element){
-        console.log($(element).closest("#physician"));
-        console.log($(element).closest().find("#physician").attr("id"));
-        if($(element).parents().find("#insured")){
+        if($(element).parents("#insurance").length!=0){
             $("#nav_insurance").children("a").css("color","#BB4442");
         }
-        else if($(element).parents("#physician")){
+        else if($(element).parents("#physician").length!=0){
             $("#nav_physician").children("a").css("color","#BB4442");
         }
-        else if($(element).parents("#patient")){
+        else if($(element).parents("#patient").length!=0){
             $("#nav_patient").children("a").css("color","#BB4442");
         }
         
     }
+
 
     // Hide-Display block for service
     (function($){
