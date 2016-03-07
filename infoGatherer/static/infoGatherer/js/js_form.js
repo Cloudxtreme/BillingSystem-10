@@ -85,11 +85,12 @@ function init(){
             pat_city: "required",
             pat_state: "required",
             pat_zip: "required",
+            pat_sex: "required",
             pat_telephone: {
                 required: true,
                 phoneUS: true
             },
-            birth_date: {
+            pat_birth_date: {
                 required: true,
                 date: true
             },
@@ -108,6 +109,7 @@ function init(){
                 required: true,
                 date: true
             },
+            insured_sex: "required",
             other_cliam_id: {
                 required: false
             },
@@ -127,6 +129,7 @@ function init(){
         },
         highlight: function(element) {
             // console.log($(element));
+            runToTop(element);
             if($(element).attr("id")===("id_cpt_code_1")){
                 $(element).parent().addClass('has-error');
             }
@@ -149,6 +152,7 @@ function init(){
             }
             else{
                 // $(element).closest('.form-group').addClass('has-error');
+                
                 $(element).parent().addClass('has-error');
             }
             
@@ -167,13 +171,20 @@ function init(){
         validation_date : true
     });
     
-    // function(var element){
-    //     var ele=$(element);
-    //     while(ele.attr("id")!="patient"){
-    //         ele = ele.parent();
-    //     }
+    function runToTop (element){
+        console.log($(element).closest("#physician"));
+        console.log($(element).closest().find("#physician").attr("id"));
+        if($(element).parents().find("#insured")){
+            $("#nav_insurance").children("a").css("color","#BB4442");
+        }
+        else if($(element).parents("#physician")){
+            $("#nav_physician").children("a").css("color","#BB4442");
+        }
+        else if($(element).parents("#patient")){
+            $("#nav_patient").children("a").css("color","#BB4442");
+        }
         
-    // }
+    }
 
     // Hide-Display block for service
     (function($){
