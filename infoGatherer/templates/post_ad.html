@@ -45,30 +45,26 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-sm-12">
-                            <label for="{{ form.pat_streetaddress.auto_id }}">Patient's Address</label>
-                            {{ form.pat_streetaddress|add_class:"form-control"|attr:"placeholder:No., Street" }}
+                        <div class="input-group address-input">
+                            <label>Patient's Address</label>
                         </div>
-                        <div class="col-sm-6">
-                            {{ form.pat_city|add_class:"form-control"|attr:"placeholder:City" }}
-                        </div>
-                        <div class="col-sm-3">
-                            {{ form.pat_state|add_class:"form-control" }}
-                        </div>
-                        <div class="col-sm-3">
-                            {{ form.pat_zip|add_class:"form-control"|attr:"placeholder:Zip" }}
+                        <div class="col-sm-12 input-group address-input">
+                            {{ form.pat_streetaddress|add_class:"form-control street"|attr:"placeholder:No., Street" }}
+                            {{ form.pat_city|add_class:"form-control city"|attr:"placeholder:City" }}
+                            {{ form.pat_state|add_class:"form-control state" }}
+                            {{ form.pat_zip|add_class:"form-control zip"|attr:"placeholder:Zip" }}
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-sm-4">
+                        <div class="col-sm-6">
                             <label for="{{ form.pat_telephone.auto_id }}">Phone No.</label>
                             {{ form.pat_telephone|add_class:"form-control" }}
                         </div>
-                        <div class="col-sm-4">
+                        <div class="col-sm-3">
                             <label for="{{ form.pat_birth_date.auto_id }}">Birth Date</label>
                             {{ form.pat_birth_date|add_class:"form-control"|attr:"placeholder:MM/DD/YYYY" }}
                         </div>
-                        <div class="col-sm-4">
+                        <div class="col-sm-3">
                              <label for="{{ form.pat_sex.auto_id }}">Patient's sex</label>
                             {{ form.pat_sex|add_class:"form-control" }}
                         </div>
@@ -143,81 +139,81 @@
 
 
                 <div id="insurance" class="tab-pane fade">
-
-                    <!-- *insured name -->
-                    <div class="fieldWrapper ">
-                        <label for="{{ form.insured_name.auto_id }}">Insured's name</label>
-                        {{ form.insured_name|add_class:"form-control"|attr:"placeholder:Last Name, First Name, Middle Initial" }}
-                        <input type="hidden" id="hidden_id_insured_name">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <label for="{{ form.insured_name.auto_id }}">Insured's name</label>
+                            {{ form.insured_name|add_class:"form-control"|attr:"placeholder:Last Name, First Name, Middle Initial" }}
+                            <input type="hidden" id="hidden_id_insured_name">
+                        </div>
+                        <div class="col-sm-6">
+                            <label for="{{ form.insured_idnumber.auto_id }}">Insured's id number</label>
+                            {{ form.insured_idnumber|add_class:"form-control" }}
+                            <input type="hidden" id="hidden_id_insured_id">
+                        </div>
                     </div>
-                    <!-- *Payer Number -->
-                    <div class="fieldWrapper ">
-                        <label for="id_payer_num">Payer Number</label>
-                        {{ form.payer_num|add_class:"form-control" }}
-                        <input type="hidden" id="hidden_id_payer_num">
+                    <div class="row">
+                        <div class="input-group address-input">
+                            <label for="{{ form.insured_streetaddress.auto_id }}">Insured's Address</label>
+                        </div>
+                        <div class="col-sm-12 input-group address-input">
+                            {{ form.insured_streetaddress|add_class:"form-control street"|attr:"placeholder:No., Street" }}
+                            {{ form.insured_city|add_class:"form-control city"|attr:"placeholder:City" }}
+                            {{ form.insured_state|add_class:"form-control state" }}
+                            {{ form.insured_zip|add_class:"form-control zip"|attr:"placeholder:Zip" }}
+                        </div>
                     </div>
-                    <div class="fieldWrapper ">
-                        <label for="id_payer_name">Payer Name</label>
-                        {{ form.payer_name|add_class:"form-control" }}
-                        <input type="hidden" id="hidden_id_payer_name">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <label for="{{ form.insured_telephone.auto_id }}">Insured's Phone No.</label>
+                            {{ form.insured_telephone|add_class:"form-control" }}
+                        </div>
+                        <div class="col-sm-3">
+                            <label for="{{ form.insured_birth_date.auto_id }}">Insured's Birth Date</label>
+                            {{ form.insured_birth_date|add_class:"form-control"|attr:"placeholder:MM/DD/YYYY" }}
+                        </div>
+                        <div class="col-sm-3">
+                            <label for="{{ form.insured_sex.auto_id }}">Insured's sex</label>
+                            {{ form.insured_sex|add_class:"form-control" }}
+                        </div>
                     </div>
-                    <div class="fieldWrapper ">
-                        <label for="id_payer_name">Payer Address</label>
-                        {{ form.payer_address|add_class:"form-control" }}
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <label for="{{ form.health_plan.auto_id }}">Health Plan</label>
+                            {{ form.health_plan|add_class:"form-control" }}
+                        </div>
+                        <div class="col-sm-3">
+                            <label for="{{ form.payer_num.auto_id }}">Payer Number</label>
+                            {{ form.payer_num|add_class:"form-control" }}
+                            <input type="hidden" id="hidden_id_payer_num">
+                        </div>
+                        <div class="col-sm-6">
+                            <label for="{{ form.payer_name.auto_id }}">Payer Name</label>
+                            {{ form.payer_name|add_class:"form-control" }}
+                            <input type="hidden" id="hidden_id_payer_name">
+                        </div>
                     </div>
-                    
-
-                    <!-- *Health Plan -->
-                    <div class="fieldWrapper ">
-                        <label for="id_health_plan">Health Plan</label>
-                        {{ form.health_plan|add_class:"form-control" }}
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <label for="{{ form.payer_address.auto_id }}">Payer Address</label>
+                            {{ form.payer_address|add_class:"form-control" }}
+                        </div>
                     </div>
-                    <!-- Insured id number -->
-                    <div class="fieldWrapper " >
-                        <label for="id_insured_idnumber">Insured's id number</label>
-                        {{ form.insured_idnumber|add_class:"form-control" }}
-                        <input type="hidden" id="hidden_id_insured_id">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <label for="{{ form.insured_policy.auto_id }}">Insured's Policy/Group Number</label>
+                            {{ form.insured_policy|add_class:"form-control" }}
+                        </div>
+                        <div class="col-sm-6">
+                            <label for="{{ form.other_cliam_id.auto_id }}">Other claim id</label>
+                            {{ form.other_cliam_id|add_class:"form-control"|attr:"placeholder:11 (b)" }}
+                        </div>
                     </div>
-                    
-                    <!-- *insured Address -->
-                    <div class="fieldWrapper ">
-                        <label for="id_insured_streetaddress">Insured's Address</label>
-                        {{ form.insured_streetaddress|add_class:"form-control"|attr:"placeholder:No., Street" }}
-                        <label for="id_insured_city"></label>
-                        {{ form.insured_city|add_class:"form-control"|attr:"placeholder:City" }}
-                        <label for="id_insured_state"></label>
-                        {{ form.insured_state|add_class:"form-control" }}
-                        <label for="id_insured_zip"></label>
-                        {{ form.insured_zip|add_class:"form-control"|attr:"placeholder:Zip" }}
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <label for="{{ form.insured_insur_plan_name.auto_id }}">Insurance plan name or program name</label>
+                            {{ form.insured_insur_plan_name|add_class:"form-control"|attr:"placeholder:11 (c)" }}
+                        </div>
                     </div>
-                    <div class="fieldWrapper ">
-                        <label for="id_insured_telephone">Phone No.</label>
-                        {{ form.insured_telephone|add_class:"form-control" }}
-                    </div>
-                    <div class="fieldWrapper ">
-                        <label for="id_insured_policy">Insured's Policy/Group Number</label>
-                        {{ form.insured_policy|add_class:"form-control" }}
-                    </div>
-                    <!-- Birth Date -->
-                    <div class="fieldWrapper ">
-                        <label for="id_insured_birth_date">Insured's Birth Date</label>
-                        {{ form.insured_birth_date|add_class:"form-control"|attr:"placeholder:MM/DD/YYYY" }}
-                    </div>
-                    <!-- *Insured sex -->
-                    <div class="fieldWrapper ">
-                        <label for="id_insured_sex">Insured's sex</label>
-                        {{ form.insured_sex|add_class:"form-control" }}
-                    </div>
-                    <div class="fieldWrapper">
-                        <label for="id_other_cliam_id">Other claim id</label>
-                        {{ form.other_cliam_id|add_class:"form-control"|attr:"placeholder:11 (b)" }}
-                    </div>
-                    <div class="fieldWrapper ">
-                        <label for="id_insured_insur_plan_name">Insurance plan name or program name</label>
-                        {{ form.insured_insur_plan_name|add_class:"form-control"|attr:"placeholder:11 (c)" }}
-                    </div>
-                    
-                    <br/>
                 </div><!-- end tab-content of id insurance -->
 
 
@@ -226,20 +222,20 @@
 
 
                 <div id="physician" class="tab-pane fade">
-                    
-                    <!-- <h1>Physician Informaiton</h1><br/><br/> -->
-                    <div class="fieldWrapper ">
-                        <label for="id_referring_name">Referring Provider's name</label>
-                        {{ form.referring_name|add_class:"form-control" }}
-                        <input type="hidden" id="hidden_id_referring_name">
-                    </div> 
-                    <div class="fieldWrapper ">
-                        <label for="id_NPI">Referring Provider's NPI</label>
-                        {{ form.NPI|add_class:"form-control" }}
-                    </div>  
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <label for="{{ form.referring_name.auto_id }}">Referring Provider's name</label>
+                            {{ form.referring_name|add_class:"form-control" }}
+                        </div>
+                        <div class="col-sm-6">
+                            <label for="{{ form.NPI.auto_id }}">Referring Provider's NPI</label>
+                            {{ form.NPI|add_class:"form-control" }}
+                            <input type="hidden" id="hidden_id_referring_name">
+                        </div>
+                    </div>
                     
                     <div class="form-group fieldWrapper">
-                        <label for="id_ICD_10">Diagnosis</label>
+                        <label>Diagnosis</label>
                         <div class="row">
                             {% for i in loop_times %}
                             <div class="col-xs-2" style="margin-top:5px"  >
@@ -253,24 +249,22 @@
                             {% endfor %}
                         </div>
                     </div>
-
-                    <!-- Billing Provider -->
-                    <div class="fieldWrapper ">
-                        <label for="id_billing_provider_name">Billing Provider's name</label>
-                        {{  form.billing_provider_name|add_class:"form-control" }}
-                        <input type="hidden" id="hidden_id_billing_provider_name">
-                    </div>
-                    <!-- Location Provider -->
-                    <div class="fieldWrapper ">
-                        <label for="id_location_provider_name">Location Provider's name</label>
-                        {{  form.location_provider_name|add_class:"form-control" }}
-                        <input type="hidden" id="hidden_id_location_provider_name">
-                    </div>
-                    <!-- Rendering Provider -->
-                    <div class="fieldWrapper ">
-                        <label for="id_rendering_provider_name">Rendering Provider's name</label>
-                        {{  form.rendering_provider_name|add_class:"form-control" }}
-                        <input type="hidden" id="hidden_id_rendering_provider_name">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <label for="{{ form.rendering_provider_name.auto_id }}">Rendering Provider's name</label>
+                            {{  form.rendering_provider_name|add_class:"form-control" }}
+                            <input type="hidden" id="hidden_id_rendering_provider_name">
+                        </div>
+                        <div class="col-sm-4">
+                            <label for="{{ form.billing_provider_name.auto_id }}">Billing Provider's name</label>
+                            {{  form.billing_provider_name|add_class:"form-control" }}
+                            <input type="hidden" id="hidden_id_billing_provider_name">
+                        </div>
+                        <div class="col-sm-4">
+                            <label for="{{ form.location_provider_name.auto_id }}">Location Provider's name</label>
+                            {{  form.location_provider_name|add_class:"form-control" }}
+                            <input type="hidden" id="hidden_id_location_provider_name">
+                        </div>
                     </div>
 
                     <!-- Service Date -->
@@ -294,7 +288,6 @@
                         {% include "infoGatherer/physician_info.html" with i='6' dx_pt_range=dx_pt_range %}
                     </div>
 
-
                     <div class="form-group" style="width:140px">
                         <div class="input-group">
                             <span class="input-group-btn">
@@ -310,18 +303,9 @@
                             </span>
                         </div>
                     </div>
-
-                    <br/>
+                    <br>
                     <button type="submit" class="btn btn-primary btn-md" value="Submit Button">Print Please!</button>
-                    <br/><br/>
                 </div><!-- end tab-content of id physician -->
-
-
-
-
-
-
-
             </div><!-- end tab-content -->
         </form>
     </div><!-- end col-sm-8 -->
