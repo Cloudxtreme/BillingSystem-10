@@ -141,8 +141,8 @@ class PostAdForm(forms.Form):
         # Procedure section
         for i in xrange(1, self.lines+1):
             self.fields['cpt_code_%s' % i] = forms.CharField(max_length=10, required=False)
-            self.fields['service_start_date_%s' % i] = forms.DateField( required=False)
-            self.fields['place_of_service_%s' % i] = forms.CharField(max_length=5, required=False, widget=forms.TextInput(attrs={'placeholder': 'Place of service'}))
+            self.fields['service_start_date_%s' % i] = forms.DateField(required=False)
+            self.fields['place_of_service_%s' % i] = forms.CharField(max_length=5, required=False)
             self.fields['emg_%s' % i] = forms.CharField(max_length=5, required=False)
             self.fields['cpt_charge_%s' % i] = forms.FloatField(required=False)
             self.fields['note_%s' % i] = forms.CharField(max_length=255, required=False)
