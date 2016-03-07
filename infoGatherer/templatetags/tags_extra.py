@@ -18,6 +18,13 @@ def getField(form, arg):
         return ''
 
 @register.filter
+def getFieldId(form, arg):
+    try:
+        return form[arg].auto_id
+    except:
+        return ''
+
+@register.filter
 def prePlusConcat(value, arg):
     try:
         return str(value) + str(arg+1)

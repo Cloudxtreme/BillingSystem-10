@@ -4,24 +4,12 @@
 <div id="procedure_line_{{i}}">
     <div class="row">
         <div class="col-xs-4 placeholder label-placeholder">Diagnonsis Pointer</div>
-        <div class="col-xs-2">
-            {% with 'dx_pt_s1_'|add:i as fieldName %}
-            {{ form|getField:fieldName|add_class:"form-control dropValidation" }}
-            {% endwith %}
-        </div>
-        <div class="col-xs-2">
-            {% with 'dx_pt_s2_'|add:i as fieldName %}
-            {{ form|getField:fieldName|add_class:"form-control dropValidation" }}
-            {% endwith %}
-        </div>
-        <div class="col-xs-2">
-            {% with 'dx_pt_s3_'|add:i as fieldName %}
-            {{ form|getField:fieldName|add_class:"form-control dropValidation" }}
-            {% endwith %}
-        </div>
-        <div class="col-xs-2">
-            {% with 'dx_pt_s4_'|add:i as fieldName %}
-            {{ form|getField:fieldName|add_class:"form-control dropValidation" }}
+        <div class="col-xs-8 input-group four-input">
+            {% with fieldName1='dx_pt_s1_'|add:i fieldName2='dx_pt_s2_'|add:i fieldName3='dx_pt_s3_'|add:i fieldName4='dx_pt_s4_'|add:i %}
+            {{ form|getField:fieldName1|add_class:"form-control dropValidation" }}
+            {{ form|getField:fieldName2|add_class:"form-control dropValidation" }}
+            {{ form|getField:fieldName3|add_class:"form-control dropValidation" }}
+            {{ form|getField:fieldName4|add_class:"form-control dropValidation" }}
             {% endwith %}
         </div>
     </div>
@@ -33,24 +21,12 @@
             {{ form|getField:fieldName|add_class:"form-control"|attr:"placeholder:CPT/HCPCS code" }}
             {% endwith %}
         </div>
-        <div class="col-xs-2">
-            {% with 'mod_a_'|add:i as fieldName %}
-            {{ form|getField:fieldName|add_class:"form-control"|attr:"placeholder:Mod A" }}
-            {% endwith %}
-        </div>
-        <div class="col-xs-2">
-            {% with 'mod_b_'|add:i as fieldName %}
-            {{ form|getField:fieldName|add_class:"form-control"|attr:"placeholder:Mod B" }}
-            {% endwith %}
-        </div>
-        <div class="col-xs-2">
-            {% with 'mod_c_'|add:i as fieldName %}
-            {{ form|getField:fieldName|add_class:"form-control"|attr:"placeholder:Mod C" }}
-            {% endwith %}
-        </div>
-        <div class="col-xs-2">
-            {% with 'mod_d_'|add:i as fieldName %}
-            {{ form|getField:fieldName|add_class:"form-control"|attr:"placeholder:Mod D" }}
+        <div class="col-xs-8 input-group four-input">
+            {% with fieldName1='mod_a_'|add:i fieldName2='mod_b_'|add:i fieldName3='mod_c_'|add:i fieldName4='mod_d_'|add:i %}
+            {{ form|getField:fieldName1|add_class:"form-control"|attr:"placeholder:Mod A" }}
+            {{ form|getField:fieldName2|add_class:"form-control"|attr:"placeholder:Mod B" }}
+            {{ form|getField:fieldName3|add_class:"form-control"|attr:"placeholder:Mod C" }}
+            {{ form|getField:fieldName4|add_class:"form-control"|attr:"placeholder:Mod D" }}
             {% endwith %}
         </div>
     </div>
@@ -104,46 +80,46 @@
         <div class="well row">
             <div class="col-lg-3 col-md-3">
                 <div class="form-group">
-                    <label for="id_start_time_{{i}}">Start Time</label>
+                    {% with 'start_time_'|add:i as fieldName %}
+                    <label for="{{ form|getFieldId:fieldName }}">Start Time</label>
                     <div class="input-group bootstrap-timepicker timepicker">
-                        {% with 'start_time_'|add:i as fieldName %}
                         {{ form|getField:fieldName|add_class:"form-control input-small"|attr:"placeholder:HH:MM" }}
-                        {% endwith %}
                         <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
                     </div>
+                    {% endwith %}
                 </div>
             </div>
             <div class="col-lg-3 col-md-3">
                 <div class="form-group">
-                    <label for="id_end_time_{{i}}">End Time</label>
+                    {% with 'end_time_'|add:i as fieldName %}
+                    <label for="{{ form|getFieldId:fieldName }}">End Time</label>
                     <div class="input-group bootstrap-timepicker timepicker">
-                        {% with 'end_time_'|add:i as fieldName %}
                         {{ form|getField:fieldName|add_class:"form-control input-small"|attr:"placeholder:HH:MM" }}
-                        {% endwith %}
                         <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
                     </div>
+                    {% endwith %}
                 </div>
             </div>
             <div class="col-lg-2 col-md-2">
                 <div class="form-group">
-                    <label for="id_base_units_{{i}}">Base Units</label>
                     {% with 'base_units_'|add:i as fieldName %}
+                    <label for="{{ form|getFieldId:fieldName }}">Base Units</label>
                     {{ form|getField:fieldName|add_class:"form-control" }}
                     {% endwith %}
                 </div>
             </div>
             <div class="col-lg-2 col-md-2">
                 <div class="form-group">
-                    <label for="id_time_units_{{i}}">Time Units</label>
                     {% with 'time_units_'|add:i as fieldName %}
+                    <label for="">Time Units</label>
                     {{ form|getField:fieldName|add_class:"form-control"|attr:"readonly" }}
                     {% endwith %}
                 </div>
             </div>
             <div class="col-lg-2 col-md-2">
                 <div class="form-group">
-                    <label for="id_fees_{{i}}">Fees</label>
                     {% with 'fees_'|add:i as fieldName %}
+                    <label for="{{ form|getFieldId:fieldName }}">Fees</label>
                     {{ form|getField:fieldName|add_class:"form-control"|attr:"step:0.01" }}
                     {% endwith %}
                 </div>
@@ -154,34 +130,34 @@
 
     <div class="collapse" id="collapse2_{{i}}">
         <div class="well row">
-            <div class="col-lg-3 col-md-3">
+            <div class="col-md-4">
                 <div class="form-group">
-                    <label for="id_proc_code_{{i}}">Proc. code description</label>
                     {% with 'proc_code_'|add:i as fieldName %}
+                    <label for="{{ form|getFieldId:fieldName }}">Proc. code description</label>
                     {{ form|getField:fieldName|add_class:"form-control input-small" }}
                     {% endwith %}
                 </div>
             </div>
-            <div class="col-lg-3 col-md-3">
+            <div class="col-md-3">
                 <div class="form-group">
-                    <label for="id_ndc_{{i}}">NDC</label>
                     {% with 'ndc_'|add:i as fieldName %}
+                    <label for="{{ form|getFieldId:fieldName }}">NDC</label>
                     {{ form|getField:fieldName|add_class:"form-control input-small" }}
                     {% endwith %}
                 </div>
             </div>
-            <div class="col-lg-3 col-md-3">
+            <div class="col-md-2">
                 <div class="form-group">
-                    <label for="id_qty_{{i}}">Quantity</label>
                     {% with 'qty_'|add:i as fieldName %}
+                    <label for="{{ form|getFieldId:fieldName }}">Quantity</label>
                     {{ form|getField:fieldName|add_class:"form-control input-small"|attr:"step:0.01"|append_attr:"min:0" }}
                     {% endwith %}
                 </div>
             </div>
-            <div class="col-lg-3 col-md-3">
+            <div class="col-md-3">
                 <div class="form-group">
-                    <label for="id_unit_measure">Unit of Measure</label>
                     {% with 'unit_'|add:i as fieldName %}
+                    <label for="{{ form|getFieldId:fieldName }}">Unit of Measure</label>
                     {{ form|getField:fieldName|add_class:"form-control" }}
                     {% endwith %}
                 </div>
