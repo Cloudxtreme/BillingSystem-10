@@ -5,7 +5,7 @@
 .label-placeholder {
     padding-top: 7px;
     margin-bottom: 7px;
-    padding-left: 27px !important;
+    padding-left: 17px !important;
 }
 
 label.big-checkbox input[type=checkbox] {
@@ -40,9 +40,6 @@ select.input-sm {
     line-height: 32px;
 }
 
-.input-group.four-input {
-    padding: 0px 15px !important;
-}
 .four-input .form-control {
     width: 25%;
     border-right-width: 0px;
@@ -52,9 +49,6 @@ select.input-sm {
 }
 
 
-.input-group.address-input {
-    padding: 0px 15px !important;
-}
 .address-input .form-control {
     border-right-width: 0px;
 }

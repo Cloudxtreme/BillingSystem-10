@@ -150,7 +150,7 @@ class PostAdForm(forms.Form):
         for i in xrange(1, self.lines+1):
             self.fields['cpt_code_%s' % i] = forms.CharField(max_length=10, required=False)
             self.fields['service_start_date_%s' % i] = forms.DateField()
-            self.fields['place_of_service_%s' % i] = forms.CharField(max_length=5, initial=11)
+            self.fields['place_of_service_%s' % i] = forms.CharField(max_length=5)
             self.fields['emg_%s' % i] = forms.CharField(max_length=5, required=False)
             self.fields['cpt_charge_%s' % i] = forms.FloatField(required=False)
             self.fields['note_%s' % i] = forms.CharField(max_length=255, required=False)
@@ -188,7 +188,7 @@ class PostAdForm(forms.Form):
             #     valid = False
 
             for j in xrange(1, self.columns+1):
-                if self.cleaned_data['dx_pt_s1_%s' % i]:
+                if self.cleaned_data['dx_pt_s%s_%s' % (j, i)]:
                     char = self.cleaned_data['dx_pt_s%s_%s' % (j, i)]
                     num = ord(char.upper()) - ord('A') + 1
                     if not self.cleaned_data['ICD_10_%s' % num]:
