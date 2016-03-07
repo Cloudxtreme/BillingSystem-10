@@ -54,10 +54,10 @@ class PostAdForm(forms.Form):
 
 
     # Id hidden fields to link records in the database
-    pat_id = forms.ModelChoiceField(queryset=Personal_Information.objects.all(), widget=forms.HiddenInput())
-    insured_id = forms.ModelChoiceField(queryset=Personal_Information.objects.all(), widget=forms.HiddenInput())
-    other_insured_id = forms.ModelChoiceField(required=False, queryset=Personal_Information.objects.all(), widget=forms.HiddenInput())
-    payer_id = forms.ModelChoiceField(queryset=Payer.objects.all(), widget=forms.HiddenInput())
+    # pat_id = forms.ModelChoiceField(queryset=Personal_Information.objects.all(), widget=forms.HiddenInput())
+    # insured_id = forms.ModelChoiceField(queryset=Personal_Information.objects.all(), widget=forms.HiddenInput())
+    # other_insured_id = forms.ModelChoiceField(required=False, queryset=Personal_Information.objects.all(), widget=forms.HiddenInput())
+    # payer_id = forms.ModelChoiceField(queryset=Payer.objects.all(), widget=forms.HiddenInput())
 
 
     # Payer section
@@ -123,16 +123,8 @@ class PostAdForm(forms.Form):
 
     # Provider section
     billing_provider_name = forms.CharField(max_length=255)
-    billing_provider_address = forms.CharField(max_length=255)
-    billing_provider_telephone = USPhoneNumberField()
-    billing_provider_npi = forms.CharField(max_length=15)
-    
     location_provider_name = forms.CharField(max_length=255)
-    location_provider_address = forms.CharField(max_length=255)
-    location_provider_npi = forms.CharField(max_length=15)
-    
     rendering_provider_name = forms.CharField(max_length=255)
-    rendering_provider_npi = forms.CharField(max_length=15)
 
 
     # Procedure section will be generated at runtime
@@ -149,8 +141,8 @@ class PostAdForm(forms.Form):
         # Procedure section
         for i in xrange(1, self.lines+1):
             self.fields['cpt_code_%s' % i] = forms.CharField(max_length=10, required=False)
-            self.fields['service_start_date_%s' % i] = forms.DateField()
-            self.fields['place_of_service_%s' % i] = forms.CharField(max_length=5)
+            self.fields['service_start_date_%s' % i] = forms.DateField(required=False)
+            self.fields['place_of_service_%s' % i] = forms.CharField(max_length=5, required=False)
             self.fields['emg_%s' % i] = forms.CharField(max_length=5, required=False)
             self.fields['cpt_charge_%s' % i] = forms.FloatField(required=False)
             self.fields['note_%s' % i] = forms.CharField(max_length=255, required=False)
@@ -198,6 +190,12 @@ class PostAdForm(forms.Form):
         if self.cleaned_data['pat_relation_auto_accident'] == True and not self.cleaned_data['pat_auto_accident_state']:
             self._errors['pat_auto_accident_state'] = ErrorList(['Auto accident must select state.'])
             valid = False
+
+        for k in range(1,7):
+            if len(self.cleaned_data['cpt_code_'+str(k)])>0 and 'service_start_date_'+str(k) not in self.cleaned_data:
+                print "asdfasdfasdfasdfasdfasdfsadfasdf"
+                self._errors['service_start_date_'+str(k)] = ErrorList(['Date in proper format needs to be added with CPT.'])
+                valid=False
 
         if not self.cleaned_data['insured_policy']:
             self.cleaned_data['insured_policy'] = DEFAULT_NONE_POLICY

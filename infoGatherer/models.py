@@ -356,12 +356,12 @@ class Procedure_Codes(models.Model):
     def __unicode__(self):
         return self.procedure_code
      
-class Diagnosis_Codes(models.Model):
-    diagnosis_name = models.CharField(max_length=128,default='')
-    diagnosis_code = models.CharField(max_length=8,default='')
+# class Diagnosis_Codes(models.Model):
+#     diagnosis_name = models.CharField(max_length=128,default='')
+#     diagnosis_code = models.CharField(max_length=8,default='')
      
-    def __unicode__(self):
-        return self.diagnosis_code
+#     def __unicode__(self):
+#         return self.diagnosis_code
 
 # class Test(models.Model):
 # #     patient = models.ForeignKey()
