@@ -7,25 +7,23 @@
 {% url 'accounts:sign_in' as sign_in %}
 
 <nav class="navbar navbar-default navbar-static-top">
-    <div class="container-fluid">
-        <div class="col-sm-10 col-sm-offset-1">
-            <div class="navbar-header">
-                <a class="navbar-brand" href="{% url 'dashboard:dashboard' %}">Xenon Health</a>
-            </div>
-            <div id="navbar" class="navbar-collapse collapse">
-                <ul class="nav navbar-nav navbar-right">
-                    {% if user.is_authenticated %}
-                        <li {%if request.path == dashboard%} class="active" {%endif%} ><a href="{{ dashboard }}">Dashboard</a></li>
-                        <li {%if request.path == make_claim%} class="active" {%endif%} ><a href="{{ make_claim }}">Make Claim</a></li>
-                        <li><a href="/abc/">Audit Log</a></li>
-                        <li {%if request.path == track_charges%} class="active" {%endif%} ><a href="{{ track_charges }}">Pending Claims</a></li>
-                        <li><a href="/admin/">Database</a></li>
-                        <li><a href="{{ sign_out }}">Sign Out</a></li>
-                    {% else %}
-                        <li {%if request.path == sign_in%} class="active" {%endif%} ><a href="{{ sign_in }}">Sign In</a></li>
-                    {% endif %}
-                </ul>
-            </div>
+    <div class="container">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="{% url 'dashboard:dashboard' %}">Xenon Health</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
+                {% if user.is_authenticated %}
+                    <li {%if request.path == dashboard%} class="active" {%endif%} ><a href="{{ dashboard }}">Dashboard</a></li>
+                    <li {%if request.path == make_claim%} class="active" {%endif%} ><a href="{{ make_claim }}">Make Claim</a></li>
+                    <li><a href="/abc/">Audit Log</a></li>
+                    <li {%if request.path == track_charges%} class="active" {%endif%} ><a href="{{ track_charges }}">Pending Claims</a></li>
+                    <li><a href="/admin/">Database</a></li>
+                    <li><a href="{{ sign_out }}">Sign Out</a></li>
+                {% else %}
+                    <li {%if request.path == sign_in%} class="active" {%endif%} ><a href="{{ sign_in }}">Sign In</a></li>
+                {% endif %}
+            </ul>
         </div>
     </div>
 </nav>
