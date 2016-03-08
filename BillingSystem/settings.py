@@ -53,6 +53,7 @@ INSTALLED_APPS = (
     'claims',
     'accounts',
     'dashboard',
+    'simple_history',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -65,6 +66,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'audit_log.middleware.UserLoggingMiddleware',
+    'simple_history.middleware.HistoryRequestMiddleware',
 )
 
 ROOT_URLCONF = 'BillingSystem.urls'
