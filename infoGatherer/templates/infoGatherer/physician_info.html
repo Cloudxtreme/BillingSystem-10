@@ -60,10 +60,10 @@
                 <div class="col-md-4">
                     <div class="col-sm-12 input-group four-input">
                         {% with fieldName1='dx_pt_s1_'|add:i fieldName2='dx_pt_s2_'|add:i fieldName3='dx_pt_s3_'|add:i fieldName4='dx_pt_s4_'|add:i %}
-                        {{ form|getField:fieldName1|add_class:"form-control dropValidation dx-pt" }}
-                        {{ form|getField:fieldName2|add_class:"form-control dropValidation dx-pt" }}
-                        {{ form|getField:fieldName3|add_class:"form-control dropValidation dx-pt" }}
-                        {{ form|getField:fieldName4|add_class:"form-control dropValidation dx-pt" }}
+                        <div>{{ form|getField:fieldName1|add_class:"form-control dropValidation dx-pt" }}</div>
+                        <div>{{ form|getField:fieldName2|add_class:"form-control dropValidation dx-pt" }}</div>
+                        <div>{{ form|getField:fieldName3|add_class:"form-control dropValidation dx-pt" }}</div>
+                        <div>{{ form|getField:fieldName4|add_class:"form-control dropValidation dx-pt" }}</div>
                         {% endwith %}
                     </div>
                 </div>
