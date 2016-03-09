@@ -68,7 +68,9 @@ def view_audit_log(request):
                         list_dic.append(temp)
 
     print list_dic
-    return render(request, 'auditlog.html',{'info': list_dic})
+    if 'num' in request.GET and request.GET['num']:
+        return render(request, 'auditlog.html',{'info': list_dic, 'display_rows': request.GET['num']})
+    return render(request, 'auditlog.html',{'info': list_dic, 'display_rows': '10' })
 
 def getDiff():
 

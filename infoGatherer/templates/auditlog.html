@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load tags_extra %}
+{% load widget_tweaks %}
 {% load staticfiles %}
     <title>Sortable Table</title>
     {% block script %}
@@ -32,34 +33,33 @@
         </tr>
     </thead>
     <tbody>
-            
-            {% for ele in info|slice:":5" %}
-	    	<tr>
-    			<td>{{ forloop.counter }}</td>
-				<td>{{ele.history_date}}</td>
-                <td>{{ele.first_name}}</td>
-                <td>{{ele.last_name}}</td>
-                <td>{{ele.change}}</td>
-                <td>{{ele.oldvalue}}</td>
-                <td>{{ele.newvalue}}</td>
-                <td>{{ele.history_id}}</td>
-                <td>{{ele.history_user_id}}</td>
-	    		<td>{{ele.history_type|get_corresponding_text}}</td>
-    		</tr>
-	    	{% endfor %}
-            </script>
+            {% with ":"|add:display_rows as iterable %}
+                {% for ele in info|slice:iterable %}
+    	    	<tr>
+        			<td>{{ forloop.counter }}</td>
+    				<td>{{ele.history_date}}</td>
+                    <td>{{ele.first_name}}</td>
+                    <td>{{ele.last_name}}</td>
+                    <td>{{ele.change}}</td>
+                    <td>{{ele.oldvalue}}</td>
+                    <td>{{ele.newvalue}}</td>
+                    <td>{{ele.history_id}}</td>
+                    <td>{{ele.history_user_id}}</td>
+                    <td>{{ele.history_type|get_corresponding_text}}</td>
+        		</tr>
+    	    	{% endfor %}
+            {% endwith %}
     </tbody>
     </table>
     <span class="btn-group dropup">
         <button type="button" class="btn btn-default  dropdown-toggle" data-toggle="dropdown">
-            <span class="page-size">All</span> <span class="caret"></span>
+            <span class="page-size">Filter</span> <span class="caret"></span>
         </button>
         <ul class="dropdown-menu" role="menu">
-            <li><a href="javascript:void(0)">10</a></li>
-            <li><a href="javascript:void(0)">25</a></li>
-            <li><a href="javascript:print()">50</a></li>
-            <li><a href="javascript:void(0)">100</a></li>
-            <li class="active"><a href="javascript:void(0)">All</a></li>
+            <li><a href="?num=5">5</a></li>
+            <li class="active"><a href="?num=10">10 (default)</a></li>
+            <li><a href="?num=50">50</a></li>
+            <li><a href="?num=100">100</a></li>
         </ul>
     </span>
 </div>
@@ -72,6 +72,15 @@
         });
 
     });
+
+
+    // $(document).ready(function(){
+    //     $(function(){
+    //         var i=5;
+    //         $("tbody").html("{{info.0}});
+    //     });
+
+    // });
 
     function print(){
         console.log("234");
