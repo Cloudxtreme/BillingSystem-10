@@ -7,6 +7,7 @@ from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from audit_log.models.managers import AuditLog
 from django.forms.models import model_to_dict
+from simple_history.models import HistoricalRecords
 
 GENDER_CHOICES = (('Female', 'Female'), ('Male', 'Male'), ('Undifferentiated', 'Undifferentiated'), ('Blank', ''))
 
@@ -136,6 +137,8 @@ class CPT(models.Model):
     cpt_mod_b=  models.CharField(max_length=10, null=True, blank=True)
     cpt_mod_c=  models.CharField(max_length=10, null=True, blank=True)
     cpt_mod_d=  models.CharField(max_length=10, null=True, blank=True)
+    history = HistoricalRecords()
+
     cpt_charge= models.FloatField()
     def __unicode__(self):
         return self.cpt_code+" "+self.cpt_description
@@ -189,6 +192,8 @@ class ReferringProvider(models.Model):
     taxonomy=models.CharField(max_length=100,default='',null=True, blank=True)
     NPI=models.IntegerField()
     tax_id=models.CharField(max_length=100,null=True, blank=True)
+    # history = HistoricalRecords()
+
     def __unicode__(self):
         return self.first_name+" "+self.last_name
 
@@ -196,6 +201,9 @@ class ReferringProvider(models.Model):
 class dx(models.Model):
     ICD_10 = models.CharField(max_length=200, primary_key=True)
     description = models.CharField(max_length=200)
+
+    # history = HistoricalRecords()
+
     def __unicode__(self):
         return self.ICD_10
 
@@ -232,6 +240,7 @@ class Personal_Information(models.Model):
     sign = models.CharField(choices=SIGN_CHOICES, max_length=3, default='Yes')
      
     audit_log = AuditLog()
+    history = HistoricalRecords()
     
     def __unicode__(self):
         return self.first_name+' '+self.last_name
@@ -281,6 +290,7 @@ class Payer(models.Model):
     zip = models.IntegerField(default='')
     phone = PhoneNumberField(null=True, blank=True, help_text='XXX-XXX-XXXX')
     type = models.CharField(choices=PAYER_TYPE_CHOICE,max_length=1,default='C')
+    history = HistoricalRecords()
     
     def __unicode__(self):
         return self.name
@@ -291,8 +301,10 @@ class Insurance_Information(models.Model):
     payer = models.ForeignKey(Payer)
     patient = models.ForeignKey(Personal_Information)
     insurance_id = models.CharField(max_length=32,default='')
-    
+
     audit_log = AuditLog()
+    history = HistoricalRecords()
+
     
     def __unicode__(self):
         return self.payer.name 
@@ -306,6 +318,8 @@ class Locations(models.Model):
     city = models.CharField(max_length=128,default='')   
     state = USStateField(default='')  
     phone = PhoneNumberField(null=True, blank=True, help_text='XXX-XXX-XXXX')
+
+
         
     def __unicode__(self):
         return self.location_name
@@ -323,6 +337,8 @@ class Provider(models.Model):
     provider_state = USStateField(default='',null=True, blank=True)
     provider_zip = models.IntegerField(default='',null=True, blank=True)
     provider_phone = PhoneNumberField(null=True, blank=True, help_text='XXX-XXX-XXXX',)
+    # history = HistoricalRecords()
+
 
     def __unicode__(self):
         return self.provider_name
@@ -352,6 +368,7 @@ class Provider(models.Model):
 class Procedure_Codes(models.Model):
     procedure_name = models.CharField(max_length=128,default='')
     procedure_code = models.IntegerField(default='')
+
      
     def __unicode__(self):
         return self.procedure_code
