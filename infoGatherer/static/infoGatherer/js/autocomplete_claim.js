@@ -6,6 +6,26 @@ function autocomplete_claim(api_urls) {
         return false;
     });
 
+    // Add date picker to all date fields on the page
+    (function() {
+        var dateFields = $('.form-control.pikaday');
+        for(var i=0; i<dateFields.length; i++) {
+            var self = $(dateFields[i]);
+
+            self.click(function(e) {
+                e.preventDefault();
+            });
+
+            var picker = new Pikaday({
+                field: self[0],
+                format: 'MM/DD/YYYY',
+                onSelect: function(date) {
+                    self.val(this.toString());
+                }
+            });
+        }
+    })();
+
     $('#id_insured_other_benifit_plan').prop('checked', false);
 
     // Autocomplete causes binded field to clear its value when page is loaded from back and forward button.
@@ -308,22 +328,6 @@ function autocomplete_claim(api_urls) {
 };
 
 function bindCollapse(i) {
-    (function() {
-        var self = $('#id_service_start_date_' + i);
-
-        self.click(function(e) {
-            e.preventDefault();
-        });
-
-        var picker = new Pikaday({
-            field: self[0],
-            format: 'MM/DD/YYYY',
-            onSelect: function(date) {
-                self.val(this.toString());
-            }
-        });
-    })();
-
     (function() {
         // Time dropdown
         var timepickerConfig = {
