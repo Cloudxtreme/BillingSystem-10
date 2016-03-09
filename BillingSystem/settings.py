@@ -48,12 +48,13 @@ INSTALLED_APPS = (
     'django_countries',
     'localflavor',
     'widget_tweaks',
+    'simple_history',
+    'deepdiff',
 
     'infoGatherer',
     'claims',
     'accounts',
     'dashboard',
-    'simple_history',
 )
 
 MIDDLEWARE_CLASSES = (

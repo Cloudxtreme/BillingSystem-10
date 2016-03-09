@@ -23,8 +23,8 @@ from infoGatherer.models import (
     PostAd, Guarantor_Information, Insurance_Information, Personal_Information,
     Payer, ReferringProvider, Provider, PROVIDER_ROLE_CHOICES, CPT)
 from deepdiff import DeepDiff
-from pprint import pprint
-from __future__ import print_function
+# from pprint import pprint
+# from __future__ import print_function
 
 def TrackCharges(request):
     return render(request, 'track_charges.html')

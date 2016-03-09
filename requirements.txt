@@ -1,8 +1,10 @@
+deepdiff==1.0.0
 Django==1.9.3
 django-audit-log==0.7.0
 django-countries==3.4.1
 django-languages==0.1
 django-localflavor==1.2
+django-simple-history==1.8.0
 django-widget-tweaks==1.4.1
 fdfgen==0.12.1
 PyMySQL==0.7.2
