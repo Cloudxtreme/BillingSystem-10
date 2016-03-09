@@ -10,19 +10,17 @@ function autocomplete_claim(api_urls) {
     (function() {
         var dateFields = $('.form-control.pikaday');
         for(var i=0; i<dateFields.length; i++) {
-            var self = $(dateFields[i]);
-
-            self.click(function(e) {
-                e.preventDefault();
-            });
-
-            var picker = new Pikaday({
-                field: self[0],
-                format: 'MM/DD/YYYY',
-                onSelect: function(date) {
-                    self.val(this.toString());
-                }
-            });
+            (function(i) {
+                var self = $(dateFields[i]);
+                self.click(function(e) {e.preventDefault();});
+                var picker = new Pikaday({
+                    field: self[0],
+                    format: 'MM/DD/YYYY',
+                    onSelect: function(date) {
+                        self.val(this.toString());
+                    }
+                });
+            })(i);
         }
     })();
 
