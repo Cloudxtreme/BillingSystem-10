@@ -138,7 +138,7 @@ class CPT(models.Model):
     cpt_mod_c=  models.CharField(max_length=10, null=True, blank=True)
     cpt_mod_d=  models.CharField(max_length=10, null=True, blank=True)
     history = HistoricalRecords()
-    
+
     cpt_charge= models.FloatField()
     def __unicode__(self):
         return self.cpt_code+" "+self.cpt_description
@@ -192,7 +192,7 @@ class ReferringProvider(models.Model):
     taxonomy=models.CharField(max_length=100,default='',null=True, blank=True)
     NPI=models.IntegerField()
     tax_id=models.CharField(max_length=100,null=True, blank=True)
-    history = HistoricalRecords()
+    # history = HistoricalRecords()
 
     def __unicode__(self):
         return self.first_name+" "+self.last_name
@@ -202,7 +202,7 @@ class dx(models.Model):
     ICD_10 = models.CharField(max_length=200, primary_key=True)
     description = models.CharField(max_length=200)
 
-    history = HistoricalRecords()
+    # history = HistoricalRecords()
 
     def __unicode__(self):
         return self.ICD_10
@@ -318,7 +318,7 @@ class Locations(models.Model):
     city = models.CharField(max_length=128,default='')   
     state = USStateField(default='')  
     phone = PhoneNumberField(null=True, blank=True, help_text='XXX-XXX-XXXX')
-    history = HistoricalRecords()
+
 
         
     def __unicode__(self):
@@ -337,7 +337,7 @@ class Provider(models.Model):
     provider_state = USStateField(default='',null=True, blank=True)
     provider_zip = models.IntegerField(default='',null=True, blank=True)
     provider_phone = PhoneNumberField(null=True, blank=True, help_text='XXX-XXX-XXXX',)
-    history = HistoricalRecords()
+    # history = HistoricalRecords()
 
 
     def __unicode__(self):
@@ -368,7 +368,6 @@ class Provider(models.Model):
 class Procedure_Codes(models.Model):
     procedure_name = models.CharField(max_length=128,default='')
     procedure_code = models.IntegerField(default='')
-    history = HistoricalRecords()
 
      
     def __unicode__(self):

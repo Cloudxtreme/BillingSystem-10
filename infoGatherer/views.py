@@ -15,19 +15,49 @@ from django.forms import formset_factory
 from django.views.generic import FormView
 from django.template.loader import get_template
 from django.forms.models import model_to_dict
-
 from fdfgen import forge_fdf
-
 from infoGatherer.forms import (
     PostAdForm, PatientForm, GuarantorForm, InsuranceForm,
     ReferringProviderForm, dxForm, OtherProviderForm, CptForms)
 from infoGatherer.models import (
     PostAd, Guarantor_Information, Insurance_Information, Personal_Information,
     Payer, ReferringProvider, Provider, PROVIDER_ROLE_CHOICES, CPT)
-
+from deepdiff import DeepDiff
+from pprint import pprint
+from __future__ import print_function
 
 def TrackCharges(request):
     return render(request, 'track_charges.html')
+
+def view_audit_log(request):
+    # Have seperate audit logs for each table in database ????
+
+    # Personal Information
+    info=[]
+    # get diff in dic.
+    # get max id user and iterate one by one
+    for id in range(2,3):
+        content=Personal_Information.history.filter(history_user_id=id).values()
+        #>>> Personal_Information.history.filter(history_user_id=2).values()[0].get('last_name')
+        info=info+[content]
+
+    ###################
+    content=Personal_Information.history.filter(last_name='MathuR').order_by('history_type','history_date').values()    
+    # for ele in content:
+    #     if ele['history_type']=="~":
+    #     elif ele['history_type']=="+":
+    #     elif ele['history_type']=="-":
+    # >>> d1=Personal_Information.history.filter(last_name='wer').order_by('history_type','history_date').values()[0]
+    # >>> d2=Personal_Information.history.filter(last_name='wer').order_by('history_type','history_date').values()[1]
+    # pprint(DeepDiff(d1,d2)['values_changed']["root['history_type']"])
+
+
+    # Pass old - new value
+    return render(request, 'auditlog.html',{'info': info[0]})
+
+def getDiff():
+
+    return True
 
 @login_required
 def PostAdPage(request):
