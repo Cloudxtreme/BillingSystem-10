@@ -4,6 +4,8 @@
 {% url 'infoGatherer:post_ad' as make_claim %}
 {% url 'infoGatherer:track_charges' as track_charges %}
 {% url 'infoGatherer:auditlog' as auditlog %}
+{% url 'admin:index' as admin_index %}
+{% url 'admin:password_change' as change_password %}
 {% url 'accounts:sign_out' as sign_out %}
 {% url 'accounts:sign_in' as sign_in %}
 
@@ -15,14 +17,15 @@
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav navbar-right">
                 {% if user.is_authenticated %}
-                    <li {%if request.path == dashboard%} class="active" {%endif%} ><a href="{{ dashboard }}">Dashboard</a></li>
-                    <li {%if request.path == make_claim%} class="active" {%endif%} ><a href="{{ make_claim }}">Make Claim</a></li>
-                    <li {%if request.path == auditlog%} class="active" {%endif%} ><a href="{{ auditlog }}">Audit Log</a></li>
-                    <li {%if request.path == track_charges%} class="active" {%endif%} ><a href="{{ track_charges }}">Pending Claims</a></li>
-                    <li><a href="/admin/">Database</a></li>
+                    <li {%if dashboard in request.path%} class="active" {%endif%} ><a href="{{ dashboard }}">Dashboard</a></li>
+                    <li {%if make_claim in request.path%} class="active" {%endif%} ><a href="{{ make_claim }}">Make Claim</a></li>
+                    <li {%if auditlog in request.path%} class="active" {%endif%} ><a href="{{ auditlog }}">Audit Log</a></li>
+                    <li {%if track_charges in request.path%} class="active" {%endif%} ><a href="{{ track_charges }}">Pending Claims</a></li>
+                    <li {%if not change_password in request.path and admin_index in request.path%} class="active" {%endif%} ><a href="{{ admin_index }}">Database</a></li>
+                    <li {%if change_password in request.path%} class="active" {%endif%} ><a href="{{ change_password }}">Change password</a></li>
                     <li><a href="{{ sign_out }}">Sign Out</a></li>
                 {% else %}
-                    <li {%if request.path == sign_in%} class="active" {%endif%} ><a href="{{ sign_in }}">Sign In</a></li>
+                    <li {%if sign_in in request.path%} class="active" {%endif%} ><a href="{{ sign_in }}">Sign In</a></li>
                 {% endif %}
             </ul>
         </div>
