@@ -34,9 +34,40 @@ def view_audit_log(request):
     # Get list of users
     users=User.objects.values_list('id', 'email')
     users=dict(users)
-    # send list of dictionaries
-    list_dic=[]
 
+    # Payer Audit
+    # content=Personal_Information.history.filter(chart_no=chart_no).filter(history_type="~").order_by('history_type','history_date').values()
+    # a=Payer.history.filter(code=1).filter(history_type="~").values()
+    payer_dic=[]
+    # Need to get history by code number
+    content=Payer.history.filter(code=1).filter(history_type="~").values()
+    if(len(content)>1):
+        for i in range(1,len(content)):
+            d1=content[i-1]
+            d2=content[i]
+            diff=DeepDiff(d1,d2)['values_changed']
+            alwaysChangingKeys=["root['history_id']", "root['history_date']"]
+            for k, v in diff.iteritems():
+                if (k not in alwaysChangingKeys):
+                    temp={}
+                    # Put all useful information in temp    
+                    temp["name"]=content[i]["name"]
+                    temp["history_type"]=content[i]["history_type"]
+                    temp["history_date"]=content[i]["history_date"]
+                    temp["history_id"]=content[i]["history_id"]
+                    temp["history_user_id"]=users[content[i]["history_user_id"]]
+                    # Put change in temp
+                    temp["change"]=k[k.find("['")+1:k.find("']")][1:]
+                    temp["oldvalue"]=v["oldvalue"]
+                    temp["newvalue"]=v["newvalue"]
+                    payer_dic.append(temp)
+              
+
+    # free variables
+    content = None 
+
+    # Patient Audit
+    patient_dic=[]
     # Get history by chart_num (id for patients)
     charNums=Personal_Information.history.filter(history_type="~").values_list('chart_no', flat=True)
     charNums=set(charNums)
@@ -65,12 +96,27 @@ def view_audit_log(request):
                         temp["change"]=k[k.find("['")+1:k.find("']")][1:]
                         temp["oldvalue"]=v["oldvalue"]
                         temp["newvalue"]=v["newvalue"]
-                        list_dic.append(temp)
+                        patient_dic.append(temp)
 
-    print list_dic
+    # print patient_dic
     if 'num' in request.GET and request.GET['num']:
-        return render(request, 'auditlog.html',{'info': list_dic, 'display_rows': request.GET['num']})
-    return render(request, 'auditlog.html',{'info': list_dic, 'display_rows': '10' })
+        if 'patient' in request.GET and request.GET['patient']:
+            return render(request, 'auditlog.html',{
+                'patient_info': patient_dic, 
+                'payer_info': payer_dic, 
+                'display_rows': request.GET['num']
+            })
+        if 'payer' in request.GET and request.GET['payer']:
+            return render(request, 'auditlog.html',{
+                'payer_info': payer_dic, 
+                'patient_info': patient_dic, 
+                'display_rows': request.GET['num']
+            })
+    return render(request, 'auditlog.html',{
+        'patient_info': patient_dic, 
+        'payer_info' : payer_dic,
+        'display_rows': '10' 
+    })
 
 def getDiff():
 
