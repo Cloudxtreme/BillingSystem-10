@@ -1,14 +1,12 @@
 {% load i18n static %}
 {% load staticfiles %}
-{% load i18n %}
-
+<!DOCTYPE html>
 {% get_current_language as LANGUAGE_CODE %}
 {% get_current_language_bidi as LANGUAGE_BIDI %}
-
-<!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE|default:"en-us" }}" {% if LANGUAGE_BIDI %}dir="rtl"{% endif %}>
     <head>
-        <title>Site Administration</title>
+        <link rel="shortcut icon" type="image/x-icon" href="{% static 'favicon.ico' %}"/>
+        <title>{% block title %}{% endblock %}</title>
         <link rel="stylesheet" type="text/css" href="{% block stylesheet %}{% static "admin/css/base.css" %}{% endblock %}" />
         <link rel="stylesheet" href="{% static 'css/bootstrap.navbar.min.css' %}">
         {% block extrastyle %}{% endblock %}
@@ -16,8 +14,10 @@
         {% block extrahead %}{% endblock %}
         {% block blockbots %}<meta name="robots" content="NONE,NOARCHIVE" />{% endblock %}
     </head>
+    {% load i18n %}
 
     <body class="{% if is_popup %}popup {% endif %}{% block bodyclass %}{% endblock %}" data-admin-utc-offset="{% now "Z" %}">
+
         <!-- Container -->
         <div id="container">
             {% include "navbar.html" %}
@@ -55,6 +55,6 @@
             {% block footer %}<div id="footer"></div>{% endblock %}
         </div>
         <!-- END Container -->
-        
+
     </body>
 </html>
