@@ -5,7 +5,7 @@
     <title>Sortable Table</title>
     {% block script %}
         <script src="{% static 'infoGatherer/js/tablesorter.min.js' %}"></script>
-        <script type="text/javascript" datamy={{display_rows}} src="{% static 'infoGatherer/js/audit_log.js' %}"></script>
+        <script type="text/javascript" datamy={{display_rows}} display={{display}} src="{% static 'infoGatherer/js/audit_log.js' %}"></script>
     {% endblock script %}
     {% block link %}
         <link rel="stylesheet" href="{% static 'infoGatherer/css/audit_log.css' %}">
@@ -18,91 +18,106 @@
     <h2>Audit Log</h2>
 
     <ul class="nav nav-tabs">
-        <li class="active"><a href="#patient" data-target="#patient" data-toggle="tab"><strong>Patient</strong></a></li>
-        <li><a href="#physician" data-target="#physician" data-toggle="tab"><strong>Payer</strong></a></li>
+        <li class="active"><a href="#patient" id="patienthref" data-target="#patient" data-toggle="tab"><strong>Patient</strong></a></li>
+        <li><a href="#payer" id="payerhref" data-target="#payer" data-toggle="tab"><strong>Payer</strong></a></li>
     </ul>
     <p></p><p></p>
 
-    <div id="patient" class="tab-pane fade in active">
-        <table id="myTable" class="table tablesorter">
-            <thead class="thead-default" >
-                <tr>
-                    <th>Row ID</th>
-                    <th>Date/Time</th>
-                    <th>First name</th>
-                    <th>Last name</th>
-                    <th>What changed</th>
-                    <th>Old Value</th>
-                    <th>New Value</th>
-                    <th>History id</th>
-                    <th>Who changed?</th>
-                    <th>History type</th>
+    <div class="tab-content">
+        <!-- Patient Information -->
+        <div id="patient" class="tab-pane fade in active">
+            <table id="myTable" class="table tablesorter">
+                <thead class="thead-default" >
+                    <tr>
+                        <th>Row ID</th>
+                        <th>Date/Time</th>
+                        <th>First name</th>
+                        <th>Last name</th>
+                        <th>What changed</th>
+                        <th>Old Value</th>
+                        <th>New Value</th>
+                        <th>History id</th>
+                        <th>Who changed?</th>
+                        <th>History type</th>
 
-                </tr>
-            </thead>
-            <tbody>
-                    {% with ":"|add:display_rows as iterable %}
-                        {% for ele in patient_info|slice:iterable %}
-            	    	<tr>
-                			<td>{{ forloop.counter }}</td>
-            				<td>{{ele.history_date}}</td>
-                            <td>{{ele.first_name}}</td>
-                            <td>{{ele.last_name}}</td>
+                    </tr>
+                </thead>
+                <tbody>
+                        {% with ":"|add:display_rows as iterable %}
+                            {% for ele in patient_info|slice:iterable %}
+                	    	<tr>
+                    			<td>{{ forloop.counter }}</td>
+                				<td>{{ele.history_date}}</td>
+                                <td>{{ele.first_name}}</td>
+                                <td>{{ele.last_name}}</td>
+                                <td>{{ele.change}}</td>
+                                <td>{{ele.oldvalue}}</td>
+                                <td>{{ele.newvalue}}</td>
+                                <td>{{ele.history_id}}</td>
+                                <td>{{ele.history_user_id}}</td>
+                                <td>{{ele.history_type|get_corresponding_text}}</td>
+                    		</tr>
+                	    	{% endfor %}
+                        {% endwith %}
+                </tbody>
+            </table>
+            <span class="btn-group dropup">
+                <button type="button" class="btn btn-default  dropdown-toggle" data-toggle="dropdown">
+                    <span class="page-size">10</span> <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                    <li id="_5"><a href="?num=5&amp;patient=1">5</a></li>
+                    <li id="_10" ><a href="?num=10&amp;patient=1">10 (default)</a></li>
+                    <li id="_25" ><a href="?num=25&amp;patient=1">25</a></li>
+                    <li id="_100"><a href="?num=100&amp;patient=1">100</a></li>
+                </ul>
+            </span>
+        </div>
+
+        <!-- Payer Information -->
+        <div id="payer" class="tab-pane fade">
+            <table id="myTable" class="table tablesorter">
+                <thead class="thead-default" >
+                    <tr>
+                        <th>Row ID</th>
+                        <th>Date/Time</th>
+                        <th>Name</th>
+                        <th>What changed</th>
+                        <th>Old Value</th>
+                        <th>New Value</th>
+                        <th>History id</th>
+                        <th>Who changed?</th>
+                        <th>History type</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ele in payer_info %}
+                        <tr>
+                            <td>{{forloop.counter }}</td>
+                            <td>{{ele.history_date}}</td>
+                            <td>{{ele.name}}</td>
                             <td>{{ele.change}}</td>
                             <td>{{ele.oldvalue}}</td>
                             <td>{{ele.newvalue}}</td>
                             <td>{{ele.history_id}}</td>
                             <td>{{ele.history_user_id}}</td>
                             <td>{{ele.history_type|get_corresponding_text}}</td>
-                		</tr>
-            	    	{% endfor %}
-                    {% endwith %}
-            </tbody>
-        </table>
-        <span class="btn-group dropup">
-            <button type="button" class="btn btn-default  dropdown-toggle" data-toggle="dropdown">
-                <span class="page-size">10</span> <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu" role="menu">
-                <li id="_5"><a href="?num=5&amp;patient=1">5</a></li>
-                <li id="_10" ><a href="?num=10&amp;patient=1">10 (default)</a></li>
-                <li id="_25" ><a href="?num=25&amp;patient=1">25</a></li>
-                <li id="_100"><a href="?num=100&amp;patient=1">100</a></li>
-            </ul>
-        </span>
-    </div>
-
-    <div id="physician" class="tab-pane fade">
-        <table id="myTable" class="table tablesorter">
-            <thead class="thead-default" >
-                <tr>
-                    <th>Row ID</th>
-                    <th>Date/Time</th>
-                    <th>Name</th>
-                    <th>What changed</th>
-                    <th>Old Value</th>
-                    <th>New Value</th>
-                    <th>History id</th>
-                    <th>Who changed?</th>
-                    <th>History type</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for ele in payer_info %}
-                    <tr>
-                        <td>{{forloop.counter }}</td>
-                        <td>{{ele.history_date}}</td>
-                        <td>{{ele.name}}</td>
-                        <td>{{ele.change}}</td>
-                        <td>{{ele.oldvalue}}</td>
-                        <td>{{ele.newvalue}}</td>
-                        <td>{{ele.history_id}}</td>
-                        <td>{{ele.history_user_id}}</td>
-                        <td>{{ele.history_type|get_corresponding_text}}</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <span class="btn-group dropup">
+                <button type="button" class="btn btn-default  dropdown-toggle" data-toggle="dropdown">
+                    <span class="page-size">10</span> <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                    <li id="_5"><a href="?num=5&amp;payer=1">5</a></li>
+                    <li id="_10" ><a href="?num=10&amp;payer=1">10 (default)</a></li>
+                    <li id="_25" ><a href="?num=25&amp;payer=1">25</a></li>
+                    <li id="_100"><a href="?num=100&amp;payer=1">100</a></li>
+                </ul>
+            </span>
+        </div>
     </div>
 </div>
 

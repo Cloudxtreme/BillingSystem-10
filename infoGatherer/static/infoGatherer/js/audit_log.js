@@ -11,6 +11,19 @@ $(document).ready(function(){
 
 $(document).ready(function(){
     var this_js_script = $('script[src*=audit_log]');
+    var display = this_js_script.attr('display');
+    console.log(display);
+    if(display.localeCompare("patient")==0){
+        $( "#patienthref" ).trigger( "click" );
+    }
+    else if(display.localeCompare("payer")==0){
+        $( "#payerhref" ).trigger( "click" );
+    }
+
+});
+
+$(document).ready(function(){
+    var this_js_script = $('script[src*=audit_log]');
     var display_rows = this_js_script.attr('datamy');
 
     function removeClassLi(){

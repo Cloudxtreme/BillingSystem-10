@@ -104,13 +104,15 @@ def view_audit_log(request):
             return render(request, 'auditlog.html',{
                 'patient_info': patient_dic, 
                 'payer_info': payer_dic, 
-                'display_rows': request.GET['num']
+                'display_rows': request.GET['num'],
+                'display' : 'patient'
             })
         if 'payer' in request.GET and request.GET['payer']:
             return render(request, 'auditlog.html',{
                 'payer_info': payer_dic, 
                 'patient_info': patient_dic, 
-                'display_rows': request.GET['num']
+                'display_rows': request.GET['num'],
+                'display' : 'payer'
             })
     return render(request, 'auditlog.html',{
         'patient_info': patient_dic, 
