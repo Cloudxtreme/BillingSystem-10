@@ -32,7 +32,7 @@
                 </div>
                 <div class="col-sm-2">
                     {% with 'cpt_charge_'|add:i as fieldName %}
-                    {{ form|getField:fieldName|add_class:"form-control"|attr:"step:0.01"|append_attr:"placeholder:Charges ($)" }}
+                    {{ form|getField:fieldName|add_class:"form-control"|attr:"step:0.01"|append_attr:"placeholder:Charges ($)"|append_attr:"min:0" }}
                     {% endwith %}
                 </div>
             </div>
@@ -106,7 +106,7 @@
                     <div class="col-lg-2 col-sm-2">
                         {% with 'base_units_'|add:i as fieldName %}
                         <label for="{{ form|getFieldId:fieldName }}">Base Units</label>
-                        {{ form|getField:fieldName|add_class:"form-control" }}
+                        {{ form|getField:fieldName|add_class:"form-control"|append_attr:"min:0" }}
                         {% endwith %}
                     </div>
                     <div class="col-lg-2 col-sm-2">
@@ -118,7 +118,7 @@
                     <div class="col-lg-2 col-sm-2">
                         {% with 'fees_'|add:i as fieldName %}
                         <label for="{{ form|getFieldId:fieldName }}">Fees</label>
-                        {{ form|getField:fieldName|add_class:"form-control"|attr:"step:0.01" }}
+                        {{ form|getField:fieldName|add_class:"form-control"|attr:"step:0.01"|append_attr:"min:0" }}
                         {% endwith %}
                     </div>
                 </div>
