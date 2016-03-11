@@ -55,6 +55,7 @@ INSTALLED_APPS = (
     'claims',
     'accounts',
     'dashboard',
+    'accounting',
 )
 
 MIDDLEWARE_CLASSES = (

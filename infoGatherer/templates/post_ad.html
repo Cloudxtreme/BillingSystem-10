@@ -39,6 +39,7 @@
                             <label for="{{ form.pat_name.auto_id }}">Name</label>
                             {{ form.pat_name|add_class:"form-control"|attr:"placeholder:Last Name, First Name, Middle Initial" }}
                             <input type="hidden" id="hidden_id_pat_name">
+                            {{ form.pat_id}}
                         </div>
                     </div>
                     <div class="row">
@@ -192,6 +193,7 @@
                             <label for="{{ form.payer_name.auto_id }}">Payer Name</label>
                             {{ form.payer_name|add_class:"form-control" }}
                             <input type="hidden" id="hidden_id_payer_name">
+                            {{ form.payer_id }}
                         </div>
                     </div>
                     <div class="row">

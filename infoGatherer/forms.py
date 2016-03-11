@@ -46,6 +46,10 @@ class dxForm(ModelForm):
         model = dx
         fields = '__all__'
 
+class PersonalInformationChoiceField(forms.ModelChoiceField):
+    def label_from_instance(self, obj):
+         return '%s --- %s, %s, %s' % (obj.get_format_name(), obj.address, obj.city, obj.state)
+
 class PostAdForm(forms.Form):
     error_css_class = 'error'
     # Customize state options to start with not select
@@ -53,11 +57,9 @@ class PostAdForm(forms.Form):
     CUSTOM_STATE_CHOICES.insert(0, ('', 'Choose state'))
 
 
-    # Id hidden fields to link records in the database
-    # pat_id = forms.ModelChoiceField(queryset=Personal_Information.objects.all(), widget=forms.HiddenInput())
-    # insured_id = forms.ModelChoiceField(queryset=Personal_Information.objects.all(), widget=forms.HiddenInput())
-    # other_insured_id = forms.ModelChoiceField(required=False, queryset=Personal_Information.objects.all(), widget=forms.HiddenInput())
-    # payer_id = forms.ModelChoiceField(queryset=Payer.objects.all(), widget=forms.HiddenInput())
+    # Id hidden fields for accouting functionalities
+    pat_id = forms.ModelChoiceField(queryset=Personal_Information.objects.all(), widget=forms.HiddenInput())
+    payer_id = forms.ModelChoiceField(queryset=Payer.objects.all(), widget=forms.HiddenInput())
 
 
     # Payer section
@@ -69,6 +71,7 @@ class PostAdForm(forms.Form):
 
     # Patient section
     pat_name = forms.CharField(max_length=255)
+    # pat_name = PersonalInformationChoiceField(queryset=Personal_Information.objects.all())
     pat_streetaddress = forms.CharField(max_length=255)
     pat_city = forms.CharField(max_length=50)
     pat_state = USStateField(widget=forms.Select(choices=CUSTOM_STATE_CHOICES))
@@ -131,7 +134,7 @@ class PostAdForm(forms.Form):
     def __init__(self, loop_times, *args, **kwargs):
         super(PostAdForm, self).__init__(*args, **kwargs)
         self.dx_times = 12
-        self.lines = 6
+        self.rows = 6
         self.columns = 4
 
         # Diagnosis section
@@ -139,7 +142,7 @@ class PostAdForm(forms.Form):
             self.fields['ICD_10_%s' % (i+1)] = forms.CharField(max_length=8, required=False)
 
         # Procedure section
-        for i in xrange(1, self.lines+1):
+        for i in xrange(1, self.rows+1):
             self.fields['cpt_code_%s' % i] = forms.CharField(max_length=10, required=False)
             self.fields['service_start_date_%s' % i] = forms.DateField(required=False)
             self.fields['place_of_service_%s' % i] = forms.CharField(max_length=5, required=False)
@@ -170,7 +173,7 @@ class PostAdForm(forms.Form):
         if not valid:
             valid = False
 
-        for i in xrange(1, self.lines+1):
+        for i in xrange(1, self.rows+1):
             ### Pending - how to determine if it is calculator or drug information and this is displayed on the page ###
             # if self.cleaned_data['start_time_%s' % i] and not self.cleaned_data['end_time_%s' % i]:
             #     self._errors['end_time_%s' % i] = ErrorList(['There is start period but not end period.'])
@@ -204,6 +207,13 @@ class PostAdForm(forms.Form):
             self.cleaned_data['pat_other_insured_policy'] = DEFAULT_NONE_POLICY
 
         return valid
+
+    def get_total_charge(self):
+        total_charge = 0
+        for i in xrange(1, self.rows+1):
+            total_charge += self.cleaned_data['total_%s' % i]
+
+        return total_charge
 
 
 class PatientForm(ModelForm):

@@ -34,17 +34,20 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 initial_admin = settings.CONFIG.get('initial_admin')
 
-if not User.objects.filter(email=initial_admin.get('email')).exists():
-    admin = User.objects.create_superuser(
-        email=initial_admin.get('email'),
-        password=initial_admin.get('password'),
-        first_name=initial_admin.get('first_name'),
-        last_name=initial_admin.get('last_name')
-    );
+try:
+    if not User.objects.filter(email=initial_admin.get('email')).exists():
+        admin = User.objects.create_superuser(
+            email=initial_admin.get('email'),
+            password=initial_admin.get('password'),
+            first_name=initial_admin.get('first_name'),
+            last_name=initial_admin.get('last_name')
+        );
 
-    print '\n\n'
-    print 'Default admin has been created.  Account\'s details are as follow:'
-    print 'Email\t\t:\t%s' % (admin.email)
-    print 'Password\t:\t%s' % (initial_admin.get('password'))
-    print 'Full Name\t:\t%s' % (admin.get_full_name())
-    print '\n\n\n'
+        print '\n\n'
+        print 'Default admin has been created.  Account\'s details are as follow:'
+        print 'Email\t\t:\t%s' % (admin.email)
+        print 'Password\t:\t%s' % (initial_admin.get('password'))
+        print 'Full Name\t:\t%s' % (admin.get_full_name())
+        print '\n\n\n'
+except:
+    pass

@@ -22,6 +22,7 @@ from infoGatherer.forms import (
 from infoGatherer.models import (
     PostAd, Guarantor_Information, Insurance_Information, Personal_Information,
     Payer, ReferringProvider, Provider, PROVIDER_ROLE_CHOICES, CPT)
+from accounting.models import Claim
 from deepdiff import DeepDiff
 # from pprint import pprint
 # from __future__ import print_function
@@ -68,6 +69,12 @@ def PostAdPage(request):
 
     if 'pat_name' in request.GET and request.GET['pat_name']:
         if form.is_valid() :
+            Claim.objects.create(
+                patient=Personal_Information.objects.get(pk=request.GET['pat_id']),
+                payer=Payer.objects.get(pk=request.GET['payer_id']),
+                charge=form.get_total_charge(),
+            );
+
             var = print_form(request.GET);
             return var
         else:
