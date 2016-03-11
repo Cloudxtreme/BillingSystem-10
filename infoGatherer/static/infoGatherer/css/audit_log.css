@@ -7,3 +7,8 @@ th{
 table.table tr:hover td{
 	background-color: #ffed87
 }
+/*#patienthrefhidden{
+	visibility:hidden;
+	position: absolute;
+	top:0;
+}*/

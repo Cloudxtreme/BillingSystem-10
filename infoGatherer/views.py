@@ -82,7 +82,7 @@ def view_audit_log(request):
     charNums=list(charNums)
     for chart_no in charNums:
         for history in history_list:
-            content=Personal_Information.history.filter(chart_no=chart_no).filter(history_type=history).order_by('history_type','history_date').values()
+            content=Personal_Information.history.filter(chart_no=chart_no).filter(history_type=history).values()
             if(len(content)>1):
                 for i in range(1,len(content)):
                     temp={}
@@ -156,9 +156,6 @@ def view_audit_log(request):
         'display_rows': '10' 
     })
 
-def getDiff():
-
-    return True
 
 @login_required
 def PostAdPage(request):

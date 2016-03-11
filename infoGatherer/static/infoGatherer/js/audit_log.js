@@ -1,6 +1,19 @@
 
 
 
+// $(document).ready(function(){
+//     $( "#patienthref" ).on('click',function() {
+//         console.log("123");
+//         href=$("#patienthrefhidden").attr('href');
+//         window.location.href = href;
+//     });
+//     $( "#payerhref" ).on('click',function() {
+//         console.log("456");
+//         href=$("#payerhrefhidden").attr('href');
+//         window.location.href = href;
+//     });
+// });
+
 $(document).ready(function(){
     $(function(){
         $("#myTable").tablesorter();
