@@ -3,6 +3,9 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <link rel="shortcut icon" type="image/x-icon" href="{% static 'favicon.ico' %}"/>
+        <title>{% block title %} Xenon Health {% endblock title %}</title>
+
         <script src="{% static 'js/jquery.min.js' %}"></script>
         <script src="{% static 'js/csrf.js' %}"></script>
         <script src="{% static 'js/js.cookie.min.js' %}"></script>
@@ -18,8 +21,8 @@
         <link rel="stylesheet" href="{% static 'css/custom.css' %}">
         
 
-        <script src="{% static 'js/moment.js' %}"></script>
-        <script src="{% static 'js/pikaday.js' %}"></script>
+        <script src="{% static 'js/moment.min.js' %}"></script>
+        <script src="{% static 'js/pikaday.min.js' %}"></script>
         <link rel="stylesheet" href="{% static 'css/pikaday.css' %}" />
 
         {% block link %}{% endblock link %}

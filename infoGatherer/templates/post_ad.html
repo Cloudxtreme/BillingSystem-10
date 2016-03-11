@@ -4,6 +4,8 @@
 {% load tags_extra %}
 {% load widget_tweaks %}
 
+{% block title %} Make Claim {% endblock title %}
+
 {% block script %}
 <script src="{% static 'infoGatherer/js/autocomplete_claim.js' %}"></script>
 <script src="{% static 'infoGatherer/js/jquery.autocomplete.min.js' %}"></script>
@@ -22,31 +24,27 @@
 
 
 {% block body %}
-<div class="container-fluid" id="hideAll">
-    <div class="col-sm-1">
-        {% if form.errors %}
-        <p>{{ form.errors }}</p>
-        {% endif %}
-    </div>
-    <div class="col-sm-10">
-        <form id="myForm" action="pdf" method="get" data-toggle="validator">{% csrf_token %}
-            <ul class="nav nav-tabs">
-              <li class="active"><a href="#patient" data-target="#patient, #insurance" data-toggle="tab"><strong>Patient &amp; Insured Information</strong></a></li>
-              <li><a href="#physician" data-target="#physician, #blank" data-toggle="tab"><strong>Physical Information</strong></a></li>
-            </ul>
-            <div class="tab-content">
-                <br>
-                <div id="patient" class="col-sm-5 tab-pane fade in active">
+<div class="container" id="hideAll">
+    <form id="myForm" action="pdf" method="post" data-toggle="validator" target="_blank">{% csrf_token %}
+        <ul class="nav nav-tabs" id="tabs">
+            <li class="active"><a href="#patient" data-toggle="tab"><strong>Patient &amp; Insured Information</strong></a></li>
+            <li><a href="#physician" data-toggle="tab"><strong>Physical Information</strong></a></li>
+        </ul>
+        <div class="tab-content">
+            <div id="patient" class="tab-pane fade in active">
+                <div class="col-sm-6" style="padding-right: 15px;">
+                    <h3 class="text-center"><strong>Patient</strong></h3>
                     <div class="row">
                         <div class="col-sm-12">
-                            <label for="{{ form.pat_name.auto_id }}">Patient's name</label>
+                            <label for="{{ form.pat_name.auto_id }}">Name</label>
                             {{ form.pat_name|add_class:"form-control"|attr:"placeholder:Last Name, First Name, Middle Initial" }}
                             <input type="hidden" id="hidden_id_pat_name">
+                            {{ form.pat_id}}
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-sm-12">
-                            <label>Patient's Address</label>
+                            <label>Address</label>
                         </div>
                         <div class="col-sm-12">
                             <div class="input-group address-input">
@@ -64,17 +62,17 @@
                         </div>
                         <div class="col-sm-3">
                             <label for="{{ form.pat_birth_date.auto_id }}">Birth Date</label>
-                            {{ form.pat_birth_date|add_class:"form-control"|attr:"placeholder:MM/DD/YYYY" }}
+                            {{ form.pat_birth_date|add_class:"form-control pikaday"|attr:"placeholder:MM/DD/YYYY" }}
                         </div>
                         <div class="col-sm-3">
-                             <label for="{{ form.pat_sex.auto_id }}">Patient's sex</label>
+                             <label for="{{ form.pat_sex.auto_id }}">Sex</label>
                             {{ form.pat_sex|add_class:"form-control" }}
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-sm-6">
                             {{ form.pat_relationship_insured.errors }}
-                            <label for="{{ form.pat_relationship_insured.auto_id }}">Patient's Relationship to Insured</label>
+                            <label for="{{ form.pat_relationship_insured.auto_id }}">Relationship to Insured</label>
                             {{ form.pat_relationship_insured|add_class:"form-control" }}
                         </div>
                         <div class="col-sm-6">
@@ -137,126 +135,26 @@
                             </div>
                         </div>
                     </div>
-                </div><!-- end tab-content of id patient -->
+                </div>
 
-                <div id="physician" class="col-sm-12 tab-pane fade">
+
+                <div class="col-sm-6" style="padding-left: 15px;">
+                    <h3 class="text-center"><strong>Insured</strong></h3>
                     <div class="row">
                         <div class="col-sm-8">
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <label for="{{ form.referring_name.auto_id }}">Referring Provider's name</label>
-                                    {{ form.referring_name|add_class:"form-control" }}
-                                </div>
-                                <div class="col-sm-6">
-                                    <label for="{{ form.NPI.auto_id }}">Referring Provider's NPI</label>
-                                    {{ form.NPI|add_class:"form-control" }}
-                                    <input type="hidden" id="hidden_id_referring_name">
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-sm-4">
-                                    <label for="{{ form.rendering_provider_name.auto_id }}">Rendering Provider's name</label>
-                                    {{  form.rendering_provider_name|add_class:"form-control" }}
-                                    <input type="hidden" id="hidden_id_rendering_provider_name">
-                                </div>
-                                <div class="col-sm-4">
-                                    <label for="{{ form.billing_provider_name.auto_id }}">Billing Provider's name</label>
-                                    {{  form.billing_provider_name|add_class:"form-control" }}
-                                    <input type="hidden" id="hidden_id_billing_provider_name">
-                                </div>
-                                <div class="col-sm-4">
-                                    <label for="{{ form.location_provider_name.auto_id }}">Location Provider's name</label>
-                                    {{  form.location_provider_name|add_class:"form-control" }}
-                                    <input type="hidden" id="hidden_id_location_provider_name">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-4">
-                            <div class="row">
-                                <label>Diagnosis</label>
-                            </div>
-                            <div class="row">
-                                {% for i in loop_times %}
-                                <div class="col-xs-3">
-                                    <div class="input-group">
-                                        <div class="input-group-addon" style="width: 30px;">{{ dx_pt_range|lookup:i }}</div>
-                                        {% with 'ICD_10_'|prePlusConcat:i as fieldName %}
-                                        {{ form|getField:fieldName|add_class:"form-control" }}
-                                        {% endwith %}
-                                    </div>
-                                </div>
-                                {% endfor %}
-                            </div>
-                        </div>
-                    </div>
-                    <hr>
-                    <label>Service Information</label>
-                    <br>
-                    <div class="service 1">
-                        {% include "infoGatherer/physician_info.html" with i='1' dx_pt_range=dx_pt_range %}
-                    </div>
-                    <div class="service2" style="display:none">
-                        {% include "infoGatherer/physician_info.html" with i='2' dx_pt_range=dx_pt_range %}
-                    </div>
-                    <div class="service3" style="display:none">
-                        {% include "infoGatherer/physician_info.html" with i='3' dx_pt_range=dx_pt_range %}
-                    </div>
-                    <div class="service4" style="display:none">
-                        {% include "infoGatherer/physician_info.html" with i='4' dx_pt_range=dx_pt_range %}
-                    </div>
-                    <div class="service5" style="display:none">
-                        {% include "infoGatherer/physician_info.html" with i='5' dx_pt_range=dx_pt_range %}
-                    </div>
-                    <div class="service6" style="display:none">
-                        {% include "infoGatherer/physician_info.html" with i='6' dx_pt_range=dx_pt_range %}
-                    </div>
-
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <div class="form-group" style="width:100px">
-                                <div class="input-group">
-                                    <span class="input-group-btn">
-                                        <button type="button" class="btn btn-danger btn-number" disabled="disabled" data-type="minus" data-field="quant[1]">
-                                            <span class="glyphicon glyphicon-minus"></span>
-                                        </button>
-                                    </span>
-                                    <input type="text" name="quant[1]" class="form-control input-number text-center" value="1" min="1" max="6">
-                                        <span class="input-group-btn">
-                                        <button type="button" class="btn btn-danger btn-number" data-type="plus" data-field="quant[1]">
-                                            <span class="glyphicon glyphicon-plus"></span>
-                                        </button>
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-6">
-                            <button type="submit" class="btn btn-primary btn-md pull-right" value="Submit Button">Print Please!</button>
-                        </div>
-                    </div>
-                </div><!-- end tab-content of id physician -->
-            </div><!-- end tab-content -->
-
-
-
-
-            <div class="tab-content">
-                <br>
-                <div id="insurance" class="col-sm-5 col-sm-offset-1 tab-pane fade in active">
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <label for="{{ form.insured_name.auto_id }}">Insured's name</label>
+                            <label for="{{ form.insured_name.auto_id }}">Name</label>
                             {{ form.insured_name|add_class:"form-control"|attr:"placeholder:Last Name, First Name, Middle Initial" }}
                             <input type="hidden" id="hidden_id_insured_name">
                         </div>
-                        <div class="col-sm-6">
-                            <label for="{{ form.insured_idnumber.auto_id }}">Insured's id number</label>
+                        <div class="col-sm-4">
+                            <label for="{{ form.insured_idnumber.auto_id }}">ID Number</label>
                             {{ form.insured_idnumber|add_class:"form-control" }}
                             <input type="hidden" id="hidden_id_insured_id">
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-sm-12">
-                            <label for="{{ form.insured_streetaddress.auto_id }}">Insured's Address</label>
+                            <label for="{{ form.insured_streetaddress.auto_id }}">Address</label>
                         </div>
                         <div class="col-sm-12">
                             <div class="input-group address-input">
@@ -269,15 +167,15 @@
                     </div>
                     <div class="row">
                         <div class="col-sm-6">
-                            <label for="{{ form.insured_telephone.auto_id }}">Insured's Phone No.</label>
+                            <label for="{{ form.insured_telephone.auto_id }}">Phone No.</label>
                             {{ form.insured_telephone|add_class:"form-control" }}
                         </div>
                         <div class="col-sm-3">
-                            <label for="{{ form.insured_birth_date.auto_id }}">Insured's Birth Date</label>
-                            {{ form.insured_birth_date|add_class:"form-control"|attr:"placeholder:MM/DD/YYYY" }}
+                            <label for="{{ form.insured_birth_date.auto_id }}">Birth Date</label>
+                            {{ form.insured_birth_date|add_class:"form-control pikaday"|attr:"placeholder:MM/DD/YYYY" }}
                         </div>
                         <div class="col-sm-3">
-                            <label for="{{ form.insured_sex.auto_id }}">Insured's sex</label>
+                            <label for="{{ form.insured_sex.auto_id }}">Sex</label>
                             {{ form.insured_sex|add_class:"form-control" }}
                         </div>
                     </div>
@@ -295,6 +193,7 @@
                             <label for="{{ form.payer_name.auto_id }}">Payer Name</label>
                             {{ form.payer_name|add_class:"form-control" }}
                             <input type="hidden" id="hidden_id_payer_name">
+                            {{ form.payer_id }}
                         </div>
                     </div>
                     <div class="row">
@@ -319,14 +218,108 @@
                             {{ form.insured_insur_plan_name|add_class:"form-control"|attr:"placeholder:11 (c)" }}
                         </div>
                     </div>
-                </div><!-- end tab-content of id insurance -->
-                <div id="blank" class="tab-pane fade">
                 </div>
-            </div>
-        </form>
-    </div><!-- end col-sm-8 -->
-</div><!-- end container -->
+            </div><!-- end tab-content of id patient -->
 
+            <div id="physician" class="tab-pane fade">
+                <br>
+                <div class="row">
+                    <div class="col-sm-8">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <label for="{{ form.referring_name.auto_id }}">Referring Provider's name</label>
+                                {{ form.referring_name|add_class:"form-control" }}
+                            </div>
+                            <div class="col-sm-6">
+                                <label for="{{ form.NPI.auto_id }}">Referring Provider's NPI</label>
+                                {{ form.NPI|add_class:"form-control" }}
+                                <input type="hidden" id="hidden_id_referring_name">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <label for="{{ form.rendering_provider_name.auto_id }}">Rendering Provider's name</label>
+                                {{  form.rendering_provider_name|add_class:"form-control" }}
+                                <input type="hidden" id="hidden_id_rendering_provider_name">
+                            </div>
+                            <div class="col-sm-4">
+                                <label for="{{ form.billing_provider_name.auto_id }}">Billing Provider's name</label>
+                                {{  form.billing_provider_name|add_class:"form-control" }}
+                                <input type="hidden" id="hidden_id_billing_provider_name">
+                            </div>
+                            <div class="col-sm-4">
+                                <label for="{{ form.location_provider_name.auto_id }}">Location Provider's name</label>
+                                {{  form.location_provider_name|add_class:"form-control" }}
+                                <input type="hidden" id="hidden_id_location_provider_name">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="row">
+                            <label>Diagnosis</label>
+                        </div>
+                        <div class="row">
+                            {% for i in loop_times %}
+                            <div class="col-xs-3">
+                                <div class="input-group">
+                                    <div class="input-group-addon" style="width: 30px;">{{ dx_pt_range|lookup:i }}</div>
+                                    {% with 'ICD_10_'|prePlusConcat:i as fieldName %}
+                                    {{ form|getField:fieldName|add_class:"form-control" }}
+                                    {% endwith %}
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <label>Service Information</label>
+                <br>
+                <div class="service 1">
+                    {% include "infoGatherer/physician_info.html" with i='1' dx_pt_range=dx_pt_range %}
+                </div>
+                <div class="service2" style="display:none">
+                    {% include "infoGatherer/physician_info.html" with i='2' dx_pt_range=dx_pt_range %}
+                </div>
+                <div class="service3" style="display:none">
+                    {% include "infoGatherer/physician_info.html" with i='3' dx_pt_range=dx_pt_range %}
+                </div>
+                <div class="service4" style="display:none">
+                    {% include "infoGatherer/physician_info.html" with i='4' dx_pt_range=dx_pt_range %}
+                </div>
+                <div class="service5" style="display:none">
+                    {% include "infoGatherer/physician_info.html" with i='5' dx_pt_range=dx_pt_range %}
+                </div>
+                <div class="service6" style="display:none">
+                    {% include "infoGatherer/physician_info.html" with i='6' dx_pt_range=dx_pt_range %}
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group" style="width:100px">
+                            <div class="input-group">
+                                <span class="input-group-btn">
+                                    <button type="button" class="btn btn-danger btn-number" disabled="disabled" data-type="minus" data-field="quant[1]">
+                                        <span class="glyphicon glyphicon-minus"></span>
+                                    </button>
+                                </span>
+                                <input type="text" name="quant[1]" class="form-control input-number text-center" value="1" min="1" max="6">
+                                    <span class="input-group-btn">
+                                    <button type="button" class="btn btn-danger btn-number" data-type="plus" data-field="quant[1]">
+                                        <span class="glyphicon glyphicon-plus"></span>
+                                    </button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <button type="submit" id="submitMe" class="btn btn-primary btn-md pull-right" value="Submit Button">Print Please!</button>
+                    </div>
+                </div>
+            </div><!-- end tab-content of id physician -->
+        </div><!-- end tab-content -->
+    </form>
+</div><!-- end container -->
 
 <script>
     autocomplete_claim([

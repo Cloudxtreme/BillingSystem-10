@@ -6,6 +6,24 @@ function autocomplete_claim(api_urls) {
         return false;
     });
 
+    // Add date picker to all date fields on the page
+    (function() {
+        var dateFields = $('.form-control.pikaday');
+        for(var i=0; i<dateFields.length; i++) {
+            (function(i) {
+                var self = $(dateFields[i]);
+                self.click(function(e) {e.preventDefault();});
+                var picker = new Pikaday({
+                    field: self[0],
+                    format: 'MM/DD/YYYY',
+                    onSelect: function(date) {
+                        self.val(this.toString());
+                    }
+                });
+            })(i);
+        }
+    })();
+
     $('#id_insured_other_benifit_plan').prop('checked', false);
 
     // Autocomplete causes binded field to clear its value when page is loaded from back and forward button.
@@ -54,7 +72,6 @@ function autocomplete_claim(api_urls) {
                         var patient_info = obj['personal_information'][0];
 
                         // Auto populate fields in patient section
-                        $('#id_pat_id').val(patient_info.chart_no);
                         var birth_date_str = patient_info.dob.substr(5,2) + "/" + patient_info.dob.substr(8,2) + "/" + patient_info.dob.substr(0,4);
                         $("#id_pat_streetaddress").val(patient_info.address);
                         $("#id_pat_city").val(patient_info.city);
@@ -65,6 +82,8 @@ function autocomplete_claim(api_urls) {
                         $("#id_pat_sex").val(patient_info.sex.substr(0,1));
 
                         $('#hidden_id_pat_name').val(suggestion.value);
+                        
+                        $('#id_pat_id').val(patient_info.chart_no);
                     }
                 );
             },
@@ -286,7 +305,6 @@ function autocomplete_claim(api_urls) {
         var insurance = suggestion.insurance_data;
         var payer = insurance.payer;
         var fullAddress = payer.address + ' ' + payer.city + ' ' + payer.state + ' ' + payer.zip;
-        $("#id_payer_id").val(insurance.payer.code);
         $("#id_insured_idnumber").val(insurance.insurance_id);
         $("#id_payer_num").val(insurance.payer.code);
         $("#id_payer_name").val(insurance.payer.name);
@@ -295,6 +313,8 @@ function autocomplete_claim(api_urls) {
         $("#hidden_id_insured_id").val(insurance.insurance_id);
         $("#hidden_id_payer_num").val(insurance.payer.code);
         $("#hidden_id_payer_name").val(insurance.payer.name);
+
+        $("#id_payer_id").val(insurance.payer.code);
     }
 
     function detailString(text) {
@@ -308,22 +328,6 @@ function autocomplete_claim(api_urls) {
 };
 
 function bindCollapse(i) {
-    (function() {
-        var self = $('#id_service_start_date_' + i);
-
-        self.click(function(e) {
-            e.preventDefault();
-        });
-
-        var picker = new Pikaday({
-            field: self[0],
-            format: 'MM/DD/YYYY',
-            onSelect: function(date) {
-                self.val(this.toString());
-            }
-        });
-    })();
-
     (function() {
         // Time dropdown
         var timepickerConfig = {
