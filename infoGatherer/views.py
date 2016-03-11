@@ -96,31 +96,26 @@ def view_audit_log(request):
                         temp["history_user_id"]="None"
                     temp["history_date"]=content[i]["history_date"]
                     temp["history_id"]=content[i]["history_id"]
-                    if(history=="+"):
+                    if(history=="~"):
+                        d1=content[i-1]
+                        d2=content[i]
+                        diff=DeepDiff(d1,d2)['values_changed']
+                        alwaysChangingKeys=["root['history_id']", "root['history_date']"]
+                        # print diff
+                        for k, v in diff.iteritems():
+                            if (k not in alwaysChangingKeys):
+                                # Put change in temp
+                                temp["change"]=k[k.find("['")+1:k.find("']")][1:]
+                                temp["oldvalue"]=v["oldvalue"]
+                                temp["newvalue"]=v["newvalue"]
+                                patient_dic.append(temp)
+                    elif(history=="+"):
                         # Put change in temp
                         temp["change"]=""
                         temp["oldvalue"]=""
                         temp["newvalue"]=""
                         patient_dic.append(temp)
-                    elif(history=="~"):
-                            d1=content[i-1]
-                            d2=content[i]
-                            diff=DeepDiff(d1,d2)['values_changed']
-                            alwaysChangingKeys=["root['history_id']", "root['history_date']"]
-                            # print diff
-                            for k, v in diff.iteritems():
-                                if (k not in alwaysChangingKeys):
-                                    # Put change in temp
-                                    temp["change"]=k[k.find("['")+1:k.find("']")][1:]
-                                    temp["oldvalue"]=v["oldvalue"]
-                                    temp["newvalue"]=v["newvalue"]
-                                    patient_dic.append(temp)
-                    elif(history=="-"):
-                        # Put change in temp
-                        temp["change"]=""
-                        temp["oldvalue"]=""
-                        temp["newvalue"]=""
-                        patient_dic.append(temp)
+                    
     hisNums=Personal_Information.history.filter(history_type="-").values()
     for history in hisNums:
         temp={}
