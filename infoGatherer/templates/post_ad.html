@@ -25,8 +25,8 @@
 
 {% block body %}
 <div class="container" id="hideAll">
-    <form id="myForm" action="pdf" method="get" data-toggle="validator" target="_blank">{% csrf_token %}
-        <ul class="nav nav-tabs">
+    <form id="myForm" action="pdf" method="post" data-toggle="validator" target="_blank">{% csrf_token %}
+        <ul class="nav nav-tabs" id="tabs">
             <li class="active"><a href="#patient" data-toggle="tab"><strong>Patient &amp; Insured Information</strong></a></li>
             <li><a href="#physician" data-toggle="tab"><strong>Physical Information</strong></a></li>
         </ul>
@@ -313,7 +313,7 @@
                         </div>
                     </div>
                     <div class="col-sm-6">
-                        <button type="submit" class="btn btn-primary btn-md pull-right" value="Submit Button">Print Please!</button>
+                        <button type="submit" id="submitMe" class="btn btn-primary btn-md pull-right" value="Submit Button">Print Please!</button>
                     </div>
                 </div>
             </div><!-- end tab-content of id physician -->

@@ -163,17 +163,17 @@ def PostAdPage(request):
     loop_times= xrange(12)
     dx_pt_range = [chr(i + ord('A')) for i in range(0,12)]
 
-    form=PostAdForm(loop_times, request.GET or None)
+    form=PostAdForm(loop_times, request.POST or None)
 
-    if 'pat_name' in request.GET and request.GET['pat_name']:
+    if 'pat_name' in request.POST and request.POST['pat_name']:
         if form.is_valid() :
-            Claim.objects.create(
-                patient=Personal_Information.objects.get(pk=request.GET['pat_id']),
-                payer=Payer.objects.get(pk=request.GET['payer_id']),
-                charge=form.get_total_charge(),
-            );
+            # Claim.objects.create(
+            #     patient=Personal_Information.objects.get(pk=request.POST['pat_id']),
+            #     payer=Payer.objects.get(pk=request.POST['payer_id']),
+            #     charge=form.get_total_charge(),
+            # );
 
-            var = print_form(request.GET);
+            var = print_form(request.POST);
             return var
         else:
            print form.errors
