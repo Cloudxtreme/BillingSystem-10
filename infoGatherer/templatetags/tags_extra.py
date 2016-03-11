@@ -11,9 +11,27 @@ def add_num(a, b):
     return a+int(b)
 
 @register.filter
+def get_corresponding_text(b):
+    if b=="+":
+        return "Created"
+    elif b=="-":
+        return "Deleted"
+    elif b=="~":
+        return "Modified"
+    else:
+        return "---"
+
+@register.filter
 def getField(form, arg):
     try:
         return form[arg]
+    except:
+        return ''
+
+@register.filter
+def getFieldId(form, arg):
+    try:
+        return form[arg].auto_id
     except:
         return ''
 

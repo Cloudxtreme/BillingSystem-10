@@ -3,56 +3,26 @@ function init(){
     // document.getElementById('show_hide').style.display='none';
     // document.getElementById('input_show_hide').style.display='none';
 
-    // nav bars
-    function hideAllNavs(){
-        $("#patient").css('display','none');
-        $("#insured").css('display','none');
-        $("#physician").css('display','none');
-    }
-    function hideAllCLass(){
-        $("#nav_patient").removeClass("active");
-        $("#nav_insurance").removeClass("active");
-        $("#nav_physician").removeClass("active");
-    }
-    $( "#nav_insurance" ).click(function() {
-        hideAllNavs();
-        hideAllCLass();
-        $("#insured").css('display','block');
-        $("#nav_insurance").addClass("active");
-    });
-    $( "#nav_patient" ).click(function() {
-        hideAllNavs();
-        hideAllCLass();
-        $("#patient").css('display','block');
-        $("#nav_patient").addClass("active");
-    });
-    $( "#nav_physician" ).click(function() {
-        hideAllNavs();
-        hideAllCLass();
-        $("#physician").css('display','block');
-        $("#nav_physician").addClass("active");
-    });
-    hideAllNavs();
-    $("#patient").css('display','block');
 
     // Div tasgs
     var d = document.getElementsByClassName("fieldWrapper");
     for(i=0;i<d.length;i++){
-        d[i].className+=" form-group";
+        $(d[i]).addClass("form-group");
     }
 
     // Label tags
     var d = document.getElementsByTagName("label");
     for(i=0;i<d.length;i++){
-        d[i].className+=" control-label";
+        $(d[i]).addClass("control-label");
     }
 
     // Input tags
     var d = document.getElementsByTagName("input");
     for(i=0;i<d.length;i++){
-        if(d[i].type !== 'checkbox')
-            d[i].className+=" form-control";
-            //d[i].setAttribute("required", "");
+        if(d[i].type !== 'checkbox') {
+            // $(d[i]).addClass("form-control");
+            // d[i].setAttribute("required", "");
+        }
     }
     document.getElementById("id_pat_relation_emp").className="";
     document.getElementById("id_pat_relation_auto_accident").className="";
@@ -101,6 +71,12 @@ function init(){
             if($("#id_cpt_code_"+num).val().length!=0){
                 return false;
             }
+        }else{
+            console.log(value);
+            var timestamp=Date.parse(value);
+            if(isNaN(timestamp)){
+                return false;
+            }
         }
         return true;
     });
@@ -115,11 +91,12 @@ function init(){
             pat_city: "required",
             pat_state: "required",
             pat_zip: "required",
+            pat_sex: "required",
             pat_telephone: {
                 required: true,
                 phoneUS: true
             },
-            birth_date: {
+            pat_birth_date: {
                 required: true,
                 date: true
             },
@@ -138,6 +115,7 @@ function init(){
                 required: true,
                 date: true
             },
+            insured_sex: "required",
             other_cliam_id: {
                 required: false
             },
@@ -157,13 +135,12 @@ function init(){
         },
         highlight: function(element) {
             // console.log($(element));
+            runToTop(element);
             if($(element).attr("id")===("id_cpt_code_1")){
                 $(element).parent().addClass('has-error');
-                runToTop(element);
             }
             else if($(element).attr("id")===("id_cpt_charge_1")){
                 $(element).parent().addClass('has-error');
-                runToTop(element);
             }
             else if($(element).attr("id").substring(3, 5)==="dx"){
                 // console.log(123);
@@ -173,22 +150,21 @@ function init(){
                     if($(element).attr("id").substring(0,11).localeCompare(s)==0){
                         // console.log("matched!");
                         $(element).parent().addClass('has-error');
-                        runToTop(element);
                     }
                 }
             }
             else if($(element).attr("id").substring(3,16)==="service_start"){
                 $(element).parent().addClass('has-error');
-                runToTop(element);
             }
             else{
-                $(element).closest('.form-group').addClass('has-error');
-                runToTop(element);
+                // $(element).closest('.form-group').addClass('has-error');
+                $(element).parent().addClass('has-error');
             }
             
         },
         unhighlight: function(element) {
-            $(element).closest('.form-group').removeClass('has-error');
+            $(element).parent().removeClass('has-error');
+            // $(element).closest('.form-group').removeClass('has-error');
             $(element).parent().removeClass('has-error');
         }
 
@@ -201,16 +177,18 @@ function init(){
     });
     
     function runToTop (element){
-        if($(element).closest("#physician")){
-            $("#nav_physician").children("a").css("color","#BB4442");
-        }
-         if($(element).closest("#patient")){
-            $("#nav_patient").children("a").css("color","#BB4442");
-        }
-         if($(element).closest("#insured")){
+        if($(element).parents("#insurance").length!=0){
             $("#nav_insurance").children("a").css("color","#BB4442");
         }
+        else if($(element).parents("#physician").length!=0){
+            $("#nav_physician").children("a").css("color","#BB4442");
+        }
+        else if($(element).parents("#patient").length!=0){
+            $("#nav_patient").children("a").css("color","#BB4442");
+        }
+        
     }
+
 
     // Hide-Display block for service
     (function($){
@@ -247,8 +225,8 @@ function init(){
     for( i=1;i<=6;i++){
         $('#btn_calc_'+i).trigger( "click" );
     }
-    $("div.toggle").width("124px");
-    $("div.toggle-group").width("295px");
+    $("div.toggle").width("140px");
+    $("div.toggle-group").width("312px");
     
 
     // Javascript validation for diagnosis - service information

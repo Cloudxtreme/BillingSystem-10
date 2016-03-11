@@ -1,0 +1,14 @@
+td{
+	background-color: BLANCHEDALMOND
+}
+th{
+	background-color: #ffca67
+}
+table.table tr:hover td{
+	background-color: #ffed87
+}
+/*#patienthrefhidden{
+	visibility:hidden;
+	position: absolute;
+	top:0;
+}*/

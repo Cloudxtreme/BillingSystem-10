@@ -1,49 +1,49 @@
 from django.contrib import admin
-# from infoGatherer.models import Payer,Personal_Information, CPT, Guarantor_Information, Insurance_Information, Diagnosis_Codes, Procedure_Codes,dx, Provider, Locations, RefferingProvider
+# from infoGatherer.models import Payer,Personal_Information, CPT, Guarantor_Information, Insurance_Information, Procedure_Codes,dx, Provider, Locations, RefferingProvider
 from infoGatherer.models import *      
+from simple_history.admin import SimpleHistoryAdmin
 
-class PayerAdmin(admin.ModelAdmin):
+class PayerAdmin(SimpleHistoryAdmin):
     list_display = ('code','name','address','city','state','zip','phone','type',)
     list_editable = ('code','name','address','city','state','zip','phone','type',)
 
-class GuarantorAdmin(admin.ModelAdmin):
+class GuarantorAdmin(SimpleHistoryAdmin):
     pass
 
-class InsuranceAdmin(admin.ModelAdmin):
+class InsuranceAdmin(SimpleHistoryAdmin):
     list_display = ('payer','patient',)
 
-class DiagnosisCodes_Admin(admin.ModelAdmin):
-    list_display = ('diagnosis_code','diagnosis_name',)
-    search_fields = ['diagnosis_code','diagnosis_name',]
+# class DiagnosisCodes_Admin(admin.ModelAdmin):
+#     list_display = ('diagnosis_code','diagnosis_name',)
+#     search_fields = ['diagnosis_code','diagnosis_name',]
 
-class ProcedureCodes_Admin(admin.ModelAdmin):
+class ProcedureCodes_Admin(SimpleHistoryAdmin):
     list_display = ('procedure_code','procedure_name',)
     search_fields = ['procedure_code','procedure_name',]
     
-class Provider_Admin(admin.ModelAdmin):
+class Provider_Admin(SimpleHistoryAdmin):
+    list_display = ('provider_name','role','provider_phone')
+    search_fields = ['provider_name','role','provider_phone']
     class Media:
         js = ('js/jquery.min.js','js/model/provider.js')
 
-# class Test_Admin(admin.ModelAdmin):
-#     pass
+class Patient_Admin(SimpleHistoryAdmin):
+    list_display = ('last_name','first_name','dob','sex',)
 
-class Patient_Admin(admin.ModelAdmin):
-    pass
-
-class RP(admin.ModelAdmin):
+class RP(SimpleHistoryAdmin):
     list_display = ('first_name','last_name','taxonomy','NPI')
     search_fields = ['first_name','last_name','taxonomy','NPI',]
 
-class DX(admin.ModelAdmin):
+class DX(SimpleHistoryAdmin):
     list_display = ('ICD_10','description')
     search_fields = ['ICD_10','description',]
 
-class CPT_codes(admin.ModelAdmin):
+class CPT_codes(SimpleHistoryAdmin):
     list_display = ('cpt_code','cpt_description','cpt_mod_a','cpt_mod_b','cpt_mod_c','cpt_mod_d','cpt_charge')
     search_fields = ['cpt_code','cpt_description','cpt_mod_a','cpt_mod_b','cpt_mod_c','cpt_mod_d','cpt_charge']
 
 admin.site.register(Payer, PayerAdmin)
-admin.site.register(Diagnosis_Codes,DiagnosisCodes_Admin)
+# admin.site.register(Diagnosis_Codes,DiagnosisCodes_Admin)
 admin.site.register(Procedure_Codes,ProcedureCodes_Admin)
 admin.site.register(Provider,Provider_Admin)
 

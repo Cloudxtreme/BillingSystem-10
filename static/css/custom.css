@@ -1,3 +1,15 @@
+select.form-control.dx-pt {
+  -moz-appearance: none;
+   -webkit-appearance: none;
+   appearance: none;
+}
+
+.well-sm {
+    padding: 9px;
+    border-radius: 3px;
+    background-color: #f5f5f5;
+}
+
 .placeholder {
     color: #999 !important;
 }
@@ -5,5 +17,68 @@
 .label-placeholder {
     padding-top: 7px;
     margin-bottom: 7px;
-    padding-left: 27px !important;
+    padding-left: 17px !important;
+}
+
+label.big-checkbox input[type=checkbox] {
+    position: relative;
+    vertical-align: middle;
+    bottom: 3px;
+    margin-right: 5px;
+}
+
+input[type=checkbox]{
+    width: 20px;
+    height: 20px;
+}
+
+.auto-accident {
+    margin-left: -20px !important;
+    margin-top: 6px !important;
+}
+
+select.input-sm {
+    height: 30px;
+    line-height: 30px;
+    margin: 0px;
+}
+
+.checkbox label, .radio label {
+    min-height: 20px;
+    padding-left: 20px;
+    margin-bottom: 0;
+    font-weight: 400;
+    cursor: pointer;
+    line-height: 32px;
+}
+
+.four-input .form-control {
+    width: 25%;
+    border-right-width: 0px;
+}
+.four-input .form-control:last-child, .four-input .form-control:focus {
+    border-right-width: 1px;
+}
+
+
+.input-group.address-input {
+    /*margin: 0px 5px;*/
+}
+.address-input .form-control {
+    border-right-width: 0px;
+}
+.address-input .form-control.street {
+    width: 40%;
+}
+.address-input .form-control.city {
+    width: 25%;
+}
+.address-input .form-control.state {
+    width: 20%;
+}
+.address-input .form-control.zip {
+    width: 15%;
+}
+.address-input .form-control:last-child, .address-input .form-control:focus {
+    border-right-width: 1px;
 }

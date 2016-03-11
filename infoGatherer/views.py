@@ -15,20 +15,147 @@ from django.forms import formset_factory
 from django.views.generic import FormView
 from django.template.loader import get_template
 from django.forms.models import model_to_dict
-
 from fdfgen import forge_fdf
-
 from infoGatherer.forms import (
     PostAdForm, PatientForm, GuarantorForm, InsuranceForm,
-    ReferringProviderForm, dxForm, OtherProviderForm, CptForms,
-    ProcedureForm)
+    ReferringProviderForm, dxForm, OtherProviderForm, CptForms)
 from infoGatherer.models import (
     PostAd, Guarantor_Information, Insurance_Information, Personal_Information,
     Payer, ReferringProvider, Provider, PROVIDER_ROLE_CHOICES, CPT)
-
+from deepdiff import DeepDiff
+from pprint import pprint
+from accounts.models import *
 
 def TrackCharges(request):
     return render(request, 'track_charges.html')
+
+def view_audit_log(request):
+
+    # History list
+    history_list=["~","+","-"]
+
+    # Get list of users
+    users=User.objects.values_list('id', 'email')
+    users=dict(users)
+
+    # Payer Audit
+    # content=Personal_Information.history.filter(chart_no=chart_no).filter(history_type="~").order_by('history_type','history_date').values()
+    # a=Payer.history.filter(code=1).filter(history_type="~").values()
+    payer_dic=[]
+    # Need to get history by code number
+    codeNum=Payer.history.values_list('code', flat=True)
+    codeNum=set(codeNum)
+    codeNum=list(codeNum)
+    for code in codeNum:
+        for history in history_list:
+            content=Payer.history.filter(code=code).filter(history_type=history).values()
+            if(len(content)>1):
+                for i in range(1,len(content)):
+                    d1=content[i-1]
+                    d2=content[i]
+                    diff=DeepDiff(d1,d2)['values_changed']
+                    alwaysChangingKeys=["root['history_id']", "root['history_date']"]
+                    for k, v in diff.iteritems():
+                        if (k not in alwaysChangingKeys):
+                            temp={}
+                            # Put all useful information in temp    
+                            temp["name"]=content[i]["name"]
+                            temp["history_type"]=content[i]["history_type"]
+                            temp["history_date"]=content[i]["history_date"]
+                            temp["history_id"]=content[i]["history_id"]
+                            temp["history_user_id"]=users[content[i]["history_user_id"]]
+                            # Put change in temp
+                            temp["change"]=k[k.find("['")+1:k.find("']")][1:]
+                            temp["oldvalue"]=v["oldvalue"]
+                            temp["newvalue"]=v["newvalue"]
+                            payer_dic.append(temp)
+              
+
+    # free variables
+    content = None 
+
+    # Patient Audit
+    patient_dic=[]
+    # Audit : Modified
+    charNums=Personal_Information.history.values_list('chart_no', flat=True)
+    charNums=set(charNums)
+    charNums=list(charNums)
+    for chart_no in charNums:
+        for history in history_list:
+            content=Personal_Information.history.filter(chart_no=chart_no).filter(history_type=history).values()
+            if(len(content)>1):
+                for i in range(1,len(content)):
+                    temp={}
+                    # Put all useful information in temp
+                    temp["first_name"]=content[i]["first_name"]
+                    temp["last_name"]=content[i]["last_name"]
+                    temp["history_type"]=content[i]["history_type"]
+                    if(content[i]["history_user_id"] is not None):
+                        temp["history_user_id"]=users[content[i]["history_user_id"]]
+                    else:
+                        temp["history_user_id"]="None"
+                    temp["history_date"]=content[i]["history_date"]
+                    temp["history_id"]=content[i]["history_id"]
+                    if(history=="~"):
+                        d1=content[i-1]
+                        d2=content[i]
+                        diff=DeepDiff(d1,d2)['values_changed']
+                        alwaysChangingKeys=["root['history_id']", "root['history_date']"]
+                        # print diff
+                        for k, v in diff.iteritems():
+                            if (k not in alwaysChangingKeys):
+                                # Put change in temp
+                                temp["change"]=k[k.find("['")+1:k.find("']")][1:]
+                                temp["oldvalue"]=v["oldvalue"]
+                                temp["newvalue"]=v["newvalue"]
+                                patient_dic.append(temp)
+                    elif(history=="+"):
+                        # Put change in temp
+                        temp["change"]=""
+                        temp["oldvalue"]=""
+                        temp["newvalue"]=""
+                        patient_dic.append(temp)
+                    
+    hisNums=Personal_Information.history.filter(history_type="-").values()
+    for history in hisNums:
+        temp={}
+        temp["first_name"]=history["first_name"]
+        temp["last_name"]=history["last_name"]
+        temp["history_type"]=history["history_type"]
+        if(history["history_user_id"] is not None):
+            temp["history_user_id"]=users[history["history_user_id"]]
+        else:
+            temp["history_user_id"]="None"
+        temp["history_date"]=history["history_date"]
+        temp["history_id"]=history["history_id"]      
+        temp["change"]=""
+        temp["oldvalue"]=""
+        temp["newvalue"]=""    
+        patient_dic.append(temp)  
+
+
+    # print patient_dic
+    if 'num' in request.GET and request.GET['num']:
+        if 'patient' in request.GET and request.GET['patient']:
+            return render(request, 'auditlog.html',{
+                'patient_info': patient_dic, 
+                'payer_info': payer_dic, 
+                'display_rows': request.GET['num'],
+                'display' : 'patient'
+            })
+        if 'payer' in request.GET and request.GET['payer']:
+            return render(request, 'auditlog.html',{
+                'payer_info': payer_dic, 
+                'patient_info': patient_dic, 
+                'display_rows': request.GET['num'],
+                'display' : 'payer'
+            })
+    return render(request, 'auditlog.html',{
+        'patient_info': patient_dic, 
+        'payer_info' : payer_dic,
+        'display_rows': '10' 
+    })
+
 
 @login_required
 def PostAdPage(request):
@@ -36,20 +163,18 @@ def PostAdPage(request):
     dx_pt_range = [chr(i + ord('A')) for i in range(0,12)]
 
     form=PostAdForm(loop_times, request.GET or None)
-    procedure_form = ProcedureForm(6, 4, request.GET or None)
 
     if 'pat_name' in request.GET and request.GET['pat_name']:
-        #if form.is_valid() and procedure_form.is_valid() :
-        var = print_form(request.GET);
-        return var
-        #else:
-        #    print form.errors and procedure_form.errors
+        if form.is_valid() :
+            var = print_form(request.GET);
+            return var
+        else:
+           print form.errors
 
     return render(request, 'post_ad.html', {
         'dx_pt_range': dx_pt_range,
         'loop_times' : loop_times,
         'form': form,
-        'procedure_form': procedure_form,
     })
 
 def get_make_claim_extra_context(request):

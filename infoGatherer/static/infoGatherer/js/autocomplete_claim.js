@@ -151,6 +151,7 @@ function autocomplete_claim(api_urls) {
             formatResult: addHint,
             onSelect: function (suggestion) {
                 $('#hidden_id_pat_other_insured_name').val(suggestion.value);
+                $('#id_other_insured_id').val(suggestion.data);
             },
         });
     });
@@ -285,7 +286,7 @@ function autocomplete_claim(api_urls) {
         var insurance = suggestion.insurance_data;
         var payer = insurance.payer;
         var fullAddress = payer.address + ' ' + payer.city + ' ' + payer.state + ' ' + payer.zip;
-        $("#id_payer_id").val(insurance.payer.id);
+        $("#id_payer_id").val(insurance.payer.code);
         $("#id_insured_idnumber").val(insurance.insurance_id);
         $("#id_payer_num").val(insurance.payer.code);
         $("#id_payer_name").val(insurance.payer.name);
@@ -433,16 +434,8 @@ function calculateTotal(i) {
 }
 
 function dropDown(a,i){
-    $( "#trigger_calc_"+i).on( "click", function() {
-        $('#btn_calc_'+i).trigger( "click" );
-    });
-    $( "#trigger_drug_"+i ).on( "click", function() {
-        $('#btn_druginfo_'+i).trigger( "click" );
-    });
-
-    var child = a.children[0];
-    $( "#trigger_calc_"+i ).trigger( "click" );
-    $( "#trigger_drug_"+i ).trigger( "click" );
+    $('#btn_calc_'+i).trigger( "click" );
+    $('#btn_druginfo_'+i).trigger( "click" );
 
     calculateTotal(i);
 };

@@ -16,6 +16,13 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
+# Access configparser to load variable values from config file
+from django.utils.six.moves import configparser
+CONFIG = configparser.SafeConfigParser(allow_no_value=True)
+CONFIG.read('config.cfg')
+CONFIG = CONFIG._sections
+
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
 
@@ -37,12 +44,16 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'infoGatherer',
+
     'django_countries',
     'localflavor',
-    'claims.apps.ClaimsConfig',
+    'widget_tweaks',
+
+    'infoGatherer',
+    'claims',
     'accounts',
     'dashboard',
+    'simple_history',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -55,6 +66,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'audit_log.middleware.UserLoggingMiddleware',
+    'simple_history.middleware.HistoryRequestMiddleware',
 )
 
 ROOT_URLCONF = 'BillingSystem.urls'
@@ -85,7 +97,13 @@ WSGI_APPLICATION = 'BillingSystem.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
-DATE_FORMAT = "Y/m/d"
+try:
+    import pymysql
+    pymysql.install_as_MySQLdb()
+except ImportError:
+    pass 
+
+DATE_FORMAT = "m/d/Y"
 
 DATABASES = {
     'default': {
