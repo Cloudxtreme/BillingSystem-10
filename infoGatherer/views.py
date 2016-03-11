@@ -23,41 +23,139 @@ from infoGatherer.models import (
     PostAd, Guarantor_Information, Insurance_Information, Personal_Information,
     Payer, ReferringProvider, Provider, PROVIDER_ROLE_CHOICES, CPT)
 from deepdiff import DeepDiff
-# from pprint import pprint
-# from __future__ import print_function
+from pprint import pprint
+from accounts.models import *
 
 def TrackCharges(request):
     return render(request, 'track_charges.html')
 
 def view_audit_log(request):
-    # Have seperate audit logs for each table in database ????
 
-    # Personal Information
-    info=[]
-    # get diff in dic.
-    # get max id user and iterate one by one
-    for id in range(2,3):
-        content=Personal_Information.history.filter(history_user_id=id).values()
-        #>>> Personal_Information.history.filter(history_user_id=2).values()[0].get('last_name')
-        info=info+[content]
+    # History list
+    history_list=["~","+","-"]
 
-    ###################
-    content=Personal_Information.history.filter(last_name='MathuR').order_by('history_type','history_date').values()    
-    # for ele in content:
-    #     if ele['history_type']=="~":
-    #     elif ele['history_type']=="+":
-    #     elif ele['history_type']=="-":
-    # >>> d1=Personal_Information.history.filter(last_name='wer').order_by('history_type','history_date').values()[0]
-    # >>> d2=Personal_Information.history.filter(last_name='wer').order_by('history_type','history_date').values()[1]
-    # pprint(DeepDiff(d1,d2)['values_changed']["root['history_type']"])
+    # Get list of users
+    users=User.objects.values_list('id', 'email')
+    users=dict(users)
+
+    # Payer Audit
+    # content=Personal_Information.history.filter(chart_no=chart_no).filter(history_type="~").order_by('history_type','history_date').values()
+    # a=Payer.history.filter(code=1).filter(history_type="~").values()
+    payer_dic=[]
+    # Need to get history by code number
+    codeNum=Payer.history.values_list('code', flat=True)
+    codeNum=set(codeNum)
+    codeNum=list(codeNum)
+    for code in codeNum:
+        for history in history_list:
+            content=Payer.history.filter(code=code).filter(history_type=history).values()
+            if(len(content)>1):
+                for i in range(1,len(content)):
+                    d1=content[i-1]
+                    d2=content[i]
+                    diff=DeepDiff(d1,d2)['values_changed']
+                    alwaysChangingKeys=["root['history_id']", "root['history_date']"]
+                    for k, v in diff.iteritems():
+                        if (k not in alwaysChangingKeys):
+                            temp={}
+                            # Put all useful information in temp    
+                            temp["name"]=content[i]["name"]
+                            temp["history_type"]=content[i]["history_type"]
+                            temp["history_date"]=content[i]["history_date"]
+                            temp["history_id"]=content[i]["history_id"]
+                            temp["history_user_id"]=users[content[i]["history_user_id"]]
+                            # Put change in temp
+                            temp["change"]=k[k.find("['")+1:k.find("']")][1:]
+                            temp["oldvalue"]=v["oldvalue"]
+                            temp["newvalue"]=v["newvalue"]
+                            payer_dic.append(temp)
+              
+
+    # free variables
+    content = None 
+
+    # Patient Audit
+    patient_dic=[]
+    # Audit : Modified
+    charNums=Personal_Information.history.values_list('chart_no', flat=True)
+    charNums=set(charNums)
+    charNums=list(charNums)
+    for chart_no in charNums:
+        for history in history_list:
+            content=Personal_Information.history.filter(chart_no=chart_no).filter(history_type=history).values()
+            if(len(content)>1):
+                for i in range(1,len(content)):
+                    temp={}
+                    # Put all useful information in temp
+                    temp["first_name"]=content[i]["first_name"]
+                    temp["last_name"]=content[i]["last_name"]
+                    temp["history_type"]=content[i]["history_type"]
+                    if(content[i]["history_user_id"] is not None):
+                        temp["history_user_id"]=users[content[i]["history_user_id"]]
+                    else:
+                        temp["history_user_id"]="None"
+                    temp["history_date"]=content[i]["history_date"]
+                    temp["history_id"]=content[i]["history_id"]
+                    if(history=="~"):
+                        d1=content[i-1]
+                        d2=content[i]
+                        diff=DeepDiff(d1,d2)['values_changed']
+                        alwaysChangingKeys=["root['history_id']", "root['history_date']"]
+                        # print diff
+                        for k, v in diff.iteritems():
+                            if (k not in alwaysChangingKeys):
+                                # Put change in temp
+                                temp["change"]=k[k.find("['")+1:k.find("']")][1:]
+                                temp["oldvalue"]=v["oldvalue"]
+                                temp["newvalue"]=v["newvalue"]
+                                patient_dic.append(temp)
+                    elif(history=="+"):
+                        # Put change in temp
+                        temp["change"]=""
+                        temp["oldvalue"]=""
+                        temp["newvalue"]=""
+                        patient_dic.append(temp)
+                    
+    hisNums=Personal_Information.history.filter(history_type="-").values()
+    for history in hisNums:
+        temp={}
+        temp["first_name"]=history["first_name"]
+        temp["last_name"]=history["last_name"]
+        temp["history_type"]=history["history_type"]
+        if(history["history_user_id"] is not None):
+            temp["history_user_id"]=users[history["history_user_id"]]
+        else:
+            temp["history_user_id"]="None"
+        temp["history_date"]=history["history_date"]
+        temp["history_id"]=history["history_id"]      
+        temp["change"]=""
+        temp["oldvalue"]=""
+        temp["newvalue"]=""    
+        patient_dic.append(temp)  
 
 
-    # Pass old - new value
-    return render(request, 'auditlog.html',{'info': info[0]})
+    # print patient_dic
+    if 'num' in request.GET and request.GET['num']:
+        if 'patient' in request.GET and request.GET['patient']:
+            return render(request, 'auditlog.html',{
+                'patient_info': patient_dic, 
+                'payer_info': payer_dic, 
+                'display_rows': request.GET['num'],
+                'display' : 'patient'
+            })
+        if 'payer' in request.GET and request.GET['payer']:
+            return render(request, 'auditlog.html',{
+                'payer_info': payer_dic, 
+                'patient_info': patient_dic, 
+                'display_rows': request.GET['num'],
+                'display' : 'payer'
+            })
+    return render(request, 'auditlog.html',{
+        'patient_info': patient_dic, 
+        'payer_info' : payer_dic,
+        'display_rows': '10' 
+    })
 
-def getDiff():
-
-    return True
 
 @login_required
 def PostAdPage(request):
