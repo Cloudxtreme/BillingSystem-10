@@ -91,19 +91,21 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for ele in payer_info %}
-                        <tr>
-                            <td>{{forloop.counter }}</td>
-                            <td>{{ele.history_date}}</td>
-                            <td>{{ele.name}}</td>
-                            <td>{{ele.change}}</td>
-                            <td>{{ele.oldvalue}}</td>
-                            <td>{{ele.newvalue}}</td>
-                            <td>{{ele.history_id}}</td>
-                            <td>{{ele.history_user_id}}</td>
-                            <td>{{ele.history_type|get_corresponding_text}}</td>
-                        </tr>
-                    {% endfor %}
+                    {% with ":"|add:display_rows as iterable %}
+                        {% for ele in payer_info|slice:iterable %}
+                            <tr>
+                                <td>{{forloop.counter }}</td>
+                                <td>{{ele.history_date}}</td>
+                                <td>{{ele.name}}</td>
+                                <td>{{ele.change}}</td>
+                                <td>{{ele.oldvalue}}</td>
+                                <td>{{ele.newvalue}}</td>
+                                <td>{{ele.history_id}}</td>
+                                <td>{{ele.history_user_id}}</td>
+                                <td>{{ele.history_type|get_corresponding_text}}</td>
+                            </tr>
+                        {% endfor %}
+                    {% endwith %}
                 </tbody>
             </table>
             <span class="btn-group dropup">
