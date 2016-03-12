@@ -42,18 +42,20 @@ def view_audit_log(request):
     # Insurance Audit
     insurance_dic=[]
     # Need to get history by code number
-    codeNum=Insurance_Information.history.values_list('patient_id', flat=True)
+    codeNum=Insurance_Information.history.values_list('id', flat=True)
     codeNum=set(codeNum)
     codeNum=list(codeNum)
     for code in codeNum:
-        content=Insurance_Information.history.filter(patient_id=code).filter(history_type="~").values()
+        content=Insurance_Information.history.filter(id=code).filter(history_type="~").values()
         print content
         if(len(content)>1):
             for i in range(1,len(content)):
                 temp={}
                 # Put all useful information in temp    
-                temp["patientname"]=content[i]["patient_id"]
-                temp["payername"]=content[i]["payer_id"]
+                person=Personal_Information.objects.filter(chart_no=content[i]["patient_id"]).values()[0]
+                payer=Payer.objects.filter(code=content[i]["payer_id"]).values()[0]
+                temp["patientname"]=person['last_name']+", "+person['first_name']
+                temp["payername"]=payer['name']
                 temp["history_type"]=content[i]["history_type"]
                 temp["history_date"]=content[i]["history_date"]
                 temp["history_id"]=content[i]["history_id"]
@@ -69,16 +71,27 @@ def view_audit_log(request):
                     if (k not in alwaysChangingKeys):
                         # Put change in temp
                         temp["change"]=k[k.find("['")+1:k.find("']")][1:]
-                        temp["oldvalue"]=v["oldvalue"]
-                        temp["newvalue"]=v["newvalue"]
+                        if(temp["change"]=="patient_id"):
+                            person0=Personal_Information.objects.filter(chart_no=v["oldvalue"]).values()[0]
+                            person1=Personal_Information.objects.filter(chart_no=v["newvalue"]).values()[0]
+                            temp["oldvalue"]=person0['last_name']+", "+person0['first_name']
+                            temp["newvalue"]=person1['last_name']+", "+person1['first_name']
+                        elif(temp["change"]=="payer_id"):
+                            temp["oldvalue"]=Payer.objects.filter(code=v["oldvalue"]).values()[0]['name']
+                            temp["newvalue"]=Payer.objects.filter(code=v["newvalue"]).values()[0]['name']
+                        else:
+                            temp["oldvalue"]=v["oldvalue"]
+                            temp["newvalue"]=v["newvalue"]
                         insurance_dic.append(temp)
 
     for symbol in history_list:
         hisNums=Insurance_Information.history.filter(history_type=symbol).values()
         for history in hisNums:
             temp={}
-            temp["patientname"]=history["patient_id"]
-            temp["payername"]=history["payer_id"]
+            person=Personal_Information.objects.filter(chart_no=history["patient_id"]).values()[0]
+            payer=Payer.objects.filter(code=history["payer_id"]).values()[0]
+            temp["patientname"]=person['last_name']+", "+person['first_name']
+            temp["payername"]=payer['name']
             temp["history_type"]=history["history_type"]
             temp["history_date"]=history["history_date"]
             temp["history_id"]=history["history_id"]
