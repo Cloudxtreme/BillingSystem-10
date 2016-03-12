@@ -320,7 +320,6 @@ class Insurance_Information(models.Model):
     audit_log = AuditLog()
     history = HistoricalRecords()
 
-    
     def __unicode__(self):
         return self.payer.name 
 
@@ -333,8 +332,6 @@ class Locations(models.Model):
     city = models.CharField(max_length=128,default='')   
     state = USStateField(default='')  
     phone = PhoneNumberField(null=True, blank=True, help_text='XXX-XXX-XXXX')
-
-
         
     def __unicode__(self):
         return self.location_name

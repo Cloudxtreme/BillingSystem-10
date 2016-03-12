@@ -83,8 +83,12 @@ function init(){
 
     // form validation
     $('form').validate({
+        invalidHandler: function(e, validator){
+            if(validator.errorList.length)
+            $('#tabs a[href="#' + jQuery(validator.errorList[0].element).closest(".tab-pane").attr('id') + '"]').tab('show')
+        },
         errorPlacement: function(error, element) {},
-        ignore: [],
+        ignore: ".ignore",
         rules: {
             pat_name: "required",
             pat_streetaddress: "required",
@@ -174,6 +178,12 @@ function init(){
     });
     jQuery.validator.addClassRules('dateValidation', {
         validation_date : true
+    });
+
+    jQuery('#submitMe').click(function(evt) {
+        evt.preventDefault();
+        jQuery('#myForm').submit();
+        
     });
     
     function runToTop (element){
