@@ -58,8 +58,14 @@ class PostAdForm(forms.Form):
 
 
     # Id hidden fields for accouting functionalities
-    pat_id = forms.ModelChoiceField(queryset=Personal_Information.objects.all(), widget=forms.HiddenInput())
     payer_id = forms.ModelChoiceField(queryset=Payer.objects.all(), widget=forms.HiddenInput())
+    pat_id = forms.ModelChoiceField(queryset=Personal_Information.objects.all(), widget=forms.HiddenInput())
+    insured_id = forms.ModelChoiceField(queryset=Personal_Information.objects.all(), widget=forms.HiddenInput())
+    other_insured_id = forms.ModelChoiceField(queryset=Personal_Information.objects.all(), widget=forms.HiddenInput(), required=False)
+    referring_provider_id = forms.ModelChoiceField(queryset=ReferringProvider.objects.all(), widget=forms.HiddenInput())
+    rendering_provider_id = forms.ModelChoiceField(queryset=Provider.objects.filter(role='Rendering'), widget=forms.HiddenInput())
+    location_provider_id = forms.ModelChoiceField(queryset=Provider.objects.filter(role='Location'), widget=forms.HiddenInput())
+    billing_provider_id = forms.ModelChoiceField(queryset=Provider.objects.filter(role='Billing'), widget=forms.HiddenInput())
 
 
     # Payer section

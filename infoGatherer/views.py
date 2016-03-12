@@ -22,7 +22,7 @@ from infoGatherer.forms import (
 from infoGatherer.models import (
     PostAd, Guarantor_Information, Insurance_Information, Personal_Information,
     Payer, ReferringProvider, Provider, PROVIDER_ROLE_CHOICES, CPT)
-from accounting.models import Claim
+from accounting.models import *
 from deepdiff import DeepDiff
 from pprint import pprint
 from accounts.models import *
@@ -167,11 +167,48 @@ def PostAdPage(request):
 
     if 'pat_name' in request.GET and request.GET['pat_name']:
         if form.is_valid() :
-            Claim.objects.create(
-                patient=Personal_Information.objects.get(pk=request.GET['pat_id']),
-                payer=Payer.objects.get(pk=request.GET['payer_id']),
-                charge=form.get_total_charge(),
+            payer = Payer.objects.get(pk=request.GET['payer_id'])
+            patient = Personal_Information.objects.get(pk=request.GET['pat_id'])
+            insured = Personal_Information.objects.get(pk=request.GET['insured_id'])
+
+            if(request.GET['other_insured_id']):
+                other_insured = Personal_Information.objects.get(pk=request.GET['other_insured_id'])
+            else:
+                other_insured = None
+
+            referring_provider = ReferringProvider.objects.get(pk=request.GET['referring_provider_id'])
+            rendering_provider = Provider.objects.get(pk=request.GET['rendering_provider_id'])
+            location_provider = Provider.objects.get(pk=request.GET['location_provider_id'])
+            billing_provider = Provider.objects.get(pk=request.GET['billing_provider_id'])
+
+            claim = Claim.objects.create(
+                payer=payer,
+                patient=patient,
+                patient_dob=patient.dob,
+                insured=insured,
+                insured_dob=insured.dob,
+                other_insured=other_insured,
+                referring_provider=referring_provider,
+                referring_provider_npi=referring_provider.NPI,
+                rendering_provider=rendering_provider,
+                rendering_provider_npi=rendering_provider.npi,
+                location_provider=location_provider,
+                location_provider_npi=location_provider.npi,
+                billing_provider=billing_provider,
+                billing_provider_npi=billing_provider.npi,
             );
+
+            for i in xrange(1, form.rows+1):
+                cpt_code = request.GET['cpt_code_%s' % i]
+                charge = request.GET['total_%s' % i]
+                if(cpt_code and charge):
+                    procedure = Procedure.objects.create(
+                        claim=claim,
+                        rendering_provider=rendering_provider,
+                        cpt_code=cpt_code,
+                        charge=charge,
+                    )
+
 
             var = print_form(request.GET);
             return var

@@ -30,6 +30,16 @@
             <li class="active"><a href="#patient" data-toggle="tab"><strong>Patient &amp; Insured Information</strong></a></li>
             <li><a href="#physician" data-toggle="tab"><strong>Physical Information</strong></a></li>
         </ul>
+
+        {{ form.payer_id }}
+        {{ form.pat_id }}
+        {{ form.insured_id }}
+        {{ form.other_insured_id }}
+        {{ form.referring_provider_id }}
+        {{ form.rendering_provider_id }}
+        {{ form.location_provider_id }}
+        {{ form.billing_provider_id }}
+
         <div class="tab-content">
             <div id="patient" class="tab-pane fade in active">
                 <div class="col-sm-6" style="padding-right: 15px;">
@@ -39,7 +49,6 @@
                             <label for="{{ form.pat_name.auto_id }}">Name</label>
                             {{ form.pat_name|add_class:"form-control"|attr:"placeholder:Last Name, First Name, Middle Initial" }}
                             <input type="hidden" id="hidden_id_pat_name">
-                            {{ form.pat_id}}
                         </div>
                     </div>
                     <div class="row">
@@ -193,7 +202,6 @@
                             <label for="{{ form.payer_name.auto_id }}">Payer Name</label>
                             {{ form.payer_name|add_class:"form-control" }}
                             <input type="hidden" id="hidden_id_payer_name">
-                            {{ form.payer_id }}
                         </div>
                     </div>
                     <div class="row">

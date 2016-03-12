@@ -70,7 +70,13 @@ PAYER_TYPE_CHOICE = (('M','Medicare'),('C','Commercial'))
 
 RELATION_CHOICES = (('Self','Self'),('Other','Other'))
 
-PROVIDER_ROLE_CHOICES = (('Billing','Billing'),('Rendering','Rendering'),('Dual','Dual'),('Location','Location'))
+PROVIDER_ROLE_CHOICES = (
+    ('Billing', 'Billing'),
+    ('Rendering', 'Rendering'),
+    ('Dual', 'Dual'),
+    ('Location', 'Location'),
+    ('Referring', 'Referring'),
+)
 
 POS_CHOICES = (('Home','Home'),('Hospital','Hospital'),('Office','Office'))
 

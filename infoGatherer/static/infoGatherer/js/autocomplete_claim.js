@@ -170,6 +170,7 @@ function autocomplete_claim(api_urls) {
             formatResult: addHint,
             onSelect: function (suggestion) {
                 $('#hidden_id_pat_other_insured_name').val(suggestion.value);
+
                 $('#id_other_insured_id').val(suggestion.data);
             },
         });
@@ -198,6 +199,8 @@ function autocomplete_claim(api_urls) {
                 $('#id_NPI').val(suggestion.data.NPI);
 
                 $('#hidden_id_referring_name').val(suggestion.value);
+
+                $('#id_referring_provider_id').val(suggestion.data.id);
             },
         });
     });
@@ -213,6 +216,7 @@ function autocomplete_claim(api_urls) {
                 value: p.provider_name,
                 data: p.provider_name,
                 hint: p.provider_city + ", " + p.provider_state,
+                id: p.id,
             });
         }
 
@@ -222,6 +226,8 @@ function autocomplete_claim(api_urls) {
             formatResult: addHint,
             onSelect: function (suggestion) {
                 $('#hidden_id_billing_provider_name').val(suggestion.value);
+
+                $('#id_billing_provider_id').val(suggestion.id);
             },
         });
 
@@ -232,6 +238,7 @@ function autocomplete_claim(api_urls) {
                 value: p.provider_name,
                 data: p.provider_name,
                 hint: p.provider_city + ", " + p.provider_state,
+                id: p.id,
             });
         }
 
@@ -241,6 +248,8 @@ function autocomplete_claim(api_urls) {
             formatResult: addHint,
             onSelect: function (suggestion) {
                 $('#hidden_id_location_provider_name').val(suggestion.value);
+
+                $('#id_location_provider_id').val(suggestion.id);
             },
         });
 
@@ -251,6 +260,7 @@ function autocomplete_claim(api_urls) {
                 value: p.provider_name,
                 data: p.provider_name,
                 hint: p.provider_city + ", " + p.provider_state,
+                id: p.id,
             });
         }
 
@@ -260,6 +270,8 @@ function autocomplete_claim(api_urls) {
             formatResult: addHint,
             onSelect: function (suggestion) {
                 $('#hidden_id_rendering_provider_name').val(suggestion.value);
+
+                $('#id_rendering_provider_id').val(suggestion.id);
             },
         });
     });
