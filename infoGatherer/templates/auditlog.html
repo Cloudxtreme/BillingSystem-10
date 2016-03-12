@@ -22,6 +22,8 @@
         <button style="display:none"><a href="?num=10&amp;patient=1" id="patienthrefhidden" ><strong>hiddenPatient</strong></a></button>
         <li><a href="#payer" id="payerhref" data-target="#payer" data-toggle="tab"><strong>Payer</strong></a></li>
         <button style="display:none"><a href="?num=10&amp;payer=1" id="payerhrefhidden" ><strong>hiddenPayer</strong></a></button>
+        <li><a href="#insurance" id="insurancehref" data-target="#insurance" data-toggle="tab"><strong>Insurance</strong></a></li>
+        <button style="display:none"><a href="?num=10&amp;insurance=1" id="insurancehrefhidden" ><strong>hiddenInsurance</strong></a></button>
     </ul>
     <p></p><p></p>
 
@@ -122,6 +124,56 @@
                 </ul>
             </span>
         </div>
+
+        <!-- Insurance Information -->
+        <div id="insurance" class="tab-pane fade">
+            <table id="myTable" class="table tablesorter">
+                <thead class="thead-default" >
+                    <tr>
+                        <th>Row ID</th>
+                        <th>Date/Time</th>
+                        <th>Patient Name</th>
+                        <th>Payer Name</th>
+                        <th>What changed</th>
+                        <th>Old Value</th>
+                        <th>New Value</th>
+                        <th>History id</th>
+                        <th>Who changed?</th>
+                        <th>History type</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% with ":"|add:display_rows as iterable %}
+                        {% for ele in insurance_info|slice:iterable %}
+                            <tr>
+                                <td>{{forloop.counter}}</td>
+                                <td>{{ele.history_date}}</td>
+                                <td>{{ele.patientname}}</td>
+                                <td>{{ele.payername}}</td>
+                                <td>{{ele.change}}</td>
+                                <td>{{ele.oldvalue}}</td>
+                                <td>{{ele.newvalue}}</td>
+                                <td>{{ele.history_id}}</td>
+                                <td>{{ele.history_user_id}}</td>
+                                <td>{{ele.history_type|get_corresponding_text}}</td>
+                            </tr>
+                        {% endfor %}
+                    {% endwith %} 
+                </tbody>
+            </table>
+            <span class="btn-group dropup">
+                <button type="button" class="btn btn-default  dropdown-toggle" data-toggle="dropdown">
+                    <span class="page-size">10</span> <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                    <li id="_5"><a href="?num=5&amp;payer=1">5</a></li>
+                    <li id="_10" ><a href="?num=10&amp;payer=1">10 (default)</a></li>
+                    <li id="_25" ><a href="?num=25&amp;payer=1">25</a></li>
+                    <li id="_100"><a href="?num=100&amp;payer=1">100</a></li>
+                </ul>
+            </span>
+        </div>
+
     </div>
 </div>
 
