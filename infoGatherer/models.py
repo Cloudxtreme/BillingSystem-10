@@ -330,7 +330,6 @@ class Locations(models.Model):
     city = models.CharField(max_length=128,default='')   
     state = USStateField(default='')  
     phone = PhoneNumberField(null=True, blank=True, help_text='XXX-XXX-XXXX')
-    # history = HistoricalRecords()
 
     def __unicode__(self):
         return self.location_name
@@ -379,34 +378,7 @@ class Provider(models.Model):
 class Procedure_Codes(models.Model):
     procedure_name = models.CharField(max_length=128,default='')
     procedure_code = models.IntegerField(default='')
-    history = HistoricalRecords()
      
     def __unicode__(self):
         return self.procedure_code
      
-# class Diagnosis_Codes(models.Model):
-#     diagnosis_name = models.CharField(max_length=128,default='')
-#     diagnosis_code = models.CharField(max_length=8,default='')
-     
-#     def __unicode__(self):
-#         return self.diagnosis_code
-
-# class Test(models.Model):
-# #     patient = models.ForeignKey()
-# #     insurance = models.ForeignKey()
-# #     billing and providers
-#     dos = models.DateField()
-#     billing_provider = models.ForeignKey(Provider, limit_choices_to={'role':'Billing'},)
-#     rendering_provider = models.ForeignKey(Provider, limit_choices_to={'role':'Rendering'}, related_name = 'rendering_provider')
-#     icd = models.ManyToManyField(Diagnosis_Codes)
-    
-#     referring_provider
-
-# class Claims(models.Model):
-#     dos = models.DateField()
-#     pos = models.CharField(choices=POS_CHOICES,max_length=10,default='Office')
-#     icd = models.ManyToManyField(Diagnosis_Codes)
-#     cpt = models.ManyToManyField(Procedure_Codes)
-#     billing_provider = models.ForeignKey(Provider, limit_choices_to={'role':'Billing'},)
-#     rendering_provider = models.ForeignKey(Provider, limit_choices_to={'role':'Rendering'}, related_name = 'rendering_provider')
-    

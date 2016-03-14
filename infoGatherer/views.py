@@ -30,6 +30,28 @@ from accounts.models import *
 def TrackCharges(request):
     return render(request, 'track_charges.html')
 
+
+def helperAuditLog(content1,content2,temp,dic,users):
+    temp["history_type"]=content2["history_type"]
+    temp["history_date"]=content2["history_date"]
+    temp["history_id"]=content2["history_id"]
+    if(content2["history_user_id"] is not None):
+        temp["history_user_id"]=users[content2["history_user_id"]]
+    else:
+        temp["history_user_id"]="None"
+    d1=content1
+    d2=content2
+    diff=DeepDiff(content1,content2)['values_changed']
+    alwaysChangingKeys=["root['history_id']", "root['history_date']"]
+    for k, v in diff.iteritems():
+        if (k not in alwaysChangingKeys):
+            # Put change in temp
+            temp["change"]=k[k.find("['")+1:k.find("']")][1:]
+            temp["oldvalue"]=v["oldvalue"]
+            temp["newvalue"]=v["newvalue"]
+            dic.append(temp)
+
+
 def view_audit_log(request):
 
     # History list
@@ -38,6 +60,84 @@ def view_audit_log(request):
     # Get list of users
     users=User.objects.values_list('id', 'email')
     users=dict(users)
+
+    # Referring provider audit
+    rp_dic=[]
+    idList=ReferringProvider.history.values_list('id', flat=True)   
+    idList=set(idList)
+    idList=list(idList)
+    for idd in idList:
+        content=ReferringProvider.history.filter(id=idd).filter(history_type="~").order_by('history_date').values()        
+        if(len(content)>1):
+            for i in range(1,len(content)):
+                temp={}
+                # Put all useful information in temp    
+                temp["first_name"]=content[i]["first_name"]
+                temp["last_name"]=content[i]["last_name"]
+                helperAuditLog(content[i-1],content[i],temp,rp_dic,users)
+                # temp["history_type"]=content[i]["history_type"]
+                # temp["history_date"]=content[i]["history_date"]
+                # temp["history_id"]=content[i]["history_id"]
+                # if(content[i]["history_user_id"] is not None):
+                #     temp["history_user_id"]=users[content[i]["history_user_id"]]
+                # else:
+                #     temp["history_user_id"]="None"
+                # d1=content[i-1]
+                # d2=content[i]
+                # diff=DeepDiff(d1,d2)['values_changed']
+                # alwaysChangingKeys=["root['history_id']", "root['history_date']"]
+                # for k, v in diff.iteritems():
+                #     if (k not in alwaysChangingKeys):
+                #         # Put change in temp
+                #         temp["change"]=k[k.find("['")+1:k.find("']")][1:]
+                #         temp["oldvalue"]=v["oldvalue"]
+                #         temp["newvalue"]=v["newvalue"]
+                #         rp_dic.append(temp)
+
+        contentCreated=ReferringProvider.history.filter(id=idd).filter(history_type="+").values()
+        if(len(contentCreated)>0 and len(content)>0):
+            contentModified=content[0]
+            temp={}            
+             # Put all useful information in temp]
+            temp["first_name"]=contentModified["first_name"]
+            temp["last_name"]=contentModified["last_name"]
+            temp["history_type"]=contentModified["history_type"]
+            if(contentModified["history_user_id"] is not None):
+                temp["history_user_id"]=users[contentModified["history_user_id"]]
+            else:
+                temp["history_user_id"]="None"
+            temp["history_date"]=contentModified["history_date"]
+            temp["history_id"]=contentModified["history_id"]
+            d1=contentCreated[0]
+            d2=contentModified
+            diff=DeepDiff(d1,d2)['values_changed']
+            alwaysChangingKeys=["root['history_id']", "root['history_date']", "root['history_type']"]
+            # print diff
+            for k, v in diff.iteritems():
+                if (k not in alwaysChangingKeys):
+                    # Put change in temp
+                    temp["change"]=k[k.find("['")+1:k.find("']")][1:]
+                    temp["oldvalue"]=v["oldvalue"]
+                    temp["newvalue"]=v["newvalue"]
+                    rp_dic.append(temp)
+
+    for symbol in history_list:
+        hisNums=ReferringProvider.history.filter(history_type=symbol).values()
+        for history in hisNums:
+            temp={}
+            temp["first_name"]=history["first_name"]
+            temp["last_name"]=history["last_name"]
+            temp["history_type"]=history["history_type"]
+            temp["history_date"]=history["history_date"]
+            temp["history_id"]=history["history_id"]
+            if(history["history_user_id"] is not None):
+                temp["history_user_id"]=users[history["history_user_id"]]
+            else:
+                temp["history_user_id"]="None"      
+            temp["change"]=""
+            temp["oldvalue"]=""
+            temp["newvalue"]=""    
+            rp_dic.append(temp)  
 
 
     # DX audit
@@ -573,6 +673,7 @@ def view_audit_log(request):
         'provider_info' : provider_dic,
         'cpt_info' : cpt_dic,
         'dx_info' : dx_dic,
+        'referringprovider_info' :rp_dic,
         'display_rows': '10' 
     })
 
