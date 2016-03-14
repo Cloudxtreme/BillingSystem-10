@@ -28,6 +28,8 @@
         <button style="display:none"><a href="?num=10&amp;provider=1" id="providerhrefhidden" ><strong>hiddenProvider</strong></a></button>
         <li><a href="#cpt" id="cpthref" data-target="#cpt" data-toggle="tab"><strong>CPT</strong></a></li>
         <button style="display:none"><a href="?num=10&amp;cpt=1" id="cpthrefhidden" ><strong>hiddenCpt</strong></a></button>
+        <li><a href="#dx" id="dxhref" data-target="#dx" data-toggle="tab"><strong>DX</strong></a></li>
+        <button style="display:none"><a href="?num=10&amp;dx=1" id="dxhrefhidden" ><strong>hiddenDx</strong></a></button>
     </ul>
     <p></p><p></p>
 
@@ -250,6 +252,54 @@
                                 <td>{{ele.history_date}}</td>
                                 <td>{{ele.cpt_code}}</td>
                                 <td>{{ele.cpt_description}}</td>
+                                <td>{{ele.change}}</td>
+                                <td>{{ele.oldvalue}}</td>
+                                <td>{{ele.newvalue}}</td>
+                                <td>{{ele.history_id}}</td>
+                                <td>{{ele.history_user_id}}</td>
+                                <td>{{ele.history_type|get_corresponding_text}}</td>
+                            </tr>
+                        {% endfor %}
+                    {% endwith %} 
+                </tbody>
+            </table>
+            <span class="btn-group dropup">
+                <button type="button" class="btn btn-default  dropdown-toggle" data-toggle="dropdown">
+                    <span class="page-size">10</span> <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                    <li id="_5"><a href="?num=5&amp;insurance=1">5</a></li>
+                    <li id="_10" ><a href="?num=10&amp;insurance=1">10 (default)</a></li>
+                    <li id="_25" ><a href="?num=25&amp;insurance=1">25</a></li>
+                    <li id="_100"><a href="?num=100&amp;insurance=1">100</a></li>
+                </ul>
+            </span>
+        </div>
+
+
+        <!-- Dx Information -->
+        <div id="dx" class="tab-pane fade">
+            <table id="myTable" class="table tablesorter">
+                <thead class="thead-default" >
+                    <tr>
+                        <th>Row ID</th>
+                        <th>Date/Time</th>
+                        <th>ICD 10</th>
+                        <th>What changed</th>
+                        <th>Old Value</th>
+                        <th>New Value</th>
+                        <th>History id</th>
+                        <th>Who changed?</th>
+                        <th>History type</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% with ":"|add:display_rows as iterable %}
+                        {% for ele in dx_info|slice:iterable %}
+                            <tr>
+                                <td>{{forloop.counter}}</td>
+                                <td>{{ele.history_date}}</td>
+                                <td>{{ele.ICD_10}}</td>
                                 <td>{{ele.change}}</td>
                                 <td>{{ele.oldvalue}}</td>
                                 <td>{{ele.newvalue}}</td>

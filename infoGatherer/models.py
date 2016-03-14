@@ -207,8 +207,7 @@ class ReferringProvider(models.Model):
 class dx(models.Model):
     ICD_10 = models.CharField(max_length=200, primary_key=True)
     description = models.CharField(max_length=200)
-
-    # history = HistoricalRecords()
+    history = HistoricalRecords()
 
     def __unicode__(self):
         return self.ICD_10
