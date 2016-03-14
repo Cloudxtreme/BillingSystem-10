@@ -58,6 +58,13 @@ class Claim(BaseModel):
     claim_detail = models.TextField()
 
 
+class Procedure(BaseModel):
+    claim = models.ForeignKey(Claim)
+    rendering_provider = models.ForeignKey(Provider, limit_choices_to={'role': 'rendering'}, related_name='procedure_rendering_provider')
+    cpt_code = models.CharField(max_length=20)
+    charge = models.DecimalField(max_digits=MAX_DIGITS, decimal_places=DECIMAL_PLACES)
+
+
 class Payment(BaseModel):
     billing_provider = models.ForeignKey(Provider, limit_choices_to={'role': 'Billing'}, related_name='payment_billing_provider')
     rendering_provider = models.ForeignKey(Provider, limit_choices_to={'role': 'Rendering'}, related_name='payment_rendering_provider')
@@ -74,11 +81,5 @@ class Payment(BaseModel):
 class AppliedPayment(BaseModel):
     claim = models.ForeignKey(Claim)
     payment = models.ForeignKey(Payment)
+    procedure = models.ForeignKey(Procedure)
     amount = models.DecimalField(max_digits=MAX_DIGITS, decimal_places=DECIMAL_PLACES)
-
-
-class Procedure(BaseModel):
-    claim = models.ForeignKey(Claim)
-    rendering_provider = models.ForeignKey(Provider, limit_choices_to={'role': 'rendering'}, related_name='procedure_rendering_provider')
-    cpt_code = models.CharField(max_length=20)
-    charge = models.DecimalField(max_digits=MAX_DIGITS, decimal_places=DECIMAL_PLACES)
