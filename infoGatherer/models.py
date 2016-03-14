@@ -198,7 +198,7 @@ class ReferringProvider(models.Model):
     taxonomy=models.CharField(max_length=100,default='',null=True, blank=True)
     NPI=models.IntegerField()
     tax_id=models.CharField(max_length=100,null=True, blank=True)
-    # history = HistoricalRecords()
+    history = HistoricalRecords()
 
     def __unicode__(self):
         return self.first_name+" "+self.last_name
@@ -331,7 +331,8 @@ class Locations(models.Model):
     city = models.CharField(max_length=128,default='')   
     state = USStateField(default='')  
     phone = PhoneNumberField(null=True, blank=True, help_text='XXX-XXX-XXXX')
-        
+    # history = HistoricalRecords()
+
     def __unicode__(self):
         return self.location_name
 
@@ -379,7 +380,7 @@ class Provider(models.Model):
 class Procedure_Codes(models.Model):
     procedure_name = models.CharField(max_length=128,default='')
     procedure_code = models.IntegerField(default='')
-
+    history = HistoricalRecords()
      
     def __unicode__(self):
         return self.procedure_code

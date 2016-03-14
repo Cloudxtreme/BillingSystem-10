@@ -39,6 +39,59 @@ def view_audit_log(request):
     users=User.objects.values_list('id', 'email')
     users=dict(users)
 
+
+    # CPT audit
+    cpt_dic=[]
+    idList=CPT.history.values_list('id', flat=True)   
+    idList=set(idList)
+    idList=list(idList)
+    for idd in idList:
+        content=CPT.history.filter(id=idd).filter(history_type="~").values()        
+        if(len(content)>1):
+            for i in range(1,len(content)):
+                for i in range(1,len(content)):
+                    temp={}
+                    # Put all useful information in temp    
+                    temp["cpt_code"]=content[i]["cpt_code"]
+                    temp["cpt_description"]=content[i]["cpt_description"]
+                    temp["history_type"]=content[i]["history_type"]
+                    temp["history_date"]=content[i]["history_date"]
+                    temp["history_id"]=content[i]["history_id"]
+                    if(content[i]["history_user_id"] is not None):
+                        temp["history_user_id"]=users[content[i]["history_user_id"]]
+                    else:
+                        temp["history_user_id"]="None"
+                    d1=content[i-1]
+                    d2=content[i]
+                    diff=DeepDiff(d2,d1)['values_changed']
+                    alwaysChangingKeys=["root['history_id']", "root['history_date']"]
+                    for k, v in diff.iteritems():
+                        if (k not in alwaysChangingKeys):
+                            # Put change in temp
+                            temp["change"]=k[k.find("['")+1:k.find("']")][1:]
+                            temp["oldvalue"]=v["oldvalue"]
+                            temp["newvalue"]=v["newvalue"]
+                            cpt_dic.append(temp)
+
+    for symbol in history_list:
+        hisNums=CPT.history.filter(history_type=symbol).values()
+        for history in hisNums:
+            temp={}
+            temp["cpt_code"]=history["cpt_code"]
+            temp["cpt_description"]=history["cpt_description"]
+            temp["history_type"]=history["history_type"]
+            temp["history_date"]=history["history_date"]
+            temp["history_id"]=history["history_id"]
+            if(history["history_user_id"] is not None):
+                temp["history_user_id"]=users[history["history_user_id"]]
+            else:
+                temp["history_user_id"]="None"      
+            temp["change"]=""
+            temp["oldvalue"]=""
+            temp["newvalue"]=""    
+            cpt_dic.append(temp)  
+
+
     # Provider Audit
     provider_dic=[]
     idList=Provider.history.values_list('id', flat=True)   
@@ -288,6 +341,7 @@ def view_audit_log(request):
         'payer_info' : payer_dic,
         'insurance_info' : insurance_dic,
         'provider_info' : provider_dic,
+        'cpt_info' : cpt_dic,
         'display_rows': '10' 
     })
 
