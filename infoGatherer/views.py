@@ -275,7 +275,8 @@ def PostAdPage(request):
             );
 
             for i in xrange(1, form.rows+1):
-                cpt_code = request.POST['cpt_code_%s' % i]
+                cpt_code_string = request.POST['cpt_code_%s' % i]
+                cpt_code = CPT.objects.get(cpt_code=cpt_code_string)
                 charge = request.POST['total_%s' % i]
                 if(cpt_code and charge):
                     procedure = Procedure.objects.create(

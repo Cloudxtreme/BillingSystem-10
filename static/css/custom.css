@@ -82,3 +82,39 @@ select.input-sm {
 .address-input .form-control:last-child, .address-input .form-control:focus {
     border-right-width: 1px;
 }
+
+a.padding-btn {
+    display: inline-block;
+    padding: 6px;
+    line-height: 1.42857143;
+    vertical-align: middle;
+}
+a.link-btn-danger:link,
+a.link-btn-danger:visited {
+    color: #d9534f;
+}
+a.link-btn-danger:focus,
+a.link-btn-danger:hover,
+a.link-btn-danger:active {
+    color: #c9302c;
+}
+
+.margin-left {
+    margin-left: 20px;
+}
+
+label.control-label {
+    font-weight: normal;
+    margin-bottom: 0px;
+}
+label.control-label.required {
+    font-weight: bold;
+}
+label.control-label.required:after {
+    content: " *";
+    color: #ff0000;
+}
+
+h2.text-center {
+    margin-top: 0px;
+}

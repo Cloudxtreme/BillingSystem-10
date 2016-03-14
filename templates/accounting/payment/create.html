@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+{% load widget_tweaks %}
+
+{% block title %} Make Payment {% endblock title %}
+
+{% block body %}
+<div class="container">
+    <div class="col-sm-3">
+        {{ form.errors }}
+    </div>
+    <div class="col-sm-6">
+        <h2 class="text-center"><strong>Make Payment</strong></h2>
+        <form method="POST">{% csrf_token %}
+            <div class="row">
+                <div class="form-group col-sm-6">
+                    <label class="control-label required">Billing Provider</label>
+                    {{ form.billing_provider|add_class:"form-control" }}
+                </div>
+
+                <div class="form-group col-sm-6">
+                    <label class="control-label required">Rendering Provider</label>
+                    {{ form.rendering_provider|add_class:"form-control" }}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label required">Payment Date</label>
+                {{ form.payment_date|add_class:"form-control pikaday"|attr:"placeholder: MM/DD/YYYY" }}
+            </div>
+
+            <div class="row">
+                <div class="form-group col-sm-3">
+                    <label class="control-label required">Payer Type</label>
+                    {{ form.payer_type|add_class:"form-control" }}
+                </div>
+
+                <div class="form-group col-sm-9">
+                    <a href="#payer-type-Insurance" data-toggle="tab"></a>
+                    <a href="#payer-type-Patient" data-toggle="tab"></a>
+                    <div class="tab-content">
+                        <div role="tabpanel" class="tab-pane fade in active" id="payer-type-Insurance">
+                            <label class="control-label required">Payer Insurance</label>
+                            {{ form.payer_insurance|add_class:"form-control" }}
+                        </div>
+                        <div role="tabpanel" class="tab-pane fade" id="payer-type-Patient">
+                            <label class="control-label required">Payer Patient</label>
+                            {{ form.payer_patient|add_class:"form-control" }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group col-sm-6">
+                    <label class="control-label required">Payment Method</label>
+                    {{ form.payment_method|add_class:"form-control" }}
+                </div>
+
+                <div class="form-group col-sm-6">
+                    <label class="control-label required">Amount ($)</label>
+                    {{ form.amount|add_class:"form-control" }}
+                </div>
+            </div>
+
+            <div class="form-group" style="display: none;">
+                <label class="control-label required" id="label-check-number">Check Number</label>
+                {{ form.check_number|add_class:"form-control" }}
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">Description</label>
+                {{ form.description|add_class:"form-control" }}
+            </div>
+
+            <input type="submit" value="Make Payment" class="btn btn-success">
+            <a href="{% url 'dashboard:dashboard' %}" class="padding-btn margin-left link-btn-danger">Cancel</a>
+        </form>
+
+    </div>
+</div>
+
+<script>
+(function() {
+    $('#{{ form.payer_type.auto_id }}').change(function(e) {
+        $('a[href="#payer-type-' + $(this).val() + '"]').tab('show');
+    });
+
+    $('#{{ form.payment_method.auto_id }}').change(function(e) {
+        if($(this).val() === 'Check')
+            $('#{{ form.check_number.auto_id }}').parent().show();
+        else
+            $('#{{ form.check_number.auto_id }}').parent().hide();
+    });
+})();
+</script>
+{% endblock body %}

@@ -6,24 +6,6 @@ function autocomplete_claim(api_urls) {
         return false;
     });
 
-    // Add date picker to all date fields on the page
-    (function() {
-        var dateFields = $('.form-control.pikaday');
-        for(var i=0; i<dateFields.length; i++) {
-            (function(i) {
-                var self = $(dateFields[i]);
-                self.click(function(e) {e.preventDefault();});
-                var picker = new Pikaday({
-                    field: self[0],
-                    format: 'MM/DD/YYYY',
-                    onSelect: function(date) {
-                        self.val(this.toString());
-                    }
-                });
-            })(i);
-        }
-    })();
-
     $('#id_insured_other_benifit_plan').prop('checked', false);
 
     // Autocomplete causes binded field to clear its value when page is loaded from back and forward button.

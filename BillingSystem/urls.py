@@ -23,6 +23,7 @@ urlpatterns = [
     url(r'^claims/', include('claims.urls')),
     url(r'^accounts/', include('accounts.urls')),
     url(r'^dashboard/', include('dashboard.urls')),
+    url(r'^accounting/', include('accounting.urls')),
 ]
 
 
