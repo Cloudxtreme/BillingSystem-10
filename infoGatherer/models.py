@@ -316,7 +316,6 @@ class Insurance_Information(models.Model):
     payer = models.ForeignKey(Payer)
     patient = models.ForeignKey(Personal_Information)
     insurance_id = models.CharField(max_length=32,default='')
-
     audit_log = AuditLog()
     history = HistoricalRecords()
 
@@ -349,7 +348,7 @@ class Provider(models.Model):
     provider_state = USStateField(default='',null=True, blank=True)
     provider_zip = models.IntegerField(default='',null=True, blank=True)
     provider_phone = PhoneNumberField(null=True, blank=True, help_text='XXX-XXX-XXXX',)
-    # history = HistoricalRecords()
+    history = HistoricalRecords()
 
 
     def __unicode__(self):

@@ -39,6 +39,55 @@ def view_audit_log(request):
     users=User.objects.values_list('id', 'email')
     users=dict(users)
 
+    # Provider Audit
+    provider_dic=[]
+    idList=Provider.history.values_list('id', flat=True)   
+    idList=set(idList)
+    idList=list(idList)
+    for idd in idList:
+        content=Provider.history.filter(id=idd).filter(history_type="~").values()
+        if(len(content)>1):
+            for i in range(1,len(content)):
+                temp={}
+                # Put all useful information in temp    
+                temp["provider_name"]=content[i]["provider_name"]
+                temp["history_type"]=content[i]["history_type"]
+                temp["history_date"]=content[i]["history_date"]
+                temp["history_id"]=content[i]["history_id"]
+                if(content[i]["history_user_id"] is not None):
+                    temp["history_user_id"]=users[content[i]["history_user_id"]]
+                else:
+                    temp["history_user_id"]="None"
+                d1=content[i-1]
+                d2=content[i]
+                diff=DeepDiff(d2,d1)['values_changed']
+                alwaysChangingKeys=["root['history_id']", "root['history_date']"]
+                for k, v in diff.iteritems():
+                    if (k not in alwaysChangingKeys):
+                        # Put change in temp
+                        temp["change"]=k[k.find("['")+1:k.find("']")][1:]
+                        temp["oldvalue"]=v["oldvalue"]
+                        temp["newvalue"]=v["newvalue"]
+                        provider_dic.append(temp)
+
+    for symbol in history_list:
+        hisNums=Provider.history.filter(history_type=symbol).values()
+        for history in hisNums:
+            temp={}
+            temp["provider_name"]=history["provider_name"]
+            temp["history_type"]=history["history_type"]
+            temp["history_date"]=history["history_date"]
+            temp["history_id"]=history["history_id"]
+            if(history["history_user_id"] is not None):
+                temp["history_user_id"]=users[history["history_user_id"]]
+            else:
+                temp["history_user_id"]="None"      
+            temp["change"]=""
+            temp["oldvalue"]=""
+            temp["newvalue"]=""    
+            provider_dic.append(temp)  
+
+
     # Insurance Audit
     insurance_dic=[]
     # Need to get history by code number
@@ -47,7 +96,7 @@ def view_audit_log(request):
     codeNum=list(codeNum)
     for code in codeNum:
         content=Insurance_Information.history.filter(id=code).filter(history_type="~").values()
-        print content
+        # print content
         if(len(content)>1):
             for i in range(1,len(content)):
                 temp={}
@@ -65,7 +114,7 @@ def view_audit_log(request):
                     temp["history_user_id"]="None"
                 d1=content[i-1]
                 d2=content[i]
-                diff=DeepDiff(d1,d2)['values_changed']
+                diff=DeepDiff(d2,d1)['values_changed']
                 alwaysChangingKeys=["root['history_id']", "root['history_date']"]
                 for k, v in diff.iteritems():
                     if (k not in alwaysChangingKeys):
@@ -126,7 +175,7 @@ def view_audit_log(request):
                     temp["history_user_id"]="None"
                 d1=content[i-1]
                 d2=content[i]
-                diff=DeepDiff(d1,d2)['values_changed']
+                diff=DeepDiff(d2,d1)['values_changed']
                 alwaysChangingKeys=["root['history_id']", "root['history_date']"]
                 for k, v in diff.iteritems():
                     if (k not in alwaysChangingKeys):
@@ -179,7 +228,7 @@ def view_audit_log(request):
                 temp["history_id"]=content[i]["history_id"]
                 d1=content[i-1]
                 d2=content[i]
-                diff=DeepDiff(d1,d2)['values_changed']
+                diff=DeepDiff(d2,d1)['values_changed']
                 alwaysChangingKeys=["root['history_id']", "root['history_date']"]
                 # print diff
                 for k, v in diff.iteritems():
@@ -226,10 +275,19 @@ def view_audit_log(request):
                 'display_rows': request.GET['num'],
                 'display' : 'payer'
             })
+        if 'insurance' in request.GET and request.GET['insurance']:
+            return render(request, 'auditlog.html',{
+                'payer_info': payer_dic, 
+                'patient_info': patient_dic, 
+                'insurance_info' : insurance_dic,
+                'display_rows': request.GET['num'],
+                'display' : 'insurance'
+            })
     return render(request, 'auditlog.html',{
         'patient_info': patient_dic, 
         'payer_info' : payer_dic,
         'insurance_info' : insurance_dic,
+        'provider_info' : provider_dic,
         'display_rows': '10' 
     })
 

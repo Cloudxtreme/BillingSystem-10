@@ -32,6 +32,9 @@ $(document).ready(function(){
     else if(display.localeCompare("payer")==0){
         $( "#payerhref" ).trigger( "click" );
     }
+    else if(display.localeCompare("insurance")==0){
+        $( "#insurancehref" ).trigger( "click" );
+    }
 
 });
 
