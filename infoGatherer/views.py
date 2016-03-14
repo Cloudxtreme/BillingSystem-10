@@ -234,6 +234,35 @@ def view_audit_log(request):
                             temp["newvalue"]=v["newvalue"]
                         insurance_dic.append(temp)
 
+        contentCreated=Insurance_Information.history.filter(id=code).filter(history_type="+").values()
+        if(len(contentCreated)>0 and len(content)>0):
+            contentModified=content[0]
+            temp={}            
+             # Put all useful information in temp
+            person=Personal_Information.objects.filter(chart_no=contentModified["patient_id"]).values()[0]
+            payer=Payer.objects.filter(code=contentModified["payer_id"]).values()[0]
+            temp["patientname"]=person['last_name']+", "+person['first_name']
+            temp["payername"]=payer['name']
+            temp["history_type"]=contentModified["history_type"]
+            if(contentModified["history_user_id"] is not None):
+                temp["history_user_id"]=users[contentModified["history_user_id"]]
+            else:
+                temp["history_user_id"]="None"
+            temp["history_date"]=contentModified["history_date"]
+            temp["history_id"]=contentModified["history_id"]
+            d1=contentCreated[0]
+            d2=contentModified
+            diff=DeepDiff(d1,d2)['values_changed']
+            alwaysChangingKeys=["root['history_id']", "root['history_date']", "root['history_type']"]
+            # print diff
+            for k, v in diff.iteritems():
+                if (k not in alwaysChangingKeys):
+                    # Put change in temp
+                    temp["change"]=k[k.find("['")+1:k.find("']")][1:]
+                    temp["oldvalue"]=v["oldvalue"]
+                    temp["newvalue"]=v["newvalue"]
+                    insurance_dic.append(temp)
+
     for symbol in history_list:
         hisNums=Insurance_Information.history.filter(history_type=symbol).values()
         for history in hisNums:
@@ -285,6 +314,32 @@ def view_audit_log(request):
                         temp["oldvalue"]=v["oldvalue"]
                         temp["newvalue"]=v["newvalue"]
                         payer_dic.append(temp)
+
+        contentCreated=Payer.history.filter(code=code).filter(history_type="+").values()
+        if(len(contentCreated)>0 and len(content)>0):
+            contentModified=content[0]
+            temp={}            
+             # Put all useful information in temp
+            temp["name"]=contentModified["name"]
+            temp["history_type"]=contentModified["history_type"]
+            if(contentModified["history_user_id"] is not None):
+                temp["history_user_id"]=users[contentModified["history_user_id"]]
+            else:
+                temp["history_user_id"]="None"
+            temp["history_date"]=contentModified["history_date"]
+            temp["history_id"]=contentModified["history_id"]
+            d1=contentCreated[0]
+            d2=contentModified
+            diff=DeepDiff(d1,d2)['values_changed']
+            alwaysChangingKeys=["root['history_id']", "root['history_date']", "root['history_type']"]
+            # print diff
+            for k, v in diff.iteritems():
+                if (k not in alwaysChangingKeys):
+                    # Put change in temp
+                    temp["change"]=k[k.find("['")+1:k.find("']")][1:]
+                    temp["oldvalue"]=v["oldvalue"]
+                    temp["newvalue"]=v["newvalue"]
+                    payer_dic.append(temp)
 
     for symbol in history_list:
         hisNums=Payer.history.filter(history_type=symbol).values()
@@ -340,16 +395,12 @@ def view_audit_log(request):
                         temp["newvalue"]=v["newvalue"]
                         patient_dic.append(temp)
 
-
         contentCreated=Personal_Information.history.filter(chart_no=chart_no).filter(history_type="+").values()
-        contentModified=Personal_Information.history.filter(chart_no=chart_no).filter(history_type="~").order_by('history_date').values()
-        if(len(contentCreated)>0 and len(contentModified)>0):
-            print chart_no
-            print str(contentModified[0]["first_name"])
-            contentModified=contentModified[0]
+        if(len(contentCreated)>0 and len(content)>0):
+            contentModified=content[0]
             temp={}            
              # Put all useful information in temp
-            temp["first_name"]="132"+contentModified["first_name"]
+            temp["first_name"]=contentModified["first_name"]
             temp["last_name"]=contentModified["last_name"]
             temp["history_type"]=contentModified["history_type"]
             if(contentModified["history_user_id"] is not None):
@@ -365,7 +416,6 @@ def view_audit_log(request):
             # print diff
             for k, v in diff.iteritems():
                 if (k not in alwaysChangingKeys):
-                    print "ONCE---------------------"
                     # Put change in temp
                     temp["change"]=k[k.find("['")+1:k.find("']")][1:]
                     temp["oldvalue"]=v["oldvalue"]
