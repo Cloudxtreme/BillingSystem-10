@@ -5,7 +5,11 @@
     <title>Sortable Table</title>
     {% block script %}
         <script src="{% static 'infoGatherer/js/tablesorter.min.js' %}"></script>
-        <script type="text/javascript" datamy={{display_rows}} display={{display}} src="{% static 'infoGatherer/js/audit_log.js' %}"></script>
+        {% if display_rows and display %}
+            <script type="text/javascript" datamy={{display_rows}} display={{display}} src="{% static 'infoGatherer/js/audit_log.js' %}"></script>
+        {% else %}
+            <script type="text/javascript" datamy={{display_rows}} src="{% static 'infoGatherer/js/audit_log.js' %}"></script>
+        {% endif %}
     {% endblock script %}
     {% block link %}
         <link rel="stylesheet" href="{% static 'infoGatherer/css/audit_log.css' %}">
@@ -38,7 +42,9 @@
     <div class="tab-content">
         <!-- Patient Information -->
         <div id="patient" class="tab-pane fade in active">
-            <table id="myTable" class="table tablesorter">
+            <strong>Modified</strong>
+            <p></p>
+            <table class="myTable table tablesorter">
                 <thead class="thead-default" >
                     <tr>
                         <th>Row ID</th>
@@ -50,25 +56,25 @@
                         <th>New Value</th>
                         <th>History id</th>
                         <th>Who changed?</th>
-                        <th>History type</th>
 
                     </tr>
                 </thead>
                 <tbody>
                         {% with ":"|add:display_rows as iterable %}
                             {% for ele in patient_info|slice:iterable %}
-                	    	<tr>
-                    			<td>{{ forloop.counter }}</td>
-                				<td>{{ele.history_date}}</td>
-                                <td>{{ele.first_name}}</td>
-                                <td>{{ele.last_name}}</td>
-                                <td>{{ele.change}}</td>
-                                <td>{{ele.oldvalue}}</td>
-                                <td>{{ele.newvalue}}</td>
-                                <td>{{ele.history_id}}</td>
-                                <td>{{ele.history_user_id}}</td>
-                                <td>{{ele.history_type|get_corresponding_text}}</td>
-                    		</tr>
+                                {% if ele.history_type|get_corresponding_text == "Modified" %}
+                        	    	<tr>
+                            			<td>{{ forloop.counter }}</td>
+                        				<td>{{ele.history_date}}</td>
+                                        <td>{{ele.first_name}}</td>
+                                        <td>{{ele.last_name}}</td>
+                                        <td>{{ele.change}}</td>
+                                        <td>{{ele.oldvalue}}</td>
+                                        <td>{{ele.newvalue}}</td>
+                                        <td>{{ele.history_id}}</td>
+                                        <td>{{ele.history_user_id}}</td>
+                            		</tr>
+                                {% endif %}
                 	    	{% endfor %}
                         {% endwith %}
                 </tbody>
@@ -84,11 +90,78 @@
                     <li id="_100"><a href="?num=100&amp;patient=1">100</a></li>
                 </ul>
             </span>
-        </div>
+        
+            <p></p>
+            <strong>Created</strong>
+            <p></p> 
+            <table class="myTable table tablesorter">
+                <thead class="thead-default" >
+                    <tr>
+                        <th>Row ID</th>
+                        <th>Date/Time</th>
+                        <th>First name</th>
+                        <th>Last name</th>
+                        <th>History id</th>
+                        <th>Who changed?</th>
 
+                    </tr>
+                </thead>
+                <tbody>
+                        {% with ":"|add:display_rows as iterable %}
+                            {% for ele in patient_info|slice:iterable %}
+                                {% if ele.history_type|get_corresponding_text == "Created" %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{ele.history_date}}</td>
+                                        <td>{{ele.first_name}}</td>
+                                        <td>{{ele.last_name}}</td>
+                                        <td>{{ele.history_id}}</td>
+                                        <td>{{ele.history_user_id}}</td>
+                                    </tr>
+                                {% endif %}
+                            {% endfor %}
+                        {% endwith %}
+                </tbody>
+            </table>
+
+            <strong>Deleted</strong>
+            <P></P>
+            <table class="myTable table tablesorter">
+                <thead class="thead-default" >
+                    <tr>
+                        <th>Row ID</th>
+                        <th>Date/Time</th>
+                        <th>First name</th>
+                        <th>Last name</th>
+                        <th>History id</th>
+                        <th>Who changed?</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                        {% with ":"|add:display_rows as iterable %}
+                            {% for ele in patient_info|slice:iterable %}
+                                {% if ele.history_type|get_corresponding_text == "Deleted" %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{ele.history_date}}</td>
+                                        <td>{{ele.first_name}}</td>
+                                        <td>{{ele.last_name}}</td>
+                                        <td>{{ele.history_id}}</td>
+                                        <td>{{ele.history_user_id}}</td>
+                                    </tr>
+                                {% endif %}
+                            {% endfor %}
+                        {% endwith %}
+                </tbody>
+            </table>
+            <p></p>  
+
+        </div>
         <!-- Payer Information -->
         <div id="payer" class="tab-pane fade">
-            <table id="myTable" class="table tablesorter">
+            
+            <table class="myTable table tablesorter">
                 <thead class="thead-default" >
                     <tr>
                         <th>Row ID</th>
@@ -106,7 +179,7 @@
                     {% with ":"|add:display_rows as iterable %}
                         {% for ele in payer_info|slice:iterable %}
                             <tr>
-                                <td>{{forloop.counter }}</td>
+                                <td>{{forloop.counter}}</td>
                                 <td>{{ele.history_date}}</td>
                                 <td>{{ele.name}}</td>
                                 <td>{{ele.change}}</td>
@@ -120,6 +193,10 @@
                     {% endwith %}
                 </tbody>
             </table>
+
+
+
+
             <span class="btn-group dropup">
                 <button type="button" class="btn btn-default  dropdown-toggle" data-toggle="dropdown">
                     <span class="page-size">10</span> <span class="caret"></span>
@@ -135,7 +212,7 @@
 
         <!-- Insurance Information -->
         <div id="insurance" class="tab-pane fade">
-            <table id="myTable" class="table tablesorter">
+            <table  class="myTable table tablesorter">
                 <thead class="thead-default" >
                     <tr>
                         <th>Row ID</th>
@@ -184,7 +261,7 @@
 
         <!-- Provider Information -->
         <div id="provider" class="tab-pane fade">
-            <table id="myTable" class="table tablesorter">
+            <table  class="myTable table tablesorter">
                 <thead class="thead-default" >
                     <tr>
                         <th>Row ID</th>
@@ -231,7 +308,7 @@
 
         <!-- Cpt Information -->
         <div id="cpt" class="tab-pane fade">
-            <table id="myTable" class="table tablesorter">
+            <table  class="myTable table tablesorter">
                 <thead class="thead-default" >
                     <tr>
                         <th>Row ID</th>
@@ -281,7 +358,7 @@
 
         <!-- Dx Information -->
         <div id="dx" class="tab-pane fade">
-            <table id="myTable" class="table tablesorter">
+            <table class="myTable table tablesorter">
                 <thead class="thead-default" >
                     <tr>
                         <th>Row ID</th>
@@ -329,7 +406,7 @@
 
         <!-- Referring provider Information -->
         <div id="rp" class="tab-pane fade">
-            <table id="myTable" class="table tablesorter">
+            <table class="myTable table tablesorter">
                 <thead class="thead-default" >
                     <tr>
                         <th>Row ID</th>
@@ -379,4 +456,7 @@
     </div>
 </div>
 
+
+
 {% endblock body %}
+

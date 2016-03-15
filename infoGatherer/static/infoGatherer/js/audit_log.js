@@ -16,7 +16,7 @@
 
 $(document).ready(function(){
     $(function(){
-        $("#myTable").tablesorter();
+        $(".myTable").tablesorter();
     });
 
 });
@@ -24,24 +24,25 @@ $(document).ready(function(){
 
 $(document).ready(function(){
     var this_js_script = $('script[src*=audit_log]');
-    var display = this_js_script.attr('display');
-    console.log(display);
-    if(display.localeCompare("patient")==0){
-        $( "#patienthref" ).trigger( "click" );
+    if(typeof this_js_script.attr('display') != 'undefined'){
+        var display = this_js_script.attr('display');
+        console.log(display);
+        if(display.localeCompare("patient")==0){
+            $( "#patienthref" ).trigger( "click" );
+        }
+        else if(display.localeCompare("payer")==0){
+            $( "#payerhref" ).trigger( "click" );
+        }
+        else if(display.localeCompare("insurance")==0){
+            $( "#insurancehref" ).trigger( "click" );
+        }
     }
-    else if(display.localeCompare("payer")==0){
-        $( "#payerhref" ).trigger( "click" );
-    }
-    else if(display.localeCompare("insurance")==0){
-        $( "#insurancehref" ).trigger( "click" );
-    }
-
 });
 
 $(document).ready(function(){
     var this_js_script = $('script[src*=audit_log]');
     var display_rows = this_js_script.attr('datamy');
-
+    
     function removeClassLi(){
         $("#_5").removeClass("active");
         $("#_10").removeClass("active");
