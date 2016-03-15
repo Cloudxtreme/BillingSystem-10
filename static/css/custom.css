@@ -116,5 +116,6 @@ label.control-label.required:after {
 }
 
 h2.text-center {
+    font-weight: bold;
     margin-top: 0px;
 }

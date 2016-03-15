@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+{% load widget_tweaks %}
+
+{% block title %} Apply Payment {% endblock title %}
+
+{% block body %}
+<div class="container">
+    <div class="col-sm-3">
+        {{ form.errors }}
+    </div>
+    <div class="col-sm-6">
+        <h2 class="text-center">Apply Payment</h2>
+        <form method="POST">{% csrf_token %}
+            <div class="row">
+                <div class="form-group col-sm-6">
+                    <label class="control-label required">Payment</label>
+                    {{ form.payment|add_class:"form-control" }}
+                </div>
+
+                <div class="form-group col-sm-6">
+                    <label class="control-label required">Claim</label>
+                    {{ form.claim|add_class:"form-control" }}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group col-sm-6">
+                    <label class="control-label">Procedure</label>
+                    {{ form.procedure|add_class:"form-control" }}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group col-sm-6">
+                    <label class="control-label required">Amount</label>
+                    {{ form.amount|add_class:"form-control" }}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group col-sm-6">
+                    <label class="control-label required">Adjustment</label>
+                    {{ form.amount|add_class:"form-control" }}
+                </div>
+            </div>
+
+            <!-- <div class="row">
+                <div class="form-group col-sm-3">
+                    <label class="control-label required">Payer Type</label>
+                    {{ form.payer_type|add_class:"form-control" }}
+                </div>
+
+                <div class="form-group col-sm-9">
+                    <a href="#payer-type-Insurance" data-toggle="tab"></a>
+                    <a href="#payer-type-Patient" data-toggle="tab"></a>
+                    <div class="tab-content">
+                        <div role="tabpanel" class="tab-pane fade in active" id="payer-type-Insurance">
+                            <label class="control-label required">Payer Insurance</label>
+                            {{ form.payer_insurance|add_class:"form-control" }}
+                        </div>
+                        <div role="tabpanel" class="tab-pane fade" id="payer-type-Patient">
+                            <label class="control-label required">Payer Patient</label>
+                            {{ form.payer_patient|add_class:"form-control" }}
+                        </div>
+                    </div>
+                </div>
+            </div> -->
+
+            
+            <input type="submit" value="Make Payment" class="btn btn-success">
+            <a href="{% url 'dashboard:dashboard' %}" class="padding-btn margin-left link-btn-danger">Cancel</a>
+        </form>
+
+    </div>
+</div>
+
+<script>
+// (function() {
+//     $('#{{ form.payer_type.auto_id }}').change(function(e) {
+//         $('a[href="#payer-type-' + $(this).val() + '"]').tab('show');
+//     });
+
+//     $('#{{ form.payment_method.auto_id }}').change(function(e) {
+//         if($(this).val() === 'Check')
+//             $('#{{ form.check_number.auto_id }}').parent().show();
+//         else
+//             $('#{{ form.check_number.auto_id }}').parent().hide();
+//     });
+// })();
+</script>
+{% endblock body %}

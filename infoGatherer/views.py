@@ -275,17 +275,17 @@ def PostAdPage(request):
             );
 
             for i in xrange(1, form.rows+1):
-                cpt_code_string = request.POST['cpt_code_%s' % i]
-                cpt_code = CPT.objects.get(cpt_code=cpt_code_string)
-                charge = request.POST['total_%s' % i]
-                if(cpt_code and charge):
-                    procedure = Procedure.objects.create(
-                        claim=claim,
-                        rendering_provider=rendering_provider,
-                        cpt_code=cpt_code,
-                        charge=charge,
-                    )
-
+                if(form.cleaned_data.get('cpt_code_%s' % i)):
+                    cpt_code = request.POST['cpt_code_%s' % i]
+                    cpt = CPT.objects.get(cpt_code=cpt_code)
+                    charge = request.POST['total_%s' % i]
+                    if(cpt and charge):
+                        Procedure.objects.create(
+                            claim=claim,
+                            rendering_provider=rendering_provider,
+                            cpt=cpt,
+                            charge=charge,
+                        )
 
             var = print_form(request.POST);
             return var

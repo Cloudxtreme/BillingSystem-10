@@ -11,6 +11,12 @@ def payment_create(request):
         Payment.objects.create(**form.cleaned_data)
         return redirect(reverse('dashboard:dashboard'))
 
-    return render(request, 'accounting/payment/create.html', {
-        'form': form
-    })
+    return render(request, 'accounting/payment/create.html', {'form': form})
+
+def payment_apply(request):
+    form = PaymentApplyForm(request.POST or None)
+    if request.method == 'POST' and form.is_valid():
+        AppliedPayment.objects.create(**form.cleaned_data)
+        return redirect(reverse('dashboard:dashboard'))
+
+    return render(request, 'accounting/payment/apply.html', {'form': form})

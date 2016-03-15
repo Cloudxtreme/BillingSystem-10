@@ -1,7 +1,8 @@
 from __future__ import unicode_literals
 
 from django.db import models
-
+from django.core.validators import MinValueValidator
+from django.utils.encoding import python_2_unicode_compatible
 
 from base.models import *
 from infoGatherer.models import (Personal_Information, Payer, Provider, ReferringProvider, CPT)
@@ -18,6 +19,8 @@ PAYMENT_METHOD = (
     ('Cash', 'Cash')
 )
 
+
+@python_2_unicode_compatible
 class Claim(BaseModel):
     """
     Claim model captures foreign keys and some information which will be
@@ -57,17 +60,25 @@ class Claim(BaseModel):
 
     claim_detail = models.TextField()
 
+    def __str__(self):
+        return '%s, %s' % (self.id, self.patient.get_full_name())
 
+
+@python_2_unicode_compatible
 class Procedure(BaseModel):
     """
     This model is to capture one line of cpt code and its details appearing on claim form.
     """
     claim = models.ForeignKey(Claim)
     rendering_provider = models.ForeignKey(Provider, limit_choices_to={'role': 'rendering'}, related_name='procedure_rendering_provider')
-    cpt_code = models.ForeignKey(CPT)
+    cpt = models.ForeignKey(CPT)
     charge = models.DecimalField(max_digits=MAX_DIGITS, decimal_places=DECIMAL_PLACES)
 
+    def __str__(self):
+        return '%s, %s' % (self.id, self.cpt.cpt_description)
 
+
+@python_2_unicode_compatible
 class Payment(BaseModel):
     """
     Payment model is to capture a payment Xenon Health receives and will be
@@ -81,16 +92,24 @@ class Payment(BaseModel):
     payer_insurance = models.ForeignKey(Payer, null=True, blank=True)
     payment_method = models.CharField(max_length=255, choices=PAYMENT_METHOD)
     check_number = models.CharField(max_length=30, blank=True)
-    amount = models.DecimalField(max_digits=MAX_DIGITS, decimal_places=DECIMAL_PLACES)
+    amount = models.DecimalField(max_digits=MAX_DIGITS, decimal_places=DECIMAL_PLACES, validators=[MinValueValidator(0)])
     description = models.CharField(max_length=255, blank=True)
 
+    def __str__(self):
+        return '%s, $%s' % (self.id, self.amount)
 
+
+@python_2_unicode_compatible
 class AppliedPayment(BaseModel):
     """
     AppliedPayment model is to capture some amount of money from payment model
     assigned to cover charge appearing on claim form
     """
-    claim = models.ForeignKey(Claim)
     payment = models.ForeignKey(Payment)
+    claim = models.ForeignKey(Claim)
     procedure = models.ForeignKey(Procedure)
-    amount = models.DecimalField(max_digits=MAX_DIGITS, decimal_places=DECIMAL_PLACES)
+    amount = models.DecimalField(max_digits=MAX_DIGITS, decimal_places=DECIMAL_PLACES, validators=[MinValueValidator(0)])
+    adjustment = models.DecimalField(max_digits=MAX_DIGITS, decimal_places=DECIMAL_PLACES, default=0)
+
+    def __str__(self):
+        return '%s, %s, %s' % (self.id, self.amount, self.adjustment)
