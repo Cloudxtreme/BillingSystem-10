@@ -14,6 +14,26 @@
 //     });
 // });
 
+var butt_m="<button type=\"button\" class=\"btn btn-primary dropButton\" >Modified</button>"+
+                "<button type=\"button\" class=\"btn btn-primary dropdown-toggle dropButton2\" data-toggle=\"dropdown\">"+
+                    "<span class=\"caret\"></span>"+
+                    "<span class=\"sr-only\">Toggle Dropdown</span>"+
+                "</button>"+
+                "<ul class=\"dropdown-menu\" role=\"menu\">"+
+                    "<li><a href=\"?num_m=5&amp;num_c={{display_rows_c}}&amp;num_d={{display_rows_d}}&amp;"+console.log(this)
+                    +"=1\">5</a></li>"+
+                    "<li><a href=\"?num_m=10&amp;num_c={{display_rows_c}}&amp;num_d={{display_rows_d}}&amp;patient=1\">10 (default)</a></li>"+
+                    "<li><a href=\"?num_m=25&amp;num_c={{display_rows_c}}&amp;num_d={{display_rows_d}}&amp;patient=1\">25</a></li>"+
+                    "<li><a href=\"?num_m=all&amp;num_c={{display_rows_c}}&amp;num_d={{display_rows_d}}&amp;patient=1\">All</a></li>"+
+                "</ul><p></p>";
+
+
+$(document).ready(function(){
+    $(".mod").html(butt_m);
+});
+
+
+
 $(document).ready(function(){
     $(function(){
         $(".myTable").tablesorter();

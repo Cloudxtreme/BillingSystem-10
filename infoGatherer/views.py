@@ -168,7 +168,10 @@ def view_audit_log(request):
 
 
     # Insurance Audit
-    insurance_dic=[]
+    ins1=[]
+    ins2=[]
+    ins3=[]
+    ins_mod={}
     # Need to get history by code number
     codeNum=Insurance_Information.history.values_list('id', flat=True)
     codeNum=set(codeNum)
@@ -184,7 +187,7 @@ def view_audit_log(request):
                 payer=Payer.objects.filter(code=content[i]["payer_id"]).values()[0]
                 temp["patientname"]=person['last_name']+", "+person['first_name']
                 temp["payername"]=payer['name']
-                helperAuditLog(content[i-1],content[i],temp,insurance_dic,users,2,False,True)
+                helperAuditLog(content[i-1],content[i],temp,ins1,users,2,False,True)
 
         contentCreated=Insurance_Information.history.filter(id=code).filter(history_type="+").values()
         if(len(contentCreated)>0 and len(content)>0):
@@ -195,20 +198,35 @@ def view_audit_log(request):
             payer=Payer.objects.filter(code=contentModified["payer_id"]).values()[0]
             temp["patientname"]=person['last_name']+", "+person['first_name']
             temp["payername"]=payer['name']
-            helperAuditLog(contentCreated[0],contentModified,temp,insurance_dic,users,3,False,True)
+            helperAuditLog(contentCreated[0],contentModified,temp,ins1,users,3,False,True)
 
+    ins_mod["modified"]=ins1
     for symbol in history_list:
         hisNums=Insurance_Information.history.filter(history_type=symbol).values()
-        for history in hisNums:
-            temp={}
-            person=Personal_Information.objects.filter(chart_no=history["patient_id"]).values()[0]
-            payer=Payer.objects.filter(code=history["payer_id"]).values()[0]
-            temp["patientname"]=person['last_name']+", "+person['first_name']
-            temp["payername"]=payer['name']
-            helperAuditLog(None,history,temp,insurance_dic,users,2,True)
+        if (symbol=="+"):
+            for history in hisNums:
+                temp={}
+                person=Personal_Information.objects.filter(chart_no=history["patient_id"]).values()[0]
+                payer=Payer.objects.filter(code=history["payer_id"]).values()[0]
+                temp["patientname"]=person['last_name']+", "+person['first_name']
+                temp["payername"]=payer['name']
+                helperAuditLog(None,history,temp,ins2,users,2,True)
+            ins_mod["created"]=ins2
+        elif (symbol=="-"):
+            for history in hisNums:
+                temp={}
+                person=Personal_Information.objects.filter(chart_no=history["patient_id"]).values()[0]
+                payer=Payer.objects.filter(code=history["payer_id"]).values()[0]
+                temp["patientname"]=person['last_name']+", "+person['first_name']
+                temp["payername"]=payer['name']
+                helperAuditLog(None,history,temp,ins2,users,2,True)
+            ins_mod["deleted"]=ins3
     
     # Payer Audit
-    payer_dic=[]
+    payer1=[]
+    payer2=[]
+    payer3=[]
+    payer_mod={}
     # Need to get history by code number
     codeNum=Payer.history.values_list('code', flat=True)
     codeNum=set(codeNum)
@@ -220,7 +238,7 @@ def view_audit_log(request):
                 temp={}
                 # Put all useful information in temp    
                 temp["name"]=content[i]["name"]
-                helperAuditLog(content[i-1],content[i],temp,payer_dic,users,2,False)
+                helperAuditLog(content[i-1],content[i],temp,payer1,users,2,False)
 
         contentCreated=Payer.history.filter(code=code).filter(history_type="+").values()
         if(len(contentCreated)>0 and len(content)>0):
@@ -228,20 +246,28 @@ def view_audit_log(request):
             temp={}            
              # Put all useful information in temp
             temp["name"]=contentModified["name"]
-            helperAuditLog(contentCreated[0],contentModified,temp,payer_dic,users,3,False)
+            helperAuditLog(contentCreated[0],contentModified,temp,payer1,users,3,False)
 
+    payer_mod["modified"]=payer1
     for symbol in history_list:
         hisNums=Payer.history.filter(history_type=symbol).values()
-        for history in hisNums:
-            temp={}
-            temp["name"]=history["name"]
-            helperAuditLog(None,history,temp,payer_dic,users,2,True)
+        if (symbol=="+"):
+            for history in hisNums:
+                temp={}
+                temp["name"]=history["name"]
+                helperAuditLog(None,history,temp,payer2,users,2,True)
+            payer_mod["created"]=payer2
+        elif (symbol=="-"):
+            for history in hisNums:
+                temp={}
+                temp["name"]=history["name"]
+                helperAuditLog(None,history,temp,payer3,users,2,True)
+            payer_mod["deleted"]=payer3
 
     # free variables
     content = None 
 
     # Patient Audit
-    patient_dic=[]
     pat1=[]
     pat2=[]
     pat3=[]
@@ -314,14 +340,16 @@ def view_audit_log(request):
     #             'display_rows': request.GET['num'],
     #             'display' : 'insurance'
     #         })
+
     return render(request, 'auditlog.html',{
         'pat_mod':pat_mod,
-        'payer_info' : payer_dic,
-        'insurance_info' : insurance_dic,
+        'payer_mod' : payer_mod,
+        'insurance_mod' : ins_mod,
         'provider_info' : provider_dic,
         'cpt_info' : cpt_dic,
         'dx_info' : dx_dic,
         'referringprovider_info' :rp_dic,
+        'display' : 'payer' if 'payer' in request.GET else 'insurance' if 'insurance' in request.GET else 'patient' ,
         'display_rows_m': request.GET['num_m'] if 'num_m' in request.GET and request.GET['num_m'] else '10' ,
         'display_rows_c': request.GET['num_c'] if 'num_c' in request.GET and request.GET['num_c'] else '10' ,
         'display_rows_d': request.GET['num_d'] if 'num_d' in request.GET and request.GET['num_d'] else '10' ,
