@@ -242,6 +242,7 @@ def view_audit_log(request):
 
     # Patient Audit
     patient_dic=[]
+    pat1=[]
     pat2=[]
     pat3=[]
     pat_mod={}
@@ -259,6 +260,7 @@ def view_audit_log(request):
                 temp["first_name"]=content[i]["first_name"]
                 temp["last_name"]=content[i]["last_name"]
                 helperAuditLog(content[i-1],content[i],temp,patient_dic,users,2,False)
+                helperAuditLog(content[i-1],content[i],temp,pat1,users,2,False)
                 
 
         contentCreated=Personal_Information.history.filter(chart_no=chart_no).filter(history_type="+").values()
@@ -269,8 +271,9 @@ def view_audit_log(request):
             temp["first_name"]=contentModified["first_name"]
             temp["last_name"]=contentModified["last_name"]
             helperAuditLog(contentCreated[0],contentModified,temp,patient_dic,users,3,False)
+            helperAuditLog(contentCreated[0],contentModified,temp,pat1,users,3,False)
 
-    pat_mod["modified"]=patient_dic
+    pat_mod["modified"]=pat1
     for symbol in history_list:
         hisNums=Personal_Information.history.filter(history_type=symbol).values()
         if (symbol=="+"):
@@ -325,7 +328,7 @@ def view_audit_log(request):
         'cpt_info' : cpt_dic,
         'dx_info' : dx_dic,
         'referringprovider_info' :rp_dic,
-        'display_rows_m': '10',
+        'display_rows_m': '100',
         'display_rows_c': '10',
         'display_rows_d': '10' ,
         'display_rows': '10' 

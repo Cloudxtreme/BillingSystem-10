@@ -39,11 +39,37 @@
     </ul>
     <p></p><p></p>
 
-    {{pat_mod.deleted}}
     <div class="tab-content">
         <!-- Patient Information -->
         <div id="patient" class="tab-pane fade in active">
-            <strong>Modified</strong>
+            <!-- <strong>Modified</strong> -->
+<!--             <span class="btn-group dropup">
+                <button type="button" class="btn btn-default  dropdown-toggle" data-toggle="dropdown">
+                    <span class="page-size">10</span> <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                    <li id="_5"><a href="?num=5&amp;patient=1">5</a></li>
+                    <li id="_10" ><a href="?num=10&amp;patient=1">10 (default)</a></li>
+                    <li id="_25" ><a href="?num=25&amp;patient=1">25</a></li>
+                    <li id="_100"><a href="?num=100&amp;patient=1">100</a></li>
+                </ul>
+            </span> -->
+
+            <div class="btn-group ">
+                <button type="button" class="btn btn-primary dropButton" >Modified</button>
+                <button type="button" class="btn btn-primary dropdown-toggle dropButton2" data-toggle="dropdown">
+                    <span class="caret"></span>
+                    <span class="sr-only">Toggle Dropdown</span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                    <li><a href="?num=5&amp;patient=1">5</a></li>
+                    <li><a href="?num=10&amp;patient=1">10 (default)</a></li>
+                    <li><a href="?num=25&amp;patient=1">25</a></li>
+                    <li class="divider"></li>
+                    <li><a href="?num=100&amp;patient=1">100</a></li>
+                </ul>
+            </div>
+
             <p></p>
             <table class="myTable table tablesorter">
                 <thead class="thead-default" >
@@ -61,8 +87,8 @@
                     </tr>
                 </thead>
                 <tbody>
-                        {% for i in display_rows_m|times %}
-                            {% with pat_mod.modified|lookup:i as ele %}
+                        {% for ele in pat_mod.modified %}
+                            {% if forloop.counter0|lessThan:display_rows_m %}
                     	    	<tr>
                         			<td>{{ forloop.counter }}</td>
                     				<td>{{ele.history_date}}</td>
@@ -74,24 +100,27 @@
                                     <td>{{ele.history_id}}</td>
                                     <td>{{ele.history_user_id}}</td>
                         		</tr>
-                            {% endwith %}
-            	    	{% endfor %}
+                            {% endif %}
+                        {% endfor %}
                 </tbody>
             </table>
-            <span class="btn-group dropup">
-                <button type="button" class="btn btn-default  dropdown-toggle" data-toggle="dropdown">
-                    <span class="page-size">10</span> <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu" role="menu">
-                    <li id="_5"><a href="?num=5&amp;patient=1">5</a></li>
-                    <li id="_10" ><a href="?num=10&amp;patient=1">10 (default)</a></li>
-                    <li id="_25" ><a href="?num=25&amp;patient=1">25</a></li>
-                    <li id="_100"><a href="?num=100&amp;patient=1">100</a></li>
-                </ul>
-            </span>
+            
         
             <p></p>
-            <strong>Created</strong>
+            <div class="btn-group ">
+                <button type="button" class="btn btn-success dropButton" >Created</button>
+                <button type="button" class="btn btn-success dropdown-toggle dropButton2" data-toggle="dropdown">
+                    <span class="caret"></span>
+                    <span class="sr-only">Toggle Dropdown</span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                    <li><a href="?num=5&amp;patient=1">5</a></li>
+                    <li><a href="?num=10&amp;patient=1">10 (default)</a></li>
+                    <li><a href="?num=25&amp;patient=1">25</a></li>
+                    <li class="divider"></li>
+                    <li><a href="?num=100&amp;patient=1">100</a></li>
+                </ul>
+            </div>
             <p></p> 
             <table class="myTable table tablesorter">
                 <thead class="thead-default" >
@@ -106,22 +135,34 @@
                     </tr>
                 </thead>
                 <tbody>
-                        {% for i in display_rows_c|times %}
-                            {% with pat_mod.created|lookup:i as ele %}
-                                    <tr>
-                                        <td>{{ forloop.counter }}</td>
-                                        <td>{{ele.history_date}}</td>
-                                        <td>{{ele.first_name}}</td>
-                                        <td>{{ele.last_name}}</td>
-                                        <td>{{ele.history_id}}</td>
-                                        <td>{{ele.history_user_id}}</td>
-                                    </tr>
-                            {% endwith %}
+                        {% for ele in pat_mod.created %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ele.history_date}}</td>
+                                <td>{{ele.first_name}}</td>
+                                <td>{{ele.last_name}}</td>
+                                <td>{{ele.history_id}}</td>
+                                <td>{{ele.history_user_id}}</td>
+                            </tr>
                         {% endfor %}
                 </tbody>
             </table>
-
-            <strong>Deleted</strong>
+            
+            
+            <div class="btn-group ">
+                <button type="button" class="btn btn-danger dropButton" >Deleted</button>
+                <button type="button" class="btn btn-danger dropdown-toggle dropButton2" data-toggle="dropdown">
+                    <span class="caret"></span>
+                    <span class="sr-only">Toggle Dropdown</span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                    <li><a href="?num=5&amp;patient=1">5</a></li>
+                    <li><a href="?num=10&amp;patient=1">10 (default)</a></li>
+                    <li><a href="?num=25&amp;patient=1">25</a></li>
+                    <li class="divider"></li>
+                    <li><a href="?num=100&amp;patient=1">100</a></li>
+                </ul>
+            </div>
             <P></P>
             <table class="myTable table tablesorter">
                 <thead class="thead-default" >
@@ -136,17 +177,15 @@
                     </tr>
                 </thead>
                 <tbody>
-                        {% for i in display_rows_d|times %}
-                            {% with pat_mod.deleted|lookup:i as ele %}
-                                    <tr>
-                                        <td>{{ forloop.counter }}</td>
-                                        <td>{{ele.history_date}}</td>
-                                        <td>{{ele.first_name}}</td>
-                                        <td>{{ele.last_name}}</td>
-                                        <td>{{ele.history_id}}</td>
-                                        <td>{{ele.history_user_id}}</td>
-                                    </tr>
-                            {% endwith %}
+                        {% for ele in pat_mod.deleted %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ele.history_date}}</td>
+                                <td>{{ele.first_name}}</td>
+                                <td>{{ele.last_name}}</td>
+                                <td>{{ele.history_id}}</td>
+                                <td>{{ele.history_user_id}}</td>
+                            </tr>
                         {% endfor %}
                 </tbody>
             </table>

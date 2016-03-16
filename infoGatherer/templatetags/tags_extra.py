@@ -1,6 +1,12 @@
 from django import template
 register = template.Library()
 
+@register.filter
+def lessThan(a,b):
+    if int(a) < int(b):
+        return True
+    else:
+        return False
 
 @register.filter
 def lookup(d, key):
@@ -45,3 +51,4 @@ def prePlusConcat(value, arg):
         return str(value) + str(arg+1)
     except:
         return str(value) + str(arg)
+

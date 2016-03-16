@@ -80,6 +80,12 @@ table {
     border-collapse: collapse;
     border-radius: 30px;
     border-style: hidden;  /*hide standard table (collapsed) border */
-    box-shadow: 0 0 0 1px #0000; /* this draws the table border   
+    box-shadow: 0 0 0 1px #0000; /* this draws the table border*/   
 }
 
+.dropButton {
+    width: 90px;  height: 25px;
+}
+.dropButton2 {
+    width: 20px;  height: 25px;
+}
