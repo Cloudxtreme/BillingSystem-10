@@ -61,21 +61,19 @@
                     </tr>
                 </thead>
                 <tbody>
-                        {% for i in display_rows|times %}
-                            {% with patient_info|lookup:i as ele %}
-                                {% if ele.history_type|get_corresponding_text == "Modified" %}
-                        	    	<tr>
-                            			<td>{{ forloop.counter }}</td>
-                        				<td>{{ele.history_date}}</td>
-                                        <td>{{ele.first_name}}</td>
-                                        <td>{{ele.last_name}}</td>
-                                        <td>{{ele.change}}</td>
-                                        <td>{{ele.oldvalue}}</td>
-                                        <td>{{ele.newvalue}}</td>
-                                        <td>{{ele.history_id}}</td>
-                                        <td>{{ele.history_user_id}}</td>
-                            		</tr>
-                                {% endif %}
+                        {% for i in display_rows_m|times %}
+                            {% with pat_mod.modified|lookup:i as ele %}
+                    	    	<tr>
+                        			<td>{{ forloop.counter }}</td>
+                    				<td>{{ele.history_date}}</td>
+                                    <td>{{ele.first_name}}</td>
+                                    <td>{{ele.last_name}}</td>
+                                    <td>{{ele.change}}</td>
+                                    <td>{{ele.oldvalue}}</td>
+                                    <td>{{ele.newvalue}}</td>
+                                    <td>{{ele.history_id}}</td>
+                                    <td>{{ele.history_user_id}}</td>
+                        		</tr>
                             {% endwith %}
             	    	{% endfor %}
                 </tbody>
@@ -108,9 +106,8 @@
                     </tr>
                 </thead>
                 <tbody>
-                        {% with ":"|add:display_rows as iterable %}
-                            {% for ele in patient_info %}
-                                {% if ele.history_type|get_corresponding_text == "Created" %}
+                        {% for i in display_rows_c|times %}
+                            {% with pat_mod.created|lookup:i as ele %}
                                     <tr>
                                         <td>{{ forloop.counter }}</td>
                                         <td>{{ele.history_date}}</td>
@@ -119,9 +116,8 @@
                                         <td>{{ele.history_id}}</td>
                                         <td>{{ele.history_user_id}}</td>
                                     </tr>
-                                {% endif %}
-                            {% endfor %}
-                        {% endwith %}
+                            {% endwith %}
+                        {% endfor %}
                 </tbody>
             </table>
 
@@ -140,9 +136,8 @@
                     </tr>
                 </thead>
                 <tbody>
-                        {% with ":"|add:display_rows as iterable %}
-                            {% for ele in patient_info %}
-                                {% if ele.history_type|get_corresponding_text == "Deleted" %}
+                        {% for i in display_rows_d|times %}
+                            {% with pat_mod.deleted|lookup:i as ele %}
                                     <tr>
                                         <td>{{ forloop.counter }}</td>
                                         <td>{{ele.history_date}}</td>
@@ -151,9 +146,8 @@
                                         <td>{{ele.history_id}}</td>
                                         <td>{{ele.history_user_id}}</td>
                                     </tr>
-                                {% endif %}
-                            {% endfor %}
-                        {% endwith %}
+                            {% endwith %}
+                        {% endfor %}
                 </tbody>
             </table>
             <p></p>  

@@ -325,6 +325,9 @@ def view_audit_log(request):
         'cpt_info' : cpt_dic,
         'dx_info' : dx_dic,
         'referringprovider_info' :rp_dic,
+        'display_rows_m': '10',
+        'display_rows_c': '10',
+        'display_rows_d': '10' ,
         'display_rows': '10' 
     })
 
