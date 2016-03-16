@@ -246,7 +246,6 @@ def view_audit_log(request):
     pat2=[]
     pat3=[]
     pat_mod={}
-    pat=[]
     # Audit : Modified
     charNums=Personal_Information.history.values_list('chart_no', flat=True)
     charNums=set(charNums)
@@ -259,7 +258,6 @@ def view_audit_log(request):
                 # Put all useful information in temp
                 temp["first_name"]=content[i]["first_name"]
                 temp["last_name"]=content[i]["last_name"]
-                helperAuditLog(content[i-1],content[i],temp,patient_dic,users,2,False)
                 helperAuditLog(content[i-1],content[i],temp,pat1,users,2,False)
                 
 
@@ -270,7 +268,6 @@ def view_audit_log(request):
              # Put all useful information in temp
             temp["first_name"]=contentModified["first_name"]
             temp["last_name"]=contentModified["last_name"]
-            helperAuditLog(contentCreated[0],contentModified,temp,patient_dic,users,3,False)
             helperAuditLog(contentCreated[0],contentModified,temp,pat1,users,3,False)
 
     pat_mod["modified"]=pat1
@@ -281,7 +278,6 @@ def view_audit_log(request):
                 temp={}
                 temp["first_name"]=history["first_name"]
                 temp["last_name"]=history["last_name"]
-                helperAuditLog(None,history,temp,patient_dic,users,2,True)
                 helperAuditLog(None,history,temp,pat2,users,2,True)
             pat_mod["created"]=pat2
         elif (symbol=="-"):
@@ -289,49 +285,47 @@ def view_audit_log(request):
                 temp={}
                 temp["first_name"]=history["first_name"]
                 temp["last_name"]=history["last_name"]
-                helperAuditLog(None,history,temp,patient_dic,users,2,True)
                 helperAuditLog(None,history,temp,pat3,users,2,True)
             pat_mod["deleted"]=pat3
 
-    # print patient_dic
-    if 'num' in request.GET and request.GET['num']:
-        if 'patient' in request.GET and request.GET['patient']:
-            return render(request, 'auditlog.html',{
-                'patient_info': patient_dic, 
-                'payer_info': payer_dic, 
-                'insurance_info' : insurance_dic,
-                'display_rows': request.GET['num'],
-                'display' : 'patient'
-            })
-        if 'payer' in request.GET and request.GET['payer']:
-            return render(request, 'auditlog.html',{
-                'payer_info': payer_dic, 
-                'patient_info': patient_dic, 
-                'insurance_info' : insurance_dic,
-                'display_rows': request.GET['num'],
-                'display' : 'payer'
-            })
-        if 'insurance' in request.GET and request.GET['insurance']:
-            return render(request, 'auditlog.html',{
-                'payer_info': payer_dic, 
-                'patient_info': patient_dic, 
-                'insurance_info' : insurance_dic,
-                'display_rows': request.GET['num'],
-                'display' : 'insurance'
-            })
+    # # print patient_dic
+    # if 'num' in request.GET and request.GET['num']:
+    #     if 'patient' in request.GET and request.GET['patient']:
+    #         return render(request, 'auditlog.html',{
+    #             'pat_mod':pat_mod,
+    #             'payer_info': payer_dic, 
+    #             'insurance_info' : insurance_dic,
+    #             'display_rows_m' : request.GET['num_m'],
+    #             'display' : 'patient'
+    #         })
+    #     if 'payer' in request.GET and request.GET['payer']:
+    #         return render(request, 'auditlog.html',{
+    #             'payer_info': payer_dic, 
+    #             'patient_info': patient_dic, 
+    #             'insurance_info' : insurance_dic,
+    #             'display_rows': request.GET['num'],
+    #             'display' : 'payer'
+    #         })
+    #     if 'insurance' in request.GET and request.GET['insurance']:
+    #         return render(request, 'auditlog.html',{
+    #             'payer_info': payer_dic, 
+    #             'patient_info': patient_dic, 
+    #             'insurance_info' : insurance_dic,
+    #             'display_rows': request.GET['num'],
+    #             'display' : 'insurance'
+    #         })
     return render(request, 'auditlog.html',{
         'pat_mod':pat_mod,
-        'patient_info': patient_dic, 
         'payer_info' : payer_dic,
         'insurance_info' : insurance_dic,
         'provider_info' : provider_dic,
         'cpt_info' : cpt_dic,
         'dx_info' : dx_dic,
         'referringprovider_info' :rp_dic,
-        'display_rows_m': '100',
-        'display_rows_c': '10',
-        'display_rows_d': '10' ,
-        'display_rows': '10' 
+        'display_rows_m': request.GET['num_m'] if 'num_m' in request.GET and request.GET['num_m'] else '10' ,
+        'display_rows_c': request.GET['num_c'] if 'num_c' in request.GET and request.GET['num_c'] else '10' ,
+        'display_rows_d': request.GET['num_d'] if 'num_d' in request.GET and request.GET['num_d'] else '10' ,
+        'display_rows': '10'
     })
 
 

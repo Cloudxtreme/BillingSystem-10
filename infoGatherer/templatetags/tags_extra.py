@@ -3,6 +3,8 @@ register = template.Library()
 
 @register.filter
 def lessThan(a,b):
+    if b=="all":
+        return True
     if int(a) < int(b):
         return True
     else:
