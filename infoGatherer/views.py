@@ -31,8 +31,6 @@ def TrackCharges(request):
     return render(request, 'track_charges.html')
 
 
-
-
 @login_required
 def view_audit_log(request):
     # History list
@@ -186,7 +184,6 @@ def view_audit_log(request):
                 payer=Payer.objects.filter(code=content[i]["payer_id"]).values()[0]
                 temp["patientname"]=person['last_name']+", "+person['first_name']
                 temp["payername"]=payer['name']
-
                 helperAuditLog(content[i-1],content[i],temp,insurance_dic,users,2,False,True)
 
         contentCreated=Insurance_Information.history.filter(id=code).filter(history_type="+").values()
@@ -245,6 +242,10 @@ def view_audit_log(request):
 
     # Patient Audit
     patient_dic=[]
+    pat2=[]
+    pat3=[]
+    pat_mod={}
+    pat=[]
     # Audit : Modified
     charNums=Personal_Information.history.values_list('chart_no', flat=True)
     charNums=set(charNums)
@@ -258,6 +259,7 @@ def view_audit_log(request):
                 temp["first_name"]=content[i]["first_name"]
                 temp["last_name"]=content[i]["last_name"]
                 helperAuditLog(content[i-1],content[i],temp,patient_dic,users,2,False)
+                
 
         contentCreated=Personal_Information.history.filter(chart_no=chart_no).filter(history_type="+").values()
         if(len(contentCreated)>0 and len(content)>0):
@@ -268,14 +270,25 @@ def view_audit_log(request):
             temp["last_name"]=contentModified["last_name"]
             helperAuditLog(contentCreated[0],contentModified,temp,patient_dic,users,3,False)
 
-
+    pat_mod["modified"]=patient_dic
     for symbol in history_list:
         hisNums=Personal_Information.history.filter(history_type=symbol).values()
-        for history in hisNums:
-            temp={}
-            temp["first_name"]=history["first_name"]
-            temp["last_name"]=history["last_name"]
-            helperAuditLog(None,history,temp,patient_dic,users,2,True)
+        if (symbol=="+"):
+            for history in hisNums:
+                temp={}
+                temp["first_name"]=history["first_name"]
+                temp["last_name"]=history["last_name"]
+                helperAuditLog(None,history,temp,patient_dic,users,2,True)
+                helperAuditLog(None,history,temp,pat2,users,2,True)
+            pat_mod["created"]=pat2
+        elif (symbol=="-"):
+            for history in hisNums:
+                temp={}
+                temp["first_name"]=history["first_name"]
+                temp["last_name"]=history["last_name"]
+                helperAuditLog(None,history,temp,patient_dic,users,2,True)
+                helperAuditLog(None,history,temp,pat3,users,2,True)
+            pat_mod["deleted"]=pat3
 
     # print patient_dic
     if 'num' in request.GET and request.GET['num']:
@@ -304,6 +317,7 @@ def view_audit_log(request):
                 'display' : 'insurance'
             })
     return render(request, 'auditlog.html',{
+        'pat_mod':pat_mod,
         'patient_info': patient_dic, 
         'payer_info' : payer_dic,
         'insurance_info' : insurance_dic,

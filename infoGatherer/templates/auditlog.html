@@ -39,6 +39,7 @@
     </ul>
     <p></p><p></p>
 
+    {{pat_mod.deleted}}
     <div class="tab-content">
         <!-- Patient Information -->
         <div id="patient" class="tab-pane fade in active">
@@ -60,8 +61,8 @@
                     </tr>
                 </thead>
                 <tbody>
-                        {% with ":"|add:display_rows as iterable %}
-                            {% for ele in patient_info|slice:iterable %}
+                        {% for i in display_rows|times %}
+                            {% with patient_info|lookup:i as ele %}
                                 {% if ele.history_type|get_corresponding_text == "Modified" %}
                         	    	<tr>
                             			<td>{{ forloop.counter }}</td>
@@ -75,8 +76,8 @@
                                         <td>{{ele.history_user_id}}</td>
                             		</tr>
                                 {% endif %}
-                	    	{% endfor %}
-                        {% endwith %}
+                            {% endwith %}
+            	    	{% endfor %}
                 </tbody>
             </table>
             <span class="btn-group dropup">
@@ -108,7 +109,7 @@
                 </thead>
                 <tbody>
                         {% with ":"|add:display_rows as iterable %}
-                            {% for ele in patient_info|slice:iterable %}
+                            {% for ele in patient_info %}
                                 {% if ele.history_type|get_corresponding_text == "Created" %}
                                     <tr>
                                         <td>{{ forloop.counter }}</td>
@@ -140,7 +141,7 @@
                 </thead>
                 <tbody>
                         {% with ":"|add:display_rows as iterable %}
-                            {% for ele in patient_info|slice:iterable %}
+                            {% for ele in patient_info %}
                                 {% if ele.history_type|get_corresponding_text == "Deleted" %}
                                     <tr>
                                         <td>{{ forloop.counter }}</td>

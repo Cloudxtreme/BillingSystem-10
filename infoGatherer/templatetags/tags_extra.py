@@ -11,6 +11,10 @@ def add_num(a, b):
     return a+int(b)
 
 @register.filter
+def times(number):
+    return range(int(number))
+
+@register.filter
 def get_corresponding_text(b):
     if b=="+":
         return "Created"
