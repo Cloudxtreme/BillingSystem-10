@@ -41,7 +41,10 @@ def view_audit_log(request):
     users=dict(users)
 
     # Referring provider audit
-    rp_dic=[]
+    rf1=[]
+    rf2=[]
+    rf3=[]
+    rf_mod={}
     idList=ReferringProvider.history.values_list('id', flat=True)   
     idList=set(idList)
     idList=list(idList)
@@ -53,7 +56,7 @@ def view_audit_log(request):
                 # Put all useful information in temp    
                 temp["first_name"]=content[i]["first_name"]
                 temp["last_name"]=content[i]["last_name"]
-                helperAuditLog(content[i-1],content[i],temp,rp_dic,users,2,False)
+                helperAuditLog(content[i-1],content[i],temp,rf1,users,2,False)
 
         contentCreated=ReferringProvider.history.filter(id=idd).filter(history_type="+").values()
         if(len(contentCreated)>0 and len(content)>0):
@@ -62,19 +65,32 @@ def view_audit_log(request):
              # Put all useful information in temp]
             temp["first_name"]=contentModified["first_name"]
             temp["last_name"]=contentModified["last_name"]
-            helperAuditLog(contentCreated[0],contentModified,temp,rp_dic,users,3,False)
+            helperAuditLog(contentCreated[0],contentModified,temp,rf1,users,3,False)
 
+    rf_mod["modified"]=rf1
     for symbol in history_list:
         hisNums=ReferringProvider.history.filter(history_type=symbol).values()
-        for history in hisNums:
-            temp={}
-            temp["first_name"]=history["first_name"]
-            temp["last_name"]=history["last_name"]
-            helperAuditLog(None,history,temp,rp_dic,users,2,True)
+        if(symbol == "+"):
+            for history in hisNums:
+                temp={}
+                temp["first_name"]=history["first_name"]
+                temp["last_name"]=history["last_name"]
+                helperAuditLog(None,history,temp,rf2,users,2,True)
+            rf_mod["created"]=rf2
+        elif(symbol=="-"):
+            for history in hisNums:
+                temp={}
+                temp["first_name"]=history["first_name"]
+                temp["last_name"]=history["last_name"]
+                helperAuditLog(None,history,temp,rf3,users,2,True)
+            rf_mod["deleted"]=rf3
 
 
     # DX audit
-    dx_dic=[]
+    dx1=[]
+    dx2=[]
+    dx3=[]
+    dx_mod={}
     idList=dx.history.values_list('ICD_10', flat=True)   
     idList=set(idList)
     idList=list(idList)
@@ -85,7 +101,7 @@ def view_audit_log(request):
                 temp={}
                 # Put all useful information in temp    
                 temp["ICD_10"]=content[i]["ICD_10"]
-                helperAuditLog(content[i-1],content[i],temp,dx_dic,users,2,False)
+                helperAuditLog(content[i-1],content[i],temp,dx1,users,2,False)
 
         contentCreated=dx.history.filter(ICD_10=idd).filter(history_type="+").values()
         if(len(contentCreated)>0 and len(content)>0):
@@ -93,19 +109,30 @@ def view_audit_log(request):
             temp={}            
              # Put all useful information in temp]
             temp["ICD_10"]=contentModified["ICD_10"]
-            helperAuditLog(contentCreated[0],contentModified,temp,dx_dic,users,3,False)
+            helperAuditLog(contentCreated[0],contentModified,temp,dx1,users,3,False)
 
-
+    dx_mod["modified"]=dx1
     for symbol in history_list:
         hisNums=dx.history.filter(history_type=symbol).values()
-        for history in hisNums:
-            temp={}
-            temp["ICD_10"]=history["ICD_10"]
-            helperAuditLog(None,history,temp,dx_dic,users,2,True)
+        if(symbol == "+"):
+            for history in hisNums:
+                temp={}
+                temp["ICD_10"]=history["ICD_10"]
+                helperAuditLog(None,history,temp,dx2,users,2,True)
+            dx_mod["created"]=dx2
+        elif (symbol == "-"):
+            for history in hisNums:
+                temp={}
+                temp["ICD_10"]=history["ICD_10"]
+                helperAuditLog(None,history,temp,dx3,users,2,True)
+            dx_mod["deleted"]=dx3
 
 
     # CPT audit
-    cpt_dic=[]
+    cpt1=[]
+    cpt2=[]
+    cpt3=[]
+    cpt_mod={}
     idList=CPT.history.values_list('id', flat=True)   
     idList=set(idList)
     idList=list(idList)
@@ -117,7 +144,7 @@ def view_audit_log(request):
                 # Put all useful information in temp    
                 temp["cpt_code"]=content[i]["cpt_code"]
                 temp["cpt_description"]=content[i]["cpt_description"]
-                helperAuditLog(content[i-1],content[i],temp,cpt_dic,users,2,False)
+                helperAuditLog(content[i-1],content[i],temp,cpt1,users,2,False)
 
         contentCreated=CPT.history.filter(id=idd).filter(history_type="+").values()
         if(len(contentCreated)>0 and len(content)>0):
@@ -126,19 +153,32 @@ def view_audit_log(request):
              # Put all useful information in temp
             temp["cpt_code"]=contentModified["cpt_code"]
             temp["cpt_description"]=contentModified["cpt_description"]
-            helperAuditLog(contentCreated[0],contentModified,temp,cpt_dic,users,3,False)
+            helperAuditLog(contentCreated[0],contentModified,temp,cpt1,users,3,False)
 
+    cpt_mod["modified"]=cpt1
     for symbol in history_list:
         hisNums=CPT.history.filter(history_type=symbol).values()
-        for history in hisNums:
-            temp={}
-            temp["cpt_code"]=history["cpt_code"]
-            temp["cpt_description"]=history["cpt_description"]
-            helperAuditLog(None,history,temp,cpt_dic,users,2,True)
+        if(symbol=="+"):
+            for history in hisNums:
+                temp={}
+                temp["cpt_code"]=history["cpt_code"]
+                temp["cpt_description"]=history["cpt_description"]
+                helperAuditLog(None,history,temp,cpt2,users,2,True)
+            cpt_mod["created"]=cpt2
+        elif(symbol=="-"):
+            for history in hisNums:
+                temp={}
+                temp["cpt_code"]=history["cpt_code"]
+                temp["cpt_description"]=history["cpt_description"]
+                helperAuditLog(None,history,temp,cpt3,users,2,True)
+            cpt_mod["deleted"]=cpt3
 
 
     # Provider Audit
-    provider_dic=[]
+    provider1=[]
+    provider2=[]
+    provider3=[]
+    provider_mod={}
     idList=Provider.history.values_list('id', flat=True)   
     idList=set(idList)
     idList=list(idList)
@@ -149,7 +189,7 @@ def view_audit_log(request):
                 temp={}
                 # Put all useful information in temp    
                 temp["provider_name"]=content[i]["provider_name"]
-                helperAuditLog(content[i-1],content[i],temp,provider_dic,users,2,False)
+                helperAuditLog(content[i-1],content[i],temp,provider1,users,2,False)
 
         contentCreated=Provider.history.filter(id=idd).filter(history_type="+").values()
         if(len(contentCreated)>0 and len(content)>0):
@@ -157,15 +197,23 @@ def view_audit_log(request):
             temp={}            
              # Put all useful information in temp
             temp["provider_name"]=contentModified["provider_name"]
-            helperAuditLog(contentCreated[0],contentModified,temp,provider_dic,users,3,False)
+            helperAuditLog(contentCreated[0],contentModified,temp,provider1,users,3,False)
 
+    provider_mod["modified"]=provider1
     for symbol in history_list:
         hisNums=Provider.history.filter(history_type=symbol).values()
-        for history in hisNums:
-            temp={}
-            temp["provider_name"]=history["provider_name"]
-            helperAuditLog(None,history,temp,provider_dic,users,2,True)
-
+        if(symbol == "+"):
+            for history in hisNums:
+                temp={}
+                temp["provider_name"]=history["provider_name"]
+                helperAuditLog(None,history,temp,provider2,users,2,True)
+            provider_mod["created"]=provider2
+        elif(symbol == "-"):
+            for history in hisNums:
+                temp={}
+                temp["provider_name"]=history["provider_name"]
+                helperAuditLog(None,history,temp,provider2,users,2,True)
+            provider_mod["deleted"]=provider3
 
     # Insurance Audit
     ins1=[]
@@ -314,42 +362,15 @@ def view_audit_log(request):
                 helperAuditLog(None,history,temp,pat3,users,2,True)
             pat_mod["deleted"]=pat3
 
-    # # print patient_dic
-    # if 'num' in request.GET and request.GET['num']:
-    #     if 'patient' in request.GET and request.GET['patient']:
-    #         return render(request, 'auditlog.html',{
-    #             'pat_mod':pat_mod,
-    #             'payer_info': payer_dic, 
-    #             'insurance_info' : insurance_dic,
-    #             'display_rows_m' : request.GET['num_m'],
-    #             'display' : 'patient'
-    #         })
-    #     if 'payer' in request.GET and request.GET['payer']:
-    #         return render(request, 'auditlog.html',{
-    #             'payer_info': payer_dic, 
-    #             'patient_info': patient_dic, 
-    #             'insurance_info' : insurance_dic,
-    #             'display_rows': request.GET['num'],
-    #             'display' : 'payer'
-    #         })
-    #     if 'insurance' in request.GET and request.GET['insurance']:
-    #         return render(request, 'auditlog.html',{
-    #             'payer_info': payer_dic, 
-    #             'patient_info': patient_dic, 
-    #             'insurance_info' : insurance_dic,
-    #             'display_rows': request.GET['num'],
-    #             'display' : 'insurance'
-    #         })
-
     return render(request, 'auditlog.html',{
         'pat_mod':pat_mod,
         'payer_mod' : payer_mod,
         'insurance_mod' : ins_mod,
-        'provider_info' : provider_dic,
-        'cpt_info' : cpt_dic,
-        'dx_info' : dx_dic,
-        'referringprovider_info' :rp_dic,
-        'display' : 'payer' if 'payer' in request.GET else 'insurance' if 'insurance' in request.GET else 'patient' ,
+        'provider_mod' : provider_mod,
+        'cpt_mod' : cpt_mod,
+        'dx_mod' : dx_mod,
+        'rp_mod' :rf_mod,
+        'display' : 'payer' if 'payer' in request.GET else 'insurance' if 'insurance' in request.GET else 'provider' if 'provider' in request.GET else 'cpt' if 'cpt' in request.GET else 'dx' if 'dx' in request.GET else 'rp' if 'rp' in request.GET else 'patient' ,
         'display_rows_m': request.GET['num_m'] if 'num_m' in request.GET and request.GET['num_m'] else '10' ,
         'display_rows_c': request.GET['num_c'] if 'num_c' in request.GET and request.GET['num_c'] else '10' ,
         'display_rows_d': request.GET['num_d'] if 'num_d' in request.GET and request.GET['num_d'] else '10' ,
