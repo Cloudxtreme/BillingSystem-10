@@ -198,7 +198,7 @@ class ReferringProvider(models.Model):
     taxonomy=models.CharField(max_length=100,default='',null=True, blank=True)
     NPI=models.IntegerField()
     tax_id=models.CharField(max_length=100,null=True, blank=True)
-    # history = HistoricalRecords()
+    history = HistoricalRecords()
 
     def __unicode__(self):
         return self.first_name+" "+self.last_name
@@ -207,8 +207,7 @@ class ReferringProvider(models.Model):
 class dx(models.Model):
     ICD_10 = models.CharField(max_length=200, primary_key=True)
     description = models.CharField(max_length=200)
-
-    # history = HistoricalRecords()
+    history = HistoricalRecords()
 
     def __unicode__(self):
         return self.ICD_10
@@ -316,7 +315,6 @@ class Insurance_Information(models.Model):
     payer = models.ForeignKey(Payer)
     patient = models.ForeignKey(Personal_Information)
     insurance_id = models.CharField(max_length=32,default='')
-
     audit_log = AuditLog()
     history = HistoricalRecords()
 
@@ -332,7 +330,7 @@ class Locations(models.Model):
     city = models.CharField(max_length=128,default='')   
     state = USStateField(default='')  
     phone = PhoneNumberField(null=True, blank=True, help_text='XXX-XXX-XXXX')
-        
+
     def __unicode__(self):
         return self.location_name
 
@@ -349,7 +347,7 @@ class Provider(models.Model):
     provider_state = USStateField(default='',null=True, blank=True)
     provider_zip = models.IntegerField(default='',null=True, blank=True)
     provider_phone = PhoneNumberField(null=True, blank=True, help_text='XXX-XXX-XXXX',)
-    # history = HistoricalRecords()
+    history = HistoricalRecords()
 
 
     def __unicode__(self):
@@ -380,34 +378,7 @@ class Provider(models.Model):
 class Procedure_Codes(models.Model):
     procedure_name = models.CharField(max_length=128,default='')
     procedure_code = models.IntegerField(default='')
-
      
     def __unicode__(self):
         return self.procedure_code
      
-# class Diagnosis_Codes(models.Model):
-#     diagnosis_name = models.CharField(max_length=128,default='')
-#     diagnosis_code = models.CharField(max_length=8,default='')
-     
-#     def __unicode__(self):
-#         return self.diagnosis_code
-
-# class Test(models.Model):
-# #     patient = models.ForeignKey()
-# #     insurance = models.ForeignKey()
-# #     billing and providers
-#     dos = models.DateField()
-#     billing_provider = models.ForeignKey(Provider, limit_choices_to={'role':'Billing'},)
-#     rendering_provider = models.ForeignKey(Provider, limit_choices_to={'role':'Rendering'}, related_name = 'rendering_provider')
-#     icd = models.ManyToManyField(Diagnosis_Codes)
-    
-#     referring_provider
-
-# class Claims(models.Model):
-#     dos = models.DateField()
-#     pos = models.CharField(choices=POS_CHOICES,max_length=10,default='Office')
-#     icd = models.ManyToManyField(Diagnosis_Codes)
-#     cpt = models.ManyToManyField(Procedure_Codes)
-#     billing_provider = models.ForeignKey(Provider, limit_choices_to={'role':'Billing'},)
-#     rendering_provider = models.ForeignKey(Provider, limit_choices_to={'role':'Rendering'}, related_name = 'rendering_provider')
-    
