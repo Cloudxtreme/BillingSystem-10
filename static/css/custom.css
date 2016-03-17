@@ -60,6 +60,14 @@ select.input-sm {
     border-right-width: 1px;
 }
 
+.two-input .form-control {
+    width: 50%;
+    border-right-width: 0px;
+}
+.two-input .form-control:last-child, .two-input .form-control:focus {
+    border-right-width: 1px;
+}
+
 
 .input-group.address-input {
     /*margin: 0px 5px;*/
@@ -118,4 +126,29 @@ label.control-label.required:after {
 h2.text-center {
     font-weight: bold;
     margin-top: 0px;
+}
+
+
+.found-table tbody tr:hover {
+    background-color: #fdfd96 !important;
+    cursor: pointer;
+}
+
+.border-form-control {
+    display: block;
+    width: 100%;
+    height: 30px;
+    padding: 4px 8px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #555;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+    -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+    -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
 }

@@ -43,4 +43,4 @@ class PaymentApplyForm(forms.Form):
     claim = forms.ModelChoiceField(queryset=Claim.objects.all())
     procedure = forms.ModelChoiceField(queryset=Procedure.objects.all())
     amount = forms.DecimalField(max_digits=MAX_DIGITS, decimal_places=DECIMAL_PLACES, min_value=0)
-    adjustment = forms.DecimalField(max_digits=MAX_DIGITS, decimal_places=DECIMAL_PLACES)
+    adjustment = forms.DecimalField(max_digits=MAX_DIGITS, decimal_places=DECIMAL_PLACES, required=False)

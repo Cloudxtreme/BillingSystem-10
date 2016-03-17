@@ -98,6 +98,9 @@ class Payment(BaseModel):
     def __str__(self):
         return '%s, $%s' % (self.id, self.amount)
 
+    def natural_key(self):
+        return (self.payment_date, self.payer_type, self.amount, self.check_number)
+
 
 @python_2_unicode_compatible
 class AppliedPayment(BaseModel):

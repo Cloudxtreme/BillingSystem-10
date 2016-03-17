@@ -251,6 +251,9 @@ class Personal_Information(models.Model):
     def __unicode__(self):
         return self.get_full_name()
     
+    def natural_key(self):
+        return dict({'chart_no': self.chart_no, 'full_name': self.get_full_name()})
+
     def get_full_name(self):
         if(self.middle_name):
             return '%s %s %s' % (self.first_name, self.middle_name, self.last_name)
@@ -309,6 +312,9 @@ class Payer(models.Model):
     
     def __unicode__(self):
         return self.name
+
+    def natural_key(self):
+        return dict({'code': self.code, 'name': self.name})
     
 class Insurance_Information(models.Model):
     level = models.CharField(choices=INSURANCE_LEVEL_CHOICES,max_length=10,default='Primary')
