@@ -1,19 +1,5 @@
 
 
-
-// $(document).ready(function(){
-//     $( "#patienthref" ).on('click',function() {
-//         console.log("123");
-//         href=$("#patienthrefhidden").attr('href');
-//         window.location.href = href;
-//     });
-//     $( "#payerhref" ).on('click',function() {
-//         console.log("456");
-//         href=$("#payerhrefhidden").attr('href');
-//         window.location.href = href;
-//     });
-// });
-
 $(document).ready(function(){
     $(function(){
         var this_js_script = $('script[src*=audit_log]');
@@ -25,10 +11,6 @@ $(document).ready(function(){
 });
 
 
-
-
-
-
 $(document).ready(function(){
     $(function(){
         $(".myTable").tablesorter();
@@ -37,6 +19,7 @@ $(document).ready(function(){
 });
 
 $(document).ready(function(){
+    var this_js_script = $('script[src*=audit_log]');
     $('#patienthref').on('click', function(){
         $("#fillMe").html(replaceMe("patient"));
     });
@@ -58,6 +41,12 @@ $(document).ready(function(){
     $('#dxhref').on('click', function(){
         $("#fillMe").html(replaceMe("dx"));
     });
+
+    // Replace text in page dropdown
+    $('.changeDropdownContent').on('click', function(){
+        $("#showEntriesNav").html(showEntry(this_js_script.attr('row_m')));
+    });
+    
 });
 
 
@@ -89,6 +78,10 @@ $(document).ready(function(){
         }
     }
 });
+
+function showEntry(ele){
+    return 'Show '+ele+' Entries';
+}
 
 function replaceMe(ele){
     var dump = '<a href="#" data-toggle="dropdown"><strong id="showEntriesNav">Show 10 Entries</strong><span class="caret"></span></a>'+

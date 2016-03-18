@@ -18,19 +18,19 @@
 
 {% block body %}
 
-<div class=" container">
+<div class=" container" style="width:1300px">
     <h2>Audit Log</h2>
 
     <div class="panel with-nav-tabs panel-info">    
         <div class="panel-heading">
             <ul class="nav nav-tabs ">
-                <li class="active"><a href="#patient" id="patienthref" data-target="#patient" data-toggle="tab"><strong>Patient</strong></a></li>
-                <li><a href="#payer" id="payerhref" data-target="#payer" data-toggle="tab"><strong>Payer</strong></a></li>
-                <li><a href="#insurance" id="insurancehref" data-target="#insurance" data-toggle="tab"><strong>Insurance</strong></a></li>
-                <li><a href="#provider" id="providerhref" data-target="#provider" data-toggle="tab"><strong>Provider</strong></a></li>
-                <li><a href="#rp" id="rphref" data-target="#rp" data-toggle="tab"><strong>Referring Provider</strong></a></li>
-                <li><a href="#cpt" id="cpthref" data-target="#cpt" data-toggle="tab"><strong>CPT</strong></a></li>
-                <li><a href="#dx" id="dxhref" data-target="#dx" data-toggle="tab"><strong>DX</strong></a></li>
+                <li class="active"><a class="changeDropdownContent" href="#patient" id="patienthref" data-target="#patient" data-toggle="tab"><strong>Patient</strong></a></li>
+                <li><a href="#payer" class="changeDropdownContent" id="payerhref" data-target="#payer" data-toggle="tab"><strong>Payer</strong></a></li>
+                <li><a href="#insurance" class="changeDropdownContent" id="insurancehref" data-target="#insurance" data-toggle="tab"><strong>Insurance</strong></a></li>
+                <li><a href="#provider" class="changeDropdownContent" id="providerhref" data-target="#provider" data-toggle="tab"><strong>Provider</strong></a></li>
+                <li><a href="#rp" class="changeDropdownContent" id="rphref" data-target="#rp" data-toggle="tab"><strong>Referring Provider</strong></a></li>
+                <li><a href="#cpt" class="changeDropdownContent" id="cpthref" data-target="#cpt" data-toggle="tab"><strong>CPT</strong></a></li>
+                <li><a href="#dx" class="changeDropdownContent" id="dxhref" data-target="#dx" data-toggle="tab"><strong>DX</strong></a></li>
                 <li id="fillMe" class="dropdown pull-right">
                     <a href="#" data-toggle="dropdown"><strong id="showEntriesNav">Show 10 Entries</strong><span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
@@ -46,32 +46,18 @@
             <div class="tab-content">
                 <!-- sidebar -->
                 <div class="col-xs-12 col-sm-1 sidebar-offcanvas" id="sidebar" role="navigation">
-                    <ul class="nav">
-                      <li class="active"><a href=".m" data-target=".m" data-toggle="tab">Modified</a></li>
-                      <li ><a href=".c" data-target=".c" data-toggle="tab">Created</a></li>
-                      <li><a href=".d" data-target=".d" data-toggle="tab">Deleted</a></li>
+                    <ul class="nav with-sidebar-nav">
+                      <li class="active"><a href=".m" data-target=".m" data-toggle="tab"><strong>Modified</strong></a></li>
+                      <li ><a href=".c" data-target=".c" data-toggle="tab"><strong>Created</strong></a></li>
+                      <li ><a href=".d" data-target=".d" data-toggle="tab"><strong>Deleted</strong></a></li>
                     </ul>
                 </div>
+
                 <!-- Patient Information -->
 
                 <div id="patient" class="col-xs-12 col-sm-11 row row-offcanvas row-offcanvas-left  tab-pane fade in active">
                     <div class="tab-content">
                         <div  class="m tab-pane fade in active">
-                            <div class="btn-group ">
-                                <button type="button" class="btn  dropButton" >10 Entries</button>
-                                <button type="button" class="btn  dropdown-toggle dropButton2" data-toggle="dropdown">
-                                    <span class="caret"></span>
-                                    <span class="sr-only">Toggle Dropdown</span>
-                                </button>
-                                <ul class="dropdown-menu" role="menu">
-                                    <li><a href="?num_m=5&amp;num_c={{display_rows_c}}&amp;num_d={{display_rows_d}}&amp;patient=1">5</a></li>
-                                    <li><a href="?num_m=10&amp;num_c={{display_rows_c}}&amp;num_d={{display_rows_d}}&amp;patient=1">10 (default)</a></li>
-                                    <li><a href="?num_m=25&amp;num_c={{display_rows_c}}&amp;num_d={{display_rows_d}}&amp;patient=1">25</a></li>
-                                    <li><a href="?num_m=all&amp;num_c={{display_rows_c}}&amp;num_d={{display_rows_d}}&amp;patient=1">All</a></li>
-                                </ul>
-                            </div>
-                            <p></p>
-
                             <table class="myTable table tablesorter">
                                 <thead class="thead-default" >
                                     <tr>
@@ -84,7 +70,6 @@
                                         <th>New Value</th>
                                         <th>History id</th>
                                         <th>Who changed?</th>
-
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -107,19 +92,6 @@
                             </table>
                         </div>
                         <div  class="c tab-pane fade">
-                            <div class="btn-group ">
-                                <button type="button" class="btn btn-success dropButton" >Created</button>
-                                <button type="button" class="btn btn-success dropdown-toggle dropButton2" data-toggle="dropdown">
-                                    <span class="caret"></span>
-                                    <span class="sr-only">Toggle Dropdown</span>
-                                </button>
-                                <ul class="dropdown-menu" role="menu">
-                                    <li><a href="?num_m={{display_rows_m}}&amp;num_c=5&amp;num_d={{display_rows_d}}&amp;patient=1">5</a></li>
-                                    <li><a href="?num_m={{display_rows_m}}&amp;num_c=10&amp;num_d={{display_rows_d}}&amp;patient=1">10 (default)</a></li>
-                                    <li><a href="?num_m={{display_rows_m}}&amp;num_c=25&amp;num_d={{display_rows_d}}&amp;patient=1">25</a></li>
-                                    <li><a href="?num_m={{display_rows_m}}&amp;num_c=all&amp;num_d={{display_rows_d}}&amp;patient=1">All</a></li>
-                                </ul>
-                            </div>
                             <table class="myTable table tablesorter">
                                 <thead class="thead-default" >
                                     <tr>
@@ -147,19 +119,6 @@
                             </table>
                         </div>
                         <div  class="d tab-pane fade">
-                            <div class="btn-group ">
-                                <button type="button" class="btn btn-danger dropButton" >Deleted</button>
-                                <button type="button" class="btn btn-danger dropdown-toggle dropButton2" data-toggle="dropdown">
-                                    <span class="caret"></span>
-                                    <span class="sr-only">Toggle Dropdown</span>
-                                </button>
-                                <ul class="dropdown-menu" role="menu">
-                                    <li><a href="?num_m={{display_rows_m}}&amp;num_c={{display_rows_c}}&amp;num_d=5&amp;patient=1">5</a></li>
-                                    <li><a href="?num_m={{display_rows_m}}&amp;num_c={{display_rows_c}}&amp;num_d=10&amp;patient=1">10 (default)</a></li>
-                                    <li><a href="?num_m={{display_rows_m}}&amp;num_c={{display_rows_c}}&amp;num_d=25&amp;patient=1">25</a></li>
-                                    <li><a href="?num_m={{display_rows_m}}&amp;num_c={{display_rows_c}}&amp;num_d=all&amp;patient=1">All</a></li>
-                                </ul>
-                            </div>
                             <table class="myTable table tablesorter">
                                 <thead class="thead-default" >
                                     <tr>
@@ -194,19 +153,6 @@
 
                     <div class="tab-content">
                         <div  class="m tab-pane fade in active">
-                            <div class="btn-group ">
-                                <button type="button" class="btn btn-primary dropButton" >Modified</button>
-                                <button type="button" class="btn btn-primary dropdown-toggle dropButton2" data-toggle="dropdown">
-                                    <span class="caret"></span>
-                                    <span class="sr-only">Toggle Dropdown</span>
-                                </button>
-                                <ul class="dropdown-menu" role="menu">
-                                    <li><a href="?num_m=5&amp;num_c={{display_rows_c}}&amp;num_d={{display_rows_d}}&amp;payer=1">5</a></li>
-                                    <li><a href="?num_m=10&amp;num_c={{display_rows_c}}&amp;num_d={{display_rows_d}}&amp;payer=1">10 (default)</a></li>
-                                    <li><a href="?num_m=25&amp;num_c={{display_rows_c}}&amp;num_d={{display_rows_d}}&amp;payer=1">25</a></li>
-                                    <li><a href="?num_m=all&amp;num_c={{display_rows_c}}&amp;num_d={{display_rows_d}}&amp;payer=1">All</a></li>
-                                </ul>
-                            </div>
                             <table class="myTable table tablesorter">
                                 <thead class="thead-default" >
                                     <tr>
@@ -239,19 +185,6 @@
                             </table>
                         </div>
                         <div  class="c tab-pane fade">
-                            <div class="btn-group ">
-                                <button type="button" class="btn btn-success dropButton" >Created</button>
-                                <button type="button" class="btn btn-success dropdown-toggle dropButton2" data-toggle="dropdown">
-                                    <span class="caret"></span>
-                                    <span class="sr-only">Toggle Dropdown</span>
-                                </button>
-                                <ul class="dropdown-menu" role="menu">
-                                    <li><a href="?num_m={{display_rows_m}}&amp;num_c=5&amp;num_d={{display_rows_d}}&amp;payer=1">5</a></li>
-                                    <li><a href="?num_m={{display_rows_m}}&amp;num_c=10&amp;num_d={{display_rows_d}}&amp;payer=1">10 (default)</a></li>
-                                    <li><a href="?num_m={{display_rows_m}}&amp;num_c=25&amp;num_d={{display_rows_d}}&amp;payer=1">25</a></li>
-                                    <li><a href="?num_m={{display_rows_m}}&amp;num_c=all&amp;num_d={{display_rows_d}}&amp;payer=1">All</a></li>
-                                </ul>
-                            </div>
                             <table class="myTable table tablesorter">
                                 <thead class="thead-default" >
                                     <tr>
@@ -280,20 +213,6 @@
                             </table>
                         </div>
                         <div  class="d tab-pane fade">
-                            <div class="btn-group ">
-                                <button type="button" class="btn btn-danger dropButton" >Deleted</button>
-                                <button type="button" class="btn btn-danger dropdown-toggle dropButton2" data-toggle="dropdown">
-                                    <span class="caret"></span>
-                                    <span class="sr-only">Toggle Dropdown</span>
-                                </button>
-                                <ul class="dropdown-menu" role="menu">
-                                    <li><a href="?num_m={{display_rows_m}}&amp;num_c={{display_rows_c}}&amp;num_d=5&amp;payer=1">5</a></li>
-                                    <li><a href="?num_m={{display_rows_m}}&amp;num_c={{display_rows_c}}&amp;num_d=10&amp;payer=1">10 (default)</a></li>
-                                    <li><a href="?num_m={{display_rows_m}}&amp;num_c={{display_rows_c}}&amp;num_d=25&amp;payer=1">25</a></li>
-                                    <li><a href="?num_m={{display_rows_m}}&amp;num_c={{display_rows_c}}&amp;num_d=all&amp;payer=1">All</a></li>
-                                </ul>
-                            </div>
-                            <p></p>
                             <table class="myTable table tablesorter">
                                 <thead class="thead-default" >
                                     <tr>
@@ -327,19 +246,6 @@
                 <div id="insurance" class="col-xs-12 col-sm-11 row row-offcanvas row-offcanvas-left  tab-pane fade">
                     <div class="tab-content">            
                         <div  class="m tab-pane fade in active">
-                            <div class="btn-group ">
-                                <button type="button" class="btn btn-primary dropButton" >Modified</button>
-                                <button type="button" class="btn btn-primary dropdown-toggle dropButton2" data-toggle="dropdown">
-                                    <span class="caret"></span>
-                                    <span class="sr-only">Toggle Dropdown</span>
-                                </button>
-                                <ul class="dropdown-menu" role="menu">
-                                    <li><a href="?num_m=5&amp;num_c=5&amp;num_d=5&amp;insurance=1">5</a></li>
-                                    <li><a href="?num_m=10&amp;num_c=10&amp;num_d=10&amp;insurance=1">10 (default)</a></li>
-                                    <li><a href="?num_m=25&amp;num_c=25&amp;num_d=25&amp;insurance=1">25</a></li>
-                                    <li><a href="?num_m=all&amp;num_c=all&amp;num_d=all&amp;insurance=1">All</a></li>
-                                </ul>
-                            </div>
                             <table  class="myTable table tablesorter">
                                 <thead class="thead-default" >
                                     <tr>
@@ -374,19 +280,6 @@
                             </table>
                         </div>
                         <div  class="c tab-pane fade">
-                            <div class="btn-group ">
-                                <button type="button" class="btn btn-success dropButton" >Created</button>
-                                <button type="button" class="btn btn-success dropdown-toggle dropButton2" data-toggle="dropdown">
-                                    <span class="caret"></span>
-                                    <span class="sr-only">Toggle Dropdown</span>
-                                </button>
-                                <ul class="dropdown-menu" role="menu">
-                                    <li><a href="?num_m={{display_rows_m}}&amp;num_c=5&amp;num_d={{display_rows_d}}&amp;insurance=1">5</a></li>
-                                    <li><a href="?num_m={{display_rows_m}}&amp;num_c=10&amp;num_d={{display_rows_d}}&amp;insurance=1">10 (default)</a></li>
-                                    <li><a href="?num_m={{display_rows_m}}&amp;num_c=25&amp;num_d={{display_rows_d}}&amp;insurance=1">25</a></li>
-                                    <li><a href="?num_m={{display_rows_m}}&amp;num_c=all&amp;num_d={{display_rows_d}}&amp;insurance=1">All</a></li>
-                                </ul>
-                            </div>
                             <table  class="myTable table tablesorter">
                                 <thead class="thead-default" >
                                     <tr>
@@ -415,19 +308,6 @@
                             </table>
                         </div>
                         <div  class="d tab-pane fade">
-                            <div class="btn-group ">
-                                <button type="button" class="btn btn-danger dropButton" >Deleted</button>
-                                <button type="button" class="btn btn-danger dropdown-toggle dropButton2" data-toggle="dropdown">
-                                    <span class="caret"></span>
-                                    <span class="sr-only">Toggle Dropdown</span>
-                                </button>
-                                <ul class="dropdown-menu" role="menu">
-                                    <li><a href="?num_m={{display_rows_m}}&amp;num_c={{display_rows_c}}&amp;num_d=5&amp;insurance=1">5</a></li>
-                                    <li><a href="?num_m={{display_rows_m}}&amp;num_c={{display_rows_c}}&amp;num_d=10&amp;insurance=1">10 (default)</a></li>
-                                    <li><a href="?num_m={{display_rows_m}}&amp;num_c={{display_rows_c}}&amp;num_d=25&amp;insurance=1">25</a></li>
-                                    <li><a href="?num_m={{display_rows_m}}&amp;num_c={{display_rows_c}}&amp;num_d=all&amp;insurance=1">All</a></li>
-                                </ul>
-                            </div>
                             <table  class="myTable table tablesorter">
                                 <thead class="thead-default" >
                                     <tr>
@@ -463,19 +343,6 @@
 
                     <div class="tab-content">
                         <div  class="m tab-pane fade in active">
-                            <div class="btn-group ">
-                                <button type="button" class="btn btn-primary dropButton" >Modified</button>
-                                <button type="button" class="btn btn-primary dropdown-toggle dropButton2" data-toggle="dropdown">
-                                    <span class="caret"></span>
-                                    <span class="sr-only">Toggle Dropdown</span>
-                                </button>
-                                <ul class="dropdown-menu" role="menu">
-                                    <li><a href="?num_m=5&amp;num_c={{display_rows_c}}&amp;num_d={{display_rows_d}}&amp;provider=1">5</a></li>
-                                    <li><a href="?num_m=10&amp;num_c={{display_rows_c}}&amp;num_d={{display_rows_d}}&amp;provider=1">10 (default)</a></li>
-                                    <li><a href="?num_m=25&amp;num_c={{display_rows_c}}&amp;num_d={{display_rows_d}}&amp;provider=1">25</a></li>
-                                    <li><a href="?num_m=all&amp;num_c={{display_rows_c}}&amp;num_d={{display_rows_d}}&amp;provider=1">All</a></li>
-                                </ul>
-                            </div>
                             <table  class="myTable table tablesorter">
                                 <thead class="thead-default" >
                                     <tr>
@@ -507,19 +374,6 @@
                             </table>
                         </div>
                         <div  class="c tab-pane fade">
-                            <div class="btn-group ">
-                                <button type="button" class="btn btn-success dropButton" >Created</button>
-                                <button type="button" class="btn btn-success dropdown-toggle dropButton2" data-toggle="dropdown">
-                                    <span class="caret"></span>
-                                    <span class="sr-only">Toggle Dropdown</span>
-                                </button>
-                                <ul class="dropdown-menu" role="menu">
-                                    <li><a href="?num_m={{display_rows_m}}&amp;num_c=5&amp;num_d={{display_rows_d}}&amp;provider=1">5</a></li>
-                                    <li><a href="?num_m={{display_rows_m}}&amp;num_c=10&amp;num_d={{display_rows_d}}&amp;provider=1">10 (default)</a></li>
-                                    <li><a href="?num_m={{display_rows_m}}&amp;num_c=25&amp;num_d={{display_rows_d}}&amp;provider=1">25</a></li>
-                                    <li><a href="?num_m={{display_rows_m}}&amp;num_c=all&amp;num_d={{display_rows_d}}&amp;provider=1">All</a></li>
-                                </ul>
-                            </div>
                             <table  class="myTable table tablesorter">
                                 <thead class="thead-default" >
                                     <tr>
@@ -546,19 +400,6 @@
                             </table>
                         </div>
                         <div  class="d tab-pane fade">
-                            <div class="btn-group ">
-                                <button type="button" class="btn btn-danger dropButton" >Deleted</button>
-                                <button type="button" class="btn btn-danger dropdown-toggle dropButton2" data-toggle="dropdown">
-                                    <span class="caret"></span>
-                                    <span class="sr-only">Toggle Dropdown</span>
-                                </button>
-                                <ul class="dropdown-menu" role="menu">
-                                    <li><a href="?num_m={{display_rows_m}}&amp;num_c={{display_rows_c}}&amp;num_d=5&amp;provider=1">5</a></li>
-                                    <li><a href="?num_m={{display_rows_m}}&amp;num_c={{display_rows_c}}&amp;num_d=10&amp;provider=1">10 (default)</a></li>
-                                    <li><a href="?num_m={{display_rows_m}}&amp;num_c={{display_rows_c}}&amp;num_d=25&amp;provider=1">25</a></li>
-                                    <li><a href="?num_m={{display_rows_m}}&amp;num_c={{display_rows_c}}&amp;num_d=all&amp;provider=1">All</a></li>
-                                </ul>
-                            </div>
                             <table  class="myTable table tablesorter">
                                 <thead class="thead-default" >
                                     <tr>
@@ -591,19 +432,6 @@
                 <div id="cpt" class="col-xs-12 col-sm-11 row row-offcanvas row-offcanvas-left  tab-pane fade">
                     <div class="tab-content">
                         <div  class="m tab-pane fade in active">
-                            <div class="btn-group ">
-                                <button type="button" class="btn btn-primary dropButton" >Modified</button>
-                                <button type="button" class="btn btn-primary dropdown-toggle dropButton2" data-toggle="dropdown">
-                                    <span class="caret"></span>
-                                    <span class="sr-only">Toggle Dropdown</span>
-                                </button>
-                                <ul class="dropdown-menu" role="menu">
-                                    <li><a href="?num_m=5&amp;num_c={{display_rows_c}}&amp;num_d={{display_rows_d}}&amp;cpt=1">5</a></li>
-                                    <li><a href="?num_m=10&amp;num_c={{display_rows_c}}&amp;num_d={{display_rows_d}}&amp;cpt=1">10 (default)</a></li>
-                                    <li><a href="?num_m=25&amp;num_c={{display_rows_c}}&amp;num_d={{display_rows_d}}&amp;cpt=1">25</a></li>
-                                    <li><a href="?num_m=all&amp;num_c={{display_rows_c}}&amp;num_d={{display_rows_d}}&amp;cpt=1">All</a></li>
-                                </ul>
-                            </div>
                             <table  class="myTable table tablesorter">
                                 <thead class="thead-default" >
                                     <tr>
@@ -638,19 +466,6 @@
                             </table>
                         </div>
                         <div  class="c tab-pane fade">
-                            <div class="btn-group ">
-                                <button type="button" class="btn btn-success dropButton" >Created</button>
-                                <button type="button" class="btn btn-success dropdown-toggle dropButton2" data-toggle="dropdown">
-                                    <span class="caret"></span>
-                                    <span class="sr-only">Toggle Dropdown</span>
-                                </button>
-                                <ul class="dropdown-menu" role="menu">
-                                    <li><a href="?num_m={{display_rows_m}}&amp;num_c=5&amp;num_d={{display_rows_d}}&amp;cpt=1">5</a></li>
-                                    <li><a href="?num_m={{display_rows_m}}&amp;num_c=10&amp;num_d={{display_rows_d}}&amp;cpt=1">10 (default)</a></li>
-                                    <li><a href="?num_m={{display_rows_m}}&amp;num_c=25&amp;num_d={{display_rows_d}}&amp;cpt=1">25</a></li>
-                                    <li><a href="?num_m={{display_rows_m}}&amp;num_c=all&amp;num_d={{display_rows_d}}&amp;cpt=1">All</a></li>
-                                </ul>
-                            </div>
                             <table  class="myTable table tablesorter">
                                 <thead class="thead-default" >
                                     <tr>
@@ -679,19 +494,6 @@
                             </table>
                         </div>
                         <div  class="d tab-pane fade">
-                            <div class="btn-group ">
-                                <button type="button" class="btn btn-danger dropButton" >Deleted</button>
-                                <button type="button" class="btn btn-danger dropdown-toggle dropButton2" data-toggle="dropdown">
-                                    <span class="caret"></span>
-                                    <span class="sr-only">Toggle Dropdown</span>
-                                </button>
-                                <ul class="dropdown-menu" role="menu">
-                                    <li><a href="?num_m={{display_rows_m}}&amp;num_c={{display_rows_c}}&amp;num_d=5&amp;cpt=1">5</a></li>
-                                    <li><a href="?num_m={{display_rows_m}}&amp;num_c={{display_rows_c}}&amp;num_d=10&amp;cpt=1">10 (default)</a></li>
-                                    <li><a href="?num_m={{display_rows_m}}&amp;num_c={{display_rows_c}}&amp;num_d=25&amp;cpt=1">25</a></li>
-                                    <li><a href="?num_m={{display_rows_m}}&amp;num_c={{display_rows_c}}&amp;num_d=all&amp;cpt=1">All</a></li>
-                                </ul>
-                            </div>
                             <table  class="myTable table tablesorter">
                                 <thead class="thead-default" >
                                     <tr>
@@ -729,19 +531,6 @@
                 <div id="dx" class="col-xs-12 col-sm-11 row row-offcanvas row-offcanvas-left  tab-pane fade"> 
                     <div class="tab-content">
                         <div  class="m tab-pane fade in active">
-                            <div class="btn-group ">
-                                <button type="button" class="btn btn-primary dropButton" >Modified</button>
-                                <button type="button" class="btn btn-primary dropdown-toggle dropButton2" data-toggle="dropdown">
-                                    <span class="caret"></span>
-                                    <span class="sr-only">Toggle Dropdown</span>
-                                </button>
-                                <ul class="dropdown-menu" role="menu">
-                                    <li><a href="?num_m=5&amp;num_c={{display_rows_c}}&amp;num_d={{display_rows_d}}&amp;dx=1">5</a></li>
-                                    <li><a href="?num_m=10&amp;num_c={{display_rows_c}}&amp;num_d={{display_rows_d}}&amp;dx=1">10 (default)</a></li>
-                                    <li><a href="?num_m=25&amp;num_c={{display_rows_c}}&amp;num_d={{display_rows_d}}&amp;dx=1">25</a></li>
-                                    <li><a href="?num_m=all&amp;num_c={{display_rows_c}}&amp;num_d={{display_rows_d}}&amp;dx=1">All</a></li>
-                                </ul>
-                            </div>
                             <table class="myTable table tablesorter">
                                 <thead class="thead-default" >
                                     <tr>
@@ -774,19 +563,6 @@
                             </table>
                         </div>
                         <div  class="c tab-pane fade">
-                            <div class="btn-group ">
-                                <button type="button" class="btn btn-success dropButton" >Created</button>
-                                <button type="button" class="btn btn-success dropdown-toggle dropButton2" data-toggle="dropdown">
-                                    <span class="caret"></span>
-                                    <span class="sr-only">Toggle Dropdown</span>
-                                </button>
-                                <ul class="dropdown-menu" role="menu">
-                                    <li><a href="?num_m={{display_rows_m}}&amp;num_c=5&amp;num_d={{display_rows_d}}&amp;dx=1">5</a></li>
-                                    <li><a href="?num_m={{display_rows_m}}&amp;num_c=10&amp;num_d={{display_rows_d}}&amp;dx=1">10 (default)</a></li>
-                                    <li><a href="?num_m={{display_rows_m}}&amp;num_c=25&amp;num_d={{display_rows_d}}&amp;dx=1">25</a></li>
-                                    <li><a href="?num_m={{display_rows_m}}&amp;num_c=all&amp;num_d={{display_rows_d}}&amp;dx=1">All</a></li>
-                                </ul>
-                            </div>
                             <table class="myTable table tablesorter">
                                 <thead class="thead-default" >
                                     <tr>
@@ -813,19 +589,6 @@
                             </table>
                         </div>
                         <div  class="d tab-pane fade">
-                            <div class="btn-group ">
-                                <button type="button" class="btn btn-danger dropButton" >Deleted</button>
-                                <button type="button" class="btn btn-danger dropdown-toggle dropButton2" data-toggle="dropdown">
-                                    <span class="caret"></span>
-                                    <span class="sr-only">Toggle Dropdown</span>
-                                </button>
-                                <ul class="dropdown-menu" role="menu">
-                                    <li><a href="?num_m={{display_rows_m}}&amp;num_c={{display_rows_c}}&amp;num_d=5&amp;dx=1">5</a></li>
-                                    <li><a href="?num_m={{display_rows_m}}&amp;num_c={{display_rows_c}}&amp;num_d=10&amp;dx=1">10 (default)</a></li>
-                                    <li><a href="?num_m={{display_rows_m}}&amp;num_c={{display_rows_c}}&amp;num_d=25&amp;dx=1">25</a></li>
-                                    <li><a href="?num_m={{display_rows_m}}&amp;num_c={{display_rows_c}}&amp;num_d=all&amp;dx=1">All</a></li>
-                                </ul>
-                            </div>
                             <table class="myTable table tablesorter">
                                 <thead class="thead-default" >
                                     <tr>
@@ -860,19 +623,6 @@
                 <div id="rp" class="col-xs-12 col-sm-11 row row-offcanvas row-offcanvas-left  tab-pane fade">
                     <div class="tab-content">
                         <div  class="m tab-pane fade in active">
-                            <div class="btn-group ">
-                                <button type="button" class="btn btn-primary dropButton" >Modified</button>
-                                <button type="button" class="btn btn-primary dropdown-toggle dropButton2" data-toggle="dropdown">
-                                    <span class="caret"></span>
-                                    <span class="sr-only">Toggle Dropdown</span>
-                                </button>
-                                <ul class="dropdown-menu" role="menu">
-                                    <li><a href="?num_m=5&amp;num_c={{display_rows_c}}&amp;num_d={{display_rows_d}}&amp;rp=1">5</a></li>
-                                    <li><a href="?num_m=10&amp;num_c={{display_rows_c}}&amp;num_d={{display_rows_d}}&amp;rp=1">10 (default)</a></li>
-                                    <li><a href="?num_m=25&amp;num_c={{display_rows_c}}&amp;num_d={{display_rows_d}}&amp;rp=1">25</a></li>
-                                    <li><a href="?num_m=all&amp;num_c={{display_rows_c}}&amp;num_d={{display_rows_d}}&amp;rp=1">All</a></li>
-                                </ul>
-                            </div>
                             <table class="myTable table tablesorter">
                                 <thead class="thead-default" >
                                     <tr>
@@ -907,19 +657,6 @@
                             </table>
                         </div>
                         <div  class="c tab-pane fade">
-                            <div class="btn-group ">
-                                <button type="button" class="btn btn-success dropButton" >Created</button>
-                                <button type="button" class="btn btn-success dropdown-toggle dropButton2" data-toggle="dropdown">
-                                    <span class="caret"></span>
-                                    <span class="sr-only">Toggle Dropdown</span>
-                                </button>
-                                <ul class="dropdown-menu" role="menu">
-                                    <li><a href="?num_m={{display_rows_m}}&amp;num_c=5&amp;num_d={{display_rows_d}}&amp;rp=1">5</a></li>
-                                    <li><a href="?num_m={{display_rows_m}}&amp;num_c=10&amp;num_d={{display_rows_d}}&amp;rp=1">10 (default)</a></li>
-                                    <li><a href="?num_m={{display_rows_m}}&amp;num_c=25&amp;num_d={{display_rows_d}}&amp;rp=1">25</a></li>
-                                    <li><a href="?num_m={{display_rows_m}}&amp;num_c=all&amp;num_d={{display_rows_d}}&amp;rp=1">All</a></li>
-                                </ul>
-                            </div>
                             <table class="myTable table tablesorter">
                                 <thead class="thead-default" >
                                     <tr>
@@ -948,19 +685,6 @@
                             </table>
                         </div>
                         <div  class="d tab-pane fade">
-                            <div class="btn-group ">
-                                <button type="button" class="btn btn-danger dropButton" >Deleted</button>
-                                <button type="button" class="btn btn-danger dropdown-toggle dropButton2" data-toggle="dropdown">
-                                    <span class="caret"></span>
-                                    <span class="sr-only">Toggle Dropdown</span>
-                                </button>
-                                <ul class="dropdown-menu" role="menu">
-                                    <li><a href="?num_m={{display_rows_m}}&amp;num_c={{display_rows_c}}&amp;num_d=5&amp;rp=1">5</a></li>
-                                    <li><a href="?num_m={{display_rows_m}}&amp;num_c={{display_rows_c}}&amp;num_d=10&amp;rp=1">10 (default)</a></li>
-                                    <li><a href="?num_m={{display_rows_m}}&amp;num_c={{display_rows_c}}&amp;num_d=25&amp;rp=1">25</a></li>
-                                    <li><a href="?num_m={{display_rows_m}}&amp;num_c={{display_rows_c}}&amp;num_d=all&amp;rp=1">All</a></li>
-                                </ul>
-                            </div>
                             <table class="myTable table tablesorter">
                                 <thead class="thead-default" >
                                     <tr>
