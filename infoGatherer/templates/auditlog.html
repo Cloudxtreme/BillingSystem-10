@@ -5,7 +5,7 @@
     <title>Sortable Table</title>
     {% block script %}
         <script src="{% static 'infoGatherer/js/tablesorter.min.js' %}"></script>
-        {% if display_rows and display %}
+        {% if display %}
             <script type="text/javascript" row_m={{display_rows_m}} row_c={{display_rows_c}} row_d={{display_rows_d}} display={{display}} src="{% static 'infoGatherer/js/audit_log.js' %}"></script>
         {% else %}
             <script type="text/javascript" row_m={{display_rows_m}} row_c={{display_rows_c}} row_d={{display_rows_d}} src="{% static 'infoGatherer/js/audit_log.js' %}"></script>
@@ -31,14 +31,13 @@
                 <li><a href="#rp" id="rphref" data-target="#rp" data-toggle="tab"><strong>Referring Provider</strong></a></li>
                 <li><a href="#cpt" id="cpthref" data-target="#cpt" data-toggle="tab"><strong>CPT</strong></a></li>
                 <li><a href="#dx" id="dxhref" data-target="#dx" data-toggle="tab"><strong>DX</strong></a></li>
-                
-                <li class="dropdown pull-right">
+                <li id="fillMe" class="dropdown pull-right">
                     <a href="#" data-toggle="dropdown"><strong id="showEntriesNav">Show 10 Entries</strong><span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
-                        <li><a href="?num_m=5&amp;num_c={{display_rows_c}}&amp;num_d={{display_rows_d}}&amp;patient=1">5</a></li>
-                        <li><a href="?num_m=10&amp;num_c={{display_rows_c}}&amp;num_d={{display_rows_d}}&amp;patient=1">10 (default)</a></li>
-                        <li><a href="?num_m=25&amp;num_c={{display_rows_c}}&amp;num_d={{display_rows_d}}&amp;patient=1">25</a></li>
-                        <li><a href="?num_m=all&amp;num_c={{display_rows_c}}&amp;num_d={{display_rows_d}}&amp;patient=1">All</a></li>
+                        <li><a href="?num_m=5&amp;num_c=5&amp;num_d=5&amp;patient=1">5</a></li>
+                        <li><a href="?num_m=10&amp;num_c=10&amp;num_d=10&amp;patient=1">10 (default)</a></li>
+                        <li><a href="?num_m=25&amp;num_c=25&amp;num_d=25&amp;patient=1">25</a></li>
+                        <li><a href="?num_m=all&amp;num_c=all&amp;num_d=all&amp;patient=1">All</a></li>
                     </ul>
                 </li>
             </ul>
@@ -324,7 +323,6 @@
                         </div>
                     </div>
                 </div>
-
                 <!-- Insurance Information -->
                 <div id="insurance" class="col-xs-12 col-sm-11 row row-offcanvas row-offcanvas-left  tab-pane fade">
                     <div class="tab-content">            
@@ -336,10 +334,10 @@
                                     <span class="sr-only">Toggle Dropdown</span>
                                 </button>
                                 <ul class="dropdown-menu" role="menu">
-                                    <li><a href="?num_m=5&amp;num_c={{display_rows_c}}&amp;num_d={{display_rows_d}}&amp;insurance=1">5</a></li>
-                                    <li><a href="?num_m=10&amp;num_c={{display_rows_c}}&amp;num_d={{display_rows_d}}&amp;insurance=1">10 (default)</a></li>
-                                    <li><a href="?num_m=25&amp;num_c={{display_rows_c}}&amp;num_d={{display_rows_d}}&amp;insurance=1">25</a></li>
-                                    <li><a href="?num_m=all&amp;num_c={{display_rows_c}}&amp;num_d={{display_rows_d}}&amp;insurance=1">All</a></li>
+                                    <li><a href="?num_m=5&amp;num_c=5&amp;num_d=5&amp;insurance=1">5</a></li>
+                                    <li><a href="?num_m=10&amp;num_c=10&amp;num_d=10&amp;insurance=1">10 (default)</a></li>
+                                    <li><a href="?num_m=25&amp;num_c=25&amp;num_d=25&amp;insurance=1">25</a></li>
+                                    <li><a href="?num_m=all&amp;num_c=all&amp;num_d=all&amp;insurance=1">All</a></li>
                                 </ul>
                             </div>
                             <table  class="myTable table tablesorter">
