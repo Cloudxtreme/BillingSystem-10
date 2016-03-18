@@ -251,7 +251,14 @@ class Personal_Information(models.Model):
         return self.get_full_name()
     
     def natural_key(self):
-        return dict({'chart_no': self.chart_no, 'full_name': self.get_full_name()})
+        return dict({
+            'chart_no': self.chart_no,
+            'first_name': self.first_name,
+            'middle_name': self.middle_name,
+            'last_name': self.last_name,
+            'full_name': self.get_full_name(),
+            'dob': self.dob
+        })
 
     def get_full_name(self):
         if(self.middle_name):

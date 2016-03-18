@@ -3,6 +3,8 @@ from django.core import serializers
 from django.core.urlresolvers import reverse
 from django.http import JsonResponse
 
+from datetime import datetime
+
 from .models import *
 from .forms import *
 
@@ -48,7 +50,23 @@ def api_search_payment(request):
     else:
         return JsonResponse([], safe=False)
     
+def api_search_claim(request):
+    if request.method == 'POST':
+        post_data = request.POST
+        claim = Claim.objects.filter(
+            id__contains=post_data.get('claim_id') or '',
+            patient__first_name__icontains=post_data.get('first_name') or '',
+            patient__last_name__icontains=post_data.get('last_name') or '',
+        )
 
+        if post_data.get('dob'):
+            dob = datetime.datetime.strptime(post_data.get('dob'), '%m/%d/%Y')
+            claim = claim.filter(patient__dob=dob.strftime('%Y-%m-%d'))
+
+        s = serializers.serialize('python', claim, use_natural_foreign_keys=True)
+        return JsonResponse(data=s, safe=False)
+    else:
+        return JsonResponse([], safe=False)
 
 
 # def get_make_claim_extra_context(request):

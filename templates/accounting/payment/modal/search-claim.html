@@ -1,0 +1,65 @@
+<div class="modal fade" id="search-claim-modal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Search Claim</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row search-claim">
+                    <form method="POST" action="{% url 'accounting:api_search_claim' %}">
+                        <div class="col-sm-3">
+                            <input type="text" name="claim_id" class="form-control" placeholder="Claim ID">
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="input-group two-input" style="display: block;">
+                                <input type="text" name="first_name" class="form-control" placeholder="Patient first name">
+                                <input type="text" name="last_name" class="form-control" placeholder="Patient last name">
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <input type="text" name="dob" class="form-control pikaday" placeholder="MM/DD/YYYY">
+                        </div>
+                        <div class="col-sm-1">
+                            <button type="button" class="btn btn-primary btn-block search-modal" id="search-claim-search" data-type="claim"><i class="fa fa-search"></i></button>
+                        </div>
+                    </form>
+                </div>
+                <div style="height: 10px;">&nbsp;</div>
+                <div class="row found-claim" id="found-claim">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/template" class="found-claim-template">
+    <div class="row" style="margin: 0px 5px;">
+        <table class="table table-striped table-condensed found-table" style="margin-bottom: 0px;">
+            <thead>
+                <tr>
+                    <th>Claim ID</th>
+                    <th>Patient's Name</th>
+                    <th>Date of Birth</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% _.each(claims, function(claim, i) { var p = claim.fields; %>
+                <tr class="found-claim-item" data-claim-index="<%- i %>">
+                    <td><%= claim.pk %></td>
+                    <td><%= p.patient.full_name %></td>
+                    <% var dob = moment(p.patient.dob, 'YYYY-MM-DD'); %>
+                    <td><%= dob.format('MM/DD/YYYY') %></td>
+                </tr>
+                <% }); %>
+            </tbody>
+        </table>
+        <% if(claims.length < 1) { %>
+        <h4 class="text-center not-found">The search did not match any claim.</h4>
+        <% } %>
+    </div>
+</script>

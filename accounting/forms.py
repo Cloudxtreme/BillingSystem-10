@@ -39,8 +39,11 @@ class PaymentMakeForm(forms.ModelForm):
 
 
 class PaymentApplyForm(forms.Form):
-    payment = forms.ModelChoiceField(queryset=Payment.objects.all())
-    claim = forms.ModelChoiceField(queryset=Claim.objects.all())
+    # payment = forms.ModelChoiceField(queryset=Payment.objects.all())
+    # claim = forms.ModelChoiceField(queryset=Claim.objects.all())
     procedure = forms.ModelChoiceField(queryset=Procedure.objects.all())
     amount = forms.DecimalField(max_digits=MAX_DIGITS, decimal_places=DECIMAL_PLACES, min_value=0)
     adjustment = forms.DecimalField(max_digits=MAX_DIGITS, decimal_places=DECIMAL_PLACES, required=False)
+
+    payment = forms.CharField(required=True)
+    claim = forms.CharField(required=True)

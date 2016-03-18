@@ -128,8 +128,11 @@ h2.text-center {
     margin-top: 0px;
 }
 
-
 .found-table tbody tr:hover {
     background-color: #fdfd96 !important;
     cursor: pointer;
+}
+
+.not-found {
+    color: #bbb;
 }

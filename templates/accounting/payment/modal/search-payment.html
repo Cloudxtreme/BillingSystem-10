@@ -1,0 +1,73 @@
+<div class="modal fade" id="search-payment-modal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Search Payment</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row search-payment">
+                    <form method="POST" action="{% url 'accounting:api_search_payment' %}">
+                        <div class="col-sm-3">
+                            <input type="text" name="insurance_name" class="form-control" placeholder="Insurance name">
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="input-group two-input">
+                                <input type="text" name="first_name" class="form-control" placeholder="Patient first name">
+                                <input type="text" name="last_name" class="form-control" placeholder="Patient last name">
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <input type="number" step="0.01" name="amount" class="form-control" placeholder="Amount">
+                        </div>
+                        <div class="col-sm-2">
+                            <input type="text" name="check_number" class="form-control" placeholder="Check number">
+                        </div>
+                        <div class="col-sm-1">
+                            <button type="button" class="btn btn-primary btn-block search-modal" id="search-payment-search" data-type="payment"><i class="fa fa-search"></i></button>
+                        </div>
+                    </form>
+                </div>
+                <div style="height: 10px;">&nbsp;</div>
+                <div class="row found-payment" id="found-payment">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/template" class="found-payment-template">
+    <div class="row" style="margin: 0px 5px;">
+        <table class="table table-striped table-condensed found-table" style="margin-bottom: 0px;">
+            <thead>
+                <tr>
+                    <th>Payment Date</th>
+                    <th>Payer Type</th>
+                    <th>Payer Name</th>
+                    <th>Amount ($)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% _.each(payments, function(payment, i) { var p = payment.fields; %>
+                <tr class="found-payment-item" data-payment-index="<%- i %>">
+                    <td><%= p.payment_date %></td>
+                    <td><%= p.payer_type %></td>
+                    <td><% if(p.payer_insurance) { %>
+                        <%= p.payer_insurance.name %>
+                    <% } else { %>
+                        <%= p.payer_patient.full_name %>
+                    <% } %></td>
+                    <td><%= p.amount %></td>
+                </tr>
+                <% }); %>
+            </tbody>
+        </table>
+        <% if(payments.length < 1) { %>
+        <h4 class="text-center not-found">The search did not match any payment.</h4>
+        <% } %>
+    </div>
+</script>
