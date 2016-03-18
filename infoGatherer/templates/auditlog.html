@@ -6,9 +6,9 @@
     {% block script %}
         <script src="{% static 'infoGatherer/js/tablesorter.min.js' %}"></script>
         {% if display %}
-            <script type="text/javascript" row_m={{display_rows_m}} row_c={{display_rows_c}} row_d={{display_rows_d}} display={{display}} src="{% static 'infoGatherer/js/audit_log.js' %}"></script>
+            <script type="text/javascript" typemcd={{typemcd}} row_m={{display_rows_m}} row_c={{display_rows_c}} row_d={{display_rows_d}} display={{display}} src="{% static 'infoGatherer/js/audit_log.js' %}"></script>
         {% else %}
-            <script type="text/javascript" row_m={{display_rows_m}} row_c={{display_rows_c}} row_d={{display_rows_d}} src="{% static 'infoGatherer/js/audit_log.js' %}"></script>
+            <script type="text/javascript" typemcd={{typemcd}} row_m={{display_rows_m}} row_c={{display_rows_c}} row_d={{display_rows_d}} src="{% static 'infoGatherer/js/audit_log.js' %}"></script>
         {% endif %}
     {% endblock script %}
     {% block link %}
@@ -18,7 +18,7 @@
 
 {% block body %}
 
-<div class=" container" style="width:1300px">
+<div class=" container" style="width:1500px">
     <h2>Audit Log</h2>
 
     <div class="panel with-nav-tabs panel-info">    
@@ -47,9 +47,9 @@
                 <!-- sidebar -->
                 <div class="col-xs-12 col-sm-1 sidebar-offcanvas" id="sidebar" role="navigation">
                     <ul class="nav with-sidebar-nav">
-                      <li class="active"><a href=".m" data-target=".m" data-toggle="tab"><strong>Modified</strong></a></li>
-                      <li ><a href=".c" data-target=".c" data-toggle="tab"><strong>Created</strong></a></li>
-                      <li ><a href=".d" data-target=".d" data-toggle="tab"><strong>Deleted</strong></a></li>
+                      <li id="mod" class="active"><a href=".m" data-target=".m" data-toggle="tab"><strong>Modified</strong></a></li>
+                      <li id="cre" ><a href=".c" data-target=".c" data-toggle="tab"><strong>Created</strong></a></li>
+                      <li id="del" ><a href=".d" data-target=".d" data-toggle="tab"><strong>Deleted</strong></a></li>
                     </ul>
                 </div>
 
@@ -61,23 +61,23 @@
                             <table class="myTable table tablesorter">
                                 <thead class="thead-default" >
                                     <tr>
-                                        <th>Row ID</th>
-                                        <th>Date/Time</th>
-                                        <th>First name</th>
-                                        <th>Last name</th>
-                                        <th>What changed</th>
-                                        <th>Old Value</th>
-                                        <th>New Value</th>
-                                        <th>History id</th>
-                                        <th>Who changed?</th>
+                                        <th>Row ID<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Date/Time<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>First name<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Last name<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>What changed<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Old Value<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>New Value<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>History id<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Who changed?<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                         {% for ele in pat_mod.modified %}
                                             {% if forloop.counter0|lessThan:display_rows_m %}
-                                    	    	<tr>
-                                        			<td>{{ forloop.counter }}</td>
-                                    				<td>{{ele.history_date}}</td>
+                                                <tr>
+                                                    <td>{{ forloop.counter }}</td>
+                                                    <td>{{ele.history_date}}</td>
                                                     <td>{{ele.first_name}}</td>
                                                     <td>{{ele.last_name}}</td>
                                                     <td>{{ele.change}}</td>
@@ -85,7 +85,7 @@
                                                     <td>{{ele.newvalue}}</td>
                                                     <td>{{ele.history_id}}</td>
                                                     <td>{{ele.history_user_id}}</td>
-                                        		</tr>
+                                                </tr>
                                             {% endif %}
                                         {% endfor %}
                                 </tbody>
@@ -95,12 +95,12 @@
                             <table class="myTable table tablesorter">
                                 <thead class="thead-default" >
                                     <tr>
-                                        <th>Row ID</th>
-                                        <th>Date/Time</th>
-                                        <th>First name</th>
-                                        <th>Last name</th>
-                                        <th>History id</th>
-                                        <th>Who changed?</th>
+                                        <th>Row ID<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Date/Time<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>First name<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Last name<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>History id<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Who changed?<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
 
                                     </tr>
                                 </thead>
@@ -122,12 +122,12 @@
                             <table class="myTable table tablesorter">
                                 <thead class="thead-default" >
                                     <tr>
-                                        <th>Row ID</th>
-                                        <th>Date/Time</th>
-                                        <th>First name</th>
-                                        <th>Last name</th>
-                                        <th>History id</th>
-                                        <th>Who changed?</th>
+                                        <th>Row ID<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Date/Time<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>First name<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Last name<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>History id<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Who changed?<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
 
                                     </tr>
                                 </thead>
@@ -156,14 +156,14 @@
                             <table class="myTable table tablesorter">
                                 <thead class="thead-default" >
                                     <tr>
-                                        <th>Row ID</th>
-                                        <th>Date/Time</th>
-                                        <th>Name</th>
-                                        <th>What changed</th>
-                                        <th>Old Value</th>
-                                        <th>New Value</th>
-                                        <th>History id</th>
-                                        <th>Who changed?</th>
+                                        <th>Row ID<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Date/Time<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Name<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>What changed<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Old Value<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>New Value<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>History id<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Who changed?<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -188,12 +188,11 @@
                             <table class="myTable table tablesorter">
                                 <thead class="thead-default" >
                                     <tr>
-                                        <th>Row ID</th>
-                                        <th>Date/Time</th>
-                                        <th>Name</th>
-                                        <th>History id</th>
-                                        <th>Who changed?</th>
-                                        <th>History type</th>
+                                        <th>Row ID<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Date/Time<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Name<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>History id<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Who changed?<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -205,7 +204,6 @@
                                                 <td>{{ele.name}}</td>
                                                 <td>{{ele.history_id}}</td>
                                                 <td>{{ele.history_user_id}}</td>
-                                                <td>{{ele.history_type|get_corresponding_text}}</td>
                                             </tr>
                                         {% endif %}
                                     {% endfor %}
@@ -216,12 +214,11 @@
                             <table class="myTable table tablesorter">
                                 <thead class="thead-default" >
                                     <tr>
-                                        <th>Row ID</th>
-                                        <th>Date/Time</th>
-                                        <th>Name</th>
-                                        <th>History id</th>
-                                        <th>Who changed?</th>
-                                        <th>History type</th>
+                                        <th>Row ID<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Date/Time<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Name<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>History id<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Who changed?<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -233,7 +230,6 @@
                                                 <td>{{ele.name}}</td>
                                                 <td>{{ele.history_id}}</td>
                                                 <td>{{ele.history_user_id}}</td>
-                                                <td>{{ele.history_type|get_corresponding_text}}</td>
                                             </tr>
                                         {% endif %}
                                     {% endfor %}
@@ -249,15 +245,15 @@
                             <table  class="myTable table tablesorter">
                                 <thead class="thead-default" >
                                     <tr>
-                                        <th>Row ID</th>
-                                        <th>Date/Time</th>
-                                        <th>Patient Name</th>
-                                        <th>Payer Name</th>
-                                        <th>What changed</th>
-                                        <th>Old Value</th>
-                                        <th>New Value</th>
-                                        <th>History id</th>
-                                        <th>Who changed?</th>
+                                        <th>Row ID<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Date/Time<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Patient Name<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Payer Name<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>What changed<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Old Value<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>New Value<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>History id<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Who changed?<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -283,12 +279,12 @@
                             <table  class="myTable table tablesorter">
                                 <thead class="thead-default" >
                                     <tr>
-                                        <th>Row ID</th>
-                                        <th>Date/Time</th>
-                                        <th>Patient Name</th>
-                                        <th>Payer Name</th>
-                                        <th>History id</th>
-                                        <th>Who changed?</th>
+                                        <th>Row ID<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Date/Time<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Patient Name<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Payer Name<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>History id<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Who changed?<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -311,12 +307,12 @@
                             <table  class="myTable table tablesorter">
                                 <thead class="thead-default" >
                                     <tr>
-                                        <th>Row ID</th>
-                                        <th>Date/Time</th>
-                                        <th>Patient Name</th>
-                                        <th>Payer Name</th>
-                                        <th>History id</th>
-                                        <th>Who changed?</th>
+                                        <th>Row ID<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Date/Time<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Patient Name<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Payer Name<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>History id<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Who changed?<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -346,14 +342,14 @@
                             <table  class="myTable table tablesorter">
                                 <thead class="thead-default" >
                                     <tr>
-                                        <th>Row ID</th>
-                                        <th>Date/Time</th>
-                                        <th>Provider Name</th>
-                                        <th>What changed</th>
-                                        <th>Old Value</th>
-                                        <th>New Value</th>
-                                        <th>History id</th>
-                                        <th>Who changed?</th>
+                                        <th>Row ID<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Date/Time<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Provider Name<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>What changed<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Old Value<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>New Value<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>History id<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Who changed?<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -377,11 +373,11 @@
                             <table  class="myTable table tablesorter">
                                 <thead class="thead-default" >
                                     <tr>
-                                        <th>Row ID</th>
-                                        <th>Date/Time</th>
-                                        <th>Provider Name</th>
-                                        <th>History id</th>
-                                        <th>Who changed?</th>
+                                        <th>Row ID<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Date/Time<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Provider Name<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>History id<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Who changed?<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -403,11 +399,11 @@
                             <table  class="myTable table tablesorter">
                                 <thead class="thead-default" >
                                     <tr>
-                                        <th>Row ID</th>
-                                        <th>Date/Time</th>
-                                        <th>Provider Name</th>
-                                        <th>History id</th>
-                                        <th>Who changed?</th>
+                                        <th>Row ID<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Date/Time<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Provider Name<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>History id<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Who changed?<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -435,15 +431,15 @@
                             <table  class="myTable table tablesorter">
                                 <thead class="thead-default" >
                                     <tr>
-                                        <th>Row ID</th>
-                                        <th>Date/Time</th>
-                                        <th>CPT code</th>
-                                        <th>CPT description</th>
-                                        <th>What changed</th>
-                                        <th>Old Value</th>
-                                        <th>New Value</th>
-                                        <th>History id</th>
-                                        <th>Who changed?</th>
+                                        <th>Row ID<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Date/Time<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>CPT code<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>CPT description<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>What changed<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Old Value<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>New Value<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>History id<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Who changed?<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -469,12 +465,12 @@
                             <table  class="myTable table tablesorter">
                                 <thead class="thead-default" >
                                     <tr>
-                                        <th>Row ID</th>
-                                        <th>Date/Time</th>
-                                        <th>CPT code</th>
-                                        <th>CPT description</th>
-                                        <th>History id</th>
-                                        <th>Who changed?</th>
+                                        <th>Row ID<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Date/Time<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>CPT code<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>CPT description<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>History id<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Who changed?<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -497,12 +493,12 @@
                             <table  class="myTable table tablesorter">
                                 <thead class="thead-default" >
                                     <tr>
-                                        <th>Row ID</th>
-                                        <th>Date/Time</th>
-                                        <th>CPT code</th>
-                                        <th>CPT description</th>
-                                        <th>History id</th>
-                                        <th>Who changed?</th>
+                                        <th>Row ID<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Date/Time<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>CPT code<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>CPT description<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>History id<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Who changed?<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -534,14 +530,14 @@
                             <table class="myTable table tablesorter">
                                 <thead class="thead-default" >
                                     <tr>
-                                        <th>Row ID</th>
-                                        <th>Date/Time</th>
-                                        <th>ICD 10</th>
-                                        <th>What changed</th>
-                                        <th>Old Value</th>
-                                        <th>New Value</th>
-                                        <th>History id</th>
-                                        <th>Who changed?</th>
+                                        <th>Row ID<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Date/Time<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>ICD 10<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>What changed<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Old Value<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>New Value<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>History id<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Who changed?<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -566,11 +562,11 @@
                             <table class="myTable table tablesorter">
                                 <thead class="thead-default" >
                                     <tr>
-                                        <th>Row ID</th>
-                                        <th>Date/Time</th>
-                                        <th>ICD 10</th>
-                                        <th>History id</th>
-                                        <th>Who changed?</th>
+                                        <th>Row ID<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Date/Time<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>ICD 10<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>History id<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Who changed?<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -592,11 +588,11 @@
                             <table class="myTable table tablesorter">
                                 <thead class="thead-default" >
                                     <tr>
-                                        <th>Row ID</th>
-                                        <th>Date/Time</th>
-                                        <th>ICD 10</th>
-                                        <th>History id</th>
-                                        <th>Who changed?</th>
+                                        <th>Row ID<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Date/Time<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>ICD 10<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>History id<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Who changed?<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -626,15 +622,15 @@
                             <table class="myTable table tablesorter">
                                 <thead class="thead-default" >
                                     <tr>
-                                        <th>Row ID</th>
-                                        <th>Date/Time</th>
-                                        <th>First Name</th>
-                                        <th>Last Name</th>
-                                        <th>What changed</th>
-                                        <th>Old Value</th>
-                                        <th>New Value</th>
-                                        <th>History id</th>
-                                        <th>Who changed?</th>
+                                        <th>Row ID<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Date/Time<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>First name<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Last name<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>What changed<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Old Value<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>New Value<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>History id<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Who changed?<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -660,12 +656,12 @@
                             <table class="myTable table tablesorter">
                                 <thead class="thead-default" >
                                     <tr>
-                                        <th>Row ID</th>
-                                        <th>Date/Time</th>
-                                        <th>First Name</th>
-                                        <th>Last Name</th>
-                                        <th>History id</th>
-                                        <th>Who changed?</th>
+                                        <th>Row ID<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Date/Time<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>First name<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Last name<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>History id<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Who changed?<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -688,12 +684,12 @@
                             <table class="myTable table tablesorter">
                                 <thead class="thead-default" >
                                     <tr>
-                                        <th>Row ID</th>
-                                        <th>Date/Time</th>
-                                        <th>First Name</th>
-                                        <th>Last Name</th>
-                                        <th>History id</th>
-                                        <th>Who changed?</th>
+                                        <th>Row ID<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Date/Time<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>First name<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Last name<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>History id<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Who changed?<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
                                     </tr>
                                 </thead>
                                 <tbody>

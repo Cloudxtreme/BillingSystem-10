@@ -166,3 +166,7 @@ table {
 .panel-info>.panel-heading {
     border-color: #fff;
 }
+
+.glyphicon{
+    margin-left:9px;
+} 
