@@ -73,6 +73,7 @@ class Procedure(BaseModel):
     rendering_provider = models.ForeignKey(Provider, limit_choices_to={'role': 'rendering'}, related_name='procedure_rendering_provider')
     cpt = models.ForeignKey(CPT)
     charge = models.DecimalField(max_digits=MAX_DIGITS, decimal_places=DECIMAL_PLACES)
+    date_of_service = models.DateField()
 
     def __str__(self):
         return '%s, %s' % (self.id, self.cpt.cpt_description)
@@ -99,7 +100,13 @@ class Payment(BaseModel):
         return '%s, $%s' % (self.id, self.amount)
 
     def natural_key(self):
-        return (self.payment_date, self.payer_type, self.amount, self.check_number)
+        return dict({
+            'id': self.id,
+            'payment_date': self.payment_date,
+            'payer_type': self.payer_type,
+            'amount': self.amount,
+            'check_number': self.check_number
+        })
 
 
 @python_2_unicode_compatible
@@ -116,3 +123,11 @@ class AppliedPayment(BaseModel):
 
     def __str__(self):
         return '%s, %s, %s' % (self.id, self.amount, self.adjustment)
+
+    def natural_key(self):
+        return dict({
+            'id': self.id,
+            'amount': self.amount,
+            'adjustment': self.adjustment
+        })
+

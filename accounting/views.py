@@ -68,6 +68,30 @@ def api_search_claim(request):
     else:
         return JsonResponse([], safe=False)
 
+def api_search_procedure(request):
+    if request.method == 'POST':
+        post_data = request.POST
+        procedure = Procedure.objects.filter(claim=post_data.get('claim_id'))
+
+        s = serializers.serialize('python', procedure, use_natural_foreign_keys=True)
+        return JsonResponse(data=s, safe=False)
+    else:
+        return JsonResponse([], safe=False)
+
+def api_search_applied_payment(request):
+    if request.method == 'POST':
+        post_data = request.POST
+        ap = AppliedPayment.objects.filter(
+            claim=post_data.get('claim_id'),
+            payment=post_data.get('payment_id'),
+        )
+
+        s = serializers.serialize('python', ap, use_natural_foreign_keys=True)
+        return JsonResponse(data=s, safe=False)
+    else:
+        return JsonResponse([], safe=False)
+
+
 
 # def get_make_claim_extra_context(request):
 #     p_set = Personal_Information.objects.values('chart_no', 'first_name', 'last_name', 'address', 'city').order_by('first_name')

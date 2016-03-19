@@ -10,4 +10,6 @@ urlpatterns = [
 
     url(r'^api_search_payment/', views.api_search_payment, name="api_search_payment"),
     url(r'^api_search_claim/', views.api_search_claim, name="api_search_claim"),
+    url(r'^api_search_procedure/', views.api_search_procedure, name="api_search_procedure"),
+    url(r'^api_search_applied_payment/', views.api_search_applied_payment, name="api_search_applied_payment"),
 ]

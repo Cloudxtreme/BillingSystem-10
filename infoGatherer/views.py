@@ -470,12 +470,14 @@ def PostAdPage(request):
                     cpt_code = request.POST['cpt_code_%s' % i]
                     cpt = CPT.objects.get(cpt_code=cpt_code)
                     charge = request.POST['total_%s' % i]
+                    date_of_service = request.POST['service_start_date_%s' % i]
                     if(cpt and charge):
                         Procedure.objects.create(
                             claim=claim,
                             rendering_provider=rendering_provider,
                             cpt=cpt,
                             charge=charge,
+                            date_of_service=date_of_service,
                         )
 
             var = print_form(request.POST);

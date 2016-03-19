@@ -74,13 +74,9 @@
             </div>
         </div>
 
-        <div class="row">
-            <div class="form-group col-sm-6">
-                <label class="control-label">Procedure</label>
-                {{ form.procedure|add_class:"form-control" }}
-            </div>
-        </div>
+        {% include "./accounting/payment/template/search-procedure.html" %}
 
+        <!--
         <div class="row">
             <div class="form-group col-sm-6">
                 <label class="control-label required">Amount</label>
@@ -94,17 +90,19 @@
                 {{ form.adjustment|add_class:"form-control" }}
             </div>
         </div>
+        -->
 
         <input type="submit" value="Make Payment" class="btn btn-success">
         <a href="{% url 'dashboard:dashboard' %}" class="padding-btn margin-left link-btn-danger">Cancel</a>
     </form>
 </div>
 
-{% include "./accounting/payment/modal/search-payment.html" %}
-{% include "./accounting/payment/modal/search-claim.html" %}
+{% include "./accounting/payment/template/search-payment.html" %}
+{% include "./accounting/payment/template/search-claim.html" %}
 
 
 <script>
+'use strict';
 (function() {
     function toggleLoadingIcon(el) {
         var button = $($(el).children().get(0));
@@ -127,7 +125,7 @@
         var type = $(button).data('type');
         toggleLoadingIcon(button);
 
-        form = $(e.currentTarget).closest('form');
+        var form = $(e.currentTarget).closest('form');
         $.post(form.attr('action'), form.serialize())
             .done(function(objects) {
                 // Append search result into Modal
@@ -161,14 +159,18 @@
         // Assign value to UI
         var p = payments[index];
         var fields = p.fields;
-        $('.payment-section input[name="payment"]').val(p.pk);
-        $('.payment-section input[name="payment_date"]').val(fields.payment_date);
-        $('.payment-section input[name="payer_type"]').val(fields.payer_type);
+        var paymentSection = $('.payment-section');
+        paymentSection.find('input[name="payment"]').val(p.pk);
+        paymentSection.find('input[name="payment_date"]').val(fields.payment_date);
+        paymentSection.find('input[name="payer_type"]').val(fields.payer_type);
+
         if(fields.payer_insurance)
-            $('.payment-section input[name="payer_name"]').val(fields.payer_insurance.name);
+            paymentSection.find('input[name="payer_name"]').val(fields.payer_insurance.name);
         else
-            $('.payment-section input[name="payer_name"]').val(fields.payer_patient.full_name);
-        $('.payment-section input[name="amount"]').val(fields.amount);
+            paymentSection.find('input[name="payer_name"]').val(fields.payer_patient.full_name);
+        
+        paymentSection.find('input[name="amount"]').val(fields.amount);
+        displayAppliedPaymentTable();
     };
 
     // Click function for found claim item
@@ -178,12 +180,59 @@
         // Assign value to UI
         var c = claims[index];
         var fields = c.fields;
-        $('.claim-section input[name="claim"]').val(c.pk);
-        $('.claim-section input[name="first_name"]').val(fields.patient.first_name);
-        $('.claim-section input[name="last_name"]').val(fields.patient.last_name);
+        var claimSection = $('.claim-section');
+        claimSection.find('input[name="claim"]').val(c.pk);
+        claimSection.find('input[name="first_name"]').val(fields.patient.first_name);
+        claimSection.find('input[name="last_name"]').val(fields.patient.last_name);
         var dob = moment(fields.patient.dob, 'YYYY-MM-DD');
-        $('.claim-section input[name="dob"]').val(dob.format('MM/DD/YYYY'));
+        claimSection.find('input[name="dob"]').val(dob.format('MM/DD/YYYY'));
+
+        displayAppliedPaymentTable();
     };
+
+    function displayAppliedPaymentTable() {
+        var claim_id = $('.claim-section input[name="claim"]').val();
+        var payment_id = $('.payment-section input[name="payment"]').val();
+        var firstRowArea = $('#found-procedure');
+
+        if(claim_id && payment_id) {
+            firstRowArea.html(`
+                <td colspan="100"><h4 class="text-center not-found">
+                    <i class="fa fa-refresh fa-2x fa-spin"></i>
+                </h4><td>
+            `);
+
+            $.when(
+                $.post('{% url "accounting:api_search_procedure" %}',
+                    'claim_id=' + claim_id),
+                $.post('{% url "accounting:api_search_applied_payment" %}',
+                    'claim_id=' + claim_id +
+                    '&payment_id=' + payment_id)
+            )
+                .done(function(procedures, appliedPayments) {
+                    if(procedures.length > 0 && appliedPayments.length > 0) {
+                        var hm = {}
+                        for(var p of procedures[0]) {
+                            p.fields.appliedPayment = [];
+                            hm[p.pk] = p;
+                        }
+
+                        for(var ap of appliedPayments[0])
+                            hm[ap.fields.procedure].fields.appliedPayment.push(ap.fields);
+
+                        var foundObjectTemplate = _.template($('script.found-procedure-template').html(), {variable: 'procedures'});
+                        $('#found-procedure').html(foundObjectTemplate(procedures[0]));
+                    }
+                })
+                .fail(function() {
+                    firstRowArea.html(`
+                        <td colspan="100"><h4 class="text-center not-found">
+                            An unexptected error has occured, please try again later.
+                        </h4><td>
+                    `);
+                })
+        }
+    }
 })();
 </script>
 {% endblock body %}
