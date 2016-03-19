@@ -14,11 +14,36 @@ function modCreDel(){
     
 };
 
+function searchTable(ele){
+    var this_js_script = $('script[src*=audit_log]');
 
+    console.log("this is ele");
+    console.log(ele);
 
+    if(typeof ele == 'undefined'){
+        ele=this_js_script.attr('display');
+    }
+    var disp=ele;
+    var $rows = $('#'+disp+' tbody tr');
+
+    console.log($rows);
+
+    $('#search').keyup(function() {
+        var val = $.trim($(this).val()).replace(/ +/g, ' ').toLowerCase();
+        
+        $rows.show().not(':first').filter(function() {
+            var text = $(this).text().replace(/\s+/g, ' ').toLowerCase();
+            return !~text.indexOf(val);
+        }).hide();
+    });
+}
 
 $(document).ready(function(){
     var this_js_script = $('script[src*=audit_log]');
+
+    //serach at startup
+    searchTable();
+
     $("#mod").click(function(){
         $("#fillMe").html(replaceMe(this_js_script.attr('display'),"mod",this_js_script.attr('row_m')));
     });
@@ -74,9 +99,12 @@ $(document).ready(function(){
 
     // Replace text in page dropdown
 
-    // $('.changeDropdownContent').on('click', function(){
-    //     $("#showEntriesNav").html(showEntry(this_js_script.attr('row_m')));
-    // });
+    $('.changeDropdownContent').on('click', function(){
+        // send this!!!
+        console.log("clicked!!");
+        console.log($(this).attr("href").substring(1));
+        searchTable($(this).attr("href").substring(1));
+    });
     
 });
 
