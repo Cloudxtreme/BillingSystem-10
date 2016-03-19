@@ -467,10 +467,10 @@ def PostAdPage(request):
 
             for i in xrange(1, form.rows+1):
                 if(form.cleaned_data.get('cpt_code_%s' % i)):
-                    cpt_code = request.POST['cpt_code_%s' % i]
+                    cpt_code = form.cleaned_data.get('cpt_code_%s' % i)
                     cpt = CPT.objects.get(cpt_code=cpt_code)
-                    charge = request.POST['total_%s' % i]
-                    date_of_service = request.POST['service_start_date_%s' % i]
+                    charge = form.cleaned_data.get('total_%s' % i)
+                    date_of_service = form.cleaned_data.get('service_start_date_%s' % i)
                     if(cpt and charge):
                         Procedure.objects.create(
                             claim=claim,
