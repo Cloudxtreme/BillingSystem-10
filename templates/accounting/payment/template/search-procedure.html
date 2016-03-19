@@ -35,6 +35,7 @@
             balance = balance - parseFloat(ap.amount) + parseFloat(ap.adjustment);
             var dos = moment(p.date_of_service, 'YYYY-MM-DD');
         }
+        console.log('here');
     %>
     <tr class="found-procedure-item" data-procedure-id="<%- procedure.pk %>" data-procedure-index="<%- i %>">
         <td><%= dos.format('MM/DD/YYYY') %></td>
