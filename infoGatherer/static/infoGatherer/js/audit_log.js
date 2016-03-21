@@ -15,7 +15,7 @@ function modCreDel(){
     
 };
 
-function searchTable(ele, notMod){
+function searchTable(ele){
     var this_js_script = $('script[src*=audit_log]');
 
     console.log("this is ele");
@@ -31,7 +31,7 @@ function searchTable(ele, notMod){
 
 
     var $rows = $('#'+disp+' tr');
-    
+
     $('#search').keyup(function() {
         var val = $.trim($(this).val()).replace(/ +/g, ' ').toLowerCase();
         
@@ -51,17 +51,14 @@ $(document).ready(function(){
 
     $("#mod").click(function(){
         activeSide="mod";
-        searchTable(activeTab,false);
         $("#fillMe").html(replaceMe(this_js_script.attr('display'),"mod",this_js_script.attr('row_m')));
     });
     $("#cre").click(function(){
         activeSide="cre";
-        searchTable(activeTab,true);
         $("#fillMe").html(replaceMe(this_js_script.attr('display'),"cre",this_js_script.attr('row_m')));
     });
     $("#del").click(function(){
         activeSide="del";
-        searchTable(activeTab,true)
         $("#fillMe").html(replaceMe(this_js_script.attr('display'),"del",this_js_script.attr('row_m')));
     });
 
