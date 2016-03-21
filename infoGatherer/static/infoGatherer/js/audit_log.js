@@ -1,5 +1,6 @@
 
-
+var tab="patient";
+var sideTab="mod";
 
 function modCreDel(){
     if($("#mod").hasClass("active")){
@@ -52,12 +53,15 @@ $(document).ready(function(){
     searchTable();
 
     $("#mod").click(function(){
+        sideTab="mod";
         $("#fillMe").html(replaceMe(this_js_script.attr('display'),"mod",this_js_script.attr('row_m')));
     });
     $("#cre").click(function(){
+        sideTab="cre";
         $("#fillMe").html(replaceMe(this_js_script.attr('display'),"cre",this_js_script.attr('row_m')));
     });
     $("#del").click(function(){
+        sideTab="del";
         $("#fillMe").html(replaceMe(this_js_script.attr('display'),"del",this_js_script.attr('row_m')));
     });
 
@@ -70,6 +74,12 @@ $(document).ready(function(){
     console.log(this_js_script.attr('search')+"<-this is what was sent!");
     $("#search").val(this_js_script.attr('search'));
     $("#search").keyup();
+});
+
+$(document).ready(function(){
+    $("#search").on("keyup",function(){
+        $("#fillMe").html(replaceMe(tab, sideTab, "10"));
+    })
 });
 
 
@@ -87,9 +97,11 @@ $(document).ready(function(){
 
 
     $('#patienthref').on('click', function(){
+        tab="patient";
         $("#fillMe").html(replaceMe("patient",modCreDel(),this_js_script.attr('row_m')));
     });
     $('#payerhref').on('click', function(){
+        tab="payer";
         $("#fillMe").html(replaceMe("payer",modCreDel(),this_js_script.attr('row_m')));
     });
     $('#insurancehref').on('click', function(){
