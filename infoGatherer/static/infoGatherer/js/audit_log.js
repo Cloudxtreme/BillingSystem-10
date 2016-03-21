@@ -18,41 +18,21 @@ function modCreDel(){
 function searchTable(ele){
     var this_js_script = $('script[src*=audit_log]');
 
-    console.log("this is ele");
-    console.log(ele);
-
     if(typeof ele == 'undefined'){
         ele=this_js_script.attr('display');
     }
     var disp=ele;
 
-    console.log("asfasdfasdf");
-    console.log(modCreDel());
-
-    
     $('#search').keyup(function() {
         // So that the correct url is generated on each keyup
         $("#fillMe").html(replaceMe(tab, sideTab, this_js_script.attr('row_m')));
-        
-        // $rows.show().not(':first').filter(function() {
-        //     var text = $(this).text().replace(/\s+/g, ' ').toLowerCase();
-        //     return !~text.indexOf(val);
-        // }).hide();
-
-
-        // if(modCreDel()=="mod"){
-        //     var $rows = $('#'+disp+' tr');
-        // }else{
-        //     console.log("not mad");
-        //     var $rows = $('#'+disp+' tbody tr');
-        // }
 
         var $rows = $('#'+disp+' tbody tr');
 
         var val = $.trim($(this).val()).replace(/ +/g, ' ').toLowerCase();
         
         if(modCreDel()=="mod"){
-            $rows.show().filter(function() {
+            $rows.show().filter(function() {    
                 var text = $(this).text().replace(/\s+/g, ' ').toLowerCase();
                 return !~text.indexOf(val);
             }).hide();
@@ -73,19 +53,16 @@ $(document).ready(function(){
 
     $("#mod").click(function(){
         sideTab="mod";
-        console.log("mod");
         $('#search').keyup();
         $("#fillMe").html(replaceMe(this_js_script.attr('display'),"mod",this_js_script.attr('row_m')));
     });
     $("#cre").click(function(){
         sideTab="cre";
-        console.log("cre");
         $('#search').keyup();
         $("#fillMe").html(replaceMe(this_js_script.attr('display'),"cre",this_js_script.attr('row_m')));
     });
     $("#del").click(function(){
         sideTab="del";
-        console.log("del");
         $('#search').keyup();
         $("#fillMe").html(replaceMe(this_js_script.attr('display'),"del",this_js_script.attr('row_m')));
     });
@@ -96,7 +73,6 @@ $(document).ready(function(){
 // Fill in search bar
 $(document).ready(function(){
     var this_js_script = $('script[src*=audit_log]');
-    console.log(this_js_script.attr('search')+"<-this is what was sent!");
     $("#search").val(this_js_script.attr('search'));
     $("#search").keyup();
 });
@@ -148,8 +124,6 @@ $(document).ready(function(){
 
     $('.changeDropdownContent').on('click', function(){
         // send this!!!
-        console.log("clicked!!");
-        console.log($(this).attr("href").substring(1));
         searchTable($(this).attr("href").substring(1));
         $("#search").keyup();
     });
@@ -161,7 +135,6 @@ $(document).ready(function(){
     var this_js_script = $('script[src*=audit_log]');
     if(typeof this_js_script.attr('display') != 'undefined'){
         var display = this_js_script.attr('display');
-        console.log(display);
         if(display.localeCompare("patient")==0){
             $( "#patienthref" ).trigger( "click" );
         }
@@ -193,7 +166,6 @@ $(document).ready(function(){
     var this_js_script = $('script[src*=audit_log]');
     if(typeof this_js_script.attr('typemcd') != 'undefined'){
         var display = this_js_script.attr('typemcd');
-        console.log(display);
         if(display.localeCompare("mod")==0){
             $( "#mod a" ).trigger( "click" );
         }
