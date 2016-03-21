@@ -3,13 +3,11 @@
 {% load widget_tweaks %}
 {% load staticfiles %}
     <title>Sortable Table</title>
+
     {% block script %}
         <script src="{% static 'infoGatherer/js/tablesorter.min.js' %}"></script>
-        {% if display %}
-            <script type="text/javascript" typemcd={{typemcd}} row_m={{display_rows_m}} row_c={{display_rows_c}} row_d={{display_rows_d}} display={{display}} src="{% static 'infoGatherer/js/audit_log.js' %}"></script>
-        {% else %}
-            <script type="text/javascript" typemcd={{typemcd}} row_m={{display_rows_m}} row_c={{display_rows_c}} row_d={{display_rows_d}} src="{% static 'infoGatherer/js/audit_log.js' %}"></script>
-        {% endif %}
+        <script type="text/javascript" search={% if search %}{{search}}{% else %}""{% endif %} typemcd={{typemcd}} row_m={{display_rows_m}} row_c={{display_rows_c}} row_d={{display_rows_d}} display={{display}} src="{% static 'infoGatherer/js/audit_log.js' %}"></script>
+        
     {% endblock script %}
     {% block link %}
         <link rel="stylesheet" href="{% static 'infoGatherer/css/audit_log.css' %}">
@@ -17,7 +15,6 @@
 
 
 {% block body %}
-
 <div class=" container" style="width:1500px">
     <h2>Audit Log</h2>
 

@@ -170,3 +170,9 @@ table {
 .glyphicon{
     margin-left:9px;
 } 
+
+/* SearchBar */
+
+li input#search{
+    margin-top: 8px;
+}
