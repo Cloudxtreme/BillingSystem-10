@@ -31,14 +31,13 @@
     _.each(procedures, function(procedure, i) {
         var p = procedure.fields;
         var balance = parseFloat(p.charge);
-        for(var ap of p.appliedPayment) {
+        var dos = moment(p.date_of_service, 'YYYY-MM-DD').format('MM/DD/YYYY');
+
+        for(var ap of p.appliedPayment)
             balance = balance - parseFloat(ap.amount) + parseFloat(ap.adjustment);
-            var dos = moment(p.date_of_service, 'YYYY-MM-DD');
-        }
-        console.log('here');
     %>
     <tr class="found-procedure-item" data-procedure-id="<%- procedure.pk %>" data-procedure-index="<%- i %>">
-        <td><%= dos.format('MM/DD/YYYY') %></td>
+        <td><%= dos %></td>
         <td><%= p.cpt %></td>
         <td><%= p.charge %></td>
         <td><%= balance.toFixed(2) %></td>
