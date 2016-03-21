@@ -6,7 +6,7 @@
 
     {% block script %}
         <script src="{% static 'infoGatherer/js/tablesorter.min.js' %}"></script>
-        <script type="text/javascript" search={% if search %}{{search}}{% else %}""{% endif %} typemcd={{typemcd}} row_m={{display_rows_m}} row_c={{display_rows_c}} row_d={{display_rows_d}} display={{display}} src="{% static 'infoGatherer/js/audit_log.js' %}"></script>
+        <script type="text/javascript" search={% if search %}{{search}}{% else %}""{% endif %} typemcd={{typemcd}} row_m={{display_rows_m}} display={{display}} src="{% static 'infoGatherer/js/audit_log.js' %}"></script>
         
     {% endblock script %}
     {% block link %}

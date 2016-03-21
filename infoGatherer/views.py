@@ -372,8 +372,6 @@ def view_audit_log(request):
         'rp_mod' :rf_mod,
         'display' : 'payer' if 'payer' in request.GET else 'insurance' if 'insurance' in request.GET else 'provider' if 'provider' in request.GET else 'cpt' if 'cpt' in request.GET else 'dx' if 'dx' in request.GET else 'rp' if 'rp' in request.GET else 'patient' ,
         'display_rows_m': request.GET['num_m'] if 'num_m' in request.GET and request.GET['num_m'] else '10' ,
-        'display_rows_c': request.GET['num_c'] if 'num_c' in request.GET and request.GET['num_c'] else '10' ,
-        'display_rows_d': request.GET['num_d'] if 'num_d' in request.GET and request.GET['num_d'] else '10' ,
         'typemcd' : request.GET['typemcd'] if 'typemcd' in request.GET else 'mod' ,
         'search' : request.GET['search'] if 'search' in request.GET and request.GET['search'] else ""
     })
