@@ -2,14 +2,12 @@
 {% load tags_extra %}
 {% load widget_tweaks %}
 {% load staticfiles %}
-    <title>Sortable Table</title>
+    {% block title %} Audit Claim {% endblock title %}
+
     {% block script %}
         <script src="{% static 'infoGatherer/js/tablesorter.min.js' %}"></script>
-        {% if display_rows and display %}
-            <script type="text/javascript" datamy={{display_rows}} display={{display}} src="{% static 'infoGatherer/js/audit_log.js' %}"></script>
-        {% else %}
-            <script type="text/javascript" datamy={{display_rows}} src="{% static 'infoGatherer/js/audit_log.js' %}"></script>
-        {% endif %}
+        <script type="text/javascript" search={% if search %}{{search}}{% else %}""{% endif %} typemcd={{typemcd}} row_m={{display_rows_m}} display={{display}} src="{% static 'infoGatherer/js/audit_log.js' %}"></script>
+        
     {% endblock script %}
     {% block link %}
         <link rel="stylesheet" href="{% static 'infoGatherer/css/audit_log.css' %}">
@@ -17,997 +15,702 @@
 
 
 {% block body %}
-
-<div class=" container">
+<div class=" container" style="width:1500px">
     <h2>Audit Log</h2>
 
-    <ul class="nav nav-tabs">
-        <li class="active"><a href="#patient" id="patienthref" data-target="#patient" data-toggle="tab"><strong>Patient</strong></a></li>
-        <li><a href="#payer" id="payerhref" data-target="#payer" data-toggle="tab"><strong>Payer</strong></a></li>
-        <li><a href="#insurance" id="insurancehref" data-target="#insurance" data-toggle="tab"><strong>Insurance</strong></a></li>
-        <li><a href="#provider" id="providerhref" data-target="#provider" data-toggle="tab"><strong>Provider</strong></a></li>
-        <li><a href="#rp" id="rphref" data-target="#rp" data-toggle="tab"><strong>Referring Provider</strong></a></li>
-        <li><a href="#cpt" id="cpthref" data-target="#cpt" data-toggle="tab"><strong>CPT</strong></a></li>
-        <li><a href="#dx" id="dxhref" data-target="#dx" data-toggle="tab"><strong>DX</strong></a></li>
-    </ul>
-    <p></p><p></p>
+    <div class="panel with-nav-tabs panel-info">    
+        <div class="panel-heading">
+            <ul class="nav nav-tabs ">
+                <li class="active"><a class="changeDropdownContent" href="#patient" id="patienthref" data-target="#patient" data-toggle="tab"><strong>Patient</strong></a></li>
+                <li><a href="#payer" class="changeDropdownContent" id="payerhref" data-target="#payer" data-toggle="tab"><strong>Payer</strong></a></li>
+                <li><a href="#insurance" class="changeDropdownContent" id="insurancehref" data-target="#insurance" data-toggle="tab"><strong>Insurance</strong></a></li>
+                <li><a href="#provider" class="changeDropdownContent" id="providerhref" data-target="#provider" data-toggle="tab"><strong>Provider</strong></a></li>
+                <li><a href="#rp" class="changeDropdownContent" id="rphref" data-target="#rp" data-toggle="tab"><strong>Referring Provider</strong></a></li>
+                <li><a href="#cpt" class="changeDropdownContent" id="cpthref" data-target="#cpt" data-toggle="tab"><strong>CPT</strong></a></li>
+                <li><a href="#dx" class="changeDropdownContent" id="dxhref" data-target="#dx" data-toggle="tab"><strong>DX</strong></a></li>
 
-
-
-    <div class="tab-content">
-        <!-- sidebar -->
-        <div class="col-xs-12 col-sm-1 sidebar-offcanvas" id="sidebar" role="navigation">
-            <ul class="nav">
-              <li class="active"><a href="m" data-target=".m" data-toggle="tab">Modified</a></li>
-              <li ><a href="c" data-target=".c" data-toggle="tab">Created</a></li>
-              <li><a href="d" data-target=".d" data-toggle="tab">Deleted</a></li>     
+                <li id="fillMe" class="dropdown pull-right">
+                    <a href="#" data-toggle="dropdown"><strong id="showEntriesNav">Show 10 Entries</strong><span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="?num_m=5&amp;num_c=5&amp;num_d=5&amp;patient=1">5</a></li>
+                        <li><a href="?num_m=10&amp;num_c=10&amp;num_d=10&amp;patient=1">10 (default)</a></li>
+                        <li><a href="?num_m=25&amp;num_c=25&amp;num_d=25&amp;patient=1">25</a></li>
+                        <li><a href="?num_m=all&amp;num_c=all&amp;num_d=all&amp;patient=1">All</a></li>
+                    </ul>
+                </li>
+                <li class=""><input type="text" id="search" placeholder="Type to search"></li>
             </ul>
         </div>
-        <!-- Patient Information -->
-
-        <div id="patient" class="col-xs-12 col-sm-11 row row-offcanvas row-offcanvas-left  tab-pane fade in active">
+        <div class="panel-body">
             <div class="tab-content">
-                <div  class="m tab-pane fade in active">
-                    <div class="btn-group ">
-                        <button type="button" class="btn btn-primary dropButton" >Modified</button>
-                        <button type="button" class="btn btn-primary dropdown-toggle dropButton2" data-toggle="dropdown">
-                            <span class="caret"></span>
-                            <span class="sr-only">Toggle Dropdown</span>
-                        </button>
-                        <ul class="dropdown-menu" role="menu">
-                            <li><a href="?num_m=5&amp;num_c={{display_rows_c}}&amp;num_d={{display_rows_d}}&amp;patient=1">5</a></li>
-                            <li><a href="?num_m=10&amp;num_c={{display_rows_c}}&amp;num_d={{display_rows_d}}&amp;patient=1">10 (default)</a></li>
-                            <li><a href="?num_m=25&amp;num_c={{display_rows_c}}&amp;num_d={{display_rows_d}}&amp;patient=1">25</a></li>
-                            <li><a href="?num_m=all&amp;num_c={{display_rows_c}}&amp;num_d={{display_rows_d}}&amp;patient=1">All</a></li>
-                        </ul>
-                    </div>
-                    <p></p>
-                    <table class="myTable table tablesorter">
-                        <thead class="thead-default" >
-                            <tr>
-                                <th>Row ID</th>
-                                <th>Date/Time</th>
-                                <th>First name</th>
-                                <th>Last name</th>
-                                <th>What changed</th>
-                                <th>Old Value</th>
-                                <th>New Value</th>
-                                <th>History id</th>
-                                <th>Who changed?</th>
-
-                            </tr>
-                        </thead>
-                        <tbody>
-                                {% for ele in pat_mod.modified %}
-                                    {% if forloop.counter0|lessThan:display_rows_m %}
-                            	    	<tr>
-                                			<td>{{ forloop.counter }}</td>
-                            				<td>{{ele.history_date}}</td>
-                                            <td>{{ele.first_name}}</td>
-                                            <td>{{ele.last_name}}</td>
-                                            <td>{{ele.change}}</td>
-                                            <td>{{ele.oldvalue}}</td>
-                                            <td>{{ele.newvalue}}</td>
-                                            <td>{{ele.history_id}}</td>
-                                            <td>{{ele.history_user_id}}</td>
-                                		</tr>
-                                    {% endif %}
-                                {% endfor %}
-                        </tbody>
-                    </table>
+                <!-- sidebar -->
+                <div class="col-xs-12 col-sm-1 sidebar-offcanvas" id="sidebar" role="navigation">
+                    <ul class="nav with-sidebar-nav">
+                      <li id="mod" class="active"><a href=".m" data-target=".m" data-toggle="tab"><strong>Modified</strong></a></li>
+                      <li id="cre" ><a href=".c" data-target=".c" data-toggle="tab"><strong>Created</strong></a></li>
+                      <li id="del" ><a href=".d" data-target=".d" data-toggle="tab"><strong>Deleted</strong></a></li>
+                    </ul>
                 </div>
-                <p></p>
-                <div  class="c tab-pane fade">
-                    <div class="btn-group ">
-                        <button type="button" class="btn btn-success dropButton" >Created</button>
-                        <button type="button" class="btn btn-success dropdown-toggle dropButton2" data-toggle="dropdown">
-                            <span class="caret"></span>
-                            <span class="sr-only">Toggle Dropdown</span>
-                        </button>
-                        <ul class="dropdown-menu" role="menu">
-                            <li><a href="?num_m={{display_rows_m}}&amp;num_c=5&amp;num_d={{display_rows_d}}&amp;patient=1">5</a></li>
-                            <li><a href="?num_m={{display_rows_m}}&amp;num_c=10&amp;num_d={{display_rows_d}}&amp;patient=1">10 (default)</a></li>
-                            <li><a href="?num_m={{display_rows_m}}&amp;num_c=25&amp;num_d={{display_rows_d}}&amp;patient=1">25</a></li>
-                            <li><a href="?num_m={{display_rows_m}}&amp;num_c=all&amp;num_d={{display_rows_d}}&amp;patient=1">All</a></li>
-                        </ul>
-                    </div>
-                    <p></p> 
-                    <table class="myTable table tablesorter">
-                        <thead class="thead-default" >
-                            <tr>
-                                <th>Row ID</th>
-                                <th>Date/Time</th>
-                                <th>First name</th>
-                                <th>Last name</th>
-                                <th>History id</th>
-                                <th>Who changed?</th>
 
-                            </tr>
-                        </thead>
-                        <tbody>
-                                {% for ele in pat_mod.created %}
+                <!-- Patient Information -->
+
+                <div id="patient" class="col-xs-12 col-sm-11 row row-offcanvas row-offcanvas-left  tab-pane fade in active">
+                    <div class="tab-content">
+                        <div  class="m tab-pane fade in active">
+                            <table class="myTable table tablesorter">
+                                <thead class="thead-default" >
                                     <tr>
-                                        <td>{{ forloop.counter }}</td>
-                                        <td>{{ele.history_date}}</td>
-                                        <td>{{ele.first_name}}</td>
-                                        <td>{{ele.last_name}}</td>
-                                        <td>{{ele.history_id}}</td>
-                                        <td>{{ele.history_user_id}}</td>
+                                        <th>Row ID<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Date/Time<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>First name<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Last name<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>What changed<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Old Value<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>New Value<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>History id<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Who changed?<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
                                     </tr>
-                                {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-                <div  class="d tab-pane fade">
-                    <div class="btn-group ">
-                        <button type="button" class="btn btn-danger dropButton" >Deleted</button>
-                        <button type="button" class="btn btn-danger dropdown-toggle dropButton2" data-toggle="dropdown">
-                            <span class="caret"></span>
-                            <span class="sr-only">Toggle Dropdown</span>
-                        </button>
-                        <ul class="dropdown-menu" role="menu">
-                            <li><a href="?num_m={{display_rows_m}}&amp;num_c={{display_rows_c}}&amp;num_d=5&amp;patient=1">5</a></li>
-                            <li><a href="?num_m={{display_rows_m}}&amp;num_c={{display_rows_c}}&amp;num_d=10&amp;patient=1">10 (default)</a></li>
-                            <li><a href="?num_m={{display_rows_m}}&amp;num_c={{display_rows_c}}&amp;num_d=25&amp;patient=1">25</a></li>
-                            <li><a href="?num_m={{display_rows_m}}&amp;num_c={{display_rows_c}}&amp;num_d=all&amp;patient=1">All</a></li>
-                        </ul>
-                    </div>
-                    <P></P>
-                    <table class="myTable table tablesorter">
-                        <thead class="thead-default" >
-                            <tr>
-                                <th>Row ID</th>
-                                <th>Date/Time</th>
-                                <th>First name</th>
-                                <th>Last name</th>
-                                <th>History id</th>
-                                <th>Who changed?</th>
-
-                            </tr>
-                        </thead>
-                        <tbody>
-                                {% for ele in pat_mod.deleted %}
-                                    <tr>
-                                        <td>{{ forloop.counter }}</td>
-                                        <td>{{ele.history_date}}</td>
-                                        <td>{{ele.first_name}}</td>
-                                        <td>{{ele.last_name}}</td>
-                                        <td>{{ele.history_id}}</td>
-                                        <td>{{ele.history_user_id}}</td>
-                                    </tr>
-                                {% endfor %}
-                        </tbody>
-                    </table>
-                    <p></p>  
-                </div>
-            </div>
-        </div>
-
-        <!-- Payer Information -->
-        <div id="payer" class="col-xs-12 col-sm-11 row row-offcanvas row-offcanvas-left  tab-pane fade">
-
-            <div class="tab-content">
-                <div  class="m tab-pane fade in active">
-                    <div class="btn-group ">
-                        <button type="button" class="btn btn-primary dropButton" >Modified</button>
-                        <button type="button" class="btn btn-primary dropdown-toggle dropButton2" data-toggle="dropdown">
-                            <span class="caret"></span>
-                            <span class="sr-only">Toggle Dropdown</span>
-                        </button>
-                        <ul class="dropdown-menu" role="menu">
-                            <li><a href="?num_m=5&amp;num_c={{display_rows_c}}&amp;num_d={{display_rows_d}}&amp;payer=1">5</a></li>
-                            <li><a href="?num_m=10&amp;num_c={{display_rows_c}}&amp;num_d={{display_rows_d}}&amp;payer=1">10 (default)</a></li>
-                            <li><a href="?num_m=25&amp;num_c={{display_rows_c}}&amp;num_d={{display_rows_d}}&amp;payer=1">25</a></li>
-                            <li><a href="?num_m=all&amp;num_c={{display_rows_c}}&amp;num_d={{display_rows_d}}&amp;payer=1">All</a></li>
-                        </ul>
-                    </div>
-                    <p></p>
-
-                    <table class="myTable table tablesorter">
-                        <thead class="thead-default" >
-                            <tr>
-                                <th>Row ID</th>
-                                <th>Date/Time</th>
-                                <th>Name</th>
-                                <th>What changed</th>
-                                <th>Old Value</th>
-                                <th>New Value</th>
-                                <th>History id</th>
-                                <th>Who changed?</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for ele in payer_mod.modified %}
-                                {% if forloop.counter0|lessThan:display_rows_m %}
-                                    <tr>
-                                        <td>{{forloop.counter}}</td>
-                                        <td>{{ele.history_date}}</td>
-                                        <td>{{ele.name}}</td>
-                                        <td>{{ele.change}}</td>
-                                        <td>{{ele.oldvalue}}</td>
-                                        <td>{{ele.newvalue}}</td>
-                                        <td>{{ele.history_id}}</td>
-                                        <td>{{ele.history_user_id}}</td>
-                                    </tr>
-                                {% endif %}
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-                <div  class="c tab-pane fade">
-                    <div class="btn-group ">
-                        <button type="button" class="btn btn-success dropButton" >Created</button>
-                        <button type="button" class="btn btn-success dropdown-toggle dropButton2" data-toggle="dropdown">
-                            <span class="caret"></span>
-                            <span class="sr-only">Toggle Dropdown</span>
-                        </button>
-                        <ul class="dropdown-menu" role="menu">
-                            <li><a href="?num_m={{display_rows_m}}&amp;num_c=5&amp;num_d={{display_rows_d}}&amp;payer=1">5</a></li>
-                            <li><a href="?num_m={{display_rows_m}}&amp;num_c=10&amp;num_d={{display_rows_d}}&amp;payer=1">10 (default)</a></li>
-                            <li><a href="?num_m={{display_rows_m}}&amp;num_c=25&amp;num_d={{display_rows_d}}&amp;payer=1">25</a></li>
-                            <li><a href="?num_m={{display_rows_m}}&amp;num_c=all&amp;num_d={{display_rows_d}}&amp;payer=1">All</a></li>
-                        </ul>
-                    </div>
-                    <p></p>
-
-                    <table class="myTable table tablesorter">
-                        <thead class="thead-default" >
-                            <tr>
-                                <th>Row ID</th>
-                                <th>Date/Time</th>
-                                <th>Name</th>
-                                <th>History id</th>
-                                <th>Who changed?</th>
-                                <th>History type</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for ele in payer_mod.created %}
-                                {% if forloop.counter0|lessThan:display_rows_c %}
-                                    <tr>
-                                        <td>{{forloop.counter}}</td>
-                                        <td>{{ele.history_date}}</td>
-                                        <td>{{ele.name}}</td>
-                                        <td>{{ele.history_id}}</td>
-                                        <td>{{ele.history_user_id}}</td>
-                                        <td>{{ele.history_type|get_corresponding_text}}</td>
-                                    </tr>
-                                {% endif %}
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-                <div  class="d tab-pane fade">
-                    <div class="btn-group ">
-                        <button type="button" class="btn btn-danger dropButton" >Deleted</button>
-                        <button type="button" class="btn btn-danger dropdown-toggle dropButton2" data-toggle="dropdown">
-                            <span class="caret"></span>
-                            <span class="sr-only">Toggle Dropdown</span>
-                        </button>
-                        <ul class="dropdown-menu" role="menu">
-                            <li><a href="?num_m={{display_rows_m}}&amp;num_c={{display_rows_c}}&amp;num_d=5&amp;payer=1">5</a></li>
-                            <li><a href="?num_m={{display_rows_m}}&amp;num_c={{display_rows_c}}&amp;num_d=10&amp;payer=1">10 (default)</a></li>
-                            <li><a href="?num_m={{display_rows_m}}&amp;num_c={{display_rows_c}}&amp;num_d=25&amp;payer=1">25</a></li>
-                            <li><a href="?num_m={{display_rows_m}}&amp;num_c={{display_rows_c}}&amp;num_d=all&amp;payer=1">All</a></li>
-                        </ul>
-                    </div>
-                    <p></p>
-                    <table class="myTable table tablesorter">
-                        <thead class="thead-default" >
-                            <tr>
-                                <th>Row ID</th>
-                                <th>Date/Time</th>
-                                <th>Name</th>
-                                <th>History id</th>
-                                <th>Who changed?</th>
-                                <th>History type</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for ele in payer_mod.deleted %}
-                                {% if forloop.counter0|lessThan:display_rows_d %}
-                                    <tr>
-                                        <td>{{forloop.counter}}</td>
-                                        <td>{{ele.history_date}}</td>
-                                        <td>{{ele.name}}</td>
-                                        <td>{{ele.history_id}}</td>
-                                        <td>{{ele.history_user_id}}</td>
-                                        <td>{{ele.history_type|get_corresponding_text}}</td>
-                                    </tr>
-                                {% endif %}
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <!-- Insurance Information -->
-        <div id="insurance" class="col-xs-12 col-sm-11 row row-offcanvas row-offcanvas-left  tab-pane fade">
-
-            
-                <div class="tab-content">            
-                    <div  class="m tab-pane fade in active">
-                        <div class="btn-group ">
-                            <button type="button" class="btn btn-primary dropButton" >Modified</button>
-                            <button type="button" class="btn btn-primary dropdown-toggle dropButton2" data-toggle="dropdown">
-                                <span class="caret"></span>
-                                <span class="sr-only">Toggle Dropdown</span>
-                            </button>
-                            <ul class="dropdown-menu" role="menu">
-                                <li><a href="?num_m=5&amp;num_c={{display_rows_c}}&amp;num_d={{display_rows_d}}&amp;insurance=1">5</a></li>
-                                <li><a href="?num_m=10&amp;num_c={{display_rows_c}}&amp;num_d={{display_rows_d}}&amp;insurance=1">10 (default)</a></li>
-                                <li><a href="?num_m=25&amp;num_c={{display_rows_c}}&amp;num_d={{display_rows_d}}&amp;insurance=1">25</a></li>
-                                <li><a href="?num_m=all&amp;num_c={{display_rows_c}}&amp;num_d={{display_rows_d}}&amp;insurance=1">All</a></li>
-                            </ul>
+                                </thead>
+                                <tbody>
+                                        {% for ele in pat_mod.modified %}
+                                            {% if forloop.counter0|lessThan:display_rows_m %}
+                                                <tr>
+                                                    <td>{{ forloop.counter }}</td>
+                                                    <td>{{ele.history_date}}</td>
+                                                    <td>{{ele.first_name}}</td>
+                                                    <td>{{ele.last_name}}</td>
+                                                    <td class="whatChanged">{{ele.change}}</td>
+                                                    <td>{{ele.oldvalue}}</td>
+                                                    <td>{{ele.newvalue}}</td>
+                                                    <td>{{ele.history_id}}</td>
+                                                    <td>{{ele.history_user_id}}</td>
+                                                </tr>
+                                            {% endif %}
+                                        {% endfor %}
+                                </tbody>
+                            </table>
                         </div>
-                        
-                        
+                        <div  class="c tab-pane fade">
+                            <table class="myTable table tablesorter">
+                                <thead class="thead-default" >
+                                    <tr>
+                                        <th>Row ID<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Date/Time<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>First name<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Last name<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>History id<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Who changed?<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
 
-                        <table  class="myTable table tablesorter">
-                            <thead class="thead-default" >
-                                <tr>
-                                    <th>Row ID</th>
-                                    <th>Date/Time</th>
-                                    <th>Patient Name</th>
-                                    <th>Payer Name</th>
-                                    <th>What changed</th>
-                                    <th>Old Value</th>
-                                    <th>New Value</th>
-                                    <th>History id</th>
-                                    <th>Who changed?</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for ele in insurance_mod.modified %}
-                                    {% if forloop.counter0|lessThan:display_rows_m %}
-                                        <tr>
-                                            <td>{{forloop.counter}}</td>
-                                            <td>{{ele.history_date}}</td>
-                                            <td>{{ele.patientname}}</td>
-                                            <td>{{ele.payername}}</td>
-                                            <td>{{ele.change}}</td>
-                                            <td>{{ele.oldvalue}}</td>
-                                            <td>{{ele.newvalue}}</td>
-                                            <td>{{ele.history_id}}</td>
-                                            <td>{{ele.history_user_id}}</td>
-                                        </tr>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                        {% for ele in pat_mod.created %}
+                                            <tr>
+                                                <td>{{ forloop.counter }}</td>
+                                                <td>{{ele.history_date}}</td>
+                                                <td>{{ele.first_name}}</td>
+                                                <td>{{ele.last_name}}</td>
+                                                <td>{{ele.history_id}}</td>
+                                                <td>{{ele.history_user_id}}</td>
+                                            </tr>
+                                        {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div  class="d tab-pane fade">
+                            <table class="myTable table tablesorter">
+                                <thead class="thead-default" >
+                                    <tr>
+                                        <th>Row ID<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Date/Time<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>First name<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Last name<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>History id<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Who changed?<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                        {% for ele in pat_mod.deleted %}
+                                            <tr>
+                                                <td>{{ forloop.counter }}</td>
+                                                <td>{{ele.history_date}}</td>
+                                                <td>{{ele.first_name}}</td>
+                                                <td>{{ele.last_name}}</td>
+                                                <td>{{ele.history_id}}</td>
+                                                <td>{{ele.history_user_id}}</td>
+                                            </tr>
+                                        {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payer Information -->
+                <div id="payer" class="col-xs-12 col-sm-11 row row-offcanvas row-offcanvas-left  tab-pane fade">
+
+                    <div class="tab-content">
+                        <div  class="m tab-pane fade in active">
+                            <table class="myTable table tablesorter">
+                                <thead class="thead-default" >
+                                    <tr>
+                                        <th>Row ID<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Date/Time<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Name<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>What changed<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Old Value<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>New Value<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>History id<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Who changed?<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for ele in payer_mod.modified %}
+                                        {% if forloop.counter0|lessThan:display_rows_m %}
+                                            <tr>
+                                                <td>{{forloop.counter}}</td>
+                                                <td>{{ele.history_date}}</td>
+                                                <td>{{ele.name}}</td>
+                                                <td class="whatChanged">{{ele.change}}</td>
+                                                <td>{{ele.oldvalue}}</td>
+                                                <td>{{ele.newvalue}}</td>
+                                                <td>{{ele.history_id}}</td>
+                                                <td>{{ele.history_user_id}}</td>
+                                            </tr>
                                         {% endif %}
                                     {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                    <div  class="c tab-pane fade">
-                        <div class="btn-group ">
-                            <button type="button" class="btn btn-success dropButton" >Created</button>
-                            <button type="button" class="btn btn-success dropdown-toggle dropButton2" data-toggle="dropdown">
-                                <span class="caret"></span>
-                                <span class="sr-only">Toggle Dropdown</span>
-                            </button>
-                            <ul class="dropdown-menu" role="menu">
-                                <li><a href="?num_m={{display_rows_m}}&amp;num_c=5&amp;num_d={{display_rows_d}}&amp;insurance=1">5</a></li>
-                                <li><a href="?num_m={{display_rows_m}}&amp;num_c=10&amp;num_d={{display_rows_d}}&amp;insurance=1">10 (default)</a></li>
-                                <li><a href="?num_m={{display_rows_m}}&amp;num_c=25&amp;num_d={{display_rows_d}}&amp;insurance=1">25</a></li>
-                                <li><a href="?num_m={{display_rows_m}}&amp;num_c=all&amp;num_d={{display_rows_d}}&amp;insurance=1">All</a></li>
-                            </ul>
+                                </tbody>
+                            </table>
                         </div>
-                        <p></p> 
-                        <table  class="myTable table tablesorter">
-                            <thead class="thead-default" >
-                                <tr>
-                                    <th>Row ID</th>
-                                    <th>Date/Time</th>
-                                    <th>Patient Name</th>
-                                    <th>Payer Name</th>
-                                    <th>History id</th>
-                                    <th>Who changed?</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for ele in insurance_mod.created %}
-                                    {% if forloop.counter0|lessThan:display_rows_c %}
-                                        <tr>
-                                            <td>{{forloop.counter}}</td>
-                                            <td>{{ele.history_date}}</td>
-                                            <td>{{ele.patientname}}</td>
-                                            <td>{{ele.payername}}</td>
-                                            <td>{{ele.history_id}}</td>
-                                            <td>{{ele.history_user_id}}</td>
-                                        </tr>
+                        <div  class="c tab-pane fade">
+                            <table class="myTable table tablesorter">
+                                <thead class="thead-default" >
+                                    <tr>
+                                        <th>Row ID<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Date/Time<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Name<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>History id<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Who changed?<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for ele in payer_mod.created %}
+                                        {% if forloop.counter0|lessThan:display_rows_c %}
+                                            <tr>
+                                                <td>{{forloop.counter}}</td>
+                                                <td>{{ele.history_date}}</td>
+                                                <td>{{ele.name}}</td>
+                                                <td>{{ele.history_id}}</td>
+                                                <td>{{ele.history_user_id}}</td>
+                                            </tr>
                                         {% endif %}
                                     {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                    <div  class="d tab-pane fade">
-                        <div class="btn-group ">
-                            <button type="button" class="btn btn-danger dropButton" >Deleted</button>
-                            <button type="button" class="btn btn-danger dropdown-toggle dropButton2" data-toggle="dropdown">
-                                <span class="caret"></span>
-                                <span class="sr-only">Toggle Dropdown</span>
-                            </button>
-                            <ul class="dropdown-menu" role="menu">
-                                <li><a href="?num_m={{display_rows_m}}&amp;num_c={{display_rows_c}}&amp;num_d=5&amp;insurance=1">5</a></li>
-                                <li><a href="?num_m={{display_rows_m}}&amp;num_c={{display_rows_c}}&amp;num_d=10&amp;insurance=1">10 (default)</a></li>
-                                <li><a href="?num_m={{display_rows_m}}&amp;num_c={{display_rows_c}}&amp;num_d=25&amp;insurance=1">25</a></li>
-                                <li><a href="?num_m={{display_rows_m}}&amp;num_c={{display_rows_c}}&amp;num_d=all&amp;insurance=1">All</a></li>
-                            </ul>
+                                </tbody>
+                            </table>
                         </div>
-                        <P></P>
-
-                        <table  class="myTable table tablesorter">
-                            <thead class="thead-default" >
-                                <tr>
-                                    <th>Row ID</th>
-                                    <th>Date/Time</th>
-                                    <th>Patient Name</th>
-                                    <th>Payer Name</th>
-                                    <th>History id</th>
-                                    <th>Who changed?</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for ele in insurance_mod.deleted %}
-                                    {% if forloop.counter0|lessThan:display_rows_d %}
-                                        <tr>
-                                            <td>{{forloop.counter}}</td>
-                                            <td>{{ele.history_date}}</td>
-                                            <td>{{ele.patientname}}</td>
-                                            <td>{{ele.payername}}</td>
-                                            <td>{{ele.history_id}}</td>
-                                            <td>{{ele.history_user_id}}</td>
-                                        </tr>
+                        <div  class="d tab-pane fade">
+                            <table class="myTable table tablesorter">
+                                <thead class="thead-default" >
+                                    <tr>
+                                        <th>Row ID<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Date/Time<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Name<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>History id<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Who changed?<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for ele in payer_mod.deleted %}
+                                        {% if forloop.counter0|lessThan:display_rows_d %}
+                                            <tr>
+                                                <td>{{forloop.counter}}</td>
+                                                <td>{{ele.history_date}}</td>
+                                                <td>{{ele.name}}</td>
+                                                <td>{{ele.history_id}}</td>
+                                                <td>{{ele.history_user_id}}</td>
+                                            </tr>
                                         {% endif %}
                                     {% endfor %}
-                            </tbody>
-                        </table>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
+                <!-- Insurance Information -->
+                <div id="insurance" class="col-xs-12 col-sm-11 row row-offcanvas row-offcanvas-left  tab-pane fade">
+                    <div class="tab-content">            
+                        <div  class="m tab-pane fade in active">
+                            <table  class="myTable table tablesorter">
+                                <thead class="thead-default" >
+                                    <tr>
+                                        <th>Row ID<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Date/Time<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Patient Name<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Payer Name<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>What changed<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Old Value<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>New Value<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>History id<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Who changed?<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for ele in insurance_mod.modified %}
+                                        {% if forloop.counter0|lessThan:display_rows_m %}
+                                            <tr>
+                                                <td>{{forloop.counter}}</td>
+                                                <td>{{ele.history_date}}</td>
+                                                <td>{{ele.patientname}}</td>
+                                                <td>{{ele.payername}}</td>
+                                                <td class="whatChanged">{{ele.change}}</td>
+                                                <td>{{ele.oldvalue}}</td>
+                                                <td>{{ele.newvalue}}</td>
+                                                <td>{{ele.history_id}}</td>
+                                                <td>{{ele.history_user_id}}</td>
+                                            </tr>
+                                            {% endif %}
+                                        {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div  class="c tab-pane fade">
+                            <table  class="myTable table tablesorter">
+                                <thead class="thead-default" >
+                                    <tr>
+                                        <th>Row ID<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Date/Time<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Patient Name<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Payer Name<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>History id<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Who changed?<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for ele in insurance_mod.created %}
+                                        {% if forloop.counter0|lessThan:display_rows_c %}
+                                            <tr>
+                                                <td>{{forloop.counter}}</td>
+                                                <td>{{ele.history_date}}</td>
+                                                <td>{{ele.patientname}}</td>
+                                                <td>{{ele.payername}}</td>
+                                                <td>{{ele.history_id}}</td>
+                                                <td>{{ele.history_user_id}}</td>
+                                            </tr>
+                                            {% endif %}
+                                        {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div  class="d tab-pane fade">
+                            <table  class="myTable table tablesorter">
+                                <thead class="thead-default" >
+                                    <tr>
+                                        <th>Row ID<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Date/Time<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Patient Name<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Payer Name<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>History id<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Who changed?<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for ele in insurance_mod.deleted %}
+                                        {% if forloop.counter0|lessThan:display_rows_d %}
+                                            <tr>
+                                                <td>{{forloop.counter}}</td>
+                                                <td>{{ele.history_date}}</td>
+                                                <td>{{ele.patientname}}</td>
+                                                <td>{{ele.payername}}</td>
+                                                <td>{{ele.history_id}}</td>
+                                                <td>{{ele.history_user_id}}</td>
+                                            </tr>
+                                            {% endif %}
+                                        {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Provider Information -->
+                <div id="provider" class="col-xs-12 col-sm-11 row row-offcanvas row-offcanvas-left  tab-pane fade">
+
+                    <div class="tab-content">
+                        <div  class="m tab-pane fade in active">
+                            <table  class="myTable table tablesorter">
+                                <thead class="thead-default" >
+                                    <tr>
+                                        <th>Row ID<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Date/Time<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Provider Name<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>What changed<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Old Value<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>New Value<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>History id<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Who changed?<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for ele in provider_mod.modified %}
+                                        {% if forloop.counter0|lessThan:display_rows_m %}
+                                            <tr>
+                                                <td>{{forloop.counter}}</td>
+                                                <td>{{ele.history_date}}</td>
+                                                <td>{{ele.provider_name}}</td>
+                                                <td class="whatChanged">{{ele.change}}</td>
+                                                <td>{{ele.oldvalue}}</td>
+                                                <td>{{ele.newvalue}}</td>
+                                                <td>{{ele.history_id}}</td>
+                                                <td>{{ele.history_user_id}}</td>
+                                            {% endif %}
+                                        {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div  class="c tab-pane fade">
+                            <table  class="myTable table tablesorter">
+                                <thead class="thead-default" >
+                                    <tr>
+                                        <th>Row ID<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Date/Time<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Provider Name<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>History id<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Who changed?<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for ele in provider_mod.created %}
+                                        {% if forloop.counter0|lessThan:display_rows_c %}
+                                            <tr>
+                                                <td>{{forloop.counter}}</td>
+                                                <td>{{ele.history_date}}</td>
+                                                <td>{{ele.provider_name}}</td>
+                                                <td>{{ele.history_id}}</td>
+                                                <td>{{ele.history_user_id}}</td>
+                                            </tr>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div  class="d tab-pane fade">
+                            <table  class="myTable table tablesorter">
+                                <thead class="thead-default" >
+                                    <tr>
+                                        <th>Row ID<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Date/Time<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Provider Name<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>History id<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Who changed?<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for ele in provider_mod.deleted %}
+                                        {% if forloop.counter0|lessThan:display_rows_d %}
+                                            <tr>
+                                                <td>{{forloop.counter}}</td>
+                                                <td>{{ele.history_date}}</td>
+                                                <td>{{ele.provider_name}}</td>
+                                                <td>{{ele.history_id}}</td>
+                                                <td>{{ele.history_user_id}}</td>
+                                            </tr>
+                                            {% endif %}
+                                        {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cpt Information -->
+                <div id="cpt" class="col-xs-12 col-sm-11 row row-offcanvas row-offcanvas-left  tab-pane fade">
+                    <div class="tab-content">
+                        <div  class="m tab-pane fade in active">
+                            <table  class="myTable table tablesorter">
+                                <thead class="thead-default" >
+                                    <tr>
+                                        <th>Row ID<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Date/Time<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>CPT code<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>CPT description<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>What changed<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Old Value<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>New Value<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>History id<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Who changed?<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for ele in cpt_mod.modified %}
+                                        {% if forloop.counter0|lessThan:display_rows_m %}
+                                            <tr>
+                                                <td>{{forloop.counter}}</td>
+                                                <td>{{ele.history_date}}</td>
+                                                <td>{{ele.cpt_code}}</td>
+                                                <td>{{ele.cpt_description}}</td>
+                                                <td class="whatChanged">{{ele.change}}</td>
+                                                <td>{{ele.oldvalue}}</td>
+                                                <td>{{ele.newvalue}}</td>
+                                                <td>{{ele.history_id}}</td>
+                                                <td>{{ele.history_user_id}}</td>
+                                            </tr>
+                                            {% endif %}
+                                        {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div  class="c tab-pane fade">
+                            <table  class="myTable table tablesorter">
+                                <thead class="thead-default" >
+                                    <tr>
+                                        <th>Row ID<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Date/Time<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>CPT code<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>CPT description<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>History id<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Who changed?<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for ele in cpt_mod.created %}
+                                        {% if forloop.counter0|lessThan:display_rows_c %}
+                                            <tr>
+                                                <td>{{forloop.counter}}</td>
+                                                <td>{{ele.history_date}}</td>
+                                                <td>{{ele.cpt_code}}</td>
+                                                <td>{{ele.cpt_description}}</td>
+                                                <td>{{ele.history_id}}</td>
+                                                <td>{{ele.history_user_id}}</td>
+                                            </tr>
+                                            {% endif %}
+                                        {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div  class="d tab-pane fade">
+                            <table  class="myTable table tablesorter">
+                                <thead class="thead-default" >
+                                    <tr>
+                                        <th>Row ID<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Date/Time<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>CPT code<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>CPT description<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>History id<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Who changed?<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for ele in cpt_mod.deleted %}
+                                        {% if forloop.counter0|lessThan:display_rows_d %}
+                                            <tr>
+                                                <td>{{forloop.counter}}</td>
+                                                <td>{{ele.history_date}}</td>
+                                                <td>{{ele.cpt_code}}</td>
+                                                <td>{{ele.cpt_description}}</td>
+                                                <td>{{ele.history_id}}</td>
+                                                <td>{{ele.history_user_id}}</td>
+                                            </tr>
+                                            {% endif %}
+                                        {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Dx Information -->
+
+
+                <div id="dx" class="col-xs-12 col-sm-11 row row-offcanvas row-offcanvas-left  tab-pane fade"> 
+                    <div class="tab-content">
+                        <div  class="m tab-pane fade in active">
+                            <table class="myTable table tablesorter">
+                                <thead class="thead-default" >
+                                    <tr>
+                                        <th>Row ID<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Date/Time<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>ICD 10<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>What changed<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Old Value<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>New Value<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>History id<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Who changed?<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for ele in dx_mod.modified %}
+                                        {% if forloop.counter0|lessThan:display_rows_m %}
+                                            <tr>
+                                                <td>{{forloop.counter}}</td>
+                                                <td>{{ele.history_date}}</td>
+                                                <td>{{ele.ICD_10}}</td>
+                                                <td class="whatChanged">{{ele.change}}</td>
+                                                <td>{{ele.oldvalue}}</td>
+                                                <td>{{ele.newvalue}}</td>
+                                                <td>{{ele.history_id}}</td>
+                                                <td>{{ele.history_user_id}}</td>
+                                            </tr>
+                                        {% endif %}
+                                    {% endfor %} 
+                                </tbody>
+                            </table>
+                        </div>
+                        <div  class="c tab-pane fade">
+                            <table class="myTable table tablesorter">
+                                <thead class="thead-default" >
+                                    <tr>
+                                        <th>Row ID<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Date/Time<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>ICD 10<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>History id<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Who changed?<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for ele in dx_mod.created %}
+                                        {% if forloop.counter0|lessThan:display_rows_c %}
+                                            <tr>
+                                                <td>{{forloop.counter}}</td>
+                                                <td>{{ele.history_date}}</td>
+                                                <td>{{ele.ICD_10}}</td>
+                                                <td>{{ele.history_id}}</td>
+                                                <td>{{ele.history_user_id}}</td>
+                                            </tr>
+                                        {% endif %}
+                                    {% endfor %} 
+                                </tbody>
+                            </table>
+                        </div>
+                        <div  class="d tab-pane fade">
+                            <table class="myTable table tablesorter">
+                                <thead class="thead-default" >
+                                    <tr>
+                                        <th>Row ID<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Date/Time<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>ICD 10<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>History id<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Who changed?<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for ele in dx_mod.deleted %}
+                                        {% if forloop.counter0|lessThan:display_rows_d %}
+                                            <tr>
+                                                <td>{{forloop.counter}}</td>
+                                                <td>{{ele.history_date}}</td>
+                                                <td>{{ele.ICD_10}}</td>
+                                                <td>{{ele.history_id}}</td>
+                                                <td>{{ele.history_user_id}}</td>
+                                            </tr>
+                                        {% endif %}
+                                    {% endfor %} 
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Referring provider Information -->
+
+                <div id="rp" class="col-xs-12 col-sm-11 row row-offcanvas row-offcanvas-left  tab-pane fade">
+                    <div class="tab-content">
+                        <div  class="m tab-pane fade in active">
+                            <table class="myTable table tablesorter">
+                                <thead class="thead-default" >
+                                    <tr>
+                                        <th>Row ID<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Date/Time<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>First name<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Last name<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>What changed<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Old Value<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>New Value<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>History id<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Who changed?<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for ele in rp_mod.modified %}
+                                        {% if forloop.counter0|lessThan:display_rows_m %}
+                                            <tr>
+                                                <td>{{forloop.counter}}</td>
+                                                <td>{{ele.history_date}}</td>
+                                                <td>{{ele.first_name}}</td>
+                                                <td>{{ele.last_name}}</td>
+                                                <td class="whatChanged">{{ele.change}}</td>
+                                                <td>{{ele.oldvalue}}</td>
+                                                <td>{{ele.newvalue}}</td>
+                                                <td>{{ele.history_id}}</td>
+                                                <td>{{ele.history_user_id}}</td>
+                                            </tr>
+                                            {% endif %}
+                                        {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div  class="c tab-pane fade">
+                            <table class="myTable table tablesorter">
+                                <thead class="thead-default" >
+                                    <tr>
+                                        <th>Row ID<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Date/Time<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>First name<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Last name<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>History id<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Who changed?<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for ele in rp_mod.created %}
+                                        {% if forloop.counter0|lessThan:display_rows_c %}
+                                            <tr>
+                                                <td>{{forloop.counter}}</td>
+                                                <td>{{ele.history_date}}</td>
+                                                <td>{{ele.first_name}}</td>
+                                                <td>{{ele.last_name}}</td>
+                                                <td>{{ele.history_id}}</td>
+                                                <td>{{ele.history_user_id}}</td>
+                                            </tr>
+                                            {% endif %}
+                                        {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div  class="d tab-pane fade">
+                            <table class="myTable table tablesorter">
+                                <thead class="thead-default" >
+                                    <tr>
+                                        <th>Row ID<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Date/Time<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>First name<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Last name<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>History id<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                        <th>Who changed?<span class="glyphicon glyphicon-sort-by-alphabet " aria-hidden="true"></span></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for ele in rp_mod.deleted %}
+                                        {% if forloop.counter0|lessThan:display_rows_d %}
+                                            <tr>
+                                                <td>{{forloop.counter}}</td>
+                                                <td>{{ele.history_date}}</td>
+                                                <td>{{ele.first_name}}</td>
+                                                <td>{{ele.last_name}}</td>
+                                                <td>{{ele.history_id}}</td>
+                                                <td>{{ele.history_user_id}}</td>
+                                            </tr>
+                                            {% endif %}
+                                        {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-
-        <!-- Provider Information -->
-        <div id="provider" class="col-xs-12 col-sm-11 row row-offcanvas row-offcanvas-left  tab-pane fade">
-
-            <div class="btn-group ">
-                <button type="button" class="btn btn-primary dropButton" >Modified</button>
-                <button type="button" class="btn btn-primary dropdown-toggle dropButton2" data-toggle="dropdown">
-                    <span class="caret"></span>
-                    <span class="sr-only">Toggle Dropdown</span>
-                </button>
-                <ul class="dropdown-menu" role="menu">
-                    <li><a href="?num_m=5&amp;num_c={{display_rows_c}}&amp;num_d={{display_rows_d}}&amp;provider=1">5</a></li>
-                    <li><a href="?num_m=10&amp;num_c={{display_rows_c}}&amp;num_d={{display_rows_d}}&amp;provider=1">10 (default)</a></li>
-                    <li><a href="?num_m=25&amp;num_c={{display_rows_c}}&amp;num_d={{display_rows_d}}&amp;provider=1">25</a></li>
-                    <li><a href="?num_m=all&amp;num_c={{display_rows_c}}&amp;num_d={{display_rows_d}}&amp;provider=1">All</a></li>
-                </ul>
-            </div>
-            <p></p>
-
-            <table  class="myTable table tablesorter">
-                <thead class="thead-default" >
-                    <tr>
-                        <th>Row ID</th>
-                        <th>Date/Time</th>
-                        <th>Provider Name</th>
-                        <th>What changed</th>
-                        <th>Old Value</th>
-                        <th>New Value</th>
-                        <th>History id</th>
-                        <th>Who changed?</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for ele in provider_mod.modified %}
-                        {% if forloop.counter0|lessThan:display_rows_m %}
-                            <tr>
-                                <td>{{forloop.counter}}</td>
-                                <td>{{ele.history_date}}</td>
-                                <td>{{ele.provider_name}}</td>
-                                <td>{{ele.change}}</td>
-                                <td>{{ele.oldvalue}}</td>
-                                <td>{{ele.newvalue}}</td>
-                                <td>{{ele.history_id}}</td>
-                                <td>{{ele.history_user_id}}</td>
-                            {% endif %}
-                        {% endfor %}
-                </tbody>
-            </table>
-
-            <div class="btn-group ">
-                <button type="button" class="btn btn-success dropButton" >Created</button>
-                <button type="button" class="btn btn-success dropdown-toggle dropButton2" data-toggle="dropdown">
-                    <span class="caret"></span>
-                    <span class="sr-only">Toggle Dropdown</span>
-                </button>
-                <ul class="dropdown-menu" role="menu">
-                    <li><a href="?num_m={{display_rows_m}}&amp;num_c=5&amp;num_d={{display_rows_d}}&amp;provider=1">5</a></li>
-                    <li><a href="?num_m={{display_rows_m}}&amp;num_c=10&amp;num_d={{display_rows_d}}&amp;provider=1">10 (default)</a></li>
-                    <li><a href="?num_m={{display_rows_m}}&amp;num_c=25&amp;num_d={{display_rows_d}}&amp;provider=1">25</a></li>
-                    <li><a href="?num_m={{display_rows_m}}&amp;num_c=all&amp;num_d={{display_rows_d}}&amp;provider=1">All</a></li>
-                </ul>
-            </div>
-            <p></p> 
-
-            <table  class="myTable table tablesorter">
-                <thead class="thead-default" >
-                    <tr>
-                        <th>Row ID</th>
-                        <th>Date/Time</th>
-                        <th>Provider Name</th>
-                        <th>History id</th>
-                        <th>Who changed?</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for ele in provider_mod.created %}
-                        {% if forloop.counter0|lessThan:display_rows_c %}
-                            <tr>
-                                <td>{{forloop.counter}}</td>
-                                <td>{{ele.history_date}}</td>
-                                <td>{{ele.provider_name}}</td>
-                                <td>{{ele.history_id}}</td>
-                                <td>{{ele.history_user_id}}</td>
-                            </tr>
-                        {% endif %}
-                    {% endfor %}
-                </tbody>
-            </table>
-
-            <div class="btn-group ">
-                <button type="button" class="btn btn-danger dropButton" >Deleted</button>
-                <button type="button" class="btn btn-danger dropdown-toggle dropButton2" data-toggle="dropdown">
-                    <span class="caret"></span>
-                    <span class="sr-only">Toggle Dropdown</span>
-                </button>
-                <ul class="dropdown-menu" role="menu">
-                    <li><a href="?num_m={{display_rows_m}}&amp;num_c={{display_rows_c}}&amp;num_d=5&amp;provider=1">5</a></li>
-                    <li><a href="?num_m={{display_rows_m}}&amp;num_c={{display_rows_c}}&amp;num_d=10&amp;provider=1">10 (default)</a></li>
-                    <li><a href="?num_m={{display_rows_m}}&amp;num_c={{display_rows_c}}&amp;num_d=25&amp;provider=1">25</a></li>
-                    <li><a href="?num_m={{display_rows_m}}&amp;num_c={{display_rows_c}}&amp;num_d=all&amp;provider=1">All</a></li>
-                </ul>
-            </div>
-            <P></P>
-
-            <table  class="myTable table tablesorter">
-                <thead class="thead-default" >
-                    <tr>
-                        <th>Row ID</th>
-                        <th>Date/Time</th>
-                        <th>Provider Name</th>
-                        <th>History id</th>
-                        <th>Who changed?</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for ele in provider_mod.deleted %}
-                        {% if forloop.counter0|lessThan:display_rows_d %}
-                            <tr>
-                                <td>{{forloop.counter}}</td>
-                                <td>{{ele.history_date}}</td>
-                                <td>{{ele.provider_name}}</td>
-                                <td>{{ele.history_id}}</td>
-                                <td>{{ele.history_user_id}}</td>
-                            </tr>
-                            {% endif %}
-                        {% endfor %}
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Cpt Information -->
-        <div id="cpt" class="col-xs-12 col-sm-11 row row-offcanvas row-offcanvas-left  tab-pane fade">
-
-            <div class="btn-group ">
-                <button type="button" class="btn btn-primary dropButton" >Modified</button>
-                <button type="button" class="btn btn-primary dropdown-toggle dropButton2" data-toggle="dropdown">
-                    <span class="caret"></span>
-                    <span class="sr-only">Toggle Dropdown</span>
-                </button>
-                <ul class="dropdown-menu" role="menu">
-                    <li><a href="?num_m=5&amp;num_c={{display_rows_c}}&amp;num_d={{display_rows_d}}&amp;cpt=1">5</a></li>
-                    <li><a href="?num_m=10&amp;num_c={{display_rows_c}}&amp;num_d={{display_rows_d}}&amp;cpt=1">10 (default)</a></li>
-                    <li><a href="?num_m=25&amp;num_c={{display_rows_c}}&amp;num_d={{display_rows_d}}&amp;cpt=1">25</a></li>
-                    <li><a href="?num_m=all&amp;num_c={{display_rows_c}}&amp;num_d={{display_rows_d}}&amp;cpt=1">All</a></li>
-                </ul>
-            </div>
-            <p></p>
-
-
-            <table  class="myTable table tablesorter">
-                <thead class="thead-default" >
-                    <tr>
-                        <th>Row ID</th>
-                        <th>Date/Time</th>
-                        <th>CPT code</th>
-                        <th>CPT description</th>
-                        <th>What changed</th>
-                        <th>Old Value</th>
-                        <th>New Value</th>
-                        <th>History id</th>
-                        <th>Who changed?</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for ele in cpt_mod.modified %}
-                        {% if forloop.counter0|lessThan:display_rows_m %}
-                            <tr>
-                                <td>{{forloop.counter}}</td>
-                                <td>{{ele.history_date}}</td>
-                                <td>{{ele.cpt_code}}</td>
-                                <td>{{ele.cpt_description}}</td>
-                                <td>{{ele.change}}</td>
-                                <td>{{ele.oldvalue}}</td>
-                                <td>{{ele.newvalue}}</td>
-                                <td>{{ele.history_id}}</td>
-                                <td>{{ele.history_user_id}}</td>
-                            </tr>
-                            {% endif %}
-                        {% endfor %}
-                </tbody>
-            </table>
-            <div class="btn-group ">
-                <button type="button" class="btn btn-success dropButton" >Created</button>
-                <button type="button" class="btn btn-success dropdown-toggle dropButton2" data-toggle="dropdown">
-                    <span class="caret"></span>
-                    <span class="sr-only">Toggle Dropdown</span>
-                </button>
-                <ul class="dropdown-menu" role="menu">
-                    <li><a href="?num_m={{display_rows_m}}&amp;num_c=5&amp;num_d={{display_rows_d}}&amp;cpt=1">5</a></li>
-                    <li><a href="?num_m={{display_rows_m}}&amp;num_c=10&amp;num_d={{display_rows_d}}&amp;cpt=1">10 (default)</a></li>
-                    <li><a href="?num_m={{display_rows_m}}&amp;num_c=25&amp;num_d={{display_rows_d}}&amp;cpt=1">25</a></li>
-                    <li><a href="?num_m={{display_rows_m}}&amp;num_c=all&amp;num_d={{display_rows_d}}&amp;cpt=1">All</a></li>
-                </ul>
-            </div>
-            <p></p> 
-
-            <table  class="myTable table tablesorter">
-                <thead class="thead-default" >
-                    <tr>
-                        <th>Row ID</th>
-                        <th>Date/Time</th>
-                        <th>CPT code</th>
-                        <th>CPT description</th>
-                        <th>History id</th>
-                        <th>Who changed?</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for ele in cpt_mod.created %}
-                        {% if forloop.counter0|lessThan:display_rows_c %}
-                            <tr>
-                                <td>{{forloop.counter}}</td>
-                                <td>{{ele.history_date}}</td>
-                                <td>{{ele.cpt_code}}</td>
-                                <td>{{ele.cpt_description}}</td>
-                                <td>{{ele.history_id}}</td>
-                                <td>{{ele.history_user_id}}</td>
-                            </tr>
-                            {% endif %}
-                        {% endfor %}
-                </tbody>
-            </table>
-
-            <div class="btn-group ">
-                <button type="button" class="btn btn-danger dropButton" >Deleted</button>
-                <button type="button" class="btn btn-danger dropdown-toggle dropButton2" data-toggle="dropdown">
-                    <span class="caret"></span>
-                    <span class="sr-only">Toggle Dropdown</span>
-                </button>
-                <ul class="dropdown-menu" role="menu">
-                    <li><a href="?num_m={{display_rows_m}}&amp;num_c={{display_rows_c}}&amp;num_d=5&amp;cpt=1">5</a></li>
-                    <li><a href="?num_m={{display_rows_m}}&amp;num_c={{display_rows_c}}&amp;num_d=10&amp;cpt=1">10 (default)</a></li>
-                    <li><a href="?num_m={{display_rows_m}}&amp;num_c={{display_rows_c}}&amp;num_d=25&amp;cpt=1">25</a></li>
-                    <li><a href="?num_m={{display_rows_m}}&amp;num_c={{display_rows_c}}&amp;num_d=all&amp;cpt=1">All</a></li>
-                </ul>
-            </div>
-            <P></P>
-
-            <table  class="myTable table tablesorter">
-                <thead class="thead-default" >
-                    <tr>
-                        <th>Row ID</th>
-                        <th>Date/Time</th>
-                        <th>CPT code</th>
-                        <th>CPT description</th>
-                        <th>History id</th>
-                        <th>Who changed?</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for ele in cpt_mod.deleted %}
-                        {% if forloop.counter0|lessThan:display_rows_d %}
-                            <tr>
-                                <td>{{forloop.counter}}</td>
-                                <td>{{ele.history_date}}</td>
-                                <td>{{ele.cpt_code}}</td>
-                                <td>{{ele.cpt_description}}</td>
-                                <td>{{ele.history_id}}</td>
-                                <td>{{ele.history_user_id}}</td>
-                            </tr>
-                            {% endif %}
-                        {% endfor %}
-                </tbody>
-            </table>
-
-        </div>
-
-
-        <!-- Dx Information -->
-
-
-        <div id="dx" class="col-xs-12 col-sm-11 row row-offcanvas row-offcanvas-left  tab-pane fade"> 
-
-            <div class="btn-group ">
-                <button type="button" class="btn btn-primary dropButton" >Modified</button>
-                <button type="button" class="btn btn-primary dropdown-toggle dropButton2" data-toggle="dropdown">
-                    <span class="caret"></span>
-                    <span class="sr-only">Toggle Dropdown</span>
-                </button>
-                <ul class="dropdown-menu" role="menu">
-                    <li><a href="?num_m=5&amp;num_c={{display_rows_c}}&amp;num_d={{display_rows_d}}&amp;dx=1">5</a></li>
-                    <li><a href="?num_m=10&amp;num_c={{display_rows_c}}&amp;num_d={{display_rows_d}}&amp;dx=1">10 (default)</a></li>
-                    <li><a href="?num_m=25&amp;num_c={{display_rows_c}}&amp;num_d={{display_rows_d}}&amp;dx=1">25</a></li>
-                    <li><a href="?num_m=all&amp;num_c={{display_rows_c}}&amp;num_d={{display_rows_d}}&amp;dx=1">All</a></li>
-                </ul>
-            </div>
-            <p></p>
-
-            <table class="myTable table tablesorter">
-                <thead class="thead-default" >
-                    <tr>
-                        <th>Row ID</th>
-                        <th>Date/Time</th>
-                        <th>ICD 10</th>
-                        <th>What changed</th>
-                        <th>Old Value</th>
-                        <th>New Value</th>
-                        <th>History id</th>
-                        <th>Who changed?</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for ele in dx_mod.modified %}
-                        {% if forloop.counter0|lessThan:display_rows_m %}
-                            <tr>
-                                <td>{{forloop.counter}}</td>
-                                <td>{{ele.history_date}}</td>
-                                <td>{{ele.ICD_10}}</td>
-                                <td>{{ele.change}}</td>
-                                <td>{{ele.oldvalue}}</td>
-                                <td>{{ele.newvalue}}</td>
-                                <td>{{ele.history_id}}</td>
-                                <td>{{ele.history_user_id}}</td>
-                            </tr>
-                        {% endif %}
-                    {% endfor %} 
-                </tbody>
-            </table>
-
-
-            <div class="btn-group ">
-                <button type="button" class="btn btn-success dropButton" >Created</button>
-                <button type="button" class="btn btn-success dropdown-toggle dropButton2" data-toggle="dropdown">
-                    <span class="caret"></span>
-                    <span class="sr-only">Toggle Dropdown</span>
-                </button>
-                <ul class="dropdown-menu" role="menu">
-                    <li><a href="?num_m={{display_rows_m}}&amp;num_c=5&amp;num_d={{display_rows_d}}&amp;dx=1">5</a></li>
-                    <li><a href="?num_m={{display_rows_m}}&amp;num_c=10&amp;num_d={{display_rows_d}}&amp;dx=1">10 (default)</a></li>
-                    <li><a href="?num_m={{display_rows_m}}&amp;num_c=25&amp;num_d={{display_rows_d}}&amp;dx=1">25</a></li>
-                    <li><a href="?num_m={{display_rows_m}}&amp;num_c=all&amp;num_d={{display_rows_d}}&amp;dx=1">All</a></li>
-                </ul>
-            </div>
-            <p></p>
-
-            <table class="myTable table tablesorter">
-                <thead class="thead-default" >
-                    <tr>
-                        <th>Row ID</th>
-                        <th>Date/Time</th>
-                        <th>ICD 10</th>
-                        <th>History id</th>
-                        <th>Who changed?</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for ele in dx_mod.created %}
-                        {% if forloop.counter0|lessThan:display_rows_c %}
-                            <tr>
-                                <td>{{forloop.counter}}</td>
-                                <td>{{ele.history_date}}</td>
-                                <td>{{ele.ICD_10}}</td>
-                                <td>{{ele.history_id}}</td>
-                                <td>{{ele.history_user_id}}</td>
-                            </tr>
-                        {% endif %}
-                    {% endfor %} 
-                </tbody>
-            </table>
-
-            <div class="btn-group ">
-                <button type="button" class="btn btn-danger dropButton" >Deleted</button>
-                <button type="button" class="btn btn-danger dropdown-toggle dropButton2" data-toggle="dropdown">
-                    <span class="caret"></span>
-                    <span class="sr-only">Toggle Dropdown</span>
-                </button>
-                <ul class="dropdown-menu" role="menu">
-                    <li><a href="?num_m={{display_rows_m}}&amp;num_c={{display_rows_c}}&amp;num_d=5&amp;dx=1">5</a></li>
-                    <li><a href="?num_m={{display_rows_m}}&amp;num_c={{display_rows_c}}&amp;num_d=10&amp;dx=1">10 (default)</a></li>
-                    <li><a href="?num_m={{display_rows_m}}&amp;num_c={{display_rows_c}}&amp;num_d=25&amp;dx=1">25</a></li>
-                    <li><a href="?num_m={{display_rows_m}}&amp;num_c={{display_rows_c}}&amp;num_d=all&amp;dx=1">All</a></li>
-                </ul>
-            </div>
-            <P></P>
-
-            <table class="myTable table tablesorter">
-                <thead class="thead-default" >
-                    <tr>
-                        <th>Row ID</th>
-                        <th>Date/Time</th>
-                        <th>ICD 10</th>
-                        <th>History id</th>
-                        <th>Who changed?</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for ele in dx_mod.deleted %}
-                        {% if forloop.counter0|lessThan:display_rows_d %}
-                            <tr>
-                                <td>{{forloop.counter}}</td>
-                                <td>{{ele.history_date}}</td>
-                                <td>{{ele.ICD_10}}</td>
-                                <td>{{ele.history_id}}</td>
-                                <td>{{ele.history_user_id}}</td>
-                            </tr>
-                        {% endif %}
-                    {% endfor %} 
-                </tbody>
-            </table>
-
-        </div>
-
-
-        <!-- Referring provider Information -->
-
-        <div id="rp" class="col-xs-12 col-sm-11 row row-offcanvas row-offcanvas-left  tab-pane fade">
-
-
-            <div class="btn-group ">
-                <button type="button" class="btn btn-primary dropButton" >Modified</button>
-                <button type="button" class="btn btn-primary dropdown-toggle dropButton2" data-toggle="dropdown">
-                    <span class="caret"></span>
-                    <span class="sr-only">Toggle Dropdown</span>
-                </button>
-                <ul class="dropdown-menu" role="menu">
-                    <li><a href="?num_m=5&amp;num_c={{display_rows_c}}&amp;num_d={{display_rows_d}}&amp;rp=1">5</a></li>
-                    <li><a href="?num_m=10&amp;num_c={{display_rows_c}}&amp;num_d={{display_rows_d}}&amp;rp=1">10 (default)</a></li>
-                    <li><a href="?num_m=25&amp;num_c={{display_rows_c}}&amp;num_d={{display_rows_d}}&amp;rp=1">25</a></li>
-                    <li><a href="?num_m=all&amp;num_c={{display_rows_c}}&amp;num_d={{display_rows_d}}&amp;rp=1">All</a></li>
-                </ul>
-            </div>
-            <p></p>
-
-            <table class="myTable table tablesorter">
-                <thead class="thead-default" >
-                    <tr>
-                        <th>Row ID</th>
-                        <th>Date/Time</th>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                        <th>What changed</th>
-                        <th>Old Value</th>
-                        <th>New Value</th>
-                        <th>History id</th>
-                        <th>Who changed?</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for ele in rp_mod.modified %}
-                        {% if forloop.counter0|lessThan:display_rows_m %}
-                            <tr>
-                                <td>{{forloop.counter}}</td>
-                                <td>{{ele.history_date}}</td>
-                                <td>{{ele.first_name}}</td>
-                                <td>{{ele.last_name}}</td>
-                                <td>{{ele.change}}</td>
-                                <td>{{ele.oldvalue}}</td>
-                                <td>{{ele.newvalue}}</td>
-                                <td>{{ele.history_id}}</td>
-                                <td>{{ele.history_user_id}}</td>
-                            </tr>
-                            {% endif %}
-                        {% endfor %}
-                </tbody>
-            </table>
-
-            <div class="btn-group ">
-                <button type="button" class="btn btn-success dropButton" >Created</button>
-                <button type="button" class="btn btn-success dropdown-toggle dropButton2" data-toggle="dropdown">
-                    <span class="caret"></span>
-                    <span class="sr-only">Toggle Dropdown</span>
-                </button>
-                <ul class="dropdown-menu" role="menu">
-                    <li><a href="?num_m={{display_rows_m}}&amp;num_c=5&amp;num_d={{display_rows_d}}&amp;rp=1">5</a></li>
-                    <li><a href="?num_m={{display_rows_m}}&amp;num_c=10&amp;num_d={{display_rows_d}}&amp;rp=1">10 (default)</a></li>
-                    <li><a href="?num_m={{display_rows_m}}&amp;num_c=25&amp;num_d={{display_rows_d}}&amp;rp=1">25</a></li>
-                    <li><a href="?num_m={{display_rows_m}}&amp;num_c=all&amp;num_d={{display_rows_d}}&amp;rp=1">All</a></li>
-                </ul>
-            </div>
-            <p></p>
-
-            <table class="myTable table tablesorter">
-                <thead class="thead-default" >
-                    <tr>
-                        <th>Row ID</th>
-                        <th>Date/Time</th>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                        <th>History id</th>
-                        <th>Who changed?</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for ele in rp_mod.created %}
-                        {% if forloop.counter0|lessThan:display_rows_c %}
-                            <tr>
-                                <td>{{forloop.counter}}</td>
-                                <td>{{ele.history_date}}</td>
-                                <td>{{ele.first_name}}</td>
-                                <td>{{ele.last_name}}</td>
-                                <td>{{ele.history_id}}</td>
-                                <td>{{ele.history_user_id}}</td>
-                            </tr>
-                            {% endif %}
-                        {% endfor %}
-                </tbody>
-            </table>
-
-
-            <div class="btn-group ">
-                <button type="button" class="btn btn-danger dropButton" >Deleted</button>
-                <button type="button" class="btn btn-danger dropdown-toggle dropButton2" data-toggle="dropdown">
-                    <span class="caret"></span>
-                    <span class="sr-only">Toggle Dropdown</span>
-                </button>
-                <ul class="dropdown-menu" role="menu">
-                    <li><a href="?num_m={{display_rows_m}}&amp;num_c={{display_rows_c}}&amp;num_d=5&amp;rp=1">5</a></li>
-                    <li><a href="?num_m={{display_rows_m}}&amp;num_c={{display_rows_c}}&amp;num_d=10&amp;rp=1">10 (default)</a></li>
-                    <li><a href="?num_m={{display_rows_m}}&amp;num_c={{display_rows_c}}&amp;num_d=25&amp;rp=1">25</a></li>
-                    <li><a href="?num_m={{display_rows_m}}&amp;num_c={{display_rows_c}}&amp;num_d=all&amp;rp=1">All</a></li>
-                </ul>
-            </div>
-            <P></P>
-
-            <table class="myTable table tablesorter">
-                <thead class="thead-default" >
-                    <tr>
-                        <th>Row ID</th>
-                        <th>Date/Time</th>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                        <th>History id</th>
-                        <th>Who changed?</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for ele in rp_mod.deleted %}
-                        {% if forloop.counter0|lessThan:display_rows_d %}
-                            <tr>
-                                <td>{{forloop.counter}}</td>
-                                <td>{{ele.history_date}}</td>
-                                <td>{{ele.first_name}}</td>
-                                <td>{{ele.last_name}}</td>
-                                <td>{{ele.history_id}}</td>
-                                <td>{{ele.history_user_id}}</td>
-                            </tr>
-                            {% endif %}
-                        {% endfor %}
-                </tbody>
-            </table>
-
-
-        </div>
-
     </div>
 </div>
 
