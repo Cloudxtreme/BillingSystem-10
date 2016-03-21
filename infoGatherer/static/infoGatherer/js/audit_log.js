@@ -1,6 +1,5 @@
 
-var activeTab="patient";
-var activeSide="mod";
+
 
 function modCreDel(){
     if($("#mod").hasClass("active")){
@@ -29,8 +28,12 @@ function searchTable(ele){
     console.log("asfasdfasdf");
     console.log(modCreDel());
 
+    if(modCreDel()=="mod"){
+        var $rows = $('#'+disp+' tr');
+    }else{
+        var $rows = $('#'+disp+' tbody tr');
+    }
 
-    var $rows = $('#'+disp+' tr');
 
     $('#search').keyup(function() {
         var val = $.trim($(this).val()).replace(/ +/g, ' ').toLowerCase();
@@ -39,7 +42,6 @@ function searchTable(ele){
             var text = $(this).text().replace(/\s+/g, ' ').toLowerCase();
             return !~text.indexOf(val);
         }).hide();
-
     });
 }
 
@@ -50,15 +52,12 @@ $(document).ready(function(){
     searchTable();
 
     $("#mod").click(function(){
-        activeSide="mod";
         $("#fillMe").html(replaceMe(this_js_script.attr('display'),"mod",this_js_script.attr('row_m')));
     });
     $("#cre").click(function(){
-        activeSide="cre";
         $("#fillMe").html(replaceMe(this_js_script.attr('display'),"cre",this_js_script.attr('row_m')));
     });
     $("#del").click(function(){
-        activeSide="del";
         $("#fillMe").html(replaceMe(this_js_script.attr('display'),"del",this_js_script.attr('row_m')));
     });
 
@@ -115,8 +114,8 @@ $(document).ready(function(){
         // send this!!!
         console.log("clicked!!");
         console.log($(this).attr("href").substring(1));
-        activeTab=$(this).attr("href").substring(1);
         searchTable($(this).attr("href").substring(1));
+        $("#search").keyup();
     });
     
 });
