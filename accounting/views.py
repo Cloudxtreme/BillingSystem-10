@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_list_or_404
 from django.core import serializers
 from django.core.urlresolvers import reverse
 from django.http import JsonResponse
+from django.db.models import Sum
 
 from datetime import datetime
 
@@ -45,8 +46,17 @@ def api_search_payment(request):
         if post_data.get('first_name'):
             payment = payment.filter(payer_patient__first_name__icontains=post_data.get('first_name'))
 
-        s = serializers.serialize('python', payment, use_natural_foreign_keys=True)
-        return JsonResponse(data=s, safe=False)
+        se = serializers.serialize('python', payment, use_natural_foreign_keys=True)
+
+        # Add extra field "unapplied amount" into serialized string
+        payment = payment.annotate(s=Sum('appliedpayment__amount'))
+        for i, s in enumerate(se):
+            if s.items()[1][1] == payment[i].pk:
+                s.items()[2][1]['unapplied_amount'] = payment[i].amount - payment[i].s
+            else:
+                print 'Payment query set and serialized list are not in the same order'
+
+        return JsonResponse(data=se, safe=False)
     else:
         return JsonResponse([], safe=False)
     
@@ -81,15 +91,30 @@ def api_search_procedure(request):
 def api_search_applied_payment(request):
     if request.method == 'POST':
         post_data = request.POST
-        ap = AppliedPayment.objects.filter(
-            claim=post_data.get('claim_id'),
-            payment=post_data.get('payment_id'),
-        )
 
-        s = serializers.serialize('python', ap, use_natural_foreign_keys=True)
-        return JsonResponse(data=s, safe=False)
+        # Get all procedures of the claim
+        procedure = Procedure.objects.filter(claim=post_data.get('claim_id'))
+        p_list = serializers.serialize('python', procedure, use_natural_foreign_keys=True)
+
+        # Get applied payment
+        c = Claim.objects.get(pk=post_data.get('claim_id'))
+        ap = c.appliedpayment_set.all()
+        ap_list = serializers.serialize('python', ap, use_natural_foreign_keys=True)
+
+        # Calculate amount of unapplied payment
+        payment = Payment.objects.get(pk=post_data.get('payment_id'))
+        payment_amount = payment.amount
+        applied_amount = payment.appliedpayment_set.all().aggregate(s=Sum('amount')).get('s')
+        unapplied_amount = payment_amount - applied_amount
+
+        data = dict(
+            procedure=p_list,
+            applied_payment=ap_list,
+            unapplied_amount=unapplied_amount
+        )
+        return JsonResponse(data=data, safe=False)
     else:
-        return JsonResponse([], safe=False)
+        return JsonResponse(dict(), safe=False)
 
 
 

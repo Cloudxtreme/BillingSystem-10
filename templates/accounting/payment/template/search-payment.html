@@ -49,6 +49,7 @@
                     <th>Payer Type</th>
                     <th>Payer Name</th>
                     <th>Amount ($)</th>
+                    <th>Unapplied ($)</th>
                 </tr>
             </thead>
             <tbody>
@@ -62,6 +63,7 @@
                         <%= p.payer_patient.full_name %>
                     <% } %></td>
                     <td><%= p.amount %></td>
+                    <td><%= p.unapplied_amount %></td>
                 </tr>
                 <% }); %>
             </tbody>

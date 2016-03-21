@@ -170,6 +170,7 @@
             paymentSection.find('input[name="payer_name"]').val(fields.payer_patient.full_name);
         
         paymentSection.find('input[name="amount"]').val(fields.amount);
+        paymentSection.find('input[name="unapplied_amount"]').val(fields.unapplied_amount);
         displayAppliedPaymentTable();
     };
 
@@ -202,35 +203,34 @@
                 </h4><td>
             `);
 
-            $.when(
-                $.post('{% url "accounting:api_search_procedure" %}',
-                    'claim_id=' + claim_id),
-                $.post('{% url "accounting:api_search_applied_payment" %}',
-                    'claim_id=' + claim_id +
-                    '&payment_id=' + payment_id)
-            )
-                .done(function(procedures, appliedPayments) {
-                    if(procedures.length > 0 && appliedPayments.length > 0) {
-                        var hm = {}
-                        for(var p of procedures[0]) {
-                            p.fields.appliedPayment = [];
-                            hm[p.pk] = p;
-                        }
+            $.post('{% url "accounting:api_search_applied_payment" %}',
+                'claim_id=' + claim_id +
+                '&payment_id=' + payment_id)
+            .done(function(obj) {
+                var procedures = obj.procedure;
+                var appliedPayments = obj.applied_payment;
 
-                        for(var ap of appliedPayments[0])
-                            hm[ap.fields.procedure].fields.appliedPayment.push(ap.fields);
-
-                        var foundObjectTemplate = _.template($('script.found-procedure-template').html(), {variable: 'procedures'});
-                        $('#found-procedure').html(foundObjectTemplate(procedures[0]));
+                if(procedures.length > 0 && appliedPayments.length > 0) {
+                    var hm = {}
+                    for(var p of procedures) {
+                        p.fields.appliedPayment = [];
+                        hm[p.pk] = p;
                     }
-                })
-                .fail(function() {
-                    firstRowArea.html(`
-                        <td colspan="100"><h4 class="text-center not-found">
-                            An unexptected error has occured, please try again later.
-                        </h4><td>
-                    `);
-                })
+
+                    for(var ap of appliedPayments)
+                        hm[ap.fields.procedure].fields.appliedPayment.push(ap.fields);
+
+                    var foundObjectTemplate = _.template($('script.found-procedure-template').html(), {variable: 'procedures'});
+                    $('#found-procedure').html(foundObjectTemplate(procedures));
+                }
+            })
+            .fail(function() {
+                firstRowArea.html(`
+                    <td colspan="100"><h4 class="text-center not-found">
+                        An unexptected error has occured, please try again later.
+                    </h4><td>
+                `);
+            })
         }
     }
 })();
