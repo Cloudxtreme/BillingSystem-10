@@ -50,9 +50,9 @@ def api_search_payment(request):
 
         # Add extra field "unapplied amount" into serialized string
         payment = payment.annotate(s=Sum('appliedpayment__amount'))
-        for i, s in enumerate(se):
+        for i, s in enumerate(se):  
             if s.items()[1][1] == payment[i].pk:
-                s.items()[2][1]['unapplied_amount'] = payment[i].amount - payment[i].s
+                s.items()[2][1]['unapplied_amount'] = payment[i].amount - (payment[i].s or 0)
             else:
                 print 'Payment query set and serialized list are not in the same order'
 

@@ -597,6 +597,7 @@ def print_form(bar):
             fields.append(('54',True))
     else:
         fields.append(('55',True))
+    fields.append(('251',bar['pat_id']))
     
     # Payer Information
     fields.append(('2',bar['payer_name']+"\n"+bar['payer_address']))
