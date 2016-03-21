@@ -78,16 +78,6 @@ def api_search_claim(request):
     else:
         return JsonResponse([], safe=False)
 
-def api_search_procedure(request):
-    if request.method == 'POST':
-        post_data = request.POST
-        procedure = Procedure.objects.filter(claim=post_data.get('claim_id'))
-
-        s = serializers.serialize('python', procedure, use_natural_foreign_keys=True)
-        return JsonResponse(data=s, safe=False)
-    else:
-        return JsonResponse([], safe=False)
-
 def api_search_applied_payment(request):
     if request.method == 'POST':
         post_data = request.POST
