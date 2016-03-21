@@ -45,6 +45,27 @@ function searchTable(ele){
     });
 }
 
+
+// Stylize text
+$(document).ready(function(){
+    var $ele=$(".whatChanged"); 
+
+    // console.log($ele.length);
+    // console.log($ele[0]);
+    // var r=$ele;
+    // console.log(r[0].val());
+
+    $("td.whatChanged").each(function (index,value){
+        $(this).html($(this).html().replace(/_/g, ' '));
+    });
+
+    // for(i=0;i<$ele.length;i++){
+    //     $ele[i].html($ele[i].html().replace(/_/g, ' '));
+    // }
+});
+
+
+
 $(document).ready(function(){
     var this_js_script = $('script[src*=audit_log]');
 

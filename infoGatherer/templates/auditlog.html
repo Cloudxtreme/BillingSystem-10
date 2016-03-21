@@ -2,7 +2,7 @@
 {% load tags_extra %}
 {% load widget_tweaks %}
 {% load staticfiles %}
-    <title>Sortable Table</title>
+    {% block title %} Audit Claim {% endblock title %}
 
     {% block script %}
         <script src="{% static 'infoGatherer/js/tablesorter.min.js' %}"></script>
@@ -79,7 +79,7 @@
                                                     <td>{{ele.history_date}}</td>
                                                     <td>{{ele.first_name}}</td>
                                                     <td>{{ele.last_name}}</td>
-                                                    <td>{{ele.change}}</td>
+                                                    <td class="whatChanged">{{ele.change}}</td>
                                                     <td>{{ele.oldvalue}}</td>
                                                     <td>{{ele.newvalue}}</td>
                                                     <td>{{ele.history_id}}</td>
@@ -172,7 +172,7 @@
                                                 <td>{{forloop.counter}}</td>
                                                 <td>{{ele.history_date}}</td>
                                                 <td>{{ele.name}}</td>
-                                                <td>{{ele.change}}</td>
+                                                <td class="whatChanged">{{ele.change}}</td>
                                                 <td>{{ele.oldvalue}}</td>
                                                 <td>{{ele.newvalue}}</td>
                                                 <td>{{ele.history_id}}</td>
@@ -263,7 +263,7 @@
                                                 <td>{{ele.history_date}}</td>
                                                 <td>{{ele.patientname}}</td>
                                                 <td>{{ele.payername}}</td>
-                                                <td>{{ele.change}}</td>
+                                                <td class="whatChanged">{{ele.change}}</td>
                                                 <td>{{ele.oldvalue}}</td>
                                                 <td>{{ele.newvalue}}</td>
                                                 <td>{{ele.history_id}}</td>
@@ -358,7 +358,7 @@
                                                 <td>{{forloop.counter}}</td>
                                                 <td>{{ele.history_date}}</td>
                                                 <td>{{ele.provider_name}}</td>
-                                                <td>{{ele.change}}</td>
+                                                <td class="whatChanged">{{ele.change}}</td>
                                                 <td>{{ele.oldvalue}}</td>
                                                 <td>{{ele.newvalue}}</td>
                                                 <td>{{ele.history_id}}</td>
@@ -449,7 +449,7 @@
                                                 <td>{{ele.history_date}}</td>
                                                 <td>{{ele.cpt_code}}</td>
                                                 <td>{{ele.cpt_description}}</td>
-                                                <td>{{ele.change}}</td>
+                                                <td class="whatChanged">{{ele.change}}</td>
                                                 <td>{{ele.oldvalue}}</td>
                                                 <td>{{ele.newvalue}}</td>
                                                 <td>{{ele.history_id}}</td>
@@ -546,7 +546,7 @@
                                                 <td>{{forloop.counter}}</td>
                                                 <td>{{ele.history_date}}</td>
                                                 <td>{{ele.ICD_10}}</td>
-                                                <td>{{ele.change}}</td>
+                                                <td class="whatChanged">{{ele.change}}</td>
                                                 <td>{{ele.oldvalue}}</td>
                                                 <td>{{ele.newvalue}}</td>
                                                 <td>{{ele.history_id}}</td>
@@ -640,7 +640,7 @@
                                                 <td>{{ele.history_date}}</td>
                                                 <td>{{ele.first_name}}</td>
                                                 <td>{{ele.last_name}}</td>
-                                                <td>{{ele.change}}</td>
+                                                <td class="whatChanged">{{ele.change}}</td>
                                                 <td>{{ele.oldvalue}}</td>
                                                 <td>{{ele.newvalue}}</td>
                                                 <td>{{ele.history_id}}</td>

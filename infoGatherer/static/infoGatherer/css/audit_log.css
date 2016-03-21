@@ -5,6 +5,7 @@ table.myTable td{
     margin:0px;
     padding:0px;
     overflow:auto;
+
     
     }
 table.myTable th{
@@ -176,4 +177,10 @@ table {
 li input#search{
     margin-top: 8px;
     margin-left: 5px;
+}
+
+/* Capitalization */
+
+.whatChanged{
+    text-transform:capitalize;
 }
