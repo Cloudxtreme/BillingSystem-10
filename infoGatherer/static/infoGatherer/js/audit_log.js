@@ -29,14 +29,22 @@ function searchTable(ele){
     console.log("asfasdfasdf");
     console.log(modCreDel());
 
-    if(modCreDel()=="mod"){
-        var $rows = $('#'+disp+' tr');
-    }else{
-        var $rows = $('#'+disp+' tbody tr');
-    }
-
-
+    
     $('#search').keyup(function() {
+        // So that the correct url is generated on each keyup
+        $("#fillMe").html(replaceMe(tab, sideTab, this_js_script.attr('row_m')));
+        
+        // $rows.show().not(':first').filter(function() {
+        //     var text = $(this).text().replace(/\s+/g, ' ').toLowerCase();
+        //     return !~text.indexOf(val);
+        // }).hide();
+
+        if(modCreDel()=="mod"){
+            var $rows = $('#'+disp+' tr');
+        }else{
+            var $rows = $('#'+disp+' tbody tr');
+        }
+
         var val = $.trim($(this).val()).replace(/ +/g, ' ').toLowerCase();
         
         $rows.show().not(':first').filter(function() {
@@ -54,14 +62,17 @@ $(document).ready(function(){
 
     $("#mod").click(function(){
         sideTab="mod";
+        $('#search').keyup();
         $("#fillMe").html(replaceMe(this_js_script.attr('display'),"mod",this_js_script.attr('row_m')));
     });
     $("#cre").click(function(){
         sideTab="cre";
+        $('#search').keyup();
         $("#fillMe").html(replaceMe(this_js_script.attr('display'),"cre",this_js_script.attr('row_m')));
     });
     $("#del").click(function(){
         sideTab="del";
+        $('#search').keyup();
         $("#fillMe").html(replaceMe(this_js_script.attr('display'),"del",this_js_script.attr('row_m')));
     });
 
@@ -74,12 +85,6 @@ $(document).ready(function(){
     console.log(this_js_script.attr('search')+"<-this is what was sent!");
     $("#search").val(this_js_script.attr('search'));
     $("#search").keyup();
-});
-
-$(document).ready(function(){
-    $("#search").on("keyup",function(){
-        $("#fillMe").html(replaceMe(tab, sideTab, "10"));
-    })
 });
 
 
@@ -105,18 +110,23 @@ $(document).ready(function(){
         $("#fillMe").html(replaceMe("payer",modCreDel(),this_js_script.attr('row_m')));
     });
     $('#insurancehref').on('click', function(){
+        tab="insurance";
         $("#fillMe").html(replaceMe("insurance",modCreDel(),this_js_script.attr('row_m')));
     });
     $('#providerhref').on('click', function(){
+        tab="provider";
         $("#fillMe").html(replaceMe("provider",modCreDel(),this_js_script.attr('row_m')));
     });
     $('#rphref').on('click', function(){
+        tab="rp";
         $("#fillMe").html(replaceMe("rp",modCreDel(),this_js_script.attr('row_m')));
     });
     $('#cpthref').on('click', function(){
+        tab="cpt";
         $("#fillMe").html(replaceMe("cpt",modCreDel(),this_js_script.attr('row_m')));
     });
     $('#dxhref').on('click', function(){
+        tab="dx";
         $("#fillMe").html(replaceMe("dx",modCreDel(),this_js_script.attr('row_m')));
     });
 
