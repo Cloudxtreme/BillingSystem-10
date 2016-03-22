@@ -9,6 +9,37 @@ from datetime import datetime
 from .models import *
 from .forms import *
 
+def payment_summary(request):
+
+    # get data from accounting_claim : claim_id, created data, patient_id
+    idList=Claim.objects.values_list('id', flat=True)
+    for claim_id in idList:
+        claimRow=Claim.objects.filter(id=claim_id).values()[0]
+        dateCreated=claimRow["created"]
+        patientId=claimRow["patient_id"]
+
+        # get patient_name from patient table through id
+        patientRow=Personal_Information.objects.(chart_no=patientId).values()[0]
+        patientName=patientRow['last_name']+", "+patientRow['first_name']
+
+        # get total charge from accounting_procedure (add ammount for same claim id) 
+        procedureList=Procedure.objects.filter(claim_id=claim_id).values()
+        totalCharge=0
+        for procedure in procedureList:
+            totalCharge=totalCharge+procedure['charge']
+
+        # get sum od ammounts for same claim id from accounting_appliedpayment
+        appliedPayment=AppliedPayment.objects.values().filter(claim_id=claim_id)
+        totalAppliedAmnt=0
+        totalAdjustments=0
+        for ap in appliedPayment:
+            totalAppliedAmnt=totalAppliedAmnt+appliedPayment["amount"]
+            totalAdjustments=totalAdjustments+appliedPayment["adjustment"]
+
+        # get total adjustments -- create another column --
+
+    return render(request, 'accounting/payment/accounts_summary.html')
+
 
 def payment_create(request):
     form = PaymentMakeForm(request.POST or None)
