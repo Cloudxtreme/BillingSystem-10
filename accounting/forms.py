@@ -39,11 +39,40 @@ class PaymentMakeForm(forms.ModelForm):
 
 
 class PaymentApplyForm(forms.Form):
-    # payment = forms.ModelChoiceField(queryset=Payment.objects.all())
-    # claim = forms.ModelChoiceField(queryset=Claim.objects.all())
-    procedure = forms.ModelChoiceField(queryset=Procedure.objects.all())
-    amount = forms.DecimalField(max_digits=MAX_DIGITS, decimal_places=DECIMAL_PLACES, min_value=0)
-    adjustment = forms.DecimalField(max_digits=MAX_DIGITS, decimal_places=DECIMAL_PLACES, required=False)
-
     payment = forms.CharField(required=True)
     claim = forms.CharField(required=True)
+
+    def is_valid(self):
+        valid = super(PaymentApplyForm, self).is_valid()
+        data = self.cleaned_data
+
+        if not valid:
+            valid = False
+
+        # Check if given payment and claim id exist
+        if data.get('payment') is not None:
+            try:
+                p = Payment.objects.get(pk=data.get('payment'))
+            except:
+                valid = False
+                self.add_error('payment', ErrorList(['Payment with given ID does not exist']))
+
+        if data.get('claim') is not None:
+            try:
+                c = Claim.objects.get(pk=data.get('claim'))
+            except:
+                valid = False
+                self.add_error('claim', ErrorList(['Claim with given ID does not exist']))
+        
+        print '\n\n\n'
+        print self.cleaned_data
+        print '\n\n\n'
+
+        return valid
+
+
+class ProcedureForm(forms.Form):
+    procedure = forms.CharField()
+    amount = forms.DecimalField(max_digits=MAX_DIGITS, decimal_places=DECIMAL_PLACES, min_value=0, required=False)
+    adjustment = forms.DecimalField(max_digits=MAX_DIGITS, decimal_places=DECIMAL_PLACES, required=False)
+    reference = forms.CharField(required=False)

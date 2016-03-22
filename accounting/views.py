@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_list_or_404
 from django.core import serializers
 from django.core.urlresolvers import reverse
+from django.forms import formset_factory
 from django.http import JsonResponse
 from django.db.models import Sum
 
@@ -18,16 +19,68 @@ def payment_create(request):
 
     return render(request, 'accounting/payment/create.html', {'form': form})
 
+
+
+
+
+
+
+
+
+
+
+
+# def payment_apply(request):
+#     form = PaymentApplyForm(request.POST or None)
+#     # if request.method == 'POST' and form.is_valid():
+#     #     data = form.cleaned_data
+#     #     data['adjustment'] = data.get('adjustment') or 0
+
+#     #     AppliedPayment.objects.create(**data)
+#     #     return redirect(reverse('dashboard:dashboard'))
+#     procedure_ids = request.POST.getlist('applied[procedure_id]')
+#     amounts = request.POST.getlist('applied[amount]')
+#     adjustments = request.POST.getlist('applied[adjustment]')
+#     references = request.POST.getlist('applied[reference]')
+
+#     if request.method == 'POST' and form.is_valid():
+#         for k, v in request.POST.items():
+#             print(k, v)
+#         pass
+
+#     return render(request, 'accounting/payment/apply.html', {'form': form})
+
+
+
+
 def payment_apply(request):
     form = PaymentApplyForm(request.POST or None)
-    if request.method == 'POST' and form.is_valid():
-        data = form.cleaned_data
-        data['adjustment'] = data.get('adjustment') or 0
+    ProcedureFormSet = formset_factory(ProcedureForm, extra=2)
+    formset = ProcedureFormSet(request.POST or None)
 
-        AppliedPayment.objects.create(**data)
-        return redirect(reverse('dashboard:dashboard'))
+    if request.method == 'POST' and form.is_valid() and formset.is_valid():
+        for p_form in formset:
+            print p_form.cleaned_data
 
-    return render(request, 'accounting/payment/apply.html', {'form': form})
+
+        # for k, v in request.POST.items():
+        #     print(k, v)
+        # pass
+
+    return render(request, 'accounting/payment/apply.html', {'form': form, 'procedureFormSet': formset})
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 def api_search_payment(request):
     if request.method == 'POST':
@@ -52,7 +105,7 @@ def api_search_payment(request):
         payment = payment.annotate(s=Sum('appliedpayment__amount'))
         for i, s in enumerate(se):
             if s.items()[1][1] == payment[i].pk:
-                s.items()[2][1]['unapplied_amount'] = payment[i].amount - payment[i].s
+                s.items()[2][1]['unapplied_amount'] = payment[i].amount - (payment[i].s or 0)
             else:
                 print 'Payment query set and serialized list are not in the same order'
 

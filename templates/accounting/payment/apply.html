@@ -21,7 +21,7 @@
                 </div>
                 <div class="col-sm-1">
                     Payment ID
-                    {{ form.payment|add_class:"form-control"|attr:"readonly" }}
+                    {{ form.payment|add_class:"form-control" }}
                 </div>
                 <div class="col-sm-2">
                     Payment Date
@@ -57,7 +57,7 @@
                 </div>
                 <div class="col-sm-1">
                     Claim ID
-                    {{ form.claim|add_class:"form-control"|attr:"readonly" }}
+                    {{ form.claim|add_class:"form-control" }}
                 </div>
                 <div class="col-sm-3">
                     Patient First Name
@@ -71,6 +71,12 @@
                     Date of Birth
                     <input type="text" name="dob" class="form-control" readonly>
                 </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="row">
+                <button type="button" class="btn btn-default" id="button-search-procedure">Search Procedures</button>
             </div>
         </div>
 
@@ -233,6 +239,8 @@
             })
         }
     }
+
+    $('#button-search-procedure').click(displayAppliedPaymentTable);
 })();
 </script>
 {% endblock body %}

@@ -1,4 +1,5 @@
 <div class="row" id="procedure-table">
+    {{ procedure_formset.management_form }}
     <table class="table table-striped table-condensed">
         <thead>
             <tr>
@@ -32,6 +33,8 @@
         var p = procedure.fields;
         var balance = parseFloat(p.charge);
         var dos = moment(p.date_of_service, 'YYYY-MM-DD').format('MM/DD/YYYY');
+        var payment_id = $('#{{form.payment.auto_id}}').val();
+        var claim_id = $('#{{form.claim.auto_id}}').val();
 
         for(var ap of p.appliedPayment)
             balance = balance - parseFloat(ap.amount) + parseFloat(ap.adjustment);
@@ -41,9 +44,12 @@
         <td><%= p.cpt %></td>
         <td><%= p.charge %></td>
         <td><%= balance.toFixed(2) %></td>
-        <td><input type="text" class="form-control" name="payment"></td>
-        <td><input type="text" class="form-control" name="adjustment"></td>
-        <td><input type="text" class="form-control" name="reference"></td>
+        <td><input type="text" class="form-control" id="<%= 'id_form-' + i + '-amount' %>" name="<%= 'form-' + i + '-amount' %>"></td>
+        <td><input type="text" class="form-control" id="<%= 'id_form-' + i + '-adjustment' %>" name="<%= 'form-' + i + '-adjustment' %>"></td>
+        <td><input type="text" class="form-control" id="<%= 'id_form-' + i + '-reference' %>" name="<%= 'form-' + i + '-reference' %>"></td>
+
+        <input type="hidden" id="<%= 'id_form-' + i + '-procedure' %>" name="<%= 'form-' + i + '-procedure' %>" val="<%= procedure.pk %>">
     </tr>
     <% }); %>
 </script>
+        
