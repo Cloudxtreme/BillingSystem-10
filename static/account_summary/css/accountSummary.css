@@ -1,3 +1,23 @@
-table#myTable tr{
+table#myTable tr, table#myTable th{
 	text-align: center
+}
+table#myTable {
+  font-family: "Helvetica Neue", Helvetica, sans-serif;
+  border-collapse: collapse;
+  border:.1px solid #CCC;
+}
+
+thead {
+  background: SteelBlue;
+  color: white;
+}
+
+table#myTable td {
+  padding: 5px 10px;
+
+}
+
+table#myTable th {
+	border-bottom: 0px;
+	border-left: 0px;
 }
