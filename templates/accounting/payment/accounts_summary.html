@@ -10,16 +10,15 @@
 {% endblock script %}
 
 {% block link %}
-<link rel="stylesheet" href="http://cdn.datatables.net/1.10.2/css/jquery.dataTables.min.css"></style>
+	<link rel="stylesheet" href="http://cdn.datatables.net/1.10.2/css/jquery.dataTables.min.css">
+	<link rel="stylesheet" href="{% static 'account_summary/css/accountSummary.css' %}">
 
 {% endblock link %}
-
-
 {% block body %}
 
 <div align="center" >
 <div   class="container-fluid" style="max-width: 1380px;">
-
+	<h3>Summary of Payments</h3>
     <table id="myTable" class="table table-hover table-bordered">
 	    <thead class="thead-default" bgcolor="#d0cece">
 	        <tr>
@@ -56,9 +55,6 @@
 
 <script>
     $(document).ready(function(){
-        $(function(){
-            // $("#myTable").tablesorter();
-        });
 
         // progrssBar
 		$('.progress-bar').each(function(){
