@@ -110,6 +110,10 @@ class Payment(BaseModel):
         return '%s, $%s' % (self.id, self.amount)
 
     @property
+    def applied_amount(self):
+        return self.unapplied_amount  - self.amount
+
+    @property
     def payer_name(self):
         if self.payer_type == 'Insurance':
             return self.payer_insurance.name
@@ -134,6 +138,10 @@ class Payment(BaseModel):
             'amount': self.amount,
             'check_number': self.check_number
         })
+
+    class Meta:
+        verbose_name = 'Payments List'
+        verbose_name_plural = 'Payments List'
 
 
 class AppliedPayment(BaseModel):
