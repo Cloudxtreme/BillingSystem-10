@@ -177,7 +177,6 @@
 
         paymentSection.find('input[name="amount"]').val(fields.amount);
         paymentSection.find('input[name="unapplied_amount"]').val(fields.unapplied_amount);
-        displayAppliedPaymentTable();
     };
 
     // Click function for found claim item
@@ -193,54 +192,8 @@
         claimSection.find('input[name="last_name"]').val(fields.patient.last_name);
         var dob = moment(fields.patient.dob, 'YYYY-MM-DD');
         claimSection.find('input[name="dob"]').val(dob.format('MM/DD/YYYY'));
-
-        displayAppliedPaymentTable();
     };
 
-    function displayAppliedPaymentTable() {
-        var claim_id = $('.claim-section input[name="claim"]').val();
-        var payment_id = $('.payment-section input[name="payment"]').val();
-        var firstRowArea = $('#found-procedure');
-
-        if(claim_id && payment_id) {
-            firstRowArea.html(`
-                <td colspan="100"><h4 class="text-center not-found">
-                    <i class="fa fa-refresh fa-2x fa-spin"></i>
-                </h4><td>
-            `);
-
-            $.post('{% url "accounting:api_search_applied_payment" %}',
-                'claim_id=' + claim_id +
-                '&payment_id=' + payment_id)
-            .done(function(obj) {
-                var procedures = obj.procedure;
-                var appliedPayments = obj.applied_payment;
-
-                if(procedures.length > 0 && appliedPayments.length > 0) {
-                    var hm = {}
-                    for(var p of procedures) {
-                        p.fields.appliedPayment = [];
-                        hm[p.pk] = p;
-                    }
-
-                    for(var ap of appliedPayments)
-                        hm[ap.fields.procedure].fields.appliedPayment.push(ap.fields);
-
-                    var foundObjectTemplate = _.template($('script.found-procedure-template').html(), {variable: 'procedures'});
-                    $('#found-procedure').html(foundObjectTemplate(procedures));
-                }
-            })
-            .fail(function() {
-                firstRowArea.html(`
-                    <td colspan="100"><h4 class="text-center not-found">
-                        An unexptected error has occured, please try again later.
-                    </h4><td>
-                `);
-            })
-        }
-    }
-
-    // $('#button-search-procedure').click(displayAppliedPaymentTable);
 })();
 </script>
 {% endblock body %}

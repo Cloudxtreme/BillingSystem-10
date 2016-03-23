@@ -36,7 +36,7 @@ def payment_summary(request):
         patientName=patientRow['last_name']+", "+patientRow['first_name']
         temp["patientName"]=patientName
 
-        # get total charge from accounting_procedure (add ammount for same claim id) 
+        # get total charge from accounting_procedure (add ammount for same claim id)
         procedureList=Procedure.objects.filter(claim_id=claim_id).values()
         totalCharge=0
         for procedure in procedureList:
@@ -163,31 +163,3 @@ def api_search_claim(request):
         return JsonResponse(data=s, safe=False)
     else:
         return JsonResponse([], safe=False)
-
-def api_search_applied_payment(request):
-    if request.method == 'POST':
-        post_data = request.POST
-
-        # Get all procedures of the claim
-        procedure = Procedure.objects.filter(claim=post_data.get('claim_id'))
-        p_list = serializers.serialize('python', procedure, use_natural_foreign_keys=True)
-
-        # Get applied payment
-        c = Claim.objects.get(pk=post_data.get('claim_id'))
-        ap = c.appliedpayment_set.all()
-        ap_list = serializers.serialize('python', ap, use_natural_foreign_keys=True)
-
-        # Calculate amount of unapplied payment
-        payment = Payment.objects.get(pk=post_data.get('payment_id'))
-        payment_amount = payment.amount
-        applied_amount = payment.appliedpayment_set.all().aggregate(s=Sum('amount')).get('s')
-        unapplied_amount = payment_amount - applied_amount
-
-        data = dict(
-            procedure=p_list,
-            applied_payment=ap_list,
-            unapplied_amount=unapplied_amount
-        )
-        return JsonResponse(data=data, safe=False)
-    else:
-        return JsonResponse(dict(), safe=False)
