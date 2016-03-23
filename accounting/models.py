@@ -1,8 +1,8 @@
 from __future__ import unicode_literals
 
 from django.db import models
+from django.db.models import Sum
 from django.core.validators import MinValueValidator
-from django.utils.encoding import python_2_unicode_compatible
 
 from base.models import *
 from infoGatherer.models import (Personal_Information, Payer, Provider, ReferringProvider, CPT)
@@ -20,7 +20,6 @@ PAYMENT_METHOD = (
 )
 
 
-@python_2_unicode_compatible
 class Claim(BaseModel):
     """
     Claim model captures foreign keys and some information which will be
@@ -34,11 +33,11 @@ class Claim(BaseModel):
     patient = models.ForeignKey(Personal_Information, related_name='patient')
     patient_dob = models.DateField()
     patient_detail = models.TextField()
-    
+
     insured = models.ForeignKey(Personal_Information, related_name='insured')
     insured_dob = models.DateField()
     insured_detail = models.TextField()
-    
+
     other_insured = models.ForeignKey(Personal_Information, related_name='other_insured', null=True)
     other_insured_detail = models.TextField()
 
@@ -56,7 +55,7 @@ class Claim(BaseModel):
 
     billing_provider = models.ForeignKey(Provider, limit_choices_to={'role': 'billing'}, related_name='claim_billing_provider', )
     billing_provider_npi = models.CharField(max_length=10)
-    billing_provider_detail = models.TextField()    
+    billing_provider_detail = models.TextField()
 
     claim_detail = models.TextField()
 
@@ -64,7 +63,6 @@ class Claim(BaseModel):
         return '%s, %s' % (self.id, self.patient.get_full_name())
 
 
-@python_2_unicode_compatible
 class Procedure(BaseModel):
     """
     This model is to capture one line of cpt code and its details appearing on claim form.
@@ -78,8 +76,17 @@ class Procedure(BaseModel):
     def __str__(self):
         return '%s, %s' % (self.id, self.cpt.cpt_description)
 
+    @property
+    def balance(self):
+        total_applied_payment = AppliedPayment.objects.filter(procedure=self.pk).\
+            aggregate(Sum('amount')).get('amount__sum')
 
-@python_2_unicode_compatible
+        if total_applied_payment:
+            return self.charge - int(total_applied_payment)
+        else:
+            return  self.charge
+
+
 class Payment(BaseModel):
     """
     Payment model is to capture a payment Xenon Health receives and will be
@@ -99,6 +106,23 @@ class Payment(BaseModel):
     def __str__(self):
         return '%s, $%s' % (self.id, self.amount)
 
+    @property
+    def payer_name(self):
+        if self.payer_type == 'Insurance':
+            return self.payer_insurance.name
+        else:
+            return self.patient.get_full_name()
+
+    @property
+    def unapplied_amount(self):
+        total_applied_payment = AppliedPayment.objects.filter(payment=self.pk).\
+            aggregate(Sum('amount')).get('amount__sum')
+
+        if total_applied_payment:
+            return self.amount - int(total_applied_payment)
+        else:
+            return  self.amount
+
     def natural_key(self):
         return dict({
             'id': self.id,
@@ -109,17 +133,16 @@ class Payment(BaseModel):
         })
 
 
-@python_2_unicode_compatible
 class AppliedPayment(BaseModel):
     """
     AppliedPayment model is to capture some amount of money from payment model
     assigned to cover charge appearing on claim form
     """
     payment = models.ForeignKey(Payment)
-    claim = models.ForeignKey(Claim)
     procedure = models.ForeignKey(Procedure)
     amount = models.DecimalField(max_digits=MAX_DIGITS, decimal_places=DECIMAL_PLACES, validators=[MinValueValidator(0)])
     adjustment = models.DecimalField(max_digits=MAX_DIGITS, decimal_places=DECIMAL_PLACES, default=0)
+    reference = models.CharField(max_length=100, blank=True)
 
     def __str__(self):
         return '%s, %s, %s' % (self.id, self.amount, self.adjustment)
@@ -130,4 +153,3 @@ class AppliedPayment(BaseModel):
             'amount': self.amount,
             'adjustment': self.adjustment
         })
-

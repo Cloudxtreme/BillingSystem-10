@@ -1,4 +1,6 @@
-from django.shortcuts import render, redirect, get_list_or_404
+from functools import partial, wraps
+
+from django.shortcuts import *
 from django.core import serializers
 from django.core.urlresolvers import reverse
 from django.forms import formset_factory
@@ -9,6 +11,7 @@ from datetime import datetime
 
 from .models import *
 from .forms import *
+from base.models import ExtPythonSerializer
 
 
 def payment_create(request):
@@ -19,67 +22,59 @@ def payment_create(request):
 
     return render(request, 'accounting/payment/create.html', {'form': form})
 
+def payment_apply_read(request):
+    form = PaymentApplyReadForm(request.POST or None)
 
+    if request.method == 'POST' and form.is_valid():
+        data = form.cleaned_data
 
+        return redirect(reverse('accounting:payment_apply_create', kwargs={
+            'payment_id': data.get('payment'),
+            'claim_id': data.get('claim'),
+        }))
 
+    context = {
+        'form': form,
+    }
 
+    return render(request, 'accounting/payment/apply_read.html', context)
 
+def payment_apply_create(request, payment_id, claim_id):
+    payment = get_object_or_404(Payment, pk=payment_id)
+    claim = get_object_or_404(Claim, pk=claim_id)
 
+    PaymentApplyFormSet = formset_factory(
+        wraps(PaymentApplyCreateForm)\
+            (partial(PaymentApplyCreateForm, claim_id=claim_id)),
+        extra=0
+    )
 
+    procedures = Procedure.objects.filter(claim=claim_id)
+    apply_data = [{
+        'date_of_service': p.date_of_service,
+        'cpt_code_text': p.cpt.cpt_code,
+        'charge': p.charge,
+        'balance': p.balance,
+    } for p in procedures]
 
+    if request.method == 'POST':
+        apply_formset = PaymentApplyFormSet(request.POST)
+        if apply_formset.is_valid():
+            pass
 
+    else:
+        apply_formset = PaymentApplyFormSet(
+            initial=apply_data,
+        )
 
+    context = {
+        'payment': payment,
+        'claim': claim,
+        'apply_formset': apply_formset,
+        'apply_data': apply_data,
+    }
 
-# def payment_apply(request):
-#     form = PaymentApplyForm(request.POST or None)
-#     # if request.method == 'POST' and form.is_valid():
-#     #     data = form.cleaned_data
-#     #     data['adjustment'] = data.get('adjustment') or 0
-
-#     #     AppliedPayment.objects.create(**data)
-#     #     return redirect(reverse('dashboard:dashboard'))
-#     procedure_ids = request.POST.getlist('applied[procedure_id]')
-#     amounts = request.POST.getlist('applied[amount]')
-#     adjustments = request.POST.getlist('applied[adjustment]')
-#     references = request.POST.getlist('applied[reference]')
-
-#     if request.method == 'POST' and form.is_valid():
-#         for k, v in request.POST.items():
-#             print(k, v)
-#         pass
-
-#     return render(request, 'accounting/payment/apply.html', {'form': form})
-
-
-
-
-def payment_apply(request):
-    form = PaymentApplyForm(request.POST or None)
-    ProcedureFormSet = formset_factory(ProcedureForm, extra=2)
-    formset = ProcedureFormSet(request.POST or None)
-
-    if request.method == 'POST' and form.is_valid() and formset.is_valid():
-        for p_form in formset:
-            print p_form.cleaned_data
-
-
-        # for k, v in request.POST.items():
-        #     print(k, v)
-        # pass
-
-    return render(request, 'accounting/payment/apply.html', {'form': form, 'procedureFormSet': formset})
-
-
-
-
-
-
-
-
-
-
-
-
+    return render(request, 'accounting/payment/apply_create.html', context)
 
 
 def api_search_payment(request):
@@ -99,20 +94,16 @@ def api_search_payment(request):
         if post_data.get('first_name'):
             payment = payment.filter(payer_patient__first_name__icontains=post_data.get('first_name'))
 
-        se = serializers.serialize('python', payment, use_natural_foreign_keys=True)
-
-        # Add extra field "unapplied amount" into serialized string
-        payment = payment.annotate(s=Sum('appliedpayment__amount'))
-        for i, s in enumerate(se):
-            if s.items()[1][1] == payment[i].pk:
-                s.items()[2][1]['unapplied_amount'] = payment[i].amount - (payment[i].s or 0)
-            else:
-                print 'Payment query set and serialized list are not in the same order'
+        se = ExtPythonSerializer().serialize(
+            payment,
+            props=['unapplied_amount',],
+            use_natural_foreign_keys=True
+        )
 
         return JsonResponse(data=se, safe=False)
     else:
         return JsonResponse([], safe=False)
-    
+
 def api_search_claim(request):
     if request.method == 'POST':
         post_data = request.POST
