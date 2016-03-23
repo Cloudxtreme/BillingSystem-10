@@ -96,6 +96,9 @@ class Payment(BaseModel):
     amount = models.DecimalField(max_digits=MAX_DIGITS, decimal_places=DECIMAL_PLACES, validators=[MinValueValidator(0)])
     description = models.CharField(max_length=255, blank=True)
 
+    def __unicode__(self):
+        return self.id
+
     def __str__(self):
         return '%s, $%s' % (self.id, self.amount)
 

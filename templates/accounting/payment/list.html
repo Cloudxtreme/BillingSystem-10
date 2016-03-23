@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load widget_tweaks %}
+{% block title %} Payment List {% endblock title %}
+
+{% block script %}
+	<script type="text/javascript" src="http://cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js"></script>
+{% endblock script %}
+
+{% block link %}
+	<link rel="stylesheet" href="http://cdn.datatables.net/1.10.2/css/jquery.dataTables.min.css">
+	<link rel="stylesheet" href="{% static 'account_summary/css/accountSummary.css' %}">
+{% endblock link %}
+{% block body %}
+
+<div align="center" >
+<div class="container-fluid" style="max-width: 1380px;">
+	<h3>Summary of Payments</h3>
+    <table id="myTable" class="table table-hover table-bordered">
+	    <thead class="thead-default" bgcolor="#d0cece">
+	        <tr>
+	            <th >Claim ID</th>
+	            <th>Date Created</th>
+	            <th>Patient ID</th>
+	            <th >Patient Name</th>
+	            <th>Total Charges ($)</th>
+	            <th >Amount Applied Amnt ($)</th>
+	            <th >Amount Adjusted Amnt ($)</th>
+	            <th >Balance ($)</th>
+	            <th >Progress</th>
+	        </tr>
+	    </thead>
+	    <tbody> 
+	    	{% for ele in summary %}
+	    		<tr>
+    				<td>{{ele.claimId}}</td>
+    				<td>{{ele.dateCreated}}</td>
+    				<td>{{ele.patientId}}</td>
+    				<td>{{ele.patientName}}</td>
+    				<td class="charge">{{ele.totalCharge}}</td>
+    				<td>{{ele.totalAppliedAmnt}}</td>
+    				<td class="qwe">{{ele.totalAdjustments}}</td>
+    				<td class="balance">{{ele.balance}}</td>
+    				<td class="progress">
+	                        <div class="progress-bar" role="progressbar" aria-valuenow="40" aria-valuemin="70" aria-valuemax="100" style="width:0%">
+	                            <span class="sr-only">0%</span>
+	                        </div>
+	                </td>
+	    		</tr>
+	    	{% endfor %}
+</div>
+
+<script>
+    $(document).ready(function(){
+
+        // progrssBar
+		$('.progress-bar').each(function(){
+			var charge= $(this).parent().parent().children("td.charge").html()
+			var balance= $(this).parent().parent().children("td.balance").html()
+			var valeur=0;
+			if(charge-balance >0){
+				var valeur= ((charge-balance)/charge)*100;
+			}
+			$(this).css('width', valeur+'%').attr('aria-valuenow', valeur);  
+			$(this).children("span").html(valeur+"%");
+		});
+		  
+		//dataTable
+		$('#myTable').dataTable();
+	});	
+</script>
+
+{% endblock body %}

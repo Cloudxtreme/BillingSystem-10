@@ -4,6 +4,8 @@ from accounting import views
 
 app_name ='accounting'
 urlpatterns = [
+	url(r'^payment/list/', views.payment_list, name="payment_list"),
+
 	url(r'^payment/summary/', views.payment_summary, name="payment_summary"),
 
     url(r'^payment/create/', views.payment_create, name="payment_create"),

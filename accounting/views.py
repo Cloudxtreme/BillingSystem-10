@@ -9,8 +9,11 @@ from datetime import datetime
 from .models import *
 from .forms import *
 
-def payment_summary(request):
+def payment_list(request):
+    dic=[]
+    return render(request, 'accounting/payment/list.html', {'list': dic})
 
+def payment_summary(request):
     # get data from accounting_claim : claim_id, created data, patient_id
     dic=[]
     idList=Claim.objects.values_list('id', flat=True)
@@ -48,17 +51,13 @@ def payment_summary(request):
         temp["totalAdjustments"]=totalAdjustments
         temp["balance"]=totalCharge-totalAppliedAmnt+totalAdjustments
         dic.append(temp)
-    print dic
-
     return render(request, 'accounting/payment/accounts_summary.html', {'summary': dic})
-
 
 def payment_create(request):
     form = PaymentMakeForm(request.POST or None)
     if request.method == 'POST' and form.is_valid():
         Payment.objects.create(**form.cleaned_data)
         return redirect(reverse('dashboard:dashboard'))
-
     return render(request, 'accounting/payment/create.html', {'form': form})
 
 def payment_apply(request):
