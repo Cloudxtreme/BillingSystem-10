@@ -21,7 +21,7 @@
                 </div>
                 <div class="col-sm-1">
                     Payment ID
-                    {{ form.payment|add_class:"form-control"|attr:"readonly" }}
+                    {{ form.payment|add_class:"form-control" }}
                 </div>
                 <div class="col-sm-2">
                     Payment Date
@@ -57,7 +57,7 @@
                 </div>
                 <div class="col-sm-1">
                     Claim ID
-                    {{ form.claim|add_class:"form-control"|attr:"readonly" }}
+                    {{ form.claim|add_class:"form-control" }}
                 </div>
                 <div class="col-sm-3">
                     Patient First Name
@@ -71,6 +71,12 @@
                     Date of Birth
                     <input type="text" name="dob" class="form-control" readonly>
                 </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="row">
+                <button type="Submit" class="btn btn-default" id="button-search-procedure">Search Procedures</button>
             </div>
         </div>
 
@@ -92,7 +98,7 @@
         </div>
         -->
 
-        <input type="submit" value="Make Payment" class="btn btn-success">
+        <button type="button" class="btn btn-success" disabled>Make Payment</button>
         <a href="{% url 'dashboard:dashboard' %}" class="padding-btn margin-left link-btn-danger">Cancel</a>
     </form>
 </div>
@@ -168,7 +174,7 @@
             paymentSection.find('input[name="payer_name"]').val(fields.payer_insurance.name);
         else
             paymentSection.find('input[name="payer_name"]').val(fields.payer_patient.full_name);
-        
+
         paymentSection.find('input[name="amount"]').val(fields.amount);
         paymentSection.find('input[name="unapplied_amount"]').val(fields.unapplied_amount);
         displayAppliedPaymentTable();
@@ -233,6 +239,8 @@
             })
         }
     }
+
+    // $('#button-search-procedure').click(displayAppliedPaymentTable);
 })();
 </script>
 {% endblock body %}
