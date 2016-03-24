@@ -13,6 +13,16 @@ MAX_DIGITS = 30
 DECIMAL_PLACES = 2
 
 
+class BaseModelManager(models.Manager):
+    def bulk_create(self, objs, batch_size=None):
+        for obj in objs:
+            if not obj.id:
+                obj.created = timezone.now()
+
+            obj.modified = timezone.now()
+        return super(BaseModelManager, self).bulk_create(objs, batch_size)
+
+
 class BaseModel(models.Model):
     """
     Abstract class of all models in this project.
@@ -20,8 +30,10 @@ class BaseModel(models.Model):
     django.utils.timezone is prefer to datetime.datetime because it created
     timezone awareness object.
     """
-    created     = models.DateTimeField(editable=False)
-    modified    = models.DateTimeField()
+    created = models.DateTimeField(editable=False)
+    modified = models.DateTimeField()
+
+    objects = BaseModelManager()
 
     def save(self, *args, **kwargs):
         if not self.id:

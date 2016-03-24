@@ -1,4 +1,5 @@
 import datetime
+from decimal import Decimal
 
 from django import forms
 from django.forms import ModelForm, BaseFormSet
@@ -65,37 +66,60 @@ class PaymentApplyCreateForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         claim_id = kwargs.pop('claim_id', None)
+        payment_id = kwargs.pop('payment_id', None)
 
         super(PaymentApplyCreateForm, self).__init__(*args, **kwargs)
         self.fields['procedure'] = forms.ModelChoiceField(queryset=Procedure.objects.filter(claim=claim_id))
+        self.fields['payment'] = forms.ModelChoiceField(queryset=Payment.objects.all())
 
     def clean(self):
         cleaned_data = super(PaymentApplyCreateForm, self).clean()
+
         amount = cleaned_data.get('amount')
         adjustment = cleaned_data.get('adjustment')
         reference = cleaned_data.get('reference')
 
-        if reference and (amount is None or adjustment is None):
+        if reference and (amount is None and adjustment is None):
             self.add_error('reference', 'Reference needs to be with either amount or adjustment.')
+
+        amount = Decimal(amount or 0)
+        adjustment = Decimal(amount or 0)
+        cleaned_data['amount'] = amount
+        cleaned_data['adjustment'] = adjustment
+
+        procedure = cleaned_data.get('procedure')
+        balance = procedure.balance
+
+        if balance < amount - adjustment:
+            self.add_error('amount', 'Amount exceeds balance plus adjustment on procedure \"%s\".  Please check the value' % procedure.cpt.cpt_code)
 
 
 class BasePaymentApplyCreateFormSet(BaseFormSet):
-    def __init__(self, payment_id, *args, **kwargs):
-        super(BasePaymentApplyCreateFormSet, self).__init__(*args, **kwargs)
-
     def clean(self):
         if any(self.errors):
             return
 
-        total_apply = 0
+        applied_set = dict()
+        # Sum up all amount and adjustment
         for form in self.forms:
             if form.cleaned_data:
-                amount = form.cleaned_data.get('amount') or 0
-                adjustment = form.cleaned_data.get('adjustment') or 0
-                total_apply = total_apply + adjustment - amount
+                data = form.cleaned_data
+                payment = data.get('payment')
 
-        if total_apply > self.payment.unapplied_amount:
-            raise forms.ValidationError('Unapplied amount is not enough for given data')
+                if payment:
+                    amount = Decimal(data.get('amount') or 0)
+                    adjustment = Decimal(data.get('adjustment') or 0)
+                    total = Decimal(applied_set.get(payment.pk) or 0)
+
+                    applied_set[payment.pk] = total + amount
+
+        # Check if total amount and adjustment exceeds
+        # unapplied amount of relative payment or not
+        for payment_pk, total in applied_set.iteritems():
+            payment = Payment.objects.get(pk=payment_pk)
+
+            if total > payment.unapplied_amount:
+                raise forms.ValidationError('Total amount and adjustment exceeds unapplied_amount of payment ID \"%s\"' % payment_pk)
 
 
 class ProcedureForm(forms.Form):

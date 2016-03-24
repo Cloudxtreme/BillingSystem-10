@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 
+from decimal import Decimal
 from django.db import models
 from django.db.models import Sum
 from django.core.validators import MinValueValidator
@@ -78,13 +79,13 @@ class Procedure(BaseModel):
 
     @property
     def balance(self):
-        total_applied_payment = AppliedPayment.objects.filter(procedure=self.pk).\
-            aggregate(Sum('amount')).get('amount__sum')
+        total_applied_payment_amount = Decimal(AppliedPayment.objects.filter(procedure=self.pk).\
+            aggregate(Sum('amount')).get('amount__sum') or 0)
 
-        if total_applied_payment:
-            return self.charge - int(total_applied_payment)
-        else:
-            return  self.charge
+        total_applied_payment_adjustment = Decimal(AppliedPayment.objects.filter(procedure=self.pk).\
+            aggregate(Sum('adjustment')).get('adjustment__sum') or 0)
+
+        return (self.charge + total_applied_payment_adjustment) - total_applied_payment_amount
 
 
 class Payment(BaseModel):
@@ -107,7 +108,7 @@ class Payment(BaseModel):
         return self.id
 
     def __str__(self):
-        return '%s, $%s' % (self.id, self.amount)
+        return '%s, %s' % (self.id, str(self.amount))
 
     @property
     def payer_name(self):
@@ -118,13 +119,10 @@ class Payment(BaseModel):
 
     @property
     def unapplied_amount(self):
-        total_applied_payment = AppliedPayment.objects.filter(payment=self.pk).\
-            aggregate(Sum('amount')).get('amount__sum')
+        total_applied_payment = Decimal(AppliedPayment.objects.filter(payment=self.pk).\
+            aggregate(Sum('amount')).get('amount__sum') or 0)
 
-        if total_applied_payment:
-            return self.amount - int(total_applied_payment)
-        else:
-            return  self.amount
+        return self.amount - total_applied_payment
 
     def natural_key(self):
         return dict({
@@ -148,7 +146,7 @@ class AppliedPayment(BaseModel):
     reference = models.CharField(max_length=100, blank=True)
 
     def __str__(self):
-        return '%s, %s, %s' % (self.id, self.amount, self.adjustment)
+        return '%s, %s, %s' % (self.id, str(self.amount), str(self.adjustment))
 
     def natural_key(self):
         return dict({

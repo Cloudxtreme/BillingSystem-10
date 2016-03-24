@@ -87,12 +87,18 @@ def payment_apply_create(request, payment_id, claim_id):
 
     PaymentApplyFormSet = formset_factory(
         wraps(PaymentApplyCreateForm)\
-            (partial(PaymentApplyCreateForm, claim_id=claim_id)),
-        extra=0
+            (partial(
+                PaymentApplyCreateForm,
+                claim_id=claim_id,
+                payment_id=payment_id
+            )),
+        formset=BasePaymentApplyCreateFormSet,
+        extra=0,
     )
 
     procedures = Procedure.objects.filter(claim=claim_id)
     apply_data = [{
+        'procedure': p.pk,
         'date_of_service': p.date_of_service,
         'cpt_code_text': p.cpt.cpt_code,
         'charge': p.charge,
@@ -102,7 +108,20 @@ def payment_apply_create(request, payment_id, claim_id):
     if request.method == 'POST':
         apply_formset = PaymentApplyFormSet(request.POST)
         if apply_formset.is_valid():
-            pass
+            new_applied = []
+            for apply_form in apply_formset:
+                data = apply_form.cleaned_data
+                amount = data.get('amount')
+                adjustment = data.get('adjustment')
+
+                if amount or adjustment:
+                    new_applied.append(AppliedPayment(**data))
+
+            AppliedPayment.objects.bulk_create(new_applied)
+            redirect(reverse('accounting:payment_apply_create', kwargs={
+                'payment_id': payment_id,
+                'claim_id': claim_id,
+            }))
 
     else:
         apply_formset = PaymentApplyFormSet(
@@ -117,6 +136,8 @@ def payment_apply_create(request, payment_id, claim_id):
     }
 
     return render(request, 'accounting/payment/apply_create.html', context)
+
+
 
 
 def api_search_payment(request):
