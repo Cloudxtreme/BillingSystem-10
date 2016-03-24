@@ -164,3 +164,45 @@ class AppliedPayment(BaseModel):
             'amount': self.amount,
             'adjustment': self.adjustment
         })
+
+    def __unicode__(self):
+        return self.id
+    
+    @property
+    def payer(self):
+        p=Payment.objects.filter(id=self.payment_id).values()[0]
+        payerType=p['payer_type']
+        if(payerType=='Insurance'):
+            return Payer.objects.filter(code=p['payer_insurance_id']).values()[0]['name']
+        else:
+            name=Personal_Information.objects.filter(id=p['payer_patient_id']).values()[0]
+            return name['last_name']+", "+name['first_name']
+
+    # @property 
+    # def payment_id(self, obj):
+    #     print self.payment
+    #     return self.payment
+
+    @property
+    def dos(self):
+        return Procedure.objects.filter(id=self.procedure_id).values()[0]['date_of_service']
+
+    # @property
+    # def applied_type(self):
+    #     return Payment.objects.filter(id=self.payment_id).values()[0]['payer_type']
+
+    @property
+    def payment_date(self):
+        return Payment.objects.filter(id=self.payment_id).values()[0]['payment_date']
+
+    @property
+    def patient_Id(self):
+        claimID=Procedure.objects.filter(id=self.procedure_id).values()[0]['claim_id']
+        return Claim.objects.filter(id=claimID).values()[0]['patient_id']
+
+    @property
+    def patient_name(self):
+        claimID=Procedure.objects.filter(id=self.procedure_id).values()[0]['claim_id']
+        patID=Claim.objects.filter(id=claimID).values()[0]['patient_id']
+        pat=Personal_Information.objects.filter(chart_no=patID).values()[0]
+        return pat['last_name']+", "+pat['first_name']

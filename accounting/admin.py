@@ -20,4 +20,24 @@ class PaymentAdmin(admin.ModelAdmin):
         return "$"+str(obj.applied_amount)
 
 
+class AppliedPaymentAdmin(admin.ModelAdmin):
+
+    list_display = ('applied_on','payment_date','dos','patient_Id','name' ,'applied_amount', 'payment_id','payer')
+
+    # 'applied_amount', 'payment_id' , 'payer'
+
+
+    # def payment_id(self, obj):
+    #     return obj.payment_id
+
+    def applied_amount(self, obj):
+        return obj.amount
+
+    def applied_on(self, obj):
+        return obj.created
+
+    def name(self, obj):
+        return obj.patient_name
+
 admin.site.register(Payment, PaymentAdmin)
+admin.site.register(AppliedPayment, AppliedPaymentAdmin)
