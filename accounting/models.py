@@ -19,6 +19,11 @@ PAYMENT_METHOD = (
     ('Cash', 'Cash')
 )
 
+RESPONSIBILITY_TYPE = (
+    ('Co-pay', 'Co-pay'),
+    ('Deductible', 'Deductible'),
+)
+
 
 class Claim(BaseModel):
     """
@@ -201,3 +206,45 @@ class AppliedPayment(BaseModel):
     #     patID=Claim.objects.filter(id=claimID).values()[0]['patient_id']
     #     pat=Personal_Information.objects.filter(chart_no=patID).values()[0]
     #     return pat['last_name']+", "+pat['first_name']
+
+
+class PatientCharge(BaseModel):
+    """
+    PatientCharge model captures amount of money that a patient
+    is required to pay by oneself to a cpt procedure that appears
+    on the claim
+    """
+    procedure = models.ForeignKey(Procedure)
+    resp_type = models.CharField(
+            max_length=30,
+            choices=RESPONSIBILITY_TYPE)
+    amount = models.DecimalField(
+            max_digits=MAX_DIGITS,
+            decimal_places=DECIMAL_PLACES)
+
+    def __str__(self):
+        return '%s: %s, %s --- $%s' % (self.id, self.procedure, self.resp_type, self.amount)
+
+    @property
+    def balance(self):
+        total_applied = PatientAppliedPayment.objects\
+                .filter(patient_charge=self.pk)\
+                .aggregate(Sum('amount'))\
+                .get('amount__sum') or 0
+        return self.amount - total_applied
+
+
+class PatientAppliedPayment(BaseModel):
+    """
+    PatientAppliedPayment captures amount of money from payment
+    model that is assigned to cover charges that a patient is
+    required to pay
+    """
+    payment = models.ForeignKey(Payment)
+    patient_charge = models.ForeignKey(PatientCharge)
+    amount = models.DecimalField(
+            max_digits=MAX_DIGITS,
+            decimal_places=DECIMAL_PLACES)
+
+    def __str__(self):
+        return '%s: %s, %s --- $%s' % (self.id, self.payment, self.patient_charge, self.amount)

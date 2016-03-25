@@ -128,3 +128,49 @@ class ProcedureForm(forms.Form):
     amount = forms.DecimalField(max_digits=MAX_DIGITS, decimal_places=DECIMAL_PLACES, min_value=0, required=False)
     adjustment = forms.DecimalField(max_digits=MAX_DIGITS, decimal_places=DECIMAL_PLACES, required=False)
     reference = forms.CharField(required=False)
+
+
+class PatientChargeForm(forms.ModelForm):
+    amount = form.DecimalField(
+            max_digits=MAX_DIGITS,
+            decimal_places=DECIMAL_PLACES,
+            min_value=0)
+
+    class Meta:
+        model = PatientCharge
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super(PatientChargeForm, self).__init__(*args, **kwargs)
+        claim_id = kwargs.pop('claim_id', None)
+        self.fields['procedure'] = forms.ModelChoiceField(
+                queryset=Procedure.objects.filter(claim=claim_id))
+
+
+class PatientAppliedPaymentForm(forms.ModelForm):
+    amount = form.DecimalField(
+            max_digits=MAX_DIGITS,
+            decimal_places=DECIMAL_PLACES,
+            min_value=0)
+
+    class Meta:
+        model = PatientAppliedPayment
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super(PatientAppliedPaymentForm, self).__init__(*args, **kwargs)
+        self.fields['payment'] = forms.ModelChoiceField(
+                queryset=Payment.objects.filter(payer_type='Patient'))
+
+    def clean(self):
+        cleaned_data = super(PatientAppliedPaymentForm, self).clean()
+
+        patient_charge = cleaned_data.get('patient_charge')
+        amount = cleaned_data.get('amount')
+
+        if amount is not None:
+            if patient_charge.balance < amount:
+                self.add_error('amount',
+                        """Patient apply amount exceeds balance of
+                        patient responsibility. (on line CPT: \"%s\")""" % \
+                        procedure.cpt.cpt_code)

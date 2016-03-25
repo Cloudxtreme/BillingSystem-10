@@ -134,7 +134,6 @@ def payment_apply_create(request, payment_id, claim_id):
     return render(request, 'accounting/payment/apply_create.html', context)
 
 
-
 ###############################################################################
 # API function for ajax call from front end page
 ###############################################################################
