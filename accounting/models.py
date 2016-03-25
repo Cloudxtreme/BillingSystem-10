@@ -107,9 +107,6 @@ class Payment(BaseModel):
     amount = models.DecimalField(max_digits=MAX_DIGITS, decimal_places=DECIMAL_PLACES, validators=[MinValueValidator(0)])
     description = models.CharField(max_length=255, blank=True)
 
-    def __unicode__(self):
-        return self.id
-
     def __str__(self):
         return '%s, %s' % (self.id, self.amount)
 
@@ -170,7 +167,7 @@ class AppliedPayment(BaseModel):
 
     def __unicode__(self):
         return unicode(self.reference) or u''
-    
+
     # @property
     # def payer(self):
     #     p=Payment.objects.filter(id=self.payment_id).values()[0]
@@ -181,7 +178,7 @@ class AppliedPayment(BaseModel):
     #         name=Personal_Information.objects.filter(id=p['payer_patient_id']).values()[0]
     #         return name['last_name']+", "+name['first_name']
 
-    # @property 
+    # @property
     # def rpi(self):
     #     return self.payment_id
 
