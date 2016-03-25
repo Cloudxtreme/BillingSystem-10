@@ -1,5 +1,6 @@
 from django.contrib import admin
 from accounting.models import *
+from decimal import *
 
 # Register your models here.
 
@@ -21,23 +22,20 @@ class PaymentAdmin(admin.ModelAdmin):
 
 
 class AppliedPaymentAdmin(admin.ModelAdmin):
+    pass
+    # list_display = ('applied_on','payment_date','dos','patient_Id','patient_name' ,'payment_amount','adjustment_amount', 'paymentid','payer')
 
-    list_display = ('applied_on','payment_date','dos','patient_Id','name' ,'applied_amount', 'payment_id','payer')
+    # def adjustment_amount(self, obj):
+    #     return "$"+str(obj.adjustment)
 
-    # 'applied_amount', 'payment_id' , 'payer'
+    # def paymentid(self, obj):
+    #     return obj.rpi
 
+    # def payment_amount(self, obj):
+    #     return "$"+ str(Decimal(-1*obj.amount))
 
-    # def payment_id(self, obj):
-    #     return obj.payment_id
-
-    def applied_amount(self, obj):
-        return obj.amount
-
-    def applied_on(self, obj):
-        return obj.created
-
-    def name(self, obj):
-        return obj.patient_name
+    # def applied_on(self, obj):
+    #     return obj.created
 
 admin.site.register(Payment, PaymentAdmin)
 admin.site.register(AppliedPayment, AppliedPaymentAdmin)
