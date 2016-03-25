@@ -88,7 +88,7 @@ class Procedure(BaseModel):
                             .aggregate(Sum('adjustment'))\
                             .get('adjustment__sum') or 0
 
-        return self.charge + total_adjustment - total_applied_amount
+        return self.charge - total_adjustment - total_applied_amount
 
 
 class Payment(BaseModel):

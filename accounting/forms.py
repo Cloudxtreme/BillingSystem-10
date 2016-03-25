@@ -91,8 +91,8 @@ class PaymentApplyCreateForm(forms.Form):
         procedure = cleaned_data.get('procedure')
 
         if amount is not None and adjustment is not None:
-            if procedure.balance < amount - adjustment:
-                self.add_error('amount', 'Amount minus adjustment exceeds balance on procedure \"%s\".  Please check the value' % procedure.cpt.cpt_code)
+            if procedure.balance < amount + adjustment:
+                self.add_error('amount', 'Amount plus adjustment exceeds balance on procedure \"%s\".  Please check the value' % procedure.cpt.cpt_code)
 
 
 class BasePaymentApplyCreateFormSet(BaseFormSet):
