@@ -6,6 +6,7 @@ from django.core.urlresolvers import reverse
 from django.forms import formset_factory
 from django.http import JsonResponse
 from django.db.models import Sum
+from django.db.models import Q
 
 from datetime import datetime
 
@@ -33,7 +34,7 @@ def payment_summary(request):
         patientName=patientRow['last_name']+", "+patientRow['first_name']
         temp["patientName"]=patientName
 
-        # get total charge from accounting_procedure (add ammount for same claim id) 
+        # get total charge from accounting_procedure (add ammount for same claim id)
         # get sum od ammounts for same claim id from accounting_appliedpayment
         # get total adjustments -- create another column --
         procedureList=Procedure.objects.filter(claim_id=claim_id).values()
@@ -147,12 +148,36 @@ def api_search_payment(request):
 
         if post_data.get('check_number'):
             payment = payment.filter(check_number__icontains=post_data.get('check_number'))
-        if post_data.get('insurance_name'):
-            payment = payment.filter(payer_insurance__name__icontains=post_data.get('insurance_name'))
-        if post_data.get('last_name'):
-            payment = payment.filter(payer_patient__last_name__icontains=post_data.get('last_name'))
-        if post_data.get('first_name'):
-            payment = payment.filter(payer_patient__first_name__icontains=post_data.get('first_name'))
+
+        insurance_name = post_data.get('insurance_name')
+        last_name = post_data.get('last_name')
+        first_name = post_data.get('first_name')
+
+        if len(insurance_name) == 0:
+            insurance_name = None
+        if len(last_name) == 0:
+            last_name = None
+        if len(first_name) == 0:
+            first_name = None
+
+        insurance_kwargs = dict()
+        if insurance_name is not None:
+            insurance_kwargs['payer_insurance__name__icontains'] = insurance_name
+        patient_kwargs = dict()
+        if last_name is not None:
+            patient_kwargs['payer_patient__last_name__icontains'] = last_name
+        if first_name is not None:
+            patient_kwargs['payer_patient__first_name__icontains'] = first_name
+
+        if insurance_name is None:
+            payment = payment.filter(Q(**patient_kwargs))
+        elif last_name is None and first_name is None:
+            payment = payment.filter(Q(**insurance_kwargs))
+        else:
+            payment = payment.filter(
+                Q(**insurance_kwargs) | \
+                Q(**patient_kwargs)
+            )
 
         se = ExtPythonSerializer().serialize(
             payment,
