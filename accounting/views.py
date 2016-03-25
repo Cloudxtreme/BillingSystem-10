@@ -13,9 +13,6 @@ from .models import *
 from .forms import *
 from base.models import ExtPythonSerializer
 
-def payment_list(request):
-    dic=[]
-    return render(request, 'accounting/payment/list.html', {'list': dic})
 
 def payment_summary(request):
     # get data from accounting_claim : claim_id, created data, patient_id
@@ -36,21 +33,18 @@ def payment_summary(request):
         patientName=patientRow['last_name']+", "+patientRow['first_name']
         temp["patientName"]=patientName
 
-        # get total charge from accounting_procedure (add ammount for same claim id)
-        procedureList=Procedure.objects.filter(claim_id=claim_id).values()
-        totalCharge=0
-        for procedure in procedureList:
-            totalCharge=totalCharge+procedure['charge']
-        temp["totalCharge"]=totalCharge
-
+        # get total charge from accounting_procedure (add ammount for same claim id) 
         # get sum od ammounts for same claim id from accounting_appliedpayment
         # get total adjustments -- create another column --
-        appliedPayment=AppliedPayment.objects.values().filter(claim_id=claim_id)
+        procedureList=Procedure.objects.filter(claim_id=claim_id).values()
+        totalCharge=0
         totalAppliedAmnt=0
         totalAdjustments=0
-        for ap in appliedPayment:
-            totalAppliedAmnt=totalAppliedAmnt+ap["amount"]
-            totalAdjustments=totalAdjustments+ap["adjustment"]
+        for procedure in procedureList:
+            totalCharge=totalCharge+procedure['charge']
+            totalAppliedAmnt=totalAppliedAmnt+(AppliedPayment.objects.filter(procedure_id=procedure['id']).all().aggregate(Sum('amount'))['amount__sum'] or 0)
+            totalAdjustments=totalAdjustments+(AppliedPayment.objects.filter(procedure_id=procedure['id']).all().aggregate(Sum('adjustment'))['adjustment__sum'] or 0)
+        temp["totalCharge"]=totalCharge
         temp["totalAppliedAmnt"]=totalAppliedAmnt
         temp["totalAdjustments"]=totalAdjustments
         temp["balance"]=totalCharge-totalAppliedAmnt+totalAdjustments
