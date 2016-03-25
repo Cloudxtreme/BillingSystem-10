@@ -64,7 +64,7 @@ SIGN_CHOICES = (('Yes','Yes'),('No','No'))
 
 INSURANCE_LEVEL_CHOICES = (('Primary','Primary'),('Secondary','Secondary'),('Tertiary','Tertiary'))
 
-INSURANCE_STATUS_CHOICES = (('Active','Active'),('Inactive','Inactive'),('Invalid','Invalid'),('Not Found','Not Found')) 
+INSURANCE_STATUS_CHOICES = (('Active','Active'),('Inactive','Inactive'),('Invalid','Invalid'),('Not Found','Not Found'))
 
 PAYER_TYPE_CHOICE = (('M','Medicare'),('C','Commercial'))
 
@@ -94,7 +94,7 @@ SEX = (
     ('M', 'Male'),
     ('F', 'Female'),
 )
-PAT_RELA_TO_INSURED = (  
+PAT_RELA_TO_INSURED = (
     ('Self', 'Self'),
     ('Spouse', 'Spouse'),
     ('Child', 'Child'),
@@ -115,7 +115,7 @@ DX_PT = (
     ('K', 'K'),
     ('L', 'L'),
 )
-UNIT = (  
+UNIT = (
     ('ME', 'Milligram'),
     ('F2', 'International Unit'),
     ('GR', 'Gram'),
@@ -150,14 +150,14 @@ class CPT(models.Model):
         return self.cpt_code+" "+self.cpt_description
 
 
-class PostAd(models.Model):  
+class PostAd(models.Model):
     insured_idnumber= models.CharField(max_length=50)
     insured_name= models.CharField(max_length=100)
     insured_address= models.CharField(max_length=100, null=True, blank=True)
     insured_streetaddress = models.TextField(max_length=100)
     insured_city    = models.TextField(max_length=50)
     insured_zip     = models.CharField(max_length=5,default='')
-    insured_state   = USStateField(default='') 
+    insured_state   = USStateField(default='')
     insured_telephone= PhoneNumberField()
     insured_other_insured_policy=models.TextField(max_length=100)
     insured_birth_date  = models.DateField()
@@ -168,7 +168,7 @@ class PostAd(models.Model):
     pat_streetaddress = models.TextField(max_length=100)
     pat_city    = models.TextField(max_length=50)
     pat_zip     = models.CharField(max_length=5,default='')
-    pat_state   = USStateField(default='') 
+    pat_state   = USStateField(default='')
     pat_telephone= PhoneNumberField()
     pat_other_insured_name=models.TextField(max_length=100)
     pat_other_insured_policy=models.TextField(max_length=100)
@@ -182,7 +182,7 @@ class PostAd(models.Model):
     payer_name = models.CharField(max_length=100)
     payer_address = models.CharField(max_length=200)
 
-    
+
 
 class ReferringProvider(models.Model):
     first_name = models.CharField(max_length=200)
@@ -227,29 +227,29 @@ class Personal_Information(models.Model):
     country = CountryField(blank_label='',default='US')
     ssn = USSocialSecurityNumberField(null=True, blank=True, help_text='XXX-XX-XXXX')
     address = models.CharField(max_length=128,default='')
-    city = models.CharField(max_length=128,default='')   
-    state = USStateField(default='')  
+    city = models.CharField(max_length=128,default='')
+    state = USStateField(default='')
     zip = models.CharField(max_length=5,default='')
     home_phone = PhoneNumberField(help_text='XXX-XXX-XXXX')
     cell_phone = PhoneNumberField(null=True, blank=True, help_text='XXX-XXX-XXXX')
     email = models.EmailField(null=True, blank=True)
     call_pref = models.CharField(choices=CALL_PREF_CHOICES, max_length=10, default='Home')
     written_pref = models.CharField(choices=WRITTEN_PREF_CHOICES, max_length=12, default='Post')
-    emp_status = models.CharField(choices=EMP_STATUS_CHOICES, max_length=64, default='Blank')    
-     
+    emp_status = models.CharField(choices=EMP_STATUS_CHOICES, max_length=64, default='Blank')
+
     #Account Information
     chart_no = models.AutoField(primary_key=True)
     date_registered = models.DateField(default=timezone.now)
     account_type = models.CharField(choices=ACCOUNT_TYPE_CHOICES, max_length=64, default='Blank')
     account_status = models.CharField(choices=ACCOUNT_STATUS_CHOICES, max_length=64, default='Current')
     sign = models.CharField(choices=SIGN_CHOICES, max_length=3, default='Yes')
-     
+
     audit_log = AuditLog()
     history = HistoricalRecords()
-    
+
     def __unicode__(self):
         return self.get_full_name()
-    
+
     def natural_key(self):
         return dict({
             'chart_no': self.chart_no,
@@ -260,18 +260,22 @@ class Personal_Information(models.Model):
             'dob': self.dob
         })
 
-    def get_full_name(self):
+    @property
+    def full_name(self):
         if(self.middle_name):
             return '%s %s %s' % (self.first_name, self.middle_name, self.last_name)
         else:
             return '%s %s' % (self.first_name, self.last_name)
+
+    def get_full_name(self):
+        return self.full_name
 
     def get_format_name(self):
         if(self.middle_name):
             return '%s, %s, %s' % (self.last_name, self.first_name, self.middle_name)
         else:
             return '%s, %s' % (self.last_name, self.first_name)
-    
+
     def get_data(self):
         details = model_to_dict(self, exclude=['audit_log','dob','date_registered','state','country'])
         details['dob'] = str(self.dob)
@@ -280,11 +284,11 @@ class Personal_Information(models.Model):
         details['country'] = str(self.country)
         return details
 
-    
+
 class Guarantor_Information(models.Model):
     patient = models.ForeignKey(Personal_Information)
     relation = models.CharField(choices=RELATION_CHOICES,max_length=128)
-    
+
     #If relation is self, auto fill rest of the details
     first_name = models.CharField(max_length=128, default='', null=True, blank=True)
     middle_name = models.CharField(max_length=128, default='', null=True, blank=True)
@@ -297,31 +301,31 @@ class Guarantor_Information(models.Model):
     country = CountryField(blank_label='',default='US')
     ssn = USSocialSecurityNumberField(null=True, blank=True, help_text='XXX-XX-XXXX')
     address = models.CharField(max_length=128,default='', null=True, blank=True)
-    city = models.CharField(max_length=128,default='', null=True, blank=True)   
-    state = USStateField(default='')  
+    city = models.CharField(max_length=128,default='', null=True, blank=True)
+    state = USStateField(default='')
     zip = models.CharField(max_length=5, default='',null=True, blank=True)
     home_phone = PhoneNumberField(help_text='XXX-XXX-XXXX', null=True, blank=True)
-    
+
     def __unicode__(self):
         return str(self.patient.pk)
-    
+
 class Payer(models.Model):
     code = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=256, default='')
     address = models.CharField(max_length=256, default='')
-    city = models.CharField(max_length=128,default='')   
-    state = USStateField(default='')  
+    city = models.CharField(max_length=128,default='')
+    state = USStateField(default='')
     zip = models.IntegerField(default='')
     phone = PhoneNumberField(null=True, blank=True, help_text='XXX-XXX-XXXX')
     type = models.CharField(choices=PAYER_TYPE_CHOICE,max_length=1,default='C')
     history = HistoricalRecords()
-    
+
     def __unicode__(self):
         return self.name
 
     def natural_key(self):
         return dict({'code': self.code, 'name': self.name})
-    
+
 class Insurance_Information(models.Model):
     level = models.CharField(choices=INSURANCE_LEVEL_CHOICES,max_length=10,default='Primary')
     status = models.CharField(choices=INSURANCE_STATUS_CHOICES,max_length=10,default='Active')
@@ -332,16 +336,16 @@ class Insurance_Information(models.Model):
     history = HistoricalRecords()
 
     def __unicode__(self):
-        return self.payer.name 
+        return self.payer.name
 
     def get_payer_name(self):
         return self.payer.name
-    
+
 class Locations(models.Model):
     location_name = models.CharField(max_length=128,default='')
     address = models.CharField(max_length=256, default='')
-    city = models.CharField(max_length=128,default='')   
-    state = USStateField(default='')  
+    city = models.CharField(max_length=128,default='')
+    state = USStateField(default='')
     phone = PhoneNumberField(null=True, blank=True, help_text='XXX-XXX-XXXX')
 
     def __unicode__(self):
@@ -356,7 +360,7 @@ class Provider(models.Model):
     provider_ein= models.CharField(max_length=128,default='',null=True, blank=True)
     speciality = models.CharField(max_length=128,default='',null=True, blank=True)
     provider_address = models.CharField(max_length=256, default='',null=True, blank=True)
-    provider_city = models.CharField(max_length=128,default='',null=True, blank=True)   
+    provider_city = models.CharField(max_length=128,default='',null=True, blank=True)
     provider_state = USStateField(default='',null=True, blank=True)
     provider_zip = models.IntegerField(default='',null=True, blank=True)
     provider_phone = PhoneNumberField(null=True, blank=True, help_text='XXX-XXX-XXXX',)
@@ -380,18 +384,18 @@ class Provider(models.Model):
         if len(self.provider_phone)==0:
             dic['provider_phone']='Please provide phone number'
 
-        if self.role == 'Billing' or self.role == 'Dual' or self.role == 'Rendering': 
+        if self.role == 'Billing' or self.role == 'Dual' or self.role == 'Rendering':
             if self.tax_id is None:
                 dic['tax_id']='Please provide tax id'
             if len(self.speciality)==0:
                 dic['speciality']='Please provide speciality'
         raise ValidationError(dic)
 
-    
+
 class Procedure_Codes(models.Model):
     procedure_name = models.CharField(max_length=128,default='')
     procedure_code = models.IntegerField(default='')
-     
+
     def __unicode__(self):
         return self.procedure_code
-     
+

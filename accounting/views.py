@@ -114,19 +114,20 @@ def payment_apply_create(request, payment_id, claim_id):
                 amount = data.get('amount')
                 adjustment = data.get('adjustment')
 
-                if amount or adjustment:
+                if amount is not None or \
+                    adjustment is not None:
+
                     new_applied.append(AppliedPayment(**data))
 
             AppliedPayment.objects.bulk_create(new_applied)
-            redirect(reverse('accounting:payment_apply_create', kwargs={
+
+            return redirect(reverse('accounting:payment_apply_create', kwargs={
                 'payment_id': payment_id,
                 'claim_id': claim_id,
             }))
 
     else:
-        apply_formset = PaymentApplyFormSet(
-            initial=apply_data,
-        )
+        apply_formset = PaymentApplyFormSet(initial=apply_data)
 
     context = {
         'payment': payment,
@@ -139,7 +140,9 @@ def payment_apply_create(request, payment_id, claim_id):
 
 
 
-
+###############################################################################
+# API function for ajax call from front end page
+###############################################################################
 def api_search_payment(request):
     if request.method == 'POST':
         post_data = request.POST

@@ -1,5 +1,4 @@
 import datetime
-from decimal import Decimal
 
 from django import forms
 from django.forms import ModelForm, BaseFormSet
@@ -82,16 +81,18 @@ class PaymentApplyCreateForm(forms.Form):
         if reference and (amount is None and adjustment is None):
             self.add_error('reference', 'Reference needs to be with either amount or adjustment.')
 
-        amount = Decimal(amount or 0)
-        adjustment = Decimal(amount or 0)
-        cleaned_data['amount'] = amount
-        cleaned_data['adjustment'] = adjustment
+        if amount and adjustment is None:
+            adjustment = 0
+            cleaned_data['adjustment'] = adjustment
+        if adjustment and amount is None:
+            amount = 0
+            cleaned_data['amount'] = amount
 
         procedure = cleaned_data.get('procedure')
-        balance = procedure.balance
 
-        if balance < amount - adjustment:
-            self.add_error('amount', 'Amount exceeds balance plus adjustment on procedure \"%s\".  Please check the value' % procedure.cpt.cpt_code)
+        if amount is not None and adjustment is not None:
+            if procedure.balance < amount - adjustment:
+                self.add_error('amount', 'Amount minus adjustment exceeds balance on procedure \"%s\".  Please check the value' % procedure.cpt.cpt_code)
 
 
 class BasePaymentApplyCreateFormSet(BaseFormSet):
@@ -103,13 +104,13 @@ class BasePaymentApplyCreateFormSet(BaseFormSet):
         # Sum up all amount and adjustment
         for form in self.forms:
             if form.cleaned_data:
-                data = form.cleaned_data
-                payment = data.get('payment')
+                cleaned_data = form.cleaned_data
+                payment = cleaned_data.get('payment')
 
                 if payment:
-                    amount = Decimal(data.get('amount') or 0)
-                    adjustment = Decimal(data.get('adjustment') or 0)
-                    total = Decimal(applied_set.get(payment.pk) or 0)
+                    amount = cleaned_data.get('amount') or 0
+                    adjustment = cleaned_data.get('adjustment') or 0
+                    total = applied_set.get(payment.pk) or 0
 
                     applied_set[payment.pk] = total + amount
 

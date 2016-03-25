@@ -1,6 +1,5 @@
 from __future__ import unicode_literals
 
-from decimal import Decimal
 from django.db import models
 from django.db.models import Sum
 from django.core.validators import MinValueValidator
@@ -61,7 +60,7 @@ class Claim(BaseModel):
     claim_detail = models.TextField()
 
     def __str__(self):
-        return '%s, %s' % (self.id, self.patient.get_full_name())
+        return '%s, %s' % (self.id, self.patient.full_name)
 
 
 class Procedure(BaseModel):
@@ -79,13 +78,17 @@ class Procedure(BaseModel):
 
     @property
     def balance(self):
-        total_applied_payment_amount = Decimal(AppliedPayment.objects.filter(procedure=self.pk).\
-            aggregate(Sum('amount')).get('amount__sum') or 0)
+        total_applied_amount = AppliedPayment.objects\
+                                .filter(procedure=self.pk)\
+                                .aggregate(Sum('amount'))\
+                                .get('amount__sum') or 0
 
-        total_applied_payment_adjustment = Decimal(AppliedPayment.objects.filter(procedure=self.pk).\
-            aggregate(Sum('adjustment')).get('adjustment__sum') or 0)
+        total_adjustment = AppliedPayment.objects\
+                            .filter(procedure=self.pk)\
+                            .aggregate(Sum('adjustment'))\
+                            .get('adjustment__sum') or 0
 
-        return (self.charge + total_applied_payment_adjustment) - total_applied_payment_amount
+        return self.charge + total_adjustment - total_applied_amount
 
 
 class Payment(BaseModel):
@@ -108,7 +111,7 @@ class Payment(BaseModel):
         return self.id
 
     def __str__(self):
-        return '%s, %s' % (self.id, str(self.amount))
+        return '%s, %s' % (self.id, self.amount)
 
     @property
     def payer_name(self):
@@ -119,8 +122,10 @@ class Payment(BaseModel):
 
     @property
     def unapplied_amount(self):
-        total_applied_payment = Decimal(AppliedPayment.objects.filter(payment=self.pk).\
-            aggregate(Sum('amount')).get('amount__sum') or 0)
+        total_applied_payment = AppliedPayment.objects\
+                                    .filter(payment=self.pk)\
+                                    .aggregate(Sum('amount'))\
+                                    .get('amount__sum') or 0
 
         return self.amount - total_applied_payment
 
@@ -146,7 +151,7 @@ class AppliedPayment(BaseModel):
     reference = models.CharField(max_length=100, blank=True)
 
     def __str__(self):
-        return '%s, %s, %s' % (self.id, str(self.amount), str(self.adjustment))
+        return '%s, %s, %s' % (self.id, self.amount, self.adjustment)
 
     def natural_key(self):
         return dict({
