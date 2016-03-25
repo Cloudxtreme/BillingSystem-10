@@ -164,8 +164,6 @@ class AppliedPayment(BaseModel):
             'amount': self.amount,
             'adjustment': self.adjustment
         })
-
-
     
     @property
     def payer(self):

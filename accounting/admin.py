@@ -26,7 +26,7 @@ class AppliedPaymentAdmin(admin.ModelAdmin):
     list_display = ('applied_on','payment_date','dos','patient_Id','patient_name' ,'payment_amount','adjustment_amount', 'paymentid','payer')
 
     def adjustment_amount(self, obj):
-        return "$"+str(obj.adjustment)
+        return "$"+str(obj.adjustment)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
 
     def paymentid(self, obj):
         return obj.rpi
