@@ -107,9 +107,6 @@ class Payment(BaseModel):
     amount = models.DecimalField(max_digits=MAX_DIGITS, decimal_places=DECIMAL_PLACES, validators=[MinValueValidator(0)])
     description = models.CharField(max_length=255, blank=True)
 
-    def __unicode__(self):
-        return self.id
-
     def __str__(self):
         return '%s, %s' % (self.id, self.amount)
 
@@ -159,7 +156,7 @@ class AppliedPayment(BaseModel):
     reference = models.CharField(max_length=100, blank=True)
 
     def __str__(self):
-        return '%s, %s, %s, %s, %s' % (self.id, self.procedure, self.amount, self.adjustment, self.reference)
+        return '%s, %s, %s,' % (self.id, self.procedure, self.amount)
 
     def natural_key(self):
         return dict({
@@ -168,39 +165,38 @@ class AppliedPayment(BaseModel):
             'adjustment': self.adjustment
         })
 
-    def __unicode__(self):
-        return unicode(self.reference) or u''
+
     
-    # @property
-    # def payer(self):
-    #     p=Payment.objects.filter(id=self.payment_id).values()[0]
-    #     payerType=p['payer_type']
-    #     if(payerType=='Insurance'):
-    #         return Payer.objects.filter(code=p['payer_insurance_id']).values()[0]['name']
-    #     else:
-    #         name=Personal_Information.objects.filter(id=p['payer_patient_id']).values()[0]
-    #         return name['last_name']+", "+name['first_name']
+    @property
+    def payer(self):
+        p=Payment.objects.filter(id=self.payment_id).values()[0]
+        payerType=p['payer_type']
+        if(payerType=='Insurance'):
+            return Payer.objects.filter(code=p['payer_insurance_id']).values()[0]['name']
+        else:
+            name=Personal_Information.objects.filter(id=p['payer_patient_id']).values()[0]
+            return name['last_name']+", "+name['first_name']
 
-    # @property 
-    # def rpi(self):
-    #     return self.payment_id
+    @property 
+    def rpi(self):
+        return self.payment_id
 
-    # @property
-    # def dos(self):
-    #     return Procedure.objects.filter(id=self.procedure_id).values()[0]['date_of_service']
+    @property
+    def dos(self):
+        return Procedure.objects.filter(id=self.procedure_id).values()[0]['date_of_service']
 
-    # @property
-    # def payment_date(self):
-    #     return Payment.objects.filter(id=self.payment_id).values()[0]['payment_date']
+    @property
+    def payment_date(self):
+        return Payment.objects.filter(id=self.payment_id).values()[0]['payment_date']
 
-    # @property
-    # def patient_Id(self):
-    #     claimID=Procedure.objects.filter(id=self.procedure_id).values()[0]['claim_id']
-    #     return Claim.objects.filter(id=claimID).values()[0]['patient_id']
+    @property
+    def patient_Id(self):
+        claimID=Procedure.objects.filter(id=self.procedure_id).values()[0]['claim_id']
+        return Claim.objects.filter(id=claimID).values()[0]['patient_id']
 
-    # @property
-    # def patient_name(self):
-    #     claimID=Procedure.objects.filter(id=self.procedure_id).values()[0]['claim_id']
-    #     patID=Claim.objects.filter(id=claimID).values()[0]['patient_id']
-    #     pat=Personal_Information.objects.filter(chart_no=patID).values()[0]
-    #     return pat['last_name']+", "+pat['first_name']
+    @property
+    def patient_name(self):
+        claimID=Procedure.objects.filter(id=self.procedure_id).values()[0]['claim_id']
+        patID=Claim.objects.filter(id=claimID).values()[0]['patient_id']
+        pat=Personal_Information.objects.filter(chart_no=patID).values()[0]
+        return pat['last_name']+", "+pat['first_name']
