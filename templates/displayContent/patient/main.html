@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+{% load staticfiles %}
+
+    {% block title %} Patient Information {% endblock title %}
+
+    {% block script %}
+
+        
+    {% endblock script %}
+    {% block link %}
+    {% endblock link %}
+
+
+{% block body %}
+
+<div class="container" >
+	<h2 class="text-center">Patient Information</h2>
+        <p> 
+            <ul>
+                <li>Info about the patient</li>
+            </ul>
+        </p>
+        <br/>
+
+        <a href="#" class="btn btn-primary">Goto claims</a>
+        <br/><br/>
+        <ul>
+                <li>To display:</li>
+                <ul>
+                    <li> Link to Claim form</li>
+                    <li> List of claims </li>
+                    <li> Payment summary for selected claim </li>
+                    <li> Payment Detail for selected claim </li>
+                </ul>
+        </ul>
+    </div>
+
+
+    <div class="row found-patient" id="found-patient">
+    </div>
+
+</div>
+<script>
+
+$( document ).ready(function() {
+    
+    var url = window.location.pathname;
+    var id = url.substring(url.lastIndexOf('/') + 1);
+    console.log(id);
+});
+
+</script>
+
+{% endblock body %}
