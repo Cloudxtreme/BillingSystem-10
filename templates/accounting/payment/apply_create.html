@@ -105,6 +105,10 @@
                         <th>Payment</th>
                         <th>Adjustment</th>
                         <th>Reference</th>
+                        <th>Resp Type</th>
+                        <th>Pat Charge</th>
+                        <th>Pat Payment</th>
+                        <th>Total</th>
                     </tr>
                 </thead>
                 <tbody class="row found-procedure" id="found-procedure">
@@ -129,6 +133,12 @@
                         <td>{{apply_form.amount|add_class:"form-control"}}</td>
                         <td>{{apply_form.adjustment|add_class:"form-control"}}</td>
                         <td>{{apply_form.reference|add_class:"form-control"}}</td>
+                        {% with charge_formset|indexList:forloop.counter0 as r, charge_formset|indexList:forloop.counter0.amount as pc, pap=patient_apply_formset|indexList:forloop.counter0 %}
+                        <td>{{r.resp_type|add_class:"form-control"}}</td>
+                        <td>{{pc|add_class:"form-control"}}</td>
+                        <td>{{pap|add_class:"form-control"}}</td>
+                        {% endwith %}
+                        <td></td>
                     </tr>
                     {% endfor %}
                 </tbody>

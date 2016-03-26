@@ -100,6 +100,16 @@ def payment_apply_create(request, payment_id, claim_id):
         'balance': p.balance,
     } for p in procedures]
 
+    PatientChargeFormSet = formset_factory(
+            wraps(PatientChargeForm)\
+                (partial(
+                    PatientChargeForm,
+                    claim_id=claim_id)),
+            extra=0)
+    PatientAppliedPaymentFormSet = formset_factory(
+            PatientAppliedPaymentForm,
+            extra=len(apply_data))
+
     if request.method == 'POST':
         apply_formset = PaymentApplyFormSet(request.POST)
         if apply_formset.is_valid():
@@ -123,12 +133,21 @@ def payment_apply_create(request, payment_id, claim_id):
 
     else:
         apply_formset = PaymentApplyFormSet(initial=apply_data)
+        charge_formset = PatientChargeFormSet(initial=apply_data)
+        patient_apply_formset = PatientAppliedPaymentFormSet()
+
+
+    print '--------------------------------------------------------------------------------'
+    print charge_formset[0]
+    print '--------------------------------------------------------------------------------'
 
     context = {
         'payment': payment,
         'claim': claim,
         'apply_formset': apply_formset,
         'apply_data': apply_data,
+        'charge_formset': charge_formset,
+        'patient_apply_formset': patient_apply_formset,
     }
 
     return render(request, 'accounting/payment/apply_create.html', context)
@@ -146,7 +165,8 @@ def api_search_payment(request):
         )
 
         if post_data.get('check_number'):
-            payment = payment.filter(check_number__icontains=post_data.get('check_number'))
+            payment = payment.filter(
+                    check_number__icontains=post_data.get('check_number'))
 
         insurance_name = post_data.get('insurance_name')
         last_name = post_data.get('last_name')

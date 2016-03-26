@@ -1,7 +1,6 @@
 import datetime
 
 from django import forms
-from django.forms import ModelForm, BaseFormSet
 from django.forms.utils import ErrorList
 from django.conf import settings
 
@@ -95,7 +94,7 @@ class PaymentApplyCreateForm(forms.Form):
                 self.add_error('amount', 'Amount plus adjustment exceeds balance on procedure \"%s\".  Please check the value' % procedure.cpt.cpt_code)
 
 
-class BasePaymentApplyCreateFormSet(BaseFormSet):
+class BasePaymentApplyCreateFormSet(forms.BaseFormSet):
     def clean(self):
         if any(self.errors):
             return
@@ -131,7 +130,7 @@ class ProcedureForm(forms.Form):
 
 
 class PatientChargeForm(forms.ModelForm):
-    amount = form.DecimalField(
+    amount = forms.DecimalField(
             max_digits=MAX_DIGITS,
             decimal_places=DECIMAL_PLACES,
             min_value=0)
@@ -141,14 +140,16 @@ class PatientChargeForm(forms.ModelForm):
         fields = '__all__'
 
     def __init__(self, *args, **kwargs):
-        super(PatientChargeForm, self).__init__(*args, **kwargs)
         claim_id = kwargs.pop('claim_id', None)
+        super(PatientChargeForm, self).__init__(*args, **kwargs)
         self.fields['procedure'] = forms.ModelChoiceField(
                 queryset=Procedure.objects.filter(claim=claim_id))
 
 
 class PatientAppliedPaymentForm(forms.ModelForm):
-    amount = form.DecimalField(
+    payment = forms.ModelChoiceField(
+            queryset=Payment.objects.filter(payer_type='Patient'))
+    amount = forms.DecimalField(
             max_digits=MAX_DIGITS,
             decimal_places=DECIMAL_PLACES,
             min_value=0)
@@ -156,11 +157,6 @@ class PatientAppliedPaymentForm(forms.ModelForm):
     class Meta:
         model = PatientAppliedPayment
         fields = '__all__'
-
-    def __init__(self, *args, **kwargs):
-        super(PatientAppliedPaymentForm, self).__init__(*args, **kwargs)
-        self.fields['payment'] = forms.ModelChoiceField(
-                queryset=Payment.objects.filter(payer_type='Patient'))
 
     def clean(self):
         cleaned_data = super(PatientAppliedPaymentForm, self).clean()
@@ -174,3 +170,45 @@ class PatientAppliedPaymentForm(forms.ModelForm):
                         """Patient apply amount exceeds balance of
                         patient responsibility. (on line CPT: \"%s\")""" % \
                         procedure.cpt.cpt_code)
+
+
+class PatientAppliedPaymentFormSet(forms.BaseFormSet):
+    def clean(self):
+        if any(self.errors):
+            return
+
+        total_applied_to_charge = dict()
+        total_applied_to_payment = dict()
+
+        for form in self.forms:
+            cleaned_data = form.cleaned_data
+            if cleaned_data:
+                payment = cleaned_data.get('payment')
+                patient_charge = cleaned_data.get('patient_charge')
+                amount = cleaned_data.get('amount')
+
+                if amount is not None:
+                    total_applied_to_charge[patient_charge] = \
+                            amount + (total_applied_to_charge\
+                            .get(patient_charge) or 0)
+
+                    total_applied_to_payment[payment] = \
+                            amount + (total_applied_to_payment\
+                            .get(payment) or 0)
+
+        # Check if total applied amount exceeds that charge or not
+        for charge, total in total_applied_to_charge.iteritems():
+            if total > charge.balance:
+                raise forms.ValidationError(
+                        """Total patient applied amount exceeds patient
+                        balance. (on patient charge: \"%s\")""" % \
+                        charge.__str__)
+
+        # Check if total applied amount exceeds payment
+        # unapplied amount or not
+        for payment, total in total_applied_to_payment.iteritems():
+            if total > payment.unapplied_amount:
+                raise forms.ValidationError(
+                        """Total patient applied amount exceeds payment
+                        unapplied amount. (on payment: \"%s\")""" % \
+                        payment.__str__)
