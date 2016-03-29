@@ -143,10 +143,14 @@ class ApplyForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         claim_id = kwargs.pop('claim_id', None)
+        payment_id = kwargs.pop('payment_id', None)
+        payment = Payment.objects.get(pk=payment_id)
 
         super(ApplyForm, self).__init__(*args, **kwargs)
         self.fields['charge'] = forms.ModelChoiceField(
-                queryset=Charge.objects.filter(procedure__claim=claim_id))
+                queryset=Charge.objects.filter(
+                    procedure__claim=claim_id,
+                    payer_type=payment.payer_type))
 
     def clean(self):
         cleaned_data = super(ApplyForm, self).clean()
@@ -159,11 +163,9 @@ class ApplyForm(forms.ModelForm):
         resp_type = cleaned_data.get('resp_type')
 
         if payment.payer_type == 'Insurance':
-            # Check validity against charge of Insurance
-            # if amount is None and adjustment is None:
-            #     self.add_error('amount', """Must have value in
-            #             either amount or adjustment field for payer
-            #             type \"Insurance\"""")
+            # Apply for insurance type should not have resp_type
+            cleaned_data['resp_type'] = None
+
             if reference and amount is None and adjustment is None:
                 self.add_error('reference', """Reference needs to be
                         with either amount or adjustment.""")

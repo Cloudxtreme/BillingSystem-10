@@ -194,7 +194,7 @@ class Payment(BaseModel):
         if self.payer_type == 'Insurance':
             return self.payer_insurance.name
         else:
-            return self.patient.get_full_name()
+            return self.payer_patient.full_name
 
     # @property
     # def unapplied_amount(self):

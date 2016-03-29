@@ -157,12 +157,17 @@ def apply_create(request, payment_id, claim_id):
     claim = get_object_or_404(Claim, pk=claim_id)
 
     ApplyFormSet = formset_factory(
-        wraps(ApplyForm)(partial(ApplyForm, claim_id=claim_id)),
+        wraps(ApplyForm)(partial(ApplyForm,
+            claim_id=claim_id,
+            payment_id=payment_id,)),
         formset=BasePaymentApplyCreateFormSet,
         extra=0,
     )
 
-    charges = Charge.objects.filter(procedure__claim=claim_id)
+    charges = Charge.objects.filter(
+            procedure__claim=claim_id,
+            payer_type=payment.payer_type)
+
     apply_data = [{
         'charge': c.pk,
         'date_of_service': c.procedure.date_of_service,
@@ -179,17 +184,20 @@ def apply_create(request, payment_id, claim_id):
                 cleaned_data = apply_form.cleaned_data
                 amount = cleaned_data.get('amount')
                 adjustment = cleaned_data.get('adjustment')
+                resp_type = cleaned_data.get('resp_type')
 
-                if amount is not None or adjustment is not None:
+                if (payment.payer_type == 'Insurance' and \
+                        (amount is not None or adjustment is not None)) or \
+                        (payment.payer_type == 'Patient' and \
+                        amount is not None and resp_type is not None):
                     new_applies.append(Apply(**cleaned_data))
 
             Apply.objects.bulk_create(new_applies)
 
-            if payment.payer_type == 'Insurance':
-                return redirect(reverse('accounting:payment_apply_create',
-                        kwargs={
-                            'payment_id': payment_id,
-                            'claim_id': claim_id}))
+            return redirect(reverse('accounting:payment_apply_create',
+                    kwargs={
+                        'payment_id': payment_id,
+                        'claim_id': claim_id}))
     else:
         apply_formset = ApplyFormSet(initial=apply_data)
 
