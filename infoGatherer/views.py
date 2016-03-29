@@ -45,15 +45,15 @@ def view_audit_log(request):
     rf2=[]
     rf3=[]
     rf_mod={}
-    idList=ReferringProvider.history.values_list('id', flat=True)   
+    idList=ReferringProvider.history.values_list('id', flat=True)
     idList=set(idList)
     idList=list(idList)
     for idd in idList:
-        content=ReferringProvider.history.filter(id=idd).filter(history_type="~").order_by('history_date').values()        
+        content=ReferringProvider.history.filter(id=idd).filter(history_type="~").order_by('history_date').values()
         if(len(content)>1):
             for i in range(1,len(content)):
                 temp={}
-                # Put all useful information in temp    
+                # Put all useful information in temp
                 temp["first_name"]=content[i]["first_name"]
                 temp["last_name"]=content[i]["last_name"]
                 helperAuditLog(content[i-1],content[i],temp,rf1,users,2,False)
@@ -61,7 +61,7 @@ def view_audit_log(request):
         contentCreated=ReferringProvider.history.filter(id=idd).filter(history_type="+").values()
         if(len(contentCreated)>0 and len(content)>0):
             contentModified=content[0]
-            temp={}            
+            temp={}
              # Put all useful information in temp]
             temp["first_name"]=contentModified["first_name"]
             temp["last_name"]=contentModified["last_name"]
@@ -91,22 +91,22 @@ def view_audit_log(request):
     dx2=[]
     dx3=[]
     dx_mod={}
-    idList=dx.history.values_list('ICD_10', flat=True)   
+    idList=dx.history.values_list('ICD_10', flat=True)
     idList=set(idList)
     idList=list(idList)
     for idd in idList:
-        content=dx.history.filter(ICD_10=idd).filter(history_type="~").order_by('history_date').values()        
+        content=dx.history.filter(ICD_10=idd).filter(history_type="~").order_by('history_date').values()
         if(len(content)>1):
             for i in range(1,len(content)):
                 temp={}
-                # Put all useful information in temp    
+                # Put all useful information in temp
                 temp["ICD_10"]=content[i]["ICD_10"]
                 helperAuditLog(content[i-1],content[i],temp,dx1,users,2,False)
 
         contentCreated=dx.history.filter(ICD_10=idd).filter(history_type="+").values()
         if(len(contentCreated)>0 and len(content)>0):
             contentModified=content[0]
-            temp={}            
+            temp={}
              # Put all useful information in temp]
             temp["ICD_10"]=contentModified["ICD_10"]
             helperAuditLog(contentCreated[0],contentModified,temp,dx1,users,3,False)
@@ -133,15 +133,15 @@ def view_audit_log(request):
     cpt2=[]
     cpt3=[]
     cpt_mod={}
-    idList=CPT.history.values_list('id', flat=True)   
+    idList=CPT.history.values_list('id', flat=True)
     idList=set(idList)
     idList=list(idList)
     for idd in idList:
-        content=CPT.history.filter(id=idd).filter(history_type="~").order_by('history_date').values()        
+        content=CPT.history.filter(id=idd).filter(history_type="~").order_by('history_date').values()
         if(len(content)>1):
             for i in range(1,len(content)):
                 temp={}
-                # Put all useful information in temp    
+                # Put all useful information in temp
                 temp["cpt_code"]=content[i]["cpt_code"]
                 temp["cpt_description"]=content[i]["cpt_description"]
                 helperAuditLog(content[i-1],content[i],temp,cpt1,users,2,False)
@@ -149,7 +149,7 @@ def view_audit_log(request):
         contentCreated=CPT.history.filter(id=idd).filter(history_type="+").values()
         if(len(contentCreated)>0 and len(content)>0):
             contentModified=content[0]
-            temp={}            
+            temp={}
              # Put all useful information in temp
             temp["cpt_code"]=contentModified["cpt_code"]
             temp["cpt_description"]=contentModified["cpt_description"]
@@ -179,7 +179,7 @@ def view_audit_log(request):
     provider2=[]
     provider3=[]
     provider_mod={}
-    idList=Provider.history.values_list('id', flat=True)   
+    idList=Provider.history.values_list('id', flat=True)
     idList=set(idList)
     idList=list(idList)
     for idd in idList:
@@ -187,14 +187,14 @@ def view_audit_log(request):
         if(len(content)>1):
             for i in range(1,len(content)):
                 temp={}
-                # Put all useful information in temp    
+                # Put all useful information in temp
                 temp["provider_name"]=content[i]["provider_name"]
                 helperAuditLog(content[i-1],content[i],temp,provider1,users,2,False)
 
         contentCreated=Provider.history.filter(id=idd).filter(history_type="+").values()
         if(len(contentCreated)>0 and len(content)>0):
             contentModified=content[0]
-            temp={}            
+            temp={}
              # Put all useful information in temp
             temp["provider_name"]=contentModified["provider_name"]
             helperAuditLog(contentCreated[0],contentModified,temp,provider1,users,3,False)
@@ -230,7 +230,7 @@ def view_audit_log(request):
         if(len(content)>1):
             for i in range(1,len(content)):
                 temp={}
-                # Put all useful information in temp    
+                # Put all useful information in temp
                 person=Personal_Information.objects.filter(chart_no=content[i]["patient_id"]).values()[0]
                 payer=Payer.objects.filter(code=content[i]["payer_id"]).values()[0]
                 temp["patientname"]=person['last_name']+", "+person['first_name']
@@ -240,7 +240,7 @@ def view_audit_log(request):
         contentCreated=Insurance_Information.history.filter(id=code).filter(history_type="+").values()
         if(len(contentCreated)>0 and len(content)>0):
             contentModified=content[0]
-            temp={}            
+            temp={}
              # Put all useful information in temp
             person=Personal_Information.objects.filter(chart_no=contentModified["patient_id"]).values()[0]
             payer=Payer.objects.filter(code=contentModified["payer_id"]).values()[0]
@@ -269,7 +269,7 @@ def view_audit_log(request):
                 temp["payername"]=payer['name']
                 helperAuditLog(None,history,temp,ins2,users,2,True)
             ins_mod["deleted"]=ins3
-    
+
     # Payer Audit
     payer1=[]
     payer2=[]
@@ -284,14 +284,14 @@ def view_audit_log(request):
         if(len(content)>1):
             for i in range(1,len(content)):
                 temp={}
-                # Put all useful information in temp    
+                # Put all useful information in temp
                 temp["name"]=content[i]["name"]
                 helperAuditLog(content[i-1],content[i],temp,payer1,users,2,False)
 
         contentCreated=Payer.history.filter(code=code).filter(history_type="+").values()
         if(len(contentCreated)>0 and len(content)>0):
             contentModified=content[0]
-            temp={}            
+            temp={}
              # Put all useful information in temp
             temp["name"]=contentModified["name"]
             helperAuditLog(contentCreated[0],contentModified,temp,payer1,users,3,False)
@@ -313,7 +313,7 @@ def view_audit_log(request):
             payer_mod["deleted"]=payer3
 
     # free variables
-    content = None 
+    content = None
 
     # Patient Audit
     pat1=[]
@@ -333,12 +333,12 @@ def view_audit_log(request):
                 temp["first_name"]=content[i]["first_name"]
                 temp["last_name"]=content[i]["last_name"]
                 helperAuditLog(content[i-1],content[i],temp,pat1,users,2,False)
-                
+
 
         contentCreated=Personal_Information.history.filter(chart_no=chart_no).filter(history_type="+").values()
         if(len(contentCreated)>0 and len(content)>0):
             contentModified=content[0]
-            temp={}            
+            temp={}
              # Put all useful information in temp
             temp["first_name"]=contentModified["first_name"]
             temp["last_name"]=contentModified["last_name"]
@@ -421,8 +421,8 @@ def helperAuditLog(content1,content2,temp,dic,users,changingKeys,createdelete, *
     elif createdelete==True:
         temp["change"]=""
         temp["oldvalue"]=""
-        temp["newvalue"]=""    
-        dic.append(temp)          
+        temp["newvalue"]=""
+        dic.append(temp)
 
 @login_required
 def PostAdPage(request):
@@ -468,16 +468,20 @@ def PostAdPage(request):
                 if(form.cleaned_data.get('cpt_code_%s' % i)):
                     cpt_code = form.cleaned_data.get('cpt_code_%s' % i)
                     cpt = CPT.objects.get(cpt_code=cpt_code)
-                    charge = form.cleaned_data.get('total_%s' % i)
+                    amount = form.cleaned_data.get('total_%s' % i)
                     date_of_service = form.cleaned_data.get('service_start_date_%s' % i)
-                    if(cpt and charge):
-                        Procedure.objects.create(
+                    if(cpt and amount):
+                        procedure = Procedure.objects.create(
                             claim=claim,
                             rendering_provider=rendering_provider,
                             cpt=cpt,
-                            charge=charge,
                             date_of_service=date_of_service,
                         )
+
+                        charge = Charge.objects.create(
+                                procedure=procedure,
+                                payer_type='Insurance',
+                                amount=amount)
 
             var = print_form(request.POST);
             return var
@@ -528,7 +532,7 @@ def get_json_provider_info(request):
         value = choice[1]
         provider_q_set = Provider.objects.filter(role=key)
         context[value] = list(provider_q_set.values())
-    
+
     return JsonResponse(data=context)
 
 def get_json_cpt(request):
@@ -598,7 +602,7 @@ def print_form(bar):
     else:
         fields.append(('55',True))
     fields.append(('251',bar['pat_id']))
-    
+
     # Payer Information
     fields.append(('2',bar['payer_name']+"\n"+bar['payer_address']))
 
@@ -639,10 +643,10 @@ def print_form(bar):
     # Billing provider ssn and ein
     if(len(bill_p['provider_ssn'])!=0):
         fields.append(('249',True))
-    
+
     if(len(bill_p['provider_ein'])!=0):
         fields.append(('250',True))
-    
+
 
 
     # Location provider
@@ -798,9 +802,9 @@ def print_form(bar):
         response['Content-Disposition'] = 'inline;filename=some_file.pdf'
         return response
     pdf.closed
-    
+
     return True
-    
+
 
 #Old Stuff
 actions = {'I':'Created','U':'Changed','D':'Deleted'}

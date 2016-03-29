@@ -2,11 +2,22 @@
 
 {% load staticfiles %}
 {% load widget_tweaks %}
+{% load index %}
 
 {% block title %} Apply Payment {% endblock title %}
 
 {% block body %}
-{{ form.errors }}
+
+{% if apply_formset.errors %}
+    {% for error in apply_formset.errors %}
+        {{ error }}
+    {% endfor %}
+{% endif %}
+
+{% if apply_formset.non_form_errors %}
+    {{ apply_formset.non_form_errors }}
+{% endif %}
+
 <div class="container">
     <h2 class="text-center">Apply Payment</h2>
     <form method="POST" action="{% url 'accounting:payment_apply_read' %}">{% csrf_token %}
@@ -21,27 +32,27 @@
                 </div>
                 <div class="col-sm-1">
                     Payment ID
-                    {{ form.payment|add_class:"form-control" }}
+                    <input type="text" name="payment" class="form-control" id="payment_id"  value="{{payment.pk}}">
                 </div>
                 <div class="col-sm-2">
                     Payment Date
-                    <input type="text" name="payment_date" class="form-control" readonly>
+                    <input type="text" name="payment_date" class="form-control" readonly value="{{payment.payment_date}}">
                 </div>
                 <div class="col-sm-2">
                     Payer Type
-                    <input type="text" name="payer_type" class="form-control" readonly>
+                    <input type="text" name="payer_type" class="form-control" readonly value="{{payment.payer_type}}">
                 </div>
                 <div class="col-sm-2">
                     Payer Name
-                    <input type="text" name="payer_name" class="form-control" readonly>
+                    <input type="text" name="payer_name" class="form-control" readonly value="{{payment.payer_name}}">
                 </div>
                 <div class="col-sm-2">
                     Amount
-                    <input type="text" name="amount" class="form-control" readonly>
+                    <input type="text" name="amount" class="form-control" readonly value="{{payment.amount}}">
                 </div>
                 <div class="col-sm-2">
                     Unapplied Amount
-                    <input type="text" name="unapplied_amount" class="form-control" readonly>
+                    <input type="text" name="unapplied_amount" class="form-control" readonly value="{{payment.unapplied_amount}}">
                 </div>
             </div>
         </div>
@@ -57,36 +68,88 @@
                 </div>
                 <div class="col-sm-1">
                     Claim ID
-                    {{ form.claim|add_class:"form-control" }}
+                    <input type="text" name="claim" class="form-control" id="claim_id" value="{{claim.pk}}">
                 </div>
                 <div class="col-sm-3">
                     Patient First Name
-                    <input type="text" name="first_name" class="form-control" readonly>
+                    <input type="text" name="first_name" class="form-control" readonly value="{{claim.patient.first_name}}">
                 </div>
                 <div class="col-sm-3">
                     Patient Last Name
-                    <input type="text" name="last_name" class="form-control" readonly>
+                    <input type="text" name="last_name" class="form-control" readonly value="{{claim.patient.last_name}}">
                 </div>
                 <div class="col-sm-2">
                     Date of Birth
-                    <input type="text" name="dob" class="form-control" readonly>
+                    <input type="text" name="dob" class="form-control" readonly value="{{claim.patient.dob}}">
                 </div>
             </div>
         </div>
 
         <div class="form-group">
             <div class="row">
-                <button type="Submit" class="btn btn-default" id="button-search-procedure">Search Procedures</button>
+                <input type="submit" class="btn btn-default" id="submit-search-procedure" value="Search Procedures">
             </div>
         </div>
     </form>
 
-    <form method="POST">{% csrf_token %}
-        {% include "./accounting/payment/template/search-procedure.html" %}
-        <input type="button" class="btn btn-success" value="Make Payment" disabled>
+    <form method="POST" action="{% url 'accounting:payment_apply_create' payment.pk claim.pk %}">{% csrf_token %}
+        <div class="row" id="procedure-table">
+            {{ apply_formset.management_form }}
+            <table class="table table-striped table-condensed">
+                <thead>
+                    <tr>
+                        <th>Date of Service</th>
+                        <th>CPT Code</th>
+                        <th>Line Charge</th>
+                        <th>Balance</th>
+                        <th>Payment</th>
+                        <th>Adjustment</th>
+                        <th>Reference</th>
+                        <th>Resp Type</th>
+                        <th>Pat Charge</th>
+                        <th>Pat Payment</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody class="row found-procedure" id="found-procedure">
+                    {% for apply_form in apply_formset %}
+                    <tr>
+                        <input
+                            type="hidden"
+                            name="{{apply_form.procedure.html_name}}"
+                            id="{{apply_form.procedure.auto_id}}"
+                            value="{{apply_form.procedure.value}}"
+                        >
+                        <input
+                            type="hidden"
+                            name="{{apply_form.payment.html_name}}"
+                            id="{{apply_form.payment.auto_id}}"
+                            value="{{payment.pk}}"
+                        >
+                        <td>{{apply_data|indexList:forloop.counter0|indexDict:'date_of_service'}}</td>
+                        <td>{{apply_data|indexList:forloop.counter0|indexDict:'cpt_code_text'}}</td>
+                        <td>{{apply_data|indexList:forloop.counter0|indexDict:'charge'}}</td>
+                        <td>{{apply_data|indexList:forloop.counter0|indexDict:'balance'}}</td>
+                        <td>{{apply_form.amount|add_class:"form-control"}}</td>
+                        <td>{{apply_form.adjustment|add_class:"form-control"}}</td>
+                        <td>{{apply_form.reference|add_class:"form-control"}}</td>
+                        {% with charge_formset|indexList:forloop.counter0 as r, charge_formset|indexList:forloop.counter0.amount as pc, pap=patient_apply_formset|indexList:forloop.counter0 %}
+                        <td>{{r.resp_type|add_class:"form-control"}}</td>
+                        <td>{{pc|add_class:"form-control"}}</td>
+                        <td>{{pap|add_class:"form-control"}}</td>
+                        {% endwith %}
+                        <td></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <input type="submit" class="btn btn-success" value="Make Payment" id="submit-make-payment">
         <a href="{% url 'dashboard:dashboard' %}" class="padding-btn margin-left link-btn-danger">Cancel</a>
     </form>
 </div>
+
 
 {% include "./accounting/payment/template/search-payment.html" %}
 {% include "./accounting/payment/template/search-claim.html" %}
@@ -95,6 +158,30 @@
 <script>
 'use strict';
 (function() {
+
+    $('#payment_id').change(setFlashingButton)
+    $('#claim_id').change(setFlashingButton)
+
+    function setFlashingButton() {
+        var init_p_id = '{{payment.pk}}';
+        var init_c_id = '{{claim.pk}}';
+        var payment_id = $('#payment_id').val();
+        var claim_id = $('#claim_id').val();
+
+        var submitMakePayment = $('#submit-make-payment');
+        var submitSearchProcedure = $('#submit-search-procedure');
+
+        if(payment_id == init_p_id &&
+                claim_id == init_c_id) {
+            submitMakePayment.prop('disabled', false);
+            submitSearchProcedure.removeClass('suggest-pushing');
+        }
+        else {
+            submitMakePayment.prop('disabled', true);
+            submitSearchProcedure.addClass('suggest-pushing');
+        }
+    }
+
     function toggleLoadingIcon(el) {
         var button = $($(el).children().get(0));
         var iconSearch = 'fa-search';

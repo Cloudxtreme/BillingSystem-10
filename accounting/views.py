@@ -152,6 +152,53 @@ def payment_apply_create(request, payment_id, claim_id):
 
     return render(request, 'accounting/payment/apply_create.html', context)
 
+def apply_create(request, payment_id, claim_id):
+    payment = get_object_or_404(Payment, pk=payment_id)
+    claim = get_object_or_404(Claim, pk=claim_id)
+
+    ApplyFormSet = formset_factory(
+        wraps(ApplyForm)(partial(ApplyForm, claim_id=claim_id)),
+        formset=BasePaymentApplyCreateFormSet,
+        extra=0,
+    )
+
+    charges = Charge.objects.filter(procedure__claim=claim_id)
+    apply_data = [{
+        'charge': c.pk,
+        'date_of_service': c.procedure.date_of_service,
+        'cpt_code_text': c.procedure.cpt.cpt_code,
+        'charge_amount': c.amount,
+        'balance': c.balance,
+    } for c in charges]
+
+    if request.method == 'POST':
+        apply_formset = ApplyFormSet(request.POST)
+        if apply_formset.is_valid():
+            new_applies = []
+            for apply_form in apply_formset:
+                cleaned_data = apply_form.cleaned_data
+                amount = cleaned_data.get('amount')
+                adjustment = cleaned_data.get('adjustment')
+
+                if amount is not None or adjustment is not None:
+                    new_applies.append(Apply(**cleaned_data))
+
+            Apply.objects.bulk_create(new_applies)
+
+            if payment.payer_type == 'Insurance':
+                return redirect(reverse('accounting:payment_apply_create',
+                        kwargs={
+                            'payment_id': payment_id,
+                            'claim_id': claim_id}))
+    else:
+        apply_formset = ApplyFormSet(initial=apply_data)
+
+    return render(request, 'accounting/payment/apply_create.html', {
+            'payment': payment,
+            'claim': claim,
+            'apply_formset': apply_formset,
+            'apply_data': apply_data})
+
 
 ###############################################################################
 # API function for ajax call from front end page

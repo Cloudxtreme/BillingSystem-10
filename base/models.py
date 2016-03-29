@@ -9,8 +9,9 @@ from django.core.serializers.json import Serializer as JsonSerializer
 
 
 # Default size of decimal field on this project (30 digits including 2 decimals)
-MAX_DIGITS = 30
+MAX_DIGITS = 20
 DECIMAL_PLACES = 2
+BASE_DECIMAL = dict(max_digits=MAX_DIGITS, decimal_places=DECIMAL_PLACES)
 
 
 class BaseModelManager(models.Manager):

@@ -20,7 +20,7 @@
 
 <div class="container">
     <h2 class="text-center">Apply Payment</h2>
-    <form method="POST" action="{% url 'accounting:payment_apply' %}">{% csrf_token %}
+    <form method="POST" action="{% url 'accounting:payment_apply_read' %}">{% csrf_token %}
         <div class="form-group">
             <div class="row">
                 <label class="control-label required">Payment</label>
@@ -105,10 +105,6 @@
                         <th>Payment</th>
                         <th>Adjustment</th>
                         <th>Reference</th>
-                        <th>Resp Type</th>
-                        <th>Pat Charge</th>
-                        <th>Pat Payment</th>
-                        <th>Total</th>
                     </tr>
                 </thead>
                 <tbody class="row found-procedure" id="found-procedure">
@@ -116,9 +112,9 @@
                     <tr>
                         <input
                             type="hidden"
-                            name="{{apply_form.procedure.html_name}}"
-                            id="{{apply_form.procedure.auto_id}}"
-                            value="{{apply_form.procedure.value}}"
+                            name="{{apply_form.charge.html_name}}"
+                            id="{{apply_form.charge.auto_id}}"
+                            value="{{apply_form.charge.value}}"
                         >
                         <input
                             type="hidden"
@@ -128,16 +124,11 @@
                         >
                         <td>{{apply_data|indexList:forloop.counter0|indexDict:'date_of_service'}}</td>
                         <td>{{apply_data|indexList:forloop.counter0|indexDict:'cpt_code_text'}}</td>
-                        <td>{{apply_data|indexList:forloop.counter0|indexDict:'charge'}}</td>
+                        <td>{{apply_data|indexList:forloop.counter0|indexDict:'charge_amount'}}</td>
                         <td>{{apply_data|indexList:forloop.counter0|indexDict:'balance'}}</td>
                         <td>{{apply_form.amount|add_class:"form-control"}}</td>
                         <td>{{apply_form.adjustment|add_class:"form-control"}}</td>
                         <td>{{apply_form.reference|add_class:"form-control"}}</td>
-                        {% with charge_formset|indexList:forloop.counter0 as r, charge_formset|indexList:forloop.counter0.amount as pc, pap=patient_apply_formset|indexList:forloop.counter0 %}
-                        <td>{{r.resp_type|add_class:"form-control"}}</td>
-                        <td>{{pc|add_class:"form-control"}}</td>
-                        <td>{{pap|add_class:"form-control"}}</td>
-                        {% endwith %}
                         <td></td>
                     </tr>
                     {% endfor %}
