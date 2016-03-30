@@ -6,6 +6,7 @@ from django.db.models import Sum
 from datetime import datetime
 from .models import *
 from infoGatherer.models import Personal_Information, Payer
+from accounting.models import Claim
 from django.http import JsonResponse
 from base.models import ExtPythonSerializer
 import re
@@ -15,10 +16,22 @@ def view_dashboard(request):
     return render(request, 'displayContent/dashboard.html')
 
 def view_claims(request):
-    return render(request, 'displayContent/patient/claim.html')
+    m = re.search('.*patient\/([0-9]+)\/.*', str(request))
+    chart=m.group(1)
+
+    # obj=Personal_Information.objects.filter(pk=chart)
+    # patient_info=obj.values()
+
+    claim=Claim.objects.filter(patient_id=chart).values()
+
+    return render(request, 'displayContent/patient/claim.html',{
+        'claim' : claim,
+        })
 
 
 def view_patient(request):
+    """Page to view info about patients and goto the claims"""
+
     m = re.search('.*patient\/([0-9]+)\/.*', str(request))
     chart=m.group(1)
 
