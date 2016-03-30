@@ -81,75 +81,6 @@ def payment_apply_read(request):
 
     return render(request, 'accounting/payment/apply_read.html', context)
 
-def payment_apply_create(request, payment_id, claim_id):
-    payment = get_object_or_404(Payment, pk=payment_id)
-    claim = get_object_or_404(Claim, pk=claim_id)
-
-    PaymentApplyFormSet = formset_factory(
-        wraps(PaymentApplyCreateForm)\
-            (partial(
-                PaymentApplyCreateForm,
-                claim_id=claim_id,
-                payment_id=payment_id
-            )),
-        formset=BasePaymentApplyCreateFormSet,
-        extra=0,
-    )
-
-    procedures = Procedure.objects.filter(claim=claim_id)
-    apply_data = [{
-        'procedure': p.pk,
-        'date_of_service': p.date_of_service,
-        'cpt_code_text': p.cpt.cpt_code,
-        'charge': p.charge,
-        'balance': p.balance,
-    } for p in procedures]
-
-    PatientChargeFormSet = formset_factory(
-            wraps(PatientChargeForm)\
-                (partial(
-                    PatientChargeForm,
-                    claim_id=claim_id)),
-            extra=0)
-    PatientAppliedPaymentFormSet = formset_factory(
-            PatientAppliedPaymentForm,
-            extra=len(apply_data))
-
-    if request.method == 'POST':
-        apply_formset = PaymentApplyFormSet(request.POST)
-        if apply_formset.is_valid():
-            new_applied = []
-            for apply_form in apply_formset:
-                data = apply_form.cleaned_data
-                amount = data.get('amount')
-                adjustment = data.get('adjustment')
-
-                if amount is not None or \
-                    adjustment is not None:
-
-                    new_applied.append(AppliedPayment(**data))
-
-            AppliedPayment.objects.bulk_create(new_applied)
-
-            return redirect(reverse('accounting:payment_apply_create', kwargs={
-                'payment_id': payment_id,
-                'claim_id': claim_id,
-            }))
-    else:
-        apply_formset = PaymentApplyFormSet(initial=apply_data)
-        charge_formset = PatientChargeFormSet(initial=apply_data)
-        patient_apply_formset = PatientAppliedPaymentFormSet()
-
-    context = {
-        'payment': payment,
-        'claim': claim,
-        'apply_formset': apply_formset,
-        'apply_data': apply_data,
-        'charge_formset': charge_formset,
-        'patient_apply_formset': patient_apply_formset,
-    }
-
-    return render(request, 'accounting/payment/apply_create.html', context)
 
 def apply_create(request, payment_id, claim_id):
     payment = get_object_or_404(Payment, pk=payment_id)
@@ -163,7 +94,7 @@ def apply_create(request, payment_id, claim_id):
         wraps(ApplyForm)(partial(ApplyForm,
             claim_id=claim_id,
             payment_id=payment_id,)),
-        formset=BasePaymentApplyCreateFormSet,
+        formset=BaseApplyFormSet,
         extra=0,
     )
 
@@ -224,7 +155,7 @@ def charge_patient_create(request, payment_id, claim_id):
             wraps(PatientChargeForm)
                 (partial(PatientChargeForm,
                     claim_id=claim_id)),
-            formset=PatientChargeFormSet,
+            formset=BasePatientChargeFormSet,
             extra=3)
 
     pca_formset = PCAFormSet(request.POST or None)

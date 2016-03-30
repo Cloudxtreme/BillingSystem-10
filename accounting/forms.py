@@ -150,7 +150,7 @@ class PatientChargeForm(forms.Form):
                 self.add_error('apply_amount', 'Apply amount exceeds charge one')
 
 
-class PatientChargeFormSet(forms.BaseFormSet):
+class BasePatientChargeFormSet(forms.BaseFormSet):
     def clean(self):
         if any(self.errors):
             return
@@ -256,7 +256,7 @@ class ApplyForm(forms.ModelForm):
                             value""" % charge.procedure.cpt.cpt_code)
 
 
-class ApplyFormSet(forms.BaseFormSet):
+class BaseApplyFormSet(forms.BaseFormSet):
     def clean(self):
         if any(self.errors):
             return
