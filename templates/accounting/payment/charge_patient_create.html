@@ -47,11 +47,11 @@
                                 value="{{payment.pk}}"
                             >
                             <td>{{pca_form.procedure|add_class:"form-control"}}</td>
-                            <td>{{pca_form.charge_amount|add_class:"form-control"}}</td>
+                            <td>{{pca_form.charge_amount|add_class:"form-control charge-amount"}}</td>
                             <td>{{pca_form.resp_type|add_class:"form-control"}}</td>
-                            <td>{{pca_form.apply_amount|add_class:"form-control"}}</td>
+                            <td>{{pca_form.apply_amount|add_class:"form-control apply-amount"}}</td>
                             <td>{{pca_form.reference|add_class:"form-control"}}</td>
-                            <td class="balance"></td>
+                            <td class="balance" style="padding-left: 10px;"></td>
                         </tr>
                     {% endfor %}
                 </tbody>
@@ -90,6 +90,20 @@
             submitSearchProcedure.addClass('suggest-pushing');
         }
     }
+
+    $('.charge-amount').keyup(updateBalance);
+    $('.apply-amount').keyup(updateBalance);
+
+    function updateBalance(e) {
+        var input = $(e.currentTarget);
+        var row = input.closest('tr');
+        var ca = row.find('.charge-amount').val();
+        var aa = row.find('.apply-amount').val();
+
+        if(ca && aa)
+            row.find('.balance').html(Math.roundP(ca - aa, 2));
+    }
+
 })();
 </script>
 {% endblock body %}

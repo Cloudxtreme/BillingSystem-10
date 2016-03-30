@@ -75,6 +75,7 @@
                             <th>Patient Responsibility</th>
                             <th>Payment</th>
                             <th>Reference</th>
+                            <th>New Balance</th>
                         </tr>
                     </thead>
                     <tbody class="row found-procedure" id="found-procedure">
@@ -95,10 +96,11 @@
                                 <td>{{apply_data|indexList:forloop.counter0|indexDict:'date_of_service'}}</td>
                                 <td>{{apply_data|indexList:forloop.counter0|indexDict:'cpt_code_text'}}</td>
                                 <td>{{apply_data|indexList:forloop.counter0|indexDict:'charge_amount'}}</td>
-                                <td>{{apply_data|indexList:forloop.counter0|indexDict:'balance'}}</td>
+                                <td class="balance">{{apply_data|indexList:forloop.counter0|indexDict:'balance'}}</td>
                                 <td>{{apply_data|indexList:forloop.counter0|indexDict:'resp_type'}}</td>
-                                <td>{{apply_form.amount|add_class:"form-control"}}</td>
+                                <td>{{apply_form.amount|add_class:"form-control amount"}}</td>
                                 <td>{{apply_form.reference|add_class:"form-control"}}</td>
+                                <td class="new-balance" style="padding-left: 10px;"></td>
                             </tr>
                         {% endfor %}
                     </tbody>
@@ -138,6 +140,17 @@
             submitSearchProcedure.addClass('suggest-pushing');
         }
     }
+
+    $('.amount').keyup(function(e) {
+        var input = $(e.currentTarget);
+        var row = input.closest('tr');
+        var balance = row.find('.balance').html();
+        var amount = row.find('.amount').val();
+
+        if(balance && amount)
+            row.find('.new-balance').html(Math.roundP(balance - amount, 2));
+    });
+
 })();
 </script>
 {% endblock body %}
