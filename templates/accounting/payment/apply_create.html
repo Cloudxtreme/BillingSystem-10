@@ -145,6 +145,7 @@
                             <th>Balance</th>
                             <th>Patient Responsibility</th>
                             <th>Payment</th>
+                            <th>Reference</th>
                         </tr>
                     </thead>
                     <tbody class="row found-procedure" id="found-procedure">
@@ -166,9 +167,9 @@
                             <td>{{apply_data|indexList:forloop.counter0|indexDict:'cpt_code_text'}}</td>
                             <td>{{apply_data|indexList:forloop.counter0|indexDict:'charge_amount'}}</td>
                             <td>{{apply_data|indexList:forloop.counter0|indexDict:'balance'}}</td>
-                            <td>{{apply_form.resp_type|add_class:"form-control"}}</td>
+                            <td>{{apply_data|indexList:forloop.counter0|indexDict:'resp_type'}}</td>
                             <td>{{apply_form.amount|add_class:"form-control"}}</td>
-                            <td></td>
+                            <td>{{apply_form.reference|add_class:"form-control"}}</td>
                         </tr>
                         {% endfor %}
                     </tbody>

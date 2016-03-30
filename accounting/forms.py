@@ -132,6 +132,19 @@ class ChargeForm(forms.ModelForm):
         model = Charge
         exclude = ['created', 'modified']
 
+    def clean():
+        cleaned_data = super(ChargeForm, self).clean()
+
+        payer_type = cleaned_data.get('payer_type')
+        resp_type = cleaned_data.get('resp_type')
+
+        if payer_type == 'Patient' and resp_type is None:
+            self.add_error('resp_type',
+                    """Responsibility type is required for
+                        payer type \"Patient\"""")
+        elif payer_type == 'Insurance':
+            self.cleaned_data['resp_type'] = None
+
 
 class ApplyForm(forms.ModelForm):
     amount = forms.DecimalField(min_value=0, required=False)
@@ -160,12 +173,8 @@ class ApplyForm(forms.ModelForm):
         amount = cleaned_data.get('amount')
         adjustment = cleaned_data.get('adjustment')
         reference = cleaned_data.get('reference')
-        resp_type = cleaned_data.get('resp_type')
 
         if payment.payer_type == 'Insurance':
-            # Apply for insurance type should not have resp_type
-            cleaned_data['resp_type'] = None
-
             if reference and amount is None and adjustment is None:
                 self.add_error('reference', """Reference needs to be
                         with either amount or adjustment.""")
@@ -181,16 +190,13 @@ class ApplyForm(forms.ModelForm):
                 if charge.balance < amount + adjustment:
                     self.add_error('amount', """Amount plus adjustment
                             exceeds balance on procedure \"%s\".  Please
-                            check the value""" % charge.procedure.cpt.cpt_code)
+                            check the value""" % \
+                            charge.procedure.cpt.cpt_code)
         else:
             # Check validity against charge of Patient
-            if amount is None:
+            if reference and amount is None:
                 self.add_error('amount',
-                        'Amount is required for payer type \"Patient\"')
-            if resp_type is None:
-                self.add_error('resp_type',
-                        """Responsibility type is required for
-                        payer type \"Patient\"""")
+                        'Amount is required when there is reference')
 
 
 class ApplyFormSet(forms.BaseFormSet):

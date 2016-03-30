@@ -26,6 +26,7 @@ PAYMENT_METHOD = (
 RESPONSIBILITY_TYPE = (
     ('Co-pay', 'Co-pay'),
     ('Deductible', 'Deductible'),
+    ('Other PR', 'Other PR'),
 )
 
 
@@ -228,14 +229,25 @@ class Payment(BaseModel):
 
 
 class Charge(BaseModel):
-    # """
-    # Charge model captures the amount of money that is responsible by
-    # payer indicated by "payer_type" field for one procedure which
-    # appears on a claim form.
-    # """
+    """
+    Charge model captures the amount of money that is responsible by
+    payer indicated by "payer_type" field for one procedure which
+    appears on a claim form.
+
+    In case of payer is
+    insurance company, "resp_type" should be null in this case.
+
+    In case that the charge will be paid by patient,
+    "resp_type" field will indicate reasons of that charge.
+    """
     procedure = models.ForeignKey(Procedure)
     payer_type = models.CharField(max_length=20, choices=PAYER_TYPE)
     amount = models.DecimalField(**BASE_DECIMAL)
+    resp_type = models.CharField(
+            max_length=20,
+            choices=RESPONSIBILITY_TYPE,
+            null=True,
+            blank=True)
 
     @property
     def balance(self):
@@ -262,18 +274,17 @@ class Charge(BaseModel):
 
 
 class Apply(BaseModel):
-    # """
-    # Apply model captures amount of payment that payer, indicated by
-    # "payer_type" of "payment" field, pays for a procedure.  Amount
-    # to be applied must not exceed total remaining charge of the
-    # same "payer_type" from "Charge" model.  In case of payer is
-    # insurance company, it is normal that the company will not
-    # pay a full amount of charge.  In such case, "adjustment" is
-    # a field to cover up the remaining amount in order to make
-    # total amount which is responsible by the insurance becomes zero
-    # on a report.  In case that the charge will be paid by patient,
-    # "resp_type" field will indicate reasons of that charge.
-    # """
+    """
+    Apply model captures amount of payment that payer, indicated by
+    "payer_type" of "payment" field, pays for a charge.  Amount
+    to be applied must not exceed remaining balance of that charge.
+    In case that "payer_type" of "charge" is Insurance, it is normal
+    that the company will not pay a full amount of charge.  In such
+    case, "adjustment" is a field to cover up the remaining amount
+    in order to make total amount which is responsible by the insurance
+    becomes zero on a report.  In case that "payer_type" is Patient,
+    adjustment should be null.
+    """
     payment = models.ForeignKey(Payment)
     charge = models.ForeignKey(Charge)
     amount = models.DecimalField(
@@ -285,11 +296,6 @@ class Apply(BaseModel):
             blank=True,
             **BASE_DECIMAL)
     reference = models.CharField(max_length=100, blank=True)
-    resp_type = models.CharField(
-            max_length=20,
-            choices=RESPONSIBILITY_TYPE,
-            null=True,
-            blank=True)
 
     def __str__(self):
         return '%s: %s --- $%s, $%s' % (

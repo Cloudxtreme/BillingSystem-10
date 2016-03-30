@@ -174,6 +174,7 @@ def apply_create(request, payment_id, claim_id):
         'cpt_code_text': c.procedure.cpt.cpt_code,
         'charge_amount': c.amount,
         'balance': c.balance,
+        'resp_type': c.resp_type,
     } for c in charges]
 
     if request.method == 'POST':
@@ -184,12 +185,11 @@ def apply_create(request, payment_id, claim_id):
                 cleaned_data = apply_form.cleaned_data
                 amount = cleaned_data.get('amount')
                 adjustment = cleaned_data.get('adjustment')
-                resp_type = cleaned_data.get('resp_type')
 
                 if (payment.payer_type == 'Insurance' and \
                         (amount is not None or adjustment is not None)) or \
                         (payment.payer_type == 'Patient' and \
-                        amount is not None and resp_type is not None):
+                        amount is not None):
                     new_applies.append(Apply(**cleaned_data))
 
             Apply.objects.bulk_create(new_applies)
