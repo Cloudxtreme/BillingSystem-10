@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% load widget_tweaks %}
+{% load index %}
+
+{% block title %} Apply Payment {% endblock title %}
+
+{% block body %}
+
+{% if pca_formset.errors %}
+    {% for error in pca_formset.errors %}
+        {{ error }}
+    {% endfor %}
+{% endif %}
+
+{% if pca_formset.non_form_errors %}
+    {{ pca_formset.non_form_errors }}
+{% endif %}
+
+<div class="container">
+    <h2 class="text-center">Apply Payment</h2>
+    {% include "accounting/payment/payment_claim_search.html" %}
+
+    <form method="POST" action="{% url 'accounting:charge_patient_create' payment.pk claim.pk %}">{% csrf_token %}
+        <div class="row" id="procedure-table">
+
+            {{ pca_formset.management_form }}
+
+            <table class="table table-striped table-condensed">
+                <thead>
+                    <tr>
+                        <th>CPT Code</th>
+                        <th>Charge</th>
+                        <th>Patient Responsibility</th>
+                        <th>Payment</th>
+                        <th>Reference</th>
+                        <th>Balance</th>
+                    </tr>
+                </thead>
+                <tbody class="row found-procedure" id="found-procedure">
+                    {% for pca_form in pca_formset %}
+                        <tr>
+                            <input
+                                type="hidden"
+                                name="{{pca_form.payment.html_name}}"
+                                id="{{pca_form.payment.auto_id}}"
+                                value="{{payment.pk}}"
+                            >
+                            <td>{{pca_form.procedure|add_class:"form-control"}}</td>
+                            <td>{{pca_form.charge_amount|add_class:"form-control"}}</td>
+                            <td>{{pca_form.resp_type|add_class:"form-control"}}</td>
+                            <td>{{pca_form.apply_amount|add_class:"form-control"}}</td>
+                            <td>{{pca_form.reference|add_class:"form-control"}}</td>
+                            <td class="balance"></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <input type="submit" class="btn btn-success" value="Make Payment" id="submit-make-payment">
+        <a href="{% url 'dashboard:dashboard' %}" class="padding-btn margin-left link-btn-danger">Cancel</a>
+    </form>
+</div>
+
+
+<script>
+'use strict';
+(function() {
+
+    $('#payment_id').change(setFlashingButton)
+    $('#claim_id').change(setFlashingButton)
+
+    function setFlashingButton() {
+        var init_p_id = '{{payment.pk}}';
+        var init_c_id = '{{claim.pk}}';
+        var payment_id = $('#payment_id').val();
+        var claim_id = $('#claim_id').val();
+
+        var submitMakePayment = $('#submit-make-payment');
+        var submitSearchProcedure = $('#submit-search-procedure');
+
+        if(payment_id == init_p_id &&
+                claim_id == init_c_id) {
+            submitMakePayment.prop('disabled', false);
+            submitSearchProcedure.removeClass('suggest-pushing');
+        }
+        else {
+            submitMakePayment.prop('disabled', true);
+            submitSearchProcedure.addClass('suggest-pushing');
+        }
+    }
+})();
+</script>
+{% endblock body %}

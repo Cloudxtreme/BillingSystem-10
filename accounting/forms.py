@@ -53,6 +53,32 @@ class PaymentApplyReadForm(forms.Form):
             self.add_error('claim', 'Claim with given ID does not exist')
 
 
+class PaymentClaimSearchForm(forms.Form):
+    payment = forms.CharField()
+    claim = forms.CharField()
+    search_type = forms.CharField()
+
+    def clean(self):
+        cleaned_data = super(PaymentClaimSearchForm, self).clean()
+        payment_id = cleaned_data.get('payment')
+        claim_id = cleaned_data.get('claim')
+        search_type = cleaned_data.get('search_type')
+
+        try:
+            payment = Payment.objects.get(pk=payment_id)
+            if search_type == 'create_patient_charge' and \
+                    payment.payer_type != 'Patient':
+                self.add_error('payment',
+                        'Given payment is not payer type \"Patient\"')
+        except:
+            self.add_error('payment', 'Payment with given ID does not exist')
+
+        try:
+            Claim.objects.get(pk=claim_id)
+        except:
+            self.add_error('claim', 'Claim with given ID does not exist')
+
+
 class PaymentApplyCreateForm(forms.Form):
     amount = forms.DecimalField(max_digits=MAX_DIGITS, decimal_places=DECIMAL_PLACES, min_value=0, required=False)
     adjustment = forms.DecimalField(max_digits=MAX_DIGITS, decimal_places=DECIMAL_PLACES, required=False)
@@ -125,6 +151,85 @@ class ProcedureForm(forms.Form):
     reference = forms.CharField(required=False)
 
 
+class ProcedureModelChoiceField(forms.ModelChoiceField):
+    def label_from_instance(self, obj):
+        return '%s' % obj.cpt.cpt_code
+
+
+class PatientChargeApplyForm(forms.Form):
+    payment = forms.ModelChoiceField(
+            queryset=Payment.objects.filter(payer_type='Patient'),
+            required=False)
+    charge_amount = forms.DecimalField(
+            min_value=0,
+            required=False,
+            **BASE_DECIMAL)
+    resp_type = forms.ChoiceField(
+            choices=[(None, '-----')] + RESPONSIBILITY_TYPE,
+            required=False)
+    apply_amount = forms.DecimalField(
+            min_value=0,
+            required=False,
+            **BASE_DECIMAL)
+    reference = forms.CharField(max_length=100, required=False)
+
+    def __init__(self, *args, **kwargs):
+        claim_id = kwargs.pop('claim_id', None)
+
+        super(PatientChargeApplyForm, self).__init__(*args, **kwargs)
+        self.fields['procedure'] = ProcedureModelChoiceField(
+                queryset=Procedure.objects.filter(
+                    claim=claim_id),
+                required=False)
+
+    def clean(self):
+        cleaned_data = super(PatientChargeApplyForm, self).clean()
+
+        procedure = cleaned_data.get('procedure')
+        charge_amount = cleaned_data.get('charge_amount')
+        apply_amount = cleaned_data.get('apply_amount')
+        resp_type = cleaned_data.get('resp_type')
+        if len(resp_type) < 1:
+            resp_type = None
+            cleaned_data['resp_type'] = resp_type
+
+        procedure_err = {
+                'field': 'procedure',
+                'error': 'Procedure is required'}
+        charge_err = {
+                'field': 'charge_amount',
+                'error': 'Amount of charge is required'}
+        resp_type_err = {
+                'field': 'resp_type',
+                'error': 'Responsibility type is required'}
+
+        if procedure is not None:
+            if not charge_amount:
+                self.add_error(**charge_err)
+            if resp_type is None:
+                self.add_error(**resp_type_err)
+
+        if charge_amount:
+            if procedure is None:
+                self.add_error(**procedure_err)
+            if resp_type is None:
+                self.add_error(**resp_type_err)
+
+        if resp_type is not None:
+            if procedure is None:
+                self.add_error(**procedure_err)
+            if not charge_amount:
+                self.add_error(**charge_err)
+
+        if apply_amount:
+            if procedure is None:
+                self.add_error(**procedure_err)
+            if not charge_amount:
+                self.add_error(**charge_err)
+            if resp_type is None:
+                self.add_error(**resp_type_err)
+
+
 class ChargeForm(forms.ModelForm):
     charge = forms.DecimalField(min_value=0)
 
@@ -132,7 +237,7 @@ class ChargeForm(forms.ModelForm):
         model = Charge
         exclude = ['created', 'modified']
 
-    def clean():
+    def clean(self):
         cleaned_data = super(ChargeForm, self).clean()
 
         payer_type = cleaned_data.get('payer_type')

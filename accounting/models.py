@@ -12,22 +12,22 @@ from infoGatherer.models import (
         CPT)
 
 
-PAYER_TYPE = (
+PAYER_TYPE = [
     ('Insurance', 'Insurance'),
     ('Patient', 'Patient'),
-)
+]
 
-PAYMENT_METHOD = (
+PAYMENT_METHOD = [
     ('Check', 'Check'),
     ('Credit Card', 'Credit Card'),
     ('Cash', 'Cash')
-)
+]
 
-RESPONSIBILITY_TYPE = (
+RESPONSIBILITY_TYPE = [
     ('Co-pay', 'Co-pay'),
     ('Deductible', 'Deductible'),
     ('Other PR', 'Other PR'),
-)
+]
 
 
 class Claim(BaseModel):

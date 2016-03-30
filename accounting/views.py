@@ -5,8 +5,8 @@ from django.core import serializers
 from django.core.urlresolvers import reverse
 from django.forms import formset_factory
 from django.http import JsonResponse
-from django.db.models import Sum
-from django.db.models import Q
+from django.db.models import Q, Sum
+from django.db import IntegrityError, transaction
 
 from datetime import datetime
 
@@ -60,18 +60,23 @@ def payment_create(request):
     return render(request, 'accounting/payment/create.html', {'form': form})
 
 def payment_apply_read(request):
-    form = PaymentApplyReadForm(request.POST or None)
+    pcs_form = PaymentClaimSearchForm(request.POST or None)
 
-    if request.method == 'POST' and form.is_valid():
-        data = form.cleaned_data
+    if request.method == 'POST' and pcs_form.is_valid():
+        cleaned_data = pcs_form.cleaned_data
+        search_type = cleaned_data.get('search_type')
 
-        return redirect(reverse('accounting:payment_apply_create', kwargs={
-            'payment_id': data.get('payment'),
-            'claim_id': data.get('claim'),
-        }))
+        if search_type == 'create_patient_charge':
+            location = 'accounting:charge_patient_create'
+        else:
+            location = 'accounting:payment_apply_create'
+
+        return redirect(reverse(location, kwargs={
+                'payment_id': cleaned_data.get('payment'),
+                'claim_id': cleaned_data.get('claim')}))
 
     context = {
-        'form': form,
+        'pcs_form': pcs_form,
     }
 
     return render(request, 'accounting/payment/apply_read.html', context)
@@ -130,16 +135,10 @@ def payment_apply_create(request, payment_id, claim_id):
                 'payment_id': payment_id,
                 'claim_id': claim_id,
             }))
-
     else:
         apply_formset = PaymentApplyFormSet(initial=apply_data)
         charge_formset = PatientChargeFormSet(initial=apply_data)
         patient_apply_formset = PatientAppliedPaymentFormSet()
-
-
-    print '--------------------------------------------------------------------------------'
-    print charge_formset[0]
-    print '--------------------------------------------------------------------------------'
 
     context = {
         'payment': payment,
@@ -155,6 +154,10 @@ def payment_apply_create(request, payment_id, claim_id):
 def apply_create(request, payment_id, claim_id):
     payment = get_object_or_404(Payment, pk=payment_id)
     claim = get_object_or_404(Claim, pk=claim_id)
+
+    pcs_form = PaymentClaimSearchForm(initial={
+            'payment': payment_id,
+            'claim': claim_id})
 
     ApplyFormSet = formset_factory(
         wraps(ApplyForm)(partial(ApplyForm,
@@ -202,10 +205,70 @@ def apply_create(request, payment_id, claim_id):
         apply_formset = ApplyFormSet(initial=apply_data)
 
     return render(request, 'accounting/payment/apply_create.html', {
+            'pcs_form': pcs_form,
             'payment': payment,
             'claim': claim,
             'apply_formset': apply_formset,
             'apply_data': apply_data})
+
+
+def charge_patient_create(request, payment_id, claim_id):
+    payment = get_object_or_404(Payment, pk=payment_id)
+    claim = get_object_or_404(Claim, pk=claim_id)
+
+    pcs_form = PaymentClaimSearchForm(initial={
+            'payment': payment_id,
+            'claim': claim_id})
+
+    PCAFormSet = formset_factory(
+            wraps(PatientChargeApplyForm)
+                (partial(PatientChargeApplyForm,
+                    claim_id=claim_id)),
+            extra=3)
+
+    pca_formset = PCAFormSet(request.POST or None)
+
+    if request.method == 'POST' and pca_formset.is_valid():
+        try:
+            with transaction.atomic():
+                for pca_form in pca_formset:
+                    cleaned_data = pca_form.cleaned_data
+
+                    procedure = cleaned_data.get('procedure')
+                    payment = cleaned_data.get('payment')
+                    charge_amount = cleaned_data.get('charge_amount')
+                    resp_type = cleaned_data.get('resp_type')
+                    apply_amount = cleaned_data.get('apply_amount')
+                    reference = cleaned_data.get('reference')
+
+                    if procedure and payment and \
+                            charge_amount and resp_type:
+                        charge = Charge.objects.create(
+                                procedure=procedure,
+                                payer_type='Patient',
+                                amount=charge_amount,
+                                resp_type=resp_type)
+
+                        if apply_amount:
+                            Apply.objects.create(
+                                    payment=payment,
+                                    charge=charge,
+                                    amount=apply_amount,
+                                    adjustment=None,
+                                    reference=reference)
+
+            return redirect(reverse('accounting:payment_apply_create',
+                    kwargs={
+                        'payment_id': payment_id,
+                        'claim_id': claim_id}))
+        except IntegrityError:
+            print 'IntegrityError has occured.'
+
+    return render(request, 'accounting/payment/charge_patient_create.html', {
+            'pcs_form': pcs_form,
+            'payment': payment,
+            'claim': claim,
+            'pca_formset': pca_formset})
 
 
 ###############################################################################
