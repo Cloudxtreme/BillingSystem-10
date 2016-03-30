@@ -21,13 +21,26 @@
             <div class="col-sm-1 ">
                 <button type="button" class="btn btn-primary btn-block search-modal" id="search-patient-search" data-type="patient"><i class="fa fa-search"></i></button>
             </div>
-            <div class="col-sm-4 ">
+            <div class="col-sm-3 ">
                 <div class="input-group two-input">
                     <input type="text" name="first_name" class="form-control" placeholder="Patient first name">
                     <input type="text" name="last_name" class="form-control" placeholder="Patient last name">
                 </div>
             </div>
-
+            <div class="col-sm-8 ">
+                <div class="col-sm-3 ">
+                    <input type="date" name="dob" class="form-control" placeholder="DOB">
+                </div>
+                <div class="col-sm-2 ">
+                    <input type="text" name="phone" class="form-control" placeholder="Phone">
+                </div>
+                <div class="col-sm-2 ">
+                    <input type="text" name="ssn" class="form-control" placeholder="SSN">
+                </div>
+                <div class="col-sm-2 ">
+                    <input type="text" name="chart_no" class="form-control" placeholder="Chart No.">
+                </div>
+            </div>
         </form>
     </div>
 
@@ -45,20 +58,28 @@
                     <th>ID</th>
                     <th>First Name</th>
                     <th>Last Name</th>
+                    <th>DOB</th>
+                    <th>SSN</th>
+                    <th>Home Phone</th>
+                    <th>Primary Insurance</th>
                 </tr>
             </thead>
             <tbody>
-                <% _.each(patients, function(patients, i) { var p = patients.fields;  %>
+                <% _.each(patients, function(patients, i) { var p = patients.fields; console.log(p) %>
                 <tr class="found-patient-item" data-payment-index="<%- i %>">
                     <td><a href="/patient/<%= p.chart_no %>" ><%= p.chart_no %></a></td>
                     <td><%= p.first_name %></td>
                     <td><%= p.last_name %></td>
+                    <td><%= p.dob %></td>
+                    <td><%= p.ssn %></td>
+                    <td><%= p.home_phone %></td>
+                    <td><%= p.get_primary_insurane %></td>
                 </tr>
                 <% }); %>
             </tbody>
         </table>
         <% if(patients.length < 1) { %>
-        <h4 class="text-center not-found">The search did not match any payment.</h4>
+        <h4 class="text-center not-found">The search did not match any patients.</h4>
         <% } %>
     </div>
 </script>

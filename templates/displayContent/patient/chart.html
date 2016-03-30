@@ -14,6 +14,28 @@
 
 {% block body %}
 
+<p><strong>Patient Information</strong></p>
+{{patient_info}}
+
+<p><strong>Primary Insurance</strong></p>
+{{primary_insurance}}
+
+<p><strong>Primary Payer</strong></p>
+{{primary_insurance_payer}}
+
+<p><strong>Secondary Insurance</strong></p>
+{{secondary_insurance}}
+
+<p><strong>Secondary Payer</strong></p>
+{{secondary_insurance_payer}}
+
+<p><strong>Tertiary Insurance</strong></p>
+{{tertiary_insurance}}
+
+<p><strong>Tertiary Payer</strong></p>
+{{tertiary_insurance_payer}}
+
+
 <div class="container" >
 	<h2 class="text-center">Patient Information</h2>
         <p> 
@@ -23,7 +45,7 @@
         </p>
         <br/>
 
-        <a href="#" class="btn btn-primary">Goto claims</a>
+        <a id= "claimhistory" href="" class="btn btn-primary">Claims History</a>
         <br/><br/>
         <ul>
                 <li>To display:</li>
@@ -43,11 +65,20 @@
 </div>
 <script>
 
-$( document ).ready(function() {
-    
+function getid() {
     var url = window.location.pathname;
-    var id = url.substring(url.lastIndexOf('/') + 1);
+    var myArray = /\/([0-9]+)\//g.exec(url);
+    var id = myArray[1];
     console.log(id);
+    return id;
+}
+
+$( document ).ready(function (){
+
+    // set anchor tag
+    var href="/patient/"+getid()+"/claimhistory/";
+    $("#claimhistory").attr("href",href);
+
 });
 
 </script>
