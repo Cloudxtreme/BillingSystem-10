@@ -102,6 +102,12 @@
                                 <td>{{apply_form.reference|add_class:"form-control"}}</td>
                                 <td class="new-balance" style="padding-left: 10px;"></td>
                             </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="100">
+                                    <h4 class="text-center not-found">There is no charge for patient in this claim.</h4>
+                                </td>
+                            </tr>
                         {% endfor %}
                     </tbody>
                 </table>
