@@ -104,27 +104,12 @@ class Procedure(BaseModel):
 
     @property
     def balance(self):
-        ins_total_charge = Charge.objects\
-                .filter(procedure=self.pk, payer_type='Insurance')\
-                .aggregate(Sum('charge'))\
-                .get('charge__sum') or 0
-        ins_total_apply = Apply.objects\
-                .filter(charge__procedure=self.pk)\
-                .aggregate(Sum('amount'), Sum('adjustment'))
-        ins_total_amount = ins_total_apply.get('amount__sum') or 0
-        ins_total_adjustment = ins_total_apply.get('adjustment__sum') or 0
+        charge_q_set = Charge.objects.filter(procedure=self.pk)
+        total = 0;
+        for charge in charge_q_set:
+            total += charge.balance
 
-        pat_total_charge = Charge.objects\
-                .filter(procedure=self.pk, payer_type='Patient')\
-                .aggregate(Sum('charge'))\
-                .get('charge__sum') or 0
-        pat_total_apply = Apply.objects\
-                .filter(patient_charge__procedure=self.pk)\
-                .aggregate(Sum('amount'))\
-                .get('amount__sum') or 0
-
-        return (ins_total_charge + pat_total_charge) - \
-                (ins_total_amount + ins_total_adjustment + pat_total_apply)
+        return total
 
     def __str__(self):
         return '%s: %s' % (self.id, self.cpt.cpt_description)

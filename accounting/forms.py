@@ -68,7 +68,7 @@ class ProcedureForm(forms.Form):
 
 class ProcedureModelChoiceField(forms.ModelChoiceField):
     def label_from_instance(self, obj):
-        return '%s' % obj.cpt.cpt_code
+        return '%s --- $%s' % (obj.cpt.cpt_code, obj.balance)
 
 
 class PatientChargeForm(forms.Form):
