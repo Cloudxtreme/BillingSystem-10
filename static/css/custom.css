@@ -136,3 +136,17 @@ h2.text-center {
 .not-found {
     color: #bbb;
 }
+
+@keyframes glowing {
+    0% { background-color: #fff; box-shadow: 0 0 3px #fff; }
+    12% { background-color: #fcfdca; box-shadow: 0 0 40px #fcfdca; }
+    25% { background-color: #fdfd96; box-shadow: 0 0 3px #fdfd96; }
+    75% { background-color: #fff; box-shadow: 0 0 3px #fff; }
+}
+
+.btn.suggest-pushing {
+    -webkit-animation: glowing 1500ms infinite;
+    -moz-animation: glowing 1500ms infinite;
+    -o-animation: glowing 1500ms infinite;
+    animation: glowing 1500ms infinite;
+}

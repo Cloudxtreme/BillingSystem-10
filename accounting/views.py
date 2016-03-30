@@ -5,7 +5,8 @@ from django.core import serializers
 from django.core.urlresolvers import reverse
 from django.forms import formset_factory
 from django.http import JsonResponse
-from django.db.models import Sum
+from django.db.models import Q, Sum
+from django.db import IntegrityError, transaction
 
 from datetime import datetime
 
@@ -33,7 +34,7 @@ def payment_summary(request):
         patientName=patientRow['last_name']+", "+patientRow['first_name']
         temp["patientName"]=patientName
 
-        # get total charge from accounting_procedure (add ammount for same claim id) 
+        # get total charge from accounting_procedure (add ammount for same claim id)
         # get sum od ammounts for same claim id from accounting_appliedpayment
         # get total adjustments -- create another column --
         procedureList=Procedure.objects.filter(claim_id=claim_id).values()
@@ -59,79 +60,147 @@ def payment_create(request):
     return render(request, 'accounting/payment/create.html', {'form': form})
 
 def payment_apply_read(request):
-    form = PaymentApplyReadForm(request.POST or None)
+    pcs_form = PaymentClaimSearchForm(request.POST or None)
 
-    if request.method == 'POST' and form.is_valid():
-        data = form.cleaned_data
+    if request.method == 'POST' and pcs_form.is_valid():
+        cleaned_data = pcs_form.cleaned_data
+        search_type = cleaned_data.get('search_type')
 
-        return redirect(reverse('accounting:payment_apply_create', kwargs={
-            'payment_id': data.get('payment'),
-            'claim_id': data.get('claim'),
-        }))
+        if search_type == 'create_patient_charge':
+            location = 'accounting:charge_patient_create'
+        else:
+            location = 'accounting:payment_apply_create'
+
+        return redirect(reverse(location, kwargs={
+                'payment_id': cleaned_data.get('payment'),
+                'claim_id': cleaned_data.get('claim')}))
 
     context = {
-        'form': form,
+        'pcs_form': pcs_form,
     }
 
     return render(request, 'accounting/payment/apply_read.html', context)
 
-def payment_apply_create(request, payment_id, claim_id):
+
+def apply_create(request, payment_id, claim_id):
     payment = get_object_or_404(Payment, pk=payment_id)
     claim = get_object_or_404(Claim, pk=claim_id)
 
-    PaymentApplyFormSet = formset_factory(
-        wraps(PaymentApplyCreateForm)\
-            (partial(
-                PaymentApplyCreateForm,
-                claim_id=claim_id,
-                payment_id=payment_id
-            )),
-        formset=BasePaymentApplyCreateFormSet,
+    pcs_form = PaymentClaimSearchForm(initial={
+            'payment': payment_id,
+            'claim': claim_id})
+
+    ApplyFormSet = formset_factory(
+        wraps(ApplyForm)(partial(ApplyForm,
+            claim_id=claim_id,
+            payment_id=payment_id,)),
+        formset=BaseApplyFormSet,
         extra=0,
     )
 
-    procedures = Procedure.objects.filter(claim=claim_id)
+    charges = Charge.objects.filter(
+            procedure__claim=claim_id,
+            payer_type=payment.payer_type)
+
     apply_data = [{
-        'procedure': p.pk,
-        'date_of_service': p.date_of_service,
-        'cpt_code_text': p.cpt.cpt_code,
-        'charge': p.charge,
-        'balance': p.balance,
-    } for p in procedures]
+        'charge': c.pk,
+        'date_of_service': c.procedure.date_of_service,
+        'cpt_code_text': c.procedure.cpt.cpt_code,
+        'charge_amount': c.amount,
+        'balance': c.balance,
+        'resp_type': c.resp_type,
+    } for c in charges]
 
     if request.method == 'POST':
-        apply_formset = PaymentApplyFormSet(request.POST)
+        apply_formset = ApplyFormSet(request.POST)
         if apply_formset.is_valid():
-            new_applied = []
+            new_applies = []
             for apply_form in apply_formset:
-                data = apply_form.cleaned_data
-                amount = data.get('amount')
-                adjustment = data.get('adjustment')
+                cleaned_data = apply_form.cleaned_data
+                amount = cleaned_data.get('amount')
+                adjustment = cleaned_data.get('adjustment')
 
-                if amount is not None or \
-                    adjustment is not None:
+                if (payment.payer_type == 'Insurance' and \
+                        (amount is not None or adjustment is not None)) or \
+                        (payment.payer_type == 'Patient' and \
+                        amount is not None):
+                    new_applies.append(Apply(**cleaned_data))
 
-                    new_applied.append(AppliedPayment(**data))
+            Apply.objects.bulk_create(new_applies)
 
-            AppliedPayment.objects.bulk_create(new_applied)
-
-            return redirect(reverse('accounting:payment_apply_create', kwargs={
-                'payment_id': payment_id,
-                'claim_id': claim_id,
-            }))
-
+            return redirect(reverse('accounting:payment_apply_create',
+                    kwargs={
+                        'payment_id': payment_id,
+                        'claim_id': claim_id}))
     else:
-        apply_formset = PaymentApplyFormSet(initial=apply_data)
+        apply_formset = ApplyFormSet(initial=apply_data)
 
-    context = {
-        'payment': payment,
-        'claim': claim,
-        'apply_formset': apply_formset,
-        'apply_data': apply_data,
-    }
+    return render(request, 'accounting/payment/apply_create.html', {
+            'pcs_form': pcs_form,
+            'payment': payment,
+            'claim': claim,
+            'apply_formset': apply_formset,
+            'apply_data': apply_data})
 
-    return render(request, 'accounting/payment/apply_create.html', context)
 
+def charge_patient_create(request, payment_id, claim_id):
+    payment = get_object_or_404(Payment, pk=payment_id)
+    claim = get_object_or_404(Claim, pk=claim_id)
+
+    pcs_form = PaymentClaimSearchForm(initial={
+            'payment': payment_id,
+            'claim': claim_id})
+
+    PCAFormSet = formset_factory(
+            wraps(PatientChargeForm)
+                (partial(PatientChargeForm,
+                    claim_id=claim_id)),
+            formset=BasePatientChargeFormSet,
+            extra=3)
+
+    pca_formset = PCAFormSet(request.POST or None)
+
+    if request.method == 'POST' and pca_formset.is_valid():
+        try:
+            with transaction.atomic():
+                for pca_form in pca_formset:
+                    cleaned_data = pca_form.cleaned_data
+
+                    procedure = cleaned_data.get('procedure')
+                    payment = cleaned_data.get('payment')
+                    charge_amount = cleaned_data.get('charge_amount')
+                    resp_type = cleaned_data.get('resp_type')
+                    apply_amount = cleaned_data.get('apply_amount')
+                    reference = cleaned_data.get('reference')
+
+                    if procedure and payment and \
+                            charge_amount and resp_type:
+                        charge = Charge.objects.create(
+                                procedure=procedure,
+                                payer_type='Patient',
+                                amount=charge_amount,
+                                resp_type=resp_type)
+
+                        if apply_amount:
+                            Apply.objects.create(
+                                    payment=payment,
+                                    charge=charge,
+                                    amount=apply_amount,
+                                    adjustment=None,
+                                    reference=reference)
+
+            return redirect(reverse('accounting:payment_apply_create',
+                    kwargs={
+                        'payment_id': payment_id,
+                        'claim_id': claim_id}))
+        except IntegrityError:
+            print 'IntegrityError has occured.'
+
+    return render(request, 'accounting/payment/charge_patient_create.html', {
+            'pcs_form': pcs_form,
+            'payment': payment,
+            'claim': claim,
+            'pca_formset': pca_formset})
 
 
 ###############################################################################
@@ -146,13 +215,38 @@ def api_search_payment(request):
         )
 
         if post_data.get('check_number'):
-            payment = payment.filter(check_number__icontains=post_data.get('check_number'))
-        if post_data.get('insurance_name'):
-            payment = payment.filter(payer_insurance__name__icontains=post_data.get('insurance_name'))
-        if post_data.get('last_name'):
-            payment = payment.filter(payer_patient__last_name__icontains=post_data.get('last_name'))
-        if post_data.get('first_name'):
-            payment = payment.filter(payer_patient__first_name__icontains=post_data.get('first_name'))
+            payment = payment.filter(
+                    check_number__icontains=post_data.get('check_number'))
+
+        insurance_name = post_data.get('insurance_name')
+        last_name = post_data.get('last_name')
+        first_name = post_data.get('first_name')
+
+        if len(insurance_name) == 0:
+            insurance_name = None
+        if len(last_name) == 0:
+            last_name = None
+        if len(first_name) == 0:
+            first_name = None
+
+        insurance_kwargs = dict()
+        if insurance_name is not None:
+            insurance_kwargs['payer_insurance__name__icontains'] = insurance_name
+        patient_kwargs = dict()
+        if last_name is not None:
+            patient_kwargs['payer_patient__last_name__icontains'] = last_name
+        if first_name is not None:
+            patient_kwargs['payer_patient__first_name__icontains'] = first_name
+
+        if insurance_name is None:
+            payment = payment.filter(Q(**patient_kwargs))
+        elif last_name is None and first_name is None:
+            payment = payment.filter(Q(**insurance_kwargs))
+        else:
+            payment = payment.filter(
+                Q(**insurance_kwargs) | \
+                Q(**patient_kwargs)
+            )
 
         se = ExtPythonSerializer().serialize(
             payment,

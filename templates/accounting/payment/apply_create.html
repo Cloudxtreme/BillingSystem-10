@@ -1,6 +1,5 @@
 {% extends "base.html" %}
 
-{% load staticfiles %}
 {% load widget_tweaks %}
 {% load index %}
 
@@ -20,217 +19,143 @@
 
 <div class="container">
     <h2 class="text-center">Apply Payment</h2>
-    <form method="POST" action="{% url 'accounting:payment_apply' %}">{% csrf_token %}
-        <div class="form-group">
-            <div class="row">
-                <label class="control-label required">Payment</label>
-            </div>
-            <div class="row payment-section">
-                <div class="col-sm-1">
-                    &nbsp;
-                    <button type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#search-payment-modal"><i class="fa fa-search"></i></button>
-                </div>
-                <div class="col-sm-1">
-                    Payment ID
-                    <input type="text" name="payment" class="form-control" value="{{payment.pk}}">
-                </div>
-                <div class="col-sm-2">
-                    Payment Date
-                    <input type="text" name="payment_date" class="form-control" readonly value="{{payment.payment_date}}">
-                </div>
-                <div class="col-sm-2">
-                    Payer Type
-                    <input type="text" name="payer_type" class="form-control" readonly value="{{payment.payer_type}}">
-                </div>
-                <div class="col-sm-2">
-                    Payer Name
-                    <input type="text" name="payer_name" class="form-control" readonly value="{{payment.payer_name}}">
-                </div>
-                <div class="col-sm-2">
-                    Amount
-                    <input type="text" name="amount" class="form-control" readonly value="{{payment.amount}}">
-                </div>
-                <div class="col-sm-2">
-                    Unapplied Amount
-                    <input type="text" name="unapplied_amount" class="form-control" readonly value="{{payment.unapplied_amount}}">
-                </div>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="row">
-                <label class="control-label required">Claim</label>
-            </div>
-            <div class="row claim-section">
-                <div class="col-sm-1">
-                    &nbsp;
-                    <button type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#search-claim-modal"><i class="fa fa-search"></i></button>
-                </div>
-                <div class="col-sm-1">
-                    Claim ID
-                    <input type="text" name="claim" class="form-control" value="{{claim.pk}}">
-                </div>
-                <div class="col-sm-3">
-                    Patient First Name
-                    <input type="text" name="first_name" class="form-control" readonly value="{{claim.patient.first_name}}">
-                </div>
-                <div class="col-sm-3">
-                    Patient Last Name
-                    <input type="text" name="last_name" class="form-control" readonly value="{{claim.patient.last_name}}">
-                </div>
-                <div class="col-sm-2">
-                    Date of Birth
-                    <input type="text" name="dob" class="form-control" readonly value="{{claim.patient.dob}}">
-                </div>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="row">
-                <input type="submit" class="btn btn-default" id="button-search-procedure" value="Search Procedures">
-            </div>
-        </div>
-    </form>
+    {% include "accounting/payment/payment_claim_search.html" %}
 
     <form method="POST" action="{% url 'accounting:payment_apply_create' payment.pk claim.pk %}">{% csrf_token %}
         <div class="row" id="procedure-table">
             {{ apply_formset.management_form }}
-            <table class="table table-striped table-condensed">
-                <thead>
-                    <tr>
-                        <th>Date of Service</th>
-                        <th>CPT Code</th>
-                        <th>Line Charge</th>
-                        <th>Balance</th>
-                        <th>Payment</th>
-                        <th>Adjustment</th>
-                        <th>Reference</th>
-                    </tr>
-                </thead>
-                <tbody class="row found-procedure" id="found-procedure">
-                    {% for apply_form in apply_formset %}
-                    <tr>
-                        <input
-                            type="hidden"
-                            name="{{apply_form.procedure.html_name}}"
-                            id="{{apply_form.procedure.auto_id}}"
-                            value="{{apply_form.procedure.value}}"
-                        >
-                        <input
-                            type="hidden"
-                            name="{{apply_form.payment.html_name}}"
-                            id="{{apply_form.payment.auto_id}}"
-                            value="{{payment.pk}}"
-                        >
-                        <td>{{apply_data|indexList:forloop.counter0|indexDict:'date_of_service'}}</td>
-                        <td>{{apply_data|indexList:forloop.counter0|indexDict:'cpt_code_text'}}</td>
-                        <td>{{apply_data|indexList:forloop.counter0|indexDict:'charge'}}</td>
-                        <td>{{apply_data|indexList:forloop.counter0|indexDict:'balance'}}</td>
-                        <td>{{apply_form.amount|add_class:"form-control"}}</td>
-                        <td>{{apply_form.adjustment|add_class:"form-control"}}</td>
-                        <td>{{apply_form.reference|add_class:"form-control"}}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+            {% if payment.payer_type == 'Insurance' %}
+                <table class="table table-striped table-condensed">
+                    <thead>
+                        <tr>
+                            <th>Date of Service</th>
+                            <th>CPT Code</th>
+                            <th>Line Charge</th>
+                            <th>Balance</th>
+                            <th>Payment</th>
+                            <th>Adjustment</th>
+                            <th>Reference</th>
+                        </tr>
+                    </thead>
+                    <tbody class="row found-procedure" id="found-procedure">
+                        {% for apply_form in apply_formset %}
+                        <tr>
+                            <input
+                                type="hidden"
+                                name="{{apply_form.charge.html_name}}"
+                                id="{{apply_form.charge.auto_id}}"
+                                value="{{apply_form.charge.value}}"
+                            >
+                            <input
+                                type="hidden"
+                                name="{{apply_form.payment.html_name}}"
+                                id="{{apply_form.payment.auto_id}}"
+                                value="{{payment.pk}}"
+                            >
+                            <td>{{apply_data|indexList:forloop.counter0|indexDict:'date_of_service'}}</td>
+                            <td>{{apply_data|indexList:forloop.counter0|indexDict:'cpt_code_text'}}</td>
+                            <td>{{apply_data|indexList:forloop.counter0|indexDict:'charge_amount'}}</td>
+                            <td>{{apply_data|indexList:forloop.counter0|indexDict:'balance'}}</td>
+                            <td>{{apply_form.amount|add_class:"form-control"}}</td>
+                            <td>{{apply_form.adjustment|add_class:"form-control"}}</td>
+                            <td>{{apply_form.reference|add_class:"form-control"}}</td>
+                            <td></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <table class="table table-striped table-condensed">
+                    <thead>
+                        <tr>
+                            <th>Date of Service</th>
+                            <th>CPT Code</th>
+                            <th>Charge</th>
+                            <th>Balance</th>
+                            <th>Patient Responsibility</th>
+                            <th>Payment</th>
+                            <th>Reference</th>
+                            <th>New Balance</th>
+                        </tr>
+                    </thead>
+                    <tbody class="row found-procedure" id="found-procedure">
+                        {% for apply_form in apply_formset %}
+                            <tr>
+                                <input
+                                    type="hidden"
+                                    name="{{apply_form.charge.html_name}}"
+                                    id="{{apply_form.charge.auto_id}}"
+                                    value="{{apply_form.charge.value}}"
+                                >
+                                <input
+                                    type="hidden"
+                                    name="{{apply_form.payment.html_name}}"
+                                    id="{{apply_form.payment.auto_id}}"
+                                    value="{{payment.pk}}"
+                                >
+                                <td>{{apply_data|indexList:forloop.counter0|indexDict:'date_of_service'}}</td>
+                                <td>{{apply_data|indexList:forloop.counter0|indexDict:'cpt_code_text'}}</td>
+                                <td>{{apply_data|indexList:forloop.counter0|indexDict:'charge_amount'}}</td>
+                                <td class="balance">{{apply_data|indexList:forloop.counter0|indexDict:'balance'}}</td>
+                                <td>{{apply_data|indexList:forloop.counter0|indexDict:'resp_type'}}</td>
+                                <td>{{apply_form.amount|add_class:"form-control amount"}}</td>
+                                <td>{{apply_form.reference|add_class:"form-control"}}</td>
+                                <td class="new-balance" style="padding-left: 10px;"></td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="100">
+                                    <h4 class="text-center not-found">There is no charge for patient in this claim.</h4>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endif %}
         </div>
 
-        <input type="submit" class="btn btn-success" value="Make Payment">
+        <input type="submit" class="btn btn-success" value="Make Payment" id="submit-make-payment">
         <a href="{% url 'dashboard:dashboard' %}" class="padding-btn margin-left link-btn-danger">Cancel</a>
     </form>
 </div>
 
 
-{% include "./accounting/payment/template/search-payment.html" %}
-{% include "./accounting/payment/template/search-claim.html" %}
-
-
 <script>
 'use strict';
 (function() {
-    function toggleLoadingIcon(el) {
-        var button = $($(el).children().get(0));
-        var iconSearch = 'fa-search';
-        var iconLoad = 'fa-refresh fa-spin';
-        if(button.hasClass(iconSearch)) {
-            button.removeClass(iconSearch);
-            button.addClass(iconLoad);
-            $(el).prop('disabled', true);
+
+    $('#payment_id').change(setFlashingButton)
+    $('#claim_id').change(setFlashingButton)
+
+    function setFlashingButton() {
+        var init_p_id = '{{payment.pk}}';
+        var init_c_id = '{{claim.pk}}';
+        var payment_id = $('#payment_id').val();
+        var claim_id = $('#claim_id').val();
+
+        var submitMakePayment = $('#submit-make-payment');
+        var submitSearchProcedure = $('#submit-search-procedure');
+
+        if(payment_id == init_p_id &&
+                claim_id == init_c_id) {
+            submitMakePayment.prop('disabled', false);
+            submitSearchProcedure.removeClass('suggest-pushing');
         }
         else {
-            button.removeClass(iconLoad);
-            button.addClass(iconSearch);
-            $(el).prop('disabled', false);
+            submitMakePayment.prop('disabled', true);
+            submitSearchProcedure.addClass('suggest-pushing');
         }
     }
 
-    $('.search-modal').click(function(e) {
-        var button = e.currentTarget;
-        var type = $(button).data('type');
-        toggleLoadingIcon(button);
+    $('.amount').keyup(function(e) {
+        var input = $(e.currentTarget);
+        var row = input.closest('tr');
+        var balance = row.find('.balance').html();
+        var amount = row.find('.amount').val();
 
-        var form = $(e.currentTarget).closest('form');
-        $.post(form.attr('action'), form.serialize())
-            .done(function(objects) {
-                // Append search result into Modal
-                var foundObjectTemplate = _.template($('script.found-' + type + '-template').html(), {variable: type+'s'});
-                $('#found-' + type).html(foundObjectTemplate(objects));
-
-                // Add click listener to found items at class level
-                $('.found-' + type + '-item').click(function(e) {
-                    if(type === 'payment')
-                        foundPaymentItem(e, objects);
-                    else if(type === 'claim')
-                        foundClaimItem(e, objects);
-
-                    $('.modal.fade').modal('hide');
-                });
-            })
-            .fail(function() {
-                $('#found-' + type).html(`
-                    <h4 class="text-center not-found">An unexptected error has occured, please try again later.</h4>
-                `);
-            })
-            .always(function() {
-                toggleLoadingIcon(button);
-            });
+        if(balance && amount)
+            row.find('.new-balance').html(Math.roundP(balance - amount, 2));
     });
-
-    // Click function for found payment item
-    function foundPaymentItem(e, payments) {
-        var index = $(e.currentTarget).data('payment-index');
-
-        // Assign value to UI
-        var p = payments[index];
-        var fields = p.fields;
-        var paymentSection = $('.payment-section');
-        paymentSection.find('input[name="payment"]').val(p.pk);
-        paymentSection.find('input[name="payment_date"]').val(fields.payment_date);
-        paymentSection.find('input[name="payer_type"]').val(fields.payer_type);
-
-        if(fields.payer_insurance)
-            paymentSection.find('input[name="payer_name"]').val(fields.payer_insurance.name);
-        else
-            paymentSection.find('input[name="payer_name"]').val(fields.payer_patient.full_name);
-
-        paymentSection.find('input[name="amount"]').val(fields.amount);
-        paymentSection.find('input[name="unapplied_amount"]').val(fields.unapplied_amount);
-    };
-
-    // Click function for found claim item
-    function foundClaimItem(e, claims) {
-        var index = $(e.currentTarget).data('claim-index');
-
-        // Assign value to UI
-        var c = claims[index];
-        var fields = c.fields;
-        var claimSection = $('.claim-section');
-        claimSection.find('input[name="claim"]').val(c.pk);
-        claimSection.find('input[name="first_name"]').val(fields.patient.first_name);
-        claimSection.find('input[name="last_name"]').val(fields.patient.last_name);
-        var dob = moment(fields.patient.dob, 'YYYY-MM-DD');
-        claimSection.find('input[name="dob"]').val(dob.format('MM/DD/YYYY'));
-    };
 
 })();
 </script>

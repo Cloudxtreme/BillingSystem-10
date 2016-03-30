@@ -17,15 +17,58 @@
 <div class="container">
     <div class="col-xs-6" style="padding-right:20px; border-right: 1px solid #ccc;">
         <h3 class="text-center">Claim Searches</h3>
-            {{claim}}
+
+        <table id="table_search" class="table table-condensed table-hover">
+            <thead>
+                <tr>
+                    <th>Service</th>
+                    <th>Created</th>
+                    <th>Patient Name</th>
+                    <th>$ Charge</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ele in claims %}
+                    <tr>
+                        <td>idk</td>
+                        <td>{{ele.created}}</td>
+                        <td>{{patient_info.last_name}}, {{patient_info.first_name}}</td>
+                        <td>{{ele.total_charge}}</td>
+                    </tr>
+                {% endfor %}
+<!--                 <tr>
+                    <td>Mary</td>
+                    <td>Moe</td>
+                    <td>mary@example.com</td>
+                    <td>john@example.com</td>
+                </tr>
+                <tr>
+                    <td>July</td>
+                    <td>Dooley</td>
+                    <td>july@example.com</td>
+                    <td>john@example.com</td>
+                </tr> -->
+            </tbody>
+        </table>
+
+            {{claims}}
     </div>
     <div class="col-xs-6">
         <h3 class="text-center">Claim Details</h3>
             <ul>
                 <li> show claim info </li>
             </ul>
+            <h4>Payment Summary</h4>
+            
     </div>
 </div>
 
+<script>
+
+$("#table_search tbody tr").on("click", function(){
+    console.log(123);
+})
+
+</script>
 
 {% endblock body %}
