@@ -284,6 +284,13 @@ class Personal_Information(models.Model):
         details['country'] = str(self.country)
         return details
 
+    @property
+    def get_primary_insurane(self):
+        if(self.insurance_information_set.all().filter(level='primary').exists()):
+            print "123"
+            return str(self.insurance_information_set.all().filter(level='primary')[0].payer.name)
+        else:
+            return ""
 
 class Guarantor_Information(models.Model):
     patient = models.ForeignKey(Personal_Information)
