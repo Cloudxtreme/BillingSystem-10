@@ -156,7 +156,7 @@ class ProcedureModelChoiceField(forms.ModelChoiceField):
         return '%s' % obj.cpt.cpt_code
 
 
-class PatientChargeApplyForm(forms.Form):
+class PatientChargeForm(forms.Form):
     payment = forms.ModelChoiceField(
             queryset=Payment.objects.filter(payer_type='Patient'),
             required=False)
@@ -176,16 +176,17 @@ class PatientChargeApplyForm(forms.Form):
     def __init__(self, *args, **kwargs):
         claim_id = kwargs.pop('claim_id', None)
 
-        super(PatientChargeApplyForm, self).__init__(*args, **kwargs)
+        super(PatientChargeForm, self).__init__(*args, **kwargs)
         self.fields['procedure'] = ProcedureModelChoiceField(
                 queryset=Procedure.objects.filter(
                     claim=claim_id),
                 required=False)
 
     def clean(self):
-        cleaned_data = super(PatientChargeApplyForm, self).clean()
+        cleaned_data = super(PatientChargeForm, self).clean()
 
         procedure = cleaned_data.get('procedure')
+        payment = cleaned_data.get('payment')
         charge_amount = cleaned_data.get('charge_amount')
         apply_amount = cleaned_data.get('apply_amount')
         resp_type = cleaned_data.get('resp_type')
@@ -228,6 +229,32 @@ class PatientChargeApplyForm(forms.Form):
                 self.add_error(**charge_err)
             if resp_type is None:
                 self.add_error(**resp_type_err)
+
+        if charge_amount and apply_amount:
+            if apply_amount > charge_amount:
+                self.add_error('apply_amount', 'Apply amount exceeds charge one')
+
+
+class PatientChargeFormSet(forms.BaseFormSet):
+    def clean(self):
+        if any(self.errors):
+            return
+
+        total_apply = dict()
+
+        for form in self.forms:
+            cleaned_data = form.cleaned_data
+            if cleaned_data:
+                payment = cleaned_data.get('payment')
+                apply_amount = cleaned_data.get('apply_amount') or 0
+                total = total_apply.get(payment) or 0
+
+                total_apply[payment] = apply_amount + total
+
+        for payment, total in total_apply.iteritems():
+            if total > payment.unapplied_amount:
+                raise forms.ValidationError(
+                        'Total applied amount exceeds remaining balance.')
 
 
 class ChargeForm(forms.ModelForm):
@@ -279,6 +306,10 @@ class ApplyForm(forms.ModelForm):
         adjustment = cleaned_data.get('adjustment')
         reference = cleaned_data.get('reference')
 
+        if charge.payer_type != payment.payer_type:
+            self.add_error('charge', """payer type of \"Charge\" and
+                    \"Payment\" are not the same""")
+
         if payment.payer_type == 'Insurance':
             if reference and amount is None and adjustment is None:
                 self.add_error('reference', """Reference needs to be
@@ -303,6 +334,12 @@ class ApplyForm(forms.ModelForm):
                 self.add_error('amount',
                         'Amount is required when there is reference')
 
+            if amount:
+                if charge.balance < amount:
+                    self.add_error('amount', """Amount exceeds balance
+                            on procedure \"%s\".  Please check the
+                            value""" % charge.procedure.cpt.cpt_code)
+
 
 class ApplyFormSet(forms.BaseFormSet):
     def clean(self):
@@ -321,7 +358,7 @@ class ApplyFormSet(forms.BaseFormSet):
                 total_apply[payment] = amount + total
 
         for payment, total in total_apply.iteritems():
-            if total > payment.balance:
+            if total > payment.unapplied_amount:
                 raise forms.ValidationError(
                         'Total applied amount exceeds remaining balance.')
 

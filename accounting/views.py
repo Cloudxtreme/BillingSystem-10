@@ -221,9 +221,10 @@ def charge_patient_create(request, payment_id, claim_id):
             'claim': claim_id})
 
     PCAFormSet = formset_factory(
-            wraps(PatientChargeApplyForm)
-                (partial(PatientChargeApplyForm,
+            wraps(PatientChargeForm)
+                (partial(PatientChargeForm,
                     claim_id=claim_id)),
+            formset=PatientChargeFormSet,
             extra=3)
 
     pca_formset = PCAFormSet(request.POST or None)
