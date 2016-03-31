@@ -8,7 +8,7 @@ urlpatterns = [
     url(r'^[0-9]+/claimhistory/$', views.view_claims, name="view_claims"),
     url(r'^[0-9]+/$', views.view_patient, name="view_patient"),
 
-    # url(r'^payment/apply/(?P<payment_id>\w+)/(?P<claim_id>\w+)/patient/$', views.charge_patient_create, name="charge_patient_create"),
+    url(r'^(?P<claim_id>\w+)/payment/$', views.payment_detail, name="payment_detail"),
 
     url(r'^api_search_patient/$', views.api_search_patient, name="api_search_patient"),
 ]

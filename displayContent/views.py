@@ -67,7 +67,7 @@ def view_patient(request):
             tertiary_insurance_payer=Payer.objects.filter(pk=tertiary_insurance["payer_id"]).values()[0]
         else:
             tertiary_insurance_payer=[]
-        return render(request, 'displayContent/patient/chart.html', 
+        return render(request, 'displayContent/patient/chart.html',
             {
                 'patient_info': patient_info[0],
 
@@ -84,6 +84,10 @@ def view_patient(request):
         )
     else:
         return JsonResponse([], safe=False)
+
+
+def payment_detail(request, claim_id):
+    pass
 
 
 def api_payment_summary(request):
@@ -113,7 +117,7 @@ def api_payment_summary(request):
     else:
         # print "456"
         return JsonResponse([], safe=False)
-        
+
 
 def api_search_patient(request):
     if request.method == 'POST':
@@ -142,5 +146,3 @@ def api_search_patient(request):
     else:
         # print "456"
         return JsonResponse([], safe=False)
-
-
