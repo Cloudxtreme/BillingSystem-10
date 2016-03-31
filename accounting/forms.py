@@ -61,14 +61,18 @@ class PaymentClaimSearchForm(forms.Form):
 
 class ProcedureForm(forms.Form):
     procedure = forms.CharField()
-    amount = forms.DecimalField(max_digits=MAX_DIGITS, decimal_places=DECIMAL_PLACES, min_value=0, required=False)
-    adjustment = forms.DecimalField(max_digits=MAX_DIGITS, decimal_places=DECIMAL_PLACES, required=False)
+    amount = forms.DecimalField(min_value=0, required=False, **BASE_DECIMAL)
+    adjustment = forms.DecimalField(required=False, **BASE_DECIMAL)
     reference = forms.CharField(required=False)
 
 
 class ProcedureModelChoiceField(forms.ModelChoiceField):
     def label_from_instance(self, obj):
-        return '%s --- $%s' % (obj.cpt.cpt_code, obj.balance)
+        return '%s, Ins Bal: $%s, Pat Bal: $%s, Total: $%s' % (
+                obj.cpt.cpt_code,
+                obj.insurance_balance,
+                obj.patient_balance,
+                obj.balance)
 
 
 class PatientChargeForm(forms.Form):

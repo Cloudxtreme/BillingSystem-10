@@ -38,7 +38,7 @@ class Claim(BaseModel):
     can backtrack what has been printed out in claim form.
     """
     payer = models.ForeignKey(Payer)
-    payer_detail = models.TextField(blank=False)
+    payer_detail = models.TextField()
 
     patient = models.ForeignKey(
             Personal_Information,
@@ -104,12 +104,31 @@ class Procedure(BaseModel):
 
     @property
     def balance(self):
-        charge_q_set = Charge.objects.filter(procedure=self.pk)
-        total = 0;
-        for charge in charge_q_set:
-            total += charge.balance
+        return self.insurance_balance + self.patient_balance
 
-        return total
+    @property
+    def insurance_balance(self):
+        ins_charge_q_set = Charge.objects.filter(
+                procedure=self.pk,
+                payer_type='Insurance')
+        ins_total = 0
+        for charge in ins_charge_q_set:
+            ins_total += charge.balance
+
+        return ins_total
+
+    @property
+    def patient_balance(self):
+        pat_charge_q_set = Charge.objects.filter(
+                procedure=self.pk,
+                payer_type='Patient')
+        pat_total = 0
+        for charge in pat_charge_q_set:
+            pat_total += charge.balance
+
+        return pat_total
+
+
 
     def __str__(self):
         return '%s: %s' % (self.id, self.cpt.cpt_description)
