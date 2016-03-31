@@ -25,7 +25,7 @@ def view_claims(request):
     for claim in claims:
 
         claim["total_charge"]=Charge.objects.filter(procedure__claim=claim["id"])\
-                                .aggregate(Sum('amount'))['amount__sum']
+                                .aggregate(Sum('amount'))['amount__sum'] or 0
 
     return render(request, 'displayContent/patient/claim.html',{
         'claims' : claims,
@@ -70,16 +70,12 @@ def view_patient(request):
         return render(request, 'displayContent/patient/chart.html', 
             {
                 'patient_info': patient_info[0],
-
                 'primary_insurance': primary_insurance,
                 'primary_insurance_payer':primary_insurance_payer,
-
                 'secondary_insurance': secondary_insurance,
                 'secondary_insurance_payer':secondary_insurance_payer,
-
                 'tertiary_insurance': tertiary_insurance,
                 'tertiary_insurance_payer':tertiary_insurance_payer,
-
             }
         )
     else:
@@ -89,58 +85,70 @@ def view_patient(request):
 def api_payment_summary(request):
     if request.method == 'POST':
         post_data = request.POST
-        patient = Personal_Information.objects.filter(
-            first_name__icontains=post_data.get('first_name') or '',
-            last_name__icontains=post_data.get('last_name') or '',
-        )
 
-        if post_data.get('dob'):
-            patient = patient.filter(dob=post_data.get('dob'))
-        if post_data.get('phone'):
-            patient = patient.filter(home_phone__icontains=post_data.get('phone'))
-        if post_data.get('ssn'):
-            patient = patient.filter(ssn__icontains=post_data.get('ssn'))
-        if post_data.get('chart_no'):
-            patient = patient.filter(chart_no__icontains=post_data.get('chart_no'))
+        if post_data.get('claim_id'):
+            claim = Claim.objects.filter(pk__icontains=post_data.get('claim_id'))
+            se = ExtPythonSerializer().serialize(
+                claim,
+                use_natural_foreign_keys=True
+            )
+            return JsonResponse(data=se, safe=False)
 
-        se = ExtPythonSerializer().serialize(
-            patient,
-            props=['chart_no','get_primary_insurane',],
-            use_natural_foreign_keys=True
-        )
-        # print se
-        return JsonResponse(data=se, safe=False)
+        else:
+            patient = Personal_Information.objects.filter(
+                first_name__icontains=post_data.get('first_name') or '',
+                last_name__icontains=post_data.get('last_name') or '',
+            )
+            if post_data.get('dob'):
+                patient = patient.filter(dob=post_data.get('dob'))
+            if post_data.get('phone'):
+                patient = patient.filter(home_phone__icontains=post_data.get('phone'))
+            if post_data.get('ssn'):
+                patient = patient.filter(ssn__icontains=post_data.get('ssn'))
+            if post_data.get('chart_no'):
+                patient = patient.filter(chart_no__icontains=post_data.get('chart_no'))
+            se = ExtPythonSerializer().serialize(
+                patient,
+                props=['chart_no','get_primary_insurane',],
+                use_natural_foreign_keys=True
+            )
+            return JsonResponse(data=se, safe=False)
     else:
-        # print "456"
         return JsonResponse([], safe=False)
         
 
 def api_search_patient(request):
     if request.method == 'POST':
         post_data = request.POST
-        patient = Personal_Information.objects.filter(
-            first_name__icontains=post_data.get('first_name') or '',
-            last_name__icontains=post_data.get('last_name') or '',
-        )
 
-        if post_data.get('dob'):
-            patient = patient.filter(dob=post_data.get('dob'))
-        if post_data.get('phone'):
-            patient = patient.filter(home_phone__icontains=post_data.get('phone'))
-        if post_data.get('ssn'):
-            patient = patient.filter(ssn__icontains=post_data.get('ssn'))
-        if post_data.get('chart_no'):
-            patient = patient.filter(chart_no__icontains=post_data.get('chart_no'))
-
-        se = ExtPythonSerializer().serialize(
-            patient,
-            props=['chart_no','get_primary_insurane',],
-            use_natural_foreign_keys=True
-        )
-        # print se
-        return JsonResponse(data=se, safe=False)
+        if post_data.get('options')=="Claim":
+            claim = Claim.objects.filter(pk__icontains=post_data.get('claim_id') or '')
+            se = ExtPythonSerializer().serialize(
+                claim,
+                props=['id', 'get_patient_insurance', ],
+                use_natural_foreign_keys=True
+            )
+            return JsonResponse(data=se, safe=False)
+        else:
+            patient = Personal_Information.objects.filter(
+                first_name__icontains=post_data.get('first_name') or '',
+                last_name__icontains=post_data.get('last_name') or '',
+            )
+            if post_data.get('dob'):
+                patient = patient.filter(dob=post_data.get('dob'))
+            if post_data.get('phone'):
+                patient = patient.filter(home_phone__icontains=post_data.get('phone'))
+            if post_data.get('ssn'):
+                patient = patient.filter(ssn__icontains=post_data.get('ssn'))
+            if post_data.get('chart_no'):
+                patient = patient.filter(chart_no__icontains=post_data.get('chart_no'))
+            se = ExtPythonSerializer().serialize(
+                patient,
+                props=['chart_no','get_primary_insurane',],
+                use_natural_foreign_keys=True
+            )
+            return JsonResponse(data=se, safe=False)
     else:
-        # print "456"
         return JsonResponse([], safe=False)
 
 

@@ -88,6 +88,9 @@ class Claim(BaseModel):
     def __str__(self):
         return '%s: %s' % (self.id, self.patient.full_name)
 
+    @property
+    def get_patient_insurance(self):
+        return self.patient.get_primary_insurane or ''
 
 class Procedure(BaseModel):
     """
