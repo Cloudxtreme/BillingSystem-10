@@ -111,7 +111,7 @@
                     <% _.each(patients, function(patients, i) { var p = patients.fields; console.log(p) %>
                     <tr class="found-patient-item" data-payment-index="<%- i %>">
                         <td><a href="/claim/<%= p.id %>" ><%= p.id %></a></td>
-                        <td><a href="/patient/<%= p.id %>" ><%= p.patient.chart_no %></a></td>
+                        <td><a href="/patient/<%= p.patient.chart_no %>" ><%= p.patient.chart_no %></a></td>
                         <td><%= p.patient.first_name %></td>
                         <td><%= p.patient.last_name %></td>
                         <td><%= p.patient.dob %></td>
