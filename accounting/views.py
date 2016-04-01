@@ -151,20 +151,20 @@ def charge_patient_create(request, payment_id, claim_id):
             'payment': payment_id,
             'claim': claim_id})
 
-    PCAFormSet = formset_factory(
+    PCFormSet = formset_factory(
             wraps(PatientChargeForm)
                 (partial(PatientChargeForm,
                     claim_id=claim_id)),
             formset=BasePatientChargeFormSet,
             extra=3)
 
-    pca_formset = PCAFormSet(request.POST or None)
+    pc_formset = PCFormSet(request.POST or None)
 
-    if request.method == 'POST' and pca_formset.is_valid():
+    if request.method == 'POST' and pc_formset.is_valid():
         try:
             with transaction.atomic():
-                for pca_form in pca_formset:
-                    cleaned_data = pca_form.cleaned_data
+                for pc_form in pc_formset:
+                    cleaned_data = pc_form.cleaned_data
 
                     procedure = cleaned_data.get('procedure')
                     payment = cleaned_data.get('payment')
@@ -181,7 +181,7 @@ def charge_patient_create(request, payment_id, claim_id):
                                 amount=charge_amount,
                                 resp_type=resp_type)
 
-                        if apply_amount:
+                        if payment.payer_type == 'Patient' and apply_amount:
                             Apply.objects.create(
                                     payment=payment,
                                     charge=charge,
@@ -200,7 +200,7 @@ def charge_patient_create(request, payment_id, claim_id):
             'pcs_form': pcs_form,
             'payment': payment,
             'claim': claim,
-            'pca_formset': pca_formset})
+            'pc_formset': pc_formset})
 
 
 ###############################################################################

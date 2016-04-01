@@ -1,72 +1,51 @@
 {% load widget_tweaks %}
 
 <form method="POST" action="{% url 'accounting:payment_apply_read' %}">{% csrf_token %}
-    <div class="form-group">
-        <div class="row">
-            <label class="control-label required">Payment</label>
-        </div>
-        <div class="row payment-section">
-            <div class="col-sm-1">
-                &nbsp;
-                <button type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#search-payment-modal"><i class="fa fa-search"></i></button>
-            </div>
-            <div class="col-sm-1">
-                Payment ID
-                {{pcs_form.payment|add_class:"form-control"}}
-            </div>
-            <div class="col-sm-2">
-                Payment Date
-                <input type="text" name="payment_date" class="form-control" readonly value="{{payment.payment_date}}">
-            </div>
-            <div class="col-sm-2">
-                Payer Type
-                <input type="text" name="payer_type" class="form-control" readonly value="{{payment.payer_type}}">
-            </div>
-            <div class="col-sm-2">
-                Payer Name
-                <input type="text" name="payer_name" class="form-control" readonly value="{{payment.payer_name}}">
-            </div>
-            <div class="col-sm-2">
-                Amount
-                <input type="text" name="amount" class="form-control" readonly value="{{payment.amount}}">
-            </div>
-            <div class="col-sm-2">
-                Unapplied Amount
-                <input type="text" name="unapplied_amount" class="form-control" readonly value="{{payment.unapplied_amount}}">
-            </div>
-        </div>
+    <div>
+        <table class="grid-table payment-section">
+            <tr>
+                <td class="col-sm-1"><label class="control-label required">Payment</label></td>
+                <td class="col-sm-1">Payment ID</td>
+                <td class="col-sm-2">Payment Date</td>
+                <td class="col-sm-2">Payer Type</td>
+                <td class="col-sm-2">Payer Name</td>
+                <td class="col-sm-2">Amount</td>
+                <td class="col-sm-2">Unapplied Amount</td>
+            </tr>
+            <tr>
+                <td><button type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#search-payment-modal"><i class="fa fa-search"></i></button></td>
+                <td>{{pcs_form.payment|add_class:"form-control"}}</td>
+                <td><input type="text" name="payment_date" class="form-control" readonly value="{{payment.payment_date}}"></td>
+                <td><input type="text" name="payer_type" class="form-control" readonly value="{{payment.payer_type}}"></td>
+                <td><input type="text" name="payer_name" class="form-control" readonly value="{{payment.payer_name}}"></td>
+                <td><input type="text" name="amount" class="form-control" readonly value="{{payment.amount}}"></td>
+                <td><input type="text" name="unapplied_amount" class="form-control" readonly value="{{payment.unapplied_amount}}"></td>
+            </tr>
+        </table>
     </div>
+    <div style="margin-top: 10px;">
+        <table class="grid-table claim-section">
+            <tr>
+                <td class="col-sm-1"><label class="control-label required">Claim</label></td>
+                <td class="col-sm-1">Claim ID</td>
+                <td class="col-sm-3">Patient First Name</td>
+                <td class="col-sm-3">Patient Last Name</td>
+                <td class="col-sm-2">Date of Birth</td>
+                <td class="col-sm-2"></td>
+            </tr>
+            <tr>
+                <td><button type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#search-claim-modal"><i class="fa fa-search"></i></button></td>
+                <td>{{pcs_form.claim|add_class:"form-control"}}</td>
+                <td><input type="text" name="first_name" class="form-control" readonly value="{{claim.patient.first_name}}"></td>
+                <td><input type="text" name="last_name" class="form-control" readonly value="{{claim.patient.last_name}}"></td>
+                <td><input type="text" name="dob" class="form-control" readonly value="{{claim.patient.dob}}"></td>
+                <td></td>
+            </tr>
+        </table>
 
-    <div class="form-group">
-        <div class="row">
-            <label class="control-label required">Claim</label>
-        </div>
-        <div class="row claim-section">
-            <div class="col-sm-1">
-                &nbsp;
-                <button type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#search-claim-modal"><i class="fa fa-search"></i></button>
-            </div>
-            <div class="col-sm-1">
-                Claim ID
-                {{pcs_form.claim|add_class:"form-control"}}
-            </div>
-            <div class="col-sm-3">
-                Patient First Name
-                <input type="text" name="first_name" class="form-control" readonly value="{{claim.patient.first_name}}">
-            </div>
-            <div class="col-sm-3">
-                Patient Last Name
-                <input type="text" name="last_name" class="form-control" readonly value="{{claim.patient.last_name}}">
-            </div>
-            <div class="col-sm-2">
-                Date of Birth
-                <input type="text" name="dob" class="form-control" readonly value="{{claim.patient.dob}}">
-            </div>
-        </div>
+        <input type="hidden" name="search_type">
     </div>
-
-    <input type="hidden" name="search_type">
-
+    <br>
     <div class="form-group">
         <div class="row">
             <input type="button" class="btn btn-default" id="submit-search-procedure" value="Search Charge">
@@ -76,8 +55,8 @@
 </form>
 
 
-{% include "accounting/payment/template/search-payment.html" %}
-{% include "accounting/payment/template/search-claim.html" %}
+{% include "accounting/apply/template/search-payment.html" %}
+{% include "accounting/apply/template/search-claim.html" %}
 
 
 <script>

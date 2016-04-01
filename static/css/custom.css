@@ -150,3 +150,7 @@ h2.text-center {
     -o-animation: glowing 1500ms infinite;
     animation: glowing 1500ms infinite;
 }
+
+.grid-table td {
+    padding: 0px 5px;
+}

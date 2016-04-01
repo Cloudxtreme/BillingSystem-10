@@ -8,10 +8,10 @@
 {{ pcs_form.errors }}
 <div class="container">
     <h2 class="text-center">Apply Payment</h2>
-    {% include "accounting/payment/payment_claim_search.html" %}
+    {% include "accounting/apply/payment_claim_search.html" %}
 
     <form method="POST">{% csrf_token %}
-        {% include "./accounting/payment/template/search-procedure.html" %}
+        {% include "./accounting/apply/template/search-procedure.html" %}
         <input type="button" class="btn btn-success" value="Make Payment" disabled>
         <a href="{% url 'dashboard:dashboard' %}" class="padding-btn margin-left link-btn-danger">Cancel</a>
     </form>

@@ -46,10 +46,10 @@ class PaymentClaimSearchForm(forms.Form):
 
         try:
             payment = Payment.objects.get(pk=payment_id)
-            if search_type == 'create_patient_charge' and \
-                    payment.payer_type != 'Patient':
-                self.add_error('payment',
-                        'Given payment is not payer type \"Patient\"')
+            # if search_type == 'create_patient_charge' and \
+            #         payment.payer_type != 'Patient':
+            #     self.add_error('payment',
+            #             'Given payment is not payer type \"Patient\"')
         except:
             self.add_error('payment', 'Payment with given ID does not exist')
 
@@ -77,7 +77,7 @@ class ProcedureModelChoiceField(forms.ModelChoiceField):
 
 class PatientChargeForm(forms.Form):
     payment = forms.ModelChoiceField(
-            queryset=Payment.objects.filter(payer_type='Patient'),
+            queryset=Payment.objects.all(),
             required=False)
     charge_amount = forms.DecimalField(
             min_value=0,
@@ -152,6 +152,13 @@ class PatientChargeForm(forms.Form):
         if charge_amount and apply_amount:
             if apply_amount > charge_amount:
                 self.add_error('apply_amount', 'Apply amount exceeds charge one')
+
+        if payment is not None and \
+                apply_amount and \
+                payment.payer_type != 'Patient':
+            self.add_error('payment', """Cannot apply payment from
+                non-patient payer to charge of patient responsibility""")
+
 
 
 class BasePatientChargeFormSet(forms.BaseFormSet):

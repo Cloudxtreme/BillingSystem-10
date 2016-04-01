@@ -7,24 +7,24 @@
 
 {% block body %}
 
-{% if pca_formset.errors %}
-    {% for error in pca_formset.errors %}
+{% if pc_formset.errors %}
+    {% for error in pc_formset.errors %}
         {{ error }}
     {% endfor %}
 {% endif %}
 
-{% if pca_formset.non_form_errors %}
-    {{ pca_formset.non_form_errors }}
+{% if pc_formset.non_form_errors %}
+    {{ pc_formset.non_form_errors }}
 {% endif %}
 
 <div class="container">
     <h2 class="text-center">Apply Payment</h2>
-    {% include "accounting/payment/payment_claim_search.html" %}
+    {% include "accounting/apply/payment_claim_search.html" %}
 
     <form method="POST" action="{% url 'accounting:charge_patient_create' payment.pk claim.pk %}">{% csrf_token %}
         <div class="row" id="procedure-table">
 
-            {{ pca_formset.management_form }}
+            {{ pc_formset.management_form }}
 
             <table class="table table-striped table-condensed">
                 <thead>
@@ -38,25 +38,38 @@
                     </tr>
                 </thead>
                 <tbody class="row found-procedure" id="found-procedure">
-                    {% for pca_form in pca_formset %}
+                    {% for pc_form in pc_formset %}
                         <tr>
                             <input
                                 type="hidden"
-                                name="{{pca_form.payment.html_name}}"
-                                id="{{pca_form.payment.auto_id}}"
+                                name="{{pc_form.payment.html_name}}"
+                                id="{{pc_form.payment.auto_id}}"
                                 value="{{payment.pk}}"
                             >
-                            <td>{{pca_form.procedure|add_class:"form-control"}}</td>
-                            <td>{{pca_form.charge_amount|add_class:"form-control charge-amount"}}</td>
-                            <td>{{pca_form.resp_type|add_class:"form-control"}}</td>
-                            <td>{{pca_form.apply_amount|add_class:"form-control apply-amount"}}</td>
-                            <td>{{pca_form.reference|add_class:"form-control"}}</td>
+                            <td>{{pc_form.procedure|add_class:"form-control"}}</td>
+                            <td>{{pc_form.charge_amount|add_class:"form-control charge-amount"}}</td>
+                            <td>{{pc_form.resp_type|add_class:"form-control"}}</td>
+
+                            {% if payment.payer_type == "Patient" %}
+                                <td>{{pc_form.apply_amount|add_class:"form-control apply-amount"}}</td>
+                                <td>{{pc_form.reference|add_class:"form-control"}}</td>
+                            {% else %}
+                                <td>{{pc_form.apply_amount|add_class:"form-control apply-amount"|attr:"disabled"}}</td>
+                                <td>{{pc_form.reference|add_class:"form-control"|attr:"disabled"}}</td>
+                            {% endif %}
+
                             <td class="balance" style="padding-left: 10px;"></td>
                         </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
+        {% if payment.payer_type != "Patient" %}
+            <div class="pull-right">
+                Please note that payer type of given payment ID is not "Patient". Applying payment here is not allowed.
+            </div>
+        {% endif %}
+        <br>
 
         <input type="submit" class="btn btn-success" value="Make Payment" id="submit-make-payment">
         <a href="{% url 'dashboard:dashboard' %}" class="padding-btn margin-left link-btn-danger">Cancel</a>
@@ -102,6 +115,8 @@
 
         if(ca && aa)
             row.find('.balance').html(Math.roundP(ca - aa, 2));
+        else if(ca)
+            row.find('.balance').html(Math.roundP(ca, 2));
     }
 
 })();

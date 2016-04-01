@@ -19,7 +19,7 @@
 
 <div class="container">
     <h2 class="text-center">Apply Payment</h2>
-    {% include "accounting/payment/payment_claim_search.html" %}
+    {% include "accounting/apply/payment_claim_search.html" %}
 
     <form method="POST" action="{% url 'accounting:payment_apply_create' payment.pk claim.pk %}">{% csrf_token %}
         <div class="row" id="procedure-table">
