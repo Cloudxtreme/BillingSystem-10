@@ -128,8 +128,6 @@ class Procedure(BaseModel):
 
         return pat_total
 
-
-
     def __str__(self):
         return '%s: %s' % (self.id, self.cpt.cpt_description)
 
@@ -171,14 +169,6 @@ class Payment(BaseModel):
         else:
             return self.payer_patient.full_name
 
-    # @property
-    # def unapplied_amount(self):
-    #     total_applied_payment = AppliedPayment.objects\
-    #             .filter(payment=self.pk)\
-    #             .aggregate(Sum('amount'))\
-    #             .get('amount__sum') or 0
-
-    #     return self.amount - total_applied_payment
     @property
     def unapplied_amount(self):
         total_apply = Apply.objects\
