@@ -79,7 +79,7 @@ def payment_apply_read(request):
         'pcs_form': pcs_form,
     }
 
-    return render(request, 'accounting/payment/apply_read.html', context)
+    return render(request, 'accounting/apply/read.html', context)
 
 
 def apply_create(request, payment_id, claim_id):
@@ -135,7 +135,7 @@ def apply_create(request, payment_id, claim_id):
     else:
         apply_formset = ApplyFormSet(initial=apply_data)
 
-    return render(request, 'accounting/payment/apply_create.html', {
+    return render(request, 'accounting/apply/create.html', {
             'pcs_form': pcs_form,
             'payment': payment,
             'claim': claim,
@@ -196,7 +196,7 @@ def charge_patient_create(request, payment_id, claim_id):
         except IntegrityError:
             print 'IntegrityError has occured.'
 
-    return render(request, 'accounting/payment/charge_patient_create.html', {
+    return render(request, 'accounting/charge/patient_create.html', {
             'pcs_form': pcs_form,
             'payment': payment,
             'claim': claim,
