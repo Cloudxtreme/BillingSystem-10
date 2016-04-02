@@ -44,6 +44,7 @@ def view_claims(request, chart):
 
 def view_patient(request, chart):
     """Page to view info about patients and goto the claims"""
+    
     obj=Personal_Information.objects.filter(pk=chart)
     patient_info=obj.values()
 
