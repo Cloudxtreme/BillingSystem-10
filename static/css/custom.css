@@ -154,3 +154,8 @@ h2.text-center {
 .grid-table td {
     padding: 0px 5px;
 }
+
+td.left-vertical-line,
+th.left-vertical-line  {
+    border-left: solid 2px #CCC;
+}

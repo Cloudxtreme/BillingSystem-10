@@ -47,15 +47,15 @@
             <tr>
                 <th>Dt Service</th>
                 <th>CPT Code</th>
-                <th>Ins Charge</th>
+                <th class="left-vertical-line">Ins Charge</th>
                 <th>Ins Pmt</th>
                 <th>Adjusment</th>
                 <th>Ins Bal</th>
-                <th>Pat Resp Type</th>
+                <th class="left-vertical-line">Pat Resp Type</th>
                 <th>Pat Charge</th>
                 <th>Pat Pmt</th>
                 <th>Pat Bal</th>
-                <th>Total Bal</th>
+                <th class="left-vertical-line">Total Bal</th>
             <tr>
         </thead>
         <tbody>
@@ -63,7 +63,7 @@
                 <tr>
                     <td>{{proc.date_of_service}}</td>
                     <td>{{proc.cpt.cpt_code}}</td>
-                    <td>
+                    <td class="left-vertical-line">
                         {% for c in cp.Insurance %}
                             {{c.amount}}
                             <br>
@@ -89,7 +89,7 @@
                     </td>
 
 
-                    <td>
+                    <td class="left-vertical-line">
                         {% for c in cp.Patient %}
                             {{c.resp_type}}
                             <br>
@@ -113,7 +113,7 @@
                             <br>
                         {% endfor %}
                     </td>
-                    <td>{{proc.balance}}</td>
+                    <td class="left-vertical-line">{{proc.balance}}</td>
                 </tr>
             {% endfor %}
         </tbody>
