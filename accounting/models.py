@@ -88,6 +88,63 @@ class Claim(BaseModel):
     def __str__(self):
         return '%s: %s' % (self.id, self.patient.full_name)
 
+    @property
+    def get_patient_insurance(self):
+        return self.patient.get_primary_insurane or ''
+
+    @property
+    def ins_pmnt_per_claim(self):
+        ins_pmnt=0
+        for charge_table in Charge.objects.filter(procedure__claim=self.pk).filter(payer_type="insurance"):
+            ins_pmnt=ins_pmnt+(charge_table.apply_set.all().aggregate(Sum('amount')).get('amount__sum') or 0)
+        return ins_pmnt
+
+    @property
+    def ins_adjustment_per_claim(self):
+        ins_adjustment=0
+        for charge_table in Charge.objects.filter(procedure__claim=self.pk).filter(payer_type="insurance"):
+            ins_adjustment=ins_adjustment+(charge_table.apply_set.all().aggregate(Sum('adjustment')).get('adjustment__sum') or 0)
+        return ins_adjustment
+
+
+    @property
+    def pat_responsible_per_claim(self):
+        pat_responsible=0
+        pat_responsible=Charge.objects.filter(procedure__claim=self.pk)\
+                                .filter(payer_type="patient")\
+                                .aggregate(Sum('amount'))['amount__sum'] or 0
+        return pat_responsible
+
+    @property
+    def pat_pmnt_per_claim(self):
+        pat_pmnt=0
+        for charge_table in Charge.objects.filter(procedure__claim=self.pk).filter(payer_type="patient"):
+            pat_pmnt=pat_pmnt+(charge_table.apply_set.all().aggregate(Sum('amount')).get('amount__sum') or 0)
+        return pat_pmnt
+
+    @property
+    def total_charge(self):
+        charge=0
+        charge=Charge.objects.filter(procedure__claim=self.pk)\
+                                .filter(payer_type="insurance")\
+                                .aggregate(Sum('amount'))\
+                                .get('amount__sum') or 0
+        return charge
+
+
+class claim_pdf(BaseModel):
+    claim = models.ForeignKey(Claim)
+    _data = models.TextField(
+        db_column='data',
+        blank=True)
+
+    def set_data(self, data):
+        self._data = base64.encodestring(data)
+
+    def get_data(self):
+        return base64.decodestring(self._data)
+
+    data = property(get_data, set_data)
 
 class Procedure(BaseModel):
     """
@@ -128,7 +185,15 @@ class Procedure(BaseModel):
 
         return pat_total
 
-
+    @property
+    def ins_pmnt_per_procedure(self):
+        var=Charge.objects.filter(procedure_id=self.pk)\
+                    .filter(payer_type='insurance')\
+                    .apply_set.all()\
+                    .aggregate(Sum('amount'))\
+                    .get('amount__sum') or 0
+        print var
+        return var
 
     def __str__(self):
         return '%s: %s' % (self.id, self.cpt.cpt_description)
