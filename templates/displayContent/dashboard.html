@@ -9,6 +9,8 @@
         
     {% endblock script %}
     {% block link %}
+
+
     {% endblock link %}
 
 
@@ -21,65 +23,140 @@
             <div class="col-sm-1 ">
                 <button type="button" class="btn btn-primary btn-block search-modal" id="search-patient-search" data-type="patient"><i class="fa fa-search"></i></button>
             </div>
-            <div class="col-sm-3 ">
-                <div class="input-group two-input">
-                    <input type="text" name="first_name" class="form-control" placeholder="Patient first name">
-                    <input type="text" name="last_name" class="form-control" placeholder="Patient last name">
+            <div class="col-sm-1 ">
+                <select name="options" class="form-control" id="selectdrop" >
+                    <option value="Patient">Patient</option>
+                    <option value="Claim">Claim</option>
+                </select>
+            </div>
+            <div id="pat_info">
+                <div class="col-sm-3 ">
+                    <div class="input-group two-input">
+                        <input type="text" name="first_name" class="form-control" placeholder="First name">
+                        <input type="text" name="last_name" class="form-control" placeholder="Last name">
+                    </div>
+                </div>
+                <div class="col-sm-7 ">
+                    <div class="col-sm-2 ">
+                       <input type="text" name="dob" class="form-control pikaday" placeholder="MM/DD/YYYY">
+                    </div>
+                    <div class="col-sm-2 ">
+                        <input type="text" name="phone" class="form-control" placeholder="Phone">
+                    </div>
+                    <div class="col-sm-1 ">
+                        <input type="text" name="ssn" class="form-control" placeholder="SSN">
+                    </div>
+                    <div class="col-sm-2 ">
+                        <input type="text" name="chart_no" class="form-control" placeholder="Chart No.">
+                    </div>
                 </div>
             </div>
-            <div class="col-sm-8 ">
-                <div class="col-sm-3 ">
-                    <input type="date" name="dob" class="form-control" placeholder="DOB">
-                </div>
+            <div id="claim_info" >
                 <div class="col-sm-2 ">
-                    <input type="text" name="phone" class="form-control" placeholder="Phone">
-                </div>
-                <div class="col-sm-2 ">
-                    <input type="text" name="ssn" class="form-control" placeholder="SSN">
-                </div>
-                <div class="col-sm-2 ">
-                    <input type="text" name="chart_no" class="form-control" placeholder="Chart No.">
+                    <input type="text" name="claim_id" class="form-control" placeholder="Claim id">
                 </div>
             </div>
         </form>
     </div>
-
+    <p></p>
 
     <div class="row found-patient" id="found-patient">
     </div>
 
 </div>
 
+<script>
+    $(document).ready(function(){
+        if($('[name=options]').val()=="Claim"){
+            $("#pat_info").css("display","none");
+            $("#claim_info").css("display","block");
+        }
+        else if($('[name=options]').val()=="Patient"){
+            $("#claim_info").css("display","none");
+            $("#pat_info").css("display","block");
+        }
+    });
+
+    $( "#selectdrop" ).change(function() {
+        if($('[name=options]').val()=="Claim"){
+            $("#pat_info").css("display","none");
+            $("#claim_info").css("display","block");
+        }
+        else if($('[name=options]').val()=="Patient"){
+            $("#claim_info").css("display","none");
+            $("#pat_info").css("display","block");
+        }
+    });
+    
+</script>
+
 <script type="text/template" class="found-patient-template">
     <div class="row" style="margin: 0px 5px;">
-        <table class="table table-striped table-condensed found-table" style="margin-bottom: 0px;">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>First Name</th>
-                    <th>Last Name</th>
-                    <th>DOB</th>
-                    <th>SSN</th>
-                    <th>Home Phone</th>
-                    <th>Primary Insurance</th>
-                </tr>
-            </thead>
-            <tbody>
-                <% _.each(patients, function(patients, i) { var p = patients.fields; console.log(p) %>
-                <tr class="found-patient-item" data-payment-index="<%- i %>">
-                    <td><a href="/patient/<%= p.chart_no %>" ><%= p.chart_no %></a></td>
-                    <td><%= p.first_name %></td>
-                    <td><%= p.last_name %></td>
-                    <td><%= p.dob %></td>
-                    <td><%= p.ssn %></td>
-                    <td><%= p.home_phone %></td>
-                    <td><%= p.get_primary_insurane %></td>
-                </tr>
-                <% }); %>
-            </tbody>
-        </table>
-        <% if(patients.length < 1) { %>
-        <h4 class="text-center not-found">The search did not match any patients.</h4>
+
+        <% if( $('[name=options]').val()=="Claim") { %>
+            <table class="table table-striped table-condensed found-table" style="margin-bottom: 0px;">
+                <thead>
+                    <tr>
+                        <th>Claim ID</th>
+                        <th>Patient ID</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>DOB</th>
+                        <th>SSN</th>
+                        <th>Home Phone</th>
+                        <th>Primary Insurance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% _.each(patients, function(patients, i) { var p = patients.fields; console.log(p) %>
+                    <tr class="found-patient-item" data-payment-index="<%- i %>">
+                        <td><a href="/claim/<%= p.id %>" ><%= p.id %></a></td>
+                        <td><a href="/patient/<%= p.patient.chart_no %>" ><%= p.patient.chart_no %></a></td>
+                        <td><%= p.patient.first_name %></td>
+                        <td><%= p.patient.last_name %></td>
+                        <td><%= p.patient.dob %></td>
+                        <td><%= p.patient.ssn %></td>
+                        <td><%= p.patient.home_phone %></td>
+                        <td><%= p.get_patient_insurance %></td>
+                    </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+            <% if(patients.length < 1) { %>
+                <h4 class="text-center not-found">The search did not match any claims.</h4>
+            <% } %>
+        <% } %>
+
+        <% if( $('[name=options]').val()=="Patient") { %>
+            <table class="table table-striped table-condensed found-table" style="margin-bottom: 0px;">
+                <thead>
+                    <tr>
+                        <th>Patient ID</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>DOB</th>
+                        <th>SSN</th>
+                        <th>Home Phone</th>
+                        <th>Primary Insurance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% _.each(patients, function(patients, i) { var p = patients.fields; console.log(p) %>
+                    <tr class="found-patient-item" data-payment-index="<%- i %>">
+                        <td><a href="/patient/<%= p.chart_no %>" ><%= p.chart_no %></a></td>
+                        <td><%= p.first_name %></td>
+                        <td><%= p.last_name %></td>
+                        <td><%= p.dob %></td>
+                        <td><%= p.ssn %></td>
+                        <td><%= p.home_phone %></td>
+                        <td><%= p.get_primary_insurane %></td>
+                    </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+            <% if(patients.length < 1) { %>
+            <h4 class="text-center not-found">The search did not match any patients.</h4>
+            <% } %>
         <% } %>
     </div>
 </script>
