@@ -1,5 +1,7 @@
 from __future__ import unicode_literals
 
+from decimal import Decimal
+
 from django.db import models
 from django.db.models import Sum
 
@@ -160,7 +162,7 @@ class Payment(BaseModel):
 
     @property
     def applied_amount(self):
-        return self.unapplied_amount - self.amount
+        return self.amount - self.unapplied_amount
 
     @property
     def payer_name(self):
@@ -229,6 +231,20 @@ class Charge(BaseModel):
                     .aggregate(Sum('amount'))\
                     .get('amount__sum') or 0
             return self.amount - total_apply
+
+    @property
+    def total_apply(self):
+        total = Apply.objects\
+                .filter(charge=self.pk)\
+                .aggregate(Sum('amount'))
+        return total.get('amount__sum') or Decimal('0.00')
+
+    @property
+    def total_adjustment(self):
+        total = Apply.objects\
+                .filter(charge=self.pk)\
+                .aggregate(Sum('adjustment'))
+        return total.get('adjustment__sum') or Decimal('0.00')
 
     def __str__(self):
         return '%s: %s --- $%s' % (

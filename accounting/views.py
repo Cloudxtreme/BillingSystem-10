@@ -204,7 +204,7 @@ def charge_patient_create(request, payment_id, claim_id):
 
 
 ###############################################################################
-# API function for ajax call from front end page
+# API function
 ###############################################################################
 def api_search_payment(request):
     if request.method == 'POST':

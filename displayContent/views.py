@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import *
 from functools import partial, wraps
 from django.shortcuts import *
 from django.core import serializers
@@ -6,7 +6,7 @@ from django.db.models import Sum
 from datetime import datetime
 from .models import *
 from infoGatherer.models import Personal_Information, Payer
-from accounting.models import Claim, Charge, Procedure
+from accounting.models import *
 from django.http import JsonResponse
 from base.models import ExtPythonSerializer
 import re
@@ -86,10 +86,36 @@ def view_patient(request):
         return JsonResponse([], safe=False)
 
 
-def payment_detail(request, claim_id):
-    pass
+def payment_details(request, claim_id):
+    claim = get_object_or_404(Claim, pk=claim_id)
+
+    # Group relevant payments
+    applies = Apply.objects.filter(charge__procedure__claim=claim)
+    p = dict()
+    for a in applies:
+        p[a.payment] = a.payment
+    payments = [v for k,v in p.iteritems()]
+
+    # Group relevant procedures
+    charges = Charge.objects.filter(procedure__claim=claim)
+    c_proc = dict()
+    for c in charges:
+        if c_proc.get(c.procedure) is None:
+            c_proc[c.procedure] = dict()
+            c_proc[c.procedure]['Insurance'] = []
+            c_proc[c.procedure]['Patient'] = []
+
+        c_proc[c.procedure][c.payer_type].append(c)
 
 
+    return render(request, 'displayContent/patient/payment_details.html', {
+        'payments': payments,
+        'c_proc': c_proc})
+
+
+###############################################################################
+# API function
+###############################################################################
 def api_payment_summary(request):
     if request.method == 'POST':
         post_data = request.POST
