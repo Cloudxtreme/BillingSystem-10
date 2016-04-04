@@ -287,3 +287,9 @@ class BaseApplyFormSet(forms.BaseFormSet):
             if total > payment.unapplied_amount:
                 raise forms.ValidationError(
                         'Total applied amount exceeds remaining balance.')
+
+
+class NoteForm(forms.ModelForm):
+    class Meta:
+        model = Note
+        exclude = ['created', 'modified', 'author']

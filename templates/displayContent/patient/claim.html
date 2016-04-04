@@ -6,7 +6,7 @@
 
     {% block script %}
 
-        
+
     {% endblock script %}
     {% block link %}
     {% endblock link %}
@@ -18,7 +18,7 @@
     <div class="col-xs-6" style="padding-right:20px; border-right: 1px solid #ccc;">
         <h3 class="text-center">Claim Searches</h3>
 
-        <table id="table_search" class="table table-condensed table-hover">
+        <table id="table_search" class="table table-condensed table-hover" data-current-claim-id>
             <thead>
                 <tr>
                     <th>Service</th>
@@ -29,7 +29,7 @@
             </thead>
             <tbody>
                 {% for ele in claimSearches %}
-                    <tr>
+                    <tr data-claim-id="{{ele.pk}}">
                         <td>idk</td>
                         <td>{{ele.created}}</td>
                         <td>{{patient_info.last_name}}, {{patient_info.first_name}}</td>
@@ -43,45 +43,73 @@
     </div>
     <div class="col-xs-6">
         <h3 class="text-center">Claim Details</h3>
-            <h4>Payment Summary</h4>
-            <div class="row" style="margin: 0px 5px;">
-                <table class="table table-striped table-condensed found-table" style="margin-bottom: 0px;">
-                    <thead>
+        <h4>Payment Summary</h4>
+        <div class="row" style="margin: 0px 5px;">
+            <table class="table table-striped table-condensed found-table" style="margin-bottom: 0px;">
+                <thead>
+                    <tr>
+                        <th>Total Charge</th>
+                        <th>Inc Pmnt</th>
+                        <th>Adjustments</th>
+                        <th>Inc Balance</th>
+                        <th>Pat Resp</th>
+                        <th>Pat Pmnt</th>
+                        <th>Total Bal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ele in claimSearches %}
                         <tr>
-                            <th>Total Charge</th>
-                            <th>Inc Pmnt</th>
-                            <th>Adjustments</th>
-                            <th>Inc Balance</th>
-                            <th>Pat Resp</th>
-                            <th>Pat Pmnt</th>
-                            <th>Total Bal</th>
+                            <td>{{ele.total_charge}}</td>
+                            <td>{{ele.ins_pmnt}}</td>
+                            <td>{{ele.ins_adjustment}}</td>
+                            <td>{{ele.inc_balance}}</td>
+                            <td>{{ele.pat_responsible}}</td>
+                            <td>{{ele.pat_pmnt}}</td>
+                            <td>{{ele.total_balance}}</td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        {% for ele in claimSearches %}
-                            <tr>
-                                <td>{{ele.total_charge}}</td>
-                                <td>{{ele.ins_pmnt}}</td>
-                                <td>{{ele.ins_adjustment}}</td>
-                                <td>{{ele.inc_balance}}</td>
-                                <td>{{ele.pat_responsible}}</td>
-                                <td>{{ele.pat_pmnt}}</td>
-                                <td>{{ele.total_balance}}</td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>    
-                </table>
-            </div>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <br>
+        <br>
+        <h4>Notes</h4>
+        <table class="table table-striped table-condensed">
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th>Entered By</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody id="note-body"></tbody>
+        </table>
 
-
+        <div class="row">
+            <form method="POST" action="{% url 'accounting:api_create_note' %}" id="form-note-create">{% csrf_token %}
+                <div class="col-sm-10">
+                    Add Note: <input
+                        type="text"
+                        name="{{note_form.desc.html_name}}"
+                        id="{{note_form.desc.auto_id}}"
+                        value="{{note_form.value}}"
+                        class="form-control"
+                        style="display: inline-block; width: 80%;"
+                        required
+                    >
+                    <input
+                        type="hidden"
+                        name="{{note_form.claim.html_name}}"
+                        id="{{note_form.claim.auto_id}}"
+                    >
+                </div>
+                <div class="col-sm-2"><input type="submit" class="btn btn-block btn-default" value="Save"></div>
+            </form>
+        </div>
     </div>
 </div>
 
-<script>
-
-$("#table_search tbody tr").on("click", function(){
-    console.log(123);
-})
 
 <script type="text/template" class="found-payment-template">
     <div class="row" style="margin: 0px 5px;">
@@ -98,7 +126,7 @@ $("#table_search tbody tr").on("click", function(){
                 </tr>
             </thead>
             <tbody>
-                <% _.each(patients, function(patients, i) { var p = patients.fields; console.log(p) %>
+                <% _.each(patients, function(patients, i) { var p = patients.fields; %>
                 <tr class="found-payment-item" data-payment-index="<%- i %>">
                     <td><a href="/payment/<%= p.chart_no %>" ><%= p.chart_no %></a></td>
                     <td><%= p.first_name %></td>
@@ -116,14 +144,12 @@ $("#table_search tbody tr").on("click", function(){
         <% } %>
     </div>
 </script>
-
-
 <script>
     $('.search-modal').click(function(e) {
         var button = e.currentTarget;
         var type = $(button).data('type');
         // toggleLoadingIcon(button);
-         
+
         var form = $(e.currentTarget).closest('form');
         $.post(form.attr('action'), form.serialize())
             .done(function(objects) {
@@ -140,10 +166,88 @@ $("#table_search tbody tr").on("click", function(){
                 // toggleLoadingIcon(button);
             });
     });
-
-
 </script>
 
+
+<script type="text/template" class="notes-template">
+    <% if(err) { %>
+        <tr>
+            <td colspan="100" class="text-center not-found">An unexpected error has occured.  Please try again later.</td>
+        </tr>
+    <% } else if(notes.length < 1) { %>
+        <tr>
+            <td colspan="100" class="text-center not-found">There is no note for this claim.</td>
+        </tr>
+    <% } else {
+        _.each(notes, function(note, i) {
+            var n = note.fields;
+            var dt = moment(n.created);
+    %>
+        <tr>
+            <td><%= n.desc %></td>
+            <td><%= n.author.first_name %></td>
+            <td><%= dt.format('MM/DD/YYYY hh:mm A') %></td>
+        </tr>
+    <% }); } %>
+</script>
+<script>
+'use strict';
+(function() {
+    var tableSearch = $('#table_search');
+
+    $("#table_search tbody tr").click(function(e) {
+        var row = $(e.currentTarget);
+        var claim_id = row.data('claim-id');
+        renderNotesTemplate(claim_id);
+        tableSearch.data('current-claim-id', claim_id);
+    });
+
+    function renderNotesTemplate(claim_id) {
+        var notesTemplate = _.template($('script.notes-template').html());
+        $.get("{% url 'accounting:api_read_note' %}?claim_id=" + claim_id)
+            .done(function(notes) {
+                $('#note-body').html(notesTemplate({
+                        err: false,
+                        notes: notes}));
+            })
+            .fail(function() {
+                $('#note-body').html(notesTemplate({
+                        err: true,
+                        notes: []}));
+            })
+    }
+
+    // Init with first line of search table
+    var init_claim_id = tableSearch
+            .find('tbody tr')
+            .first()
+            .data('claim-id');
+    renderNotesTemplate(init_claim_id);
+    tableSearch.data('current-claim-id', init_claim_id);
+})();
 </script>
 
+
+<script>
+'use strict';
+(function() {
+    var form = $('#form-note-create');
+    form.submit(function(e) {
+        e.preventDefault();
+
+        var form = $(e.currentTarget);
+        var tableSearch = $('#table_search');
+        var currentClaimId = tableSearch.data('current-claim-id');
+        form.find('#{{note_form.claim.auto_id}}').val(currentClaimId);
+
+        $.post(form.attr('action'), form.serialize())
+            .done(function(data) {
+                location.reload();
+            })
+            .fail(function() {
+                console.log('failure');
+            })
+    });
+})();
+</script>
 {% endblock body %}

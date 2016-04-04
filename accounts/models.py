@@ -74,6 +74,10 @@ class User(AbstractBaseUser, PermissionsMixin):
         verbose_name = _('user')
         verbose_name_plural = _('users')
 
+    @property
+    def full_name(self):
+        return self.get_full_name();
+
     def get_full_name(self):
         """
         Returns the first_name plus the last_name, with a space in between.
@@ -90,3 +94,11 @@ class User(AbstractBaseUser, PermissionsMixin):
         Sends an email to this User.
         """
         send_mail(subject, message, from_email, [self.email], **kwargs)
+
+    def natural_key(self):
+        return dict({
+            'id': self.pk,
+            'email': self.email,
+            'first_name': self.first_name,
+            'last_name': self.last_name,
+        })

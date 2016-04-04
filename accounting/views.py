@@ -7,6 +7,7 @@ from django.forms import formset_factory
 from django.http import JsonResponse
 from django.db.models import Q, Sum
 from django.db import IntegrityError, transaction
+from django.http.response import HttpResponseBadRequest
 
 from datetime import datetime
 
@@ -275,3 +276,22 @@ def api_search_claim(request):
         return JsonResponse(data=s, safe=False)
     else:
         return JsonResponse([], safe=False)
+
+def api_create_note(request):
+    if request.method == 'POST':
+        form = NoteForm(request.POST)
+        if form.is_valid():
+            cleaned_data = form.cleaned_data
+            Note.objects.create(
+                    author=request.user,
+                    **cleaned_data)
+
+            return JsonResponse('', safe=False)
+
+    return HttpResponseBadRequest('', content_type='application/json')
+
+def api_read_note(request):
+    claim = get_object_or_404(Claim, pk=request.GET.get('claim_id'))
+    notes = claim.note_set.all();
+    s = serializers.serialize('python', notes, use_natural_foreign_keys=True)
+    return JsonResponse(data=s, safe=False)

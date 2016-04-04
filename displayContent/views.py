@@ -7,6 +7,7 @@ from datetime import datetime
 from .models import *
 from infoGatherer.models import Personal_Information, Payer
 from accounting.models import *
+from accounting.forms import NoteForm
 from django.http import JsonResponse
 from base.models import ExtPythonSerializer
 import re
@@ -27,6 +28,7 @@ def view_claims(request, chart):
         claimValues=claimSearches.values()[:]
 
         for claim, claimValue in zip(claimSearches, claimValues):
+            claimValue["pk"]=claim.pk
             claimValue["total_charge"]=claim.total_charge
             claimValue["ins_pmnt"]=claim.ins_pmnt_per_claim
             claimValue["ins_adjustment"]=claim.ins_adjustment_per_claim
@@ -38,13 +40,14 @@ def view_claims(request, chart):
         return render(request, 'displayContent/patient/claim.html',{
             'claimSearches' : claimValues,
             'patient_info' : patient_info[0],
+            'note_form': NoteForm(request.POST or None),
         })
     else:
         return HttpResponse("<html><h2>The patientID doesn't exist in the database.</h2></html>")
 
 def view_patient(request, chart):
     """Page to view info about patients and goto the claims"""
-    
+
     obj=Personal_Information.objects.filter(pk=chart)
     patient_info=obj.values()
 

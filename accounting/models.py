@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 
 from decimal import Decimal
 
+from django.conf import settings
 from django.db import models
 from django.db.models import Sum
 
@@ -391,3 +392,9 @@ class Apply(BaseModel):
         patID=Claim.objects.filter(id=claimID).values()[0]['patient_id']
         pat=Personal_Information.objects.filter(chart_no=patID).values()[0]
         return pat['last_name']+", "+pat['first_name']
+
+
+class Note(BaseModel):
+    claim = models.ForeignKey(Claim)
+    author = models.ForeignKey(settings.AUTH_USER_MODEL)
+    desc = models.CharField(max_length=255)
