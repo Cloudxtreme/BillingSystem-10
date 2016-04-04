@@ -159,3 +159,13 @@ td.left-vertical-line,
 th.left-vertical-line  {
     border-left: solid 1px #bbb;
 }
+
+.header-line {
+    padding: 5px;
+    background-color: #bfefff;
+}
+
+table.summary td:first-child{
+    width: 100px;
+    font-weight: bold;
+}
