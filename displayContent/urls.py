@@ -10,4 +10,5 @@ urlpatterns = [
     url(r'^api_search_patient/$', views.api_search_patient, name="api_search_patient"),
 
     url(r'^claim(?P<claim_id>\d+)/payment/$', views.payment_details, name="payment_details"),
+    url(r'^api_view_claim/$', views.api_view_claim, name="api_view_claim"),
 ]
