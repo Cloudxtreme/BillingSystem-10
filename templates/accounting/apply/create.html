@@ -61,7 +61,7 @@
                                 <td>{{apply_data|indexList:forloop.counter0|indexDict:'charge_amount'}}</td>
                                 <td class="balance">{{apply_data|indexList:forloop.counter0|indexDict:'balance'}}</td>
                                 <td>{{apply_form.amount|add_class:"form-control amount ins"}}</td>
-                                <td>{{apply_form.adjustment|add_class:"form-control adjustment"}}</td>
+                                <td>{{apply_form.adjustment|add_class:"form-control adjustment ins"}}</td>
                                 <td>{{apply_form.reference|add_class:"form-control"}}</td>
                                 <td class="new-balance" style="padding-left: 10px;"></td>
                             </tr>
@@ -206,6 +206,19 @@
             var newBalance = (balance - amount).toFixed(2);
             row.find('.new-balance').html(newBalance);
             adjustment.val(newBalance);
+        }
+    });
+
+    $('.adjustment.ins').change(function(e) {
+        var input = $(e.currentTarget);
+        var row = input.closest('tr');
+        var balance = row.find('.balance').html();
+        var amount = row.find('.amount').val();
+        var adjustment = row.find('.adjustment').val();
+
+        if(balance && amount && adjustment) {
+            var newBalance = (balance - amount - adjustment).toFixed(2);
+            row.find('.new-balance').html(newBalance);
         }
     });
 
