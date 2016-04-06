@@ -124,6 +124,8 @@ def apply_create(request, payment_id, claim_id):
         'resp_type': c.resp_type,
     } for c in other_charges]
 
+    notes = claim.note_set.all();
+
     if request.method == 'POST':
         apply_formset = ApplyFormSet(request.POST)
         if apply_formset.is_valid():
@@ -154,7 +156,8 @@ def apply_create(request, payment_id, claim_id):
             'claim': claim,
             'apply_formset': apply_formset,
             'apply_data': apply_data,
-            'other_apply_data': other_apply_data})
+            'other_apply_data': other_apply_data,
+            'notes': notes})
 
 def charge_patient_create(request, payment_id, claim_id):
     payment = get_object_or_404(Payment, pk=payment_id)

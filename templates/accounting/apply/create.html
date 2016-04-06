@@ -29,7 +29,7 @@
             <table class="table table-striped table-condensed">
                 <thead>
                     <tr>
-                        <th>Date of Service</th>
+                        <th>Dt Service</th>
                         <th>CPT Code</th>
                         <th>Line Charge</th>
                         <th>Balance</th>
@@ -86,7 +86,7 @@
             <table class="table table-striped table-condensed">
                 <thead>
                     <tr>
-                        <th>Date of Service</th>
+                        <th>Dt Service</th>
                         <th>CPT Code</th>
                         <th>Charge</th>
                         <th>Balance</th>
@@ -155,6 +155,31 @@
         <input type="submit" class="btn btn-success" value="Make Payment" id="submit-make-payment">
         <a href="{% url 'dashboard:dashboard' %}" class="padding-btn margin-left link-btn-danger">Cancel</a>
     </form>
+
+    <hr>
+    <div class="col-sm-6">
+        <h4><b><u>Notes</u></b></h4>
+        <table class="table table-striped table-condensed">
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th>Entered By</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody id="note-body">
+                {% for n in notes %}
+                    <tr>
+                        <td>{{n.desc}}</td>
+                        <td>{{n.author.first_name}}</td>
+                        <td>{{n.created|date:"m/d/Y h:i A"}}</td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="100" class="text-center not-found">There is no note for this claim.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
 
 
