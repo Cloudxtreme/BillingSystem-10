@@ -5,7 +5,7 @@ from django.core import serializers
 from django.db.models import Sum
 from datetime import datetime
 from .models import *
-from infoGatherer.models import Personal_Information, Payer
+from infoGatherer.models import Personal_Information, Payer, Insurance_Information
 from accounting.models import *
 from accounting.forms import NoteForm
 from django.http import JsonResponse
@@ -54,47 +54,72 @@ def view_claims(request, chart):
 def view_patient(request, chart):
     """Page to view info about patients and goto the claims"""
 
-    obj=Personal_Information.objects.filter(pk=chart)
-    patient_info=obj.values()
+    patient = get_object_or_404(Personal_Information, pk=chart)
 
-    if(len(patient_info)>0):
-        # Insurance
-        insurance_obj=obj[0].insurance_information_set.all()
+    # Insurance information
+    insur_q_set = patient.insurance_information_set.all()
 
-        # Primary Insurance
-        primary_insurance=insurance_obj.filter(level='primary').values()[0] if insurance_obj.filter(level='primary').exists() else []
-        print len(primary_insurance)
-        if(len(primary_insurance) >0):
-            primary_insurance_payer=Payer.objects.filter(pk=primary_insurance["payer_id"]).values()[0]
-        else:
-            primary_insurance_payer=[]
+    # # Primary Insurance
+    # primary_insurance = insur_q_set.filter(level='primary').values()[0] if insur_q_set.filter(level='primary').exists() else []
+    # if len(primary_insurance) > 0:
+    #     primary_insurance_payer=Payer.objects.filter(pk=primary_insurance["payer_id"]).values()[0]
+    # else:
+    #     primary_insurance_payer=[]
 
-        # Secondary Insurance
-        secondary_insurance=insurance_obj.filter(level='secondary').values()[0] if insurance_obj.filter(level='secondary').exists() else []
-        if(len(secondary_insurance) >0):
-            secondary_insurance_payer=Payer.objects.filter(pk=secondary_insurance["payer_id"]).values()[0]
-        else:
-            secondary_insurance_payer=[]
+    # # Secondary Insurance
+    # secondary_insurance=insur_q_set.filter(level='secondary').values()[0] if insur_q_set.filter(level='secondary').exists() else []
+    # if(len(secondary_insurance) >0):
+    #     secondary_insurance_payer=Payer.objects.filter(pk=secondary_insurance["payer_id"]).values()[0]
+    # else:
+    #     secondary_insurance_payer=[]
 
-        # Tertiary Insurance
-        tertiary_insurance=insurance_obj.filter(level='tertiary').values()[0] if insurance_obj.filter(level='tertiary').exists() else []
-        if(len(tertiary_insurance) >0):
-            tertiary_insurance_payer=Payer.objects.filter(pk=tertiary_insurance["payer_id"]).values()[0]
-        else:
-            tertiary_insurance_payer=[]
-        return render(request, 'displayContent/patient/chart.html',
-            {
-                'patient_info': patient_info[0],
-                'primary_insurance': primary_insurance,
-                'primary_insurance_payer':primary_insurance_payer,
-                'secondary_insurance': secondary_insurance,
-                'secondary_insurance_payer':secondary_insurance_payer,
-                'tertiary_insurance': tertiary_insurance,
-                'tertiary_insurance_payer':tertiary_insurance_payer,
-            }
-        )
+    # # Tertiary Insurance
+    # tertiary_insurance=insur_q_set.filter(level='tertiary').values()[0] if insur_q_set.filter(level='tertiary').exists() else []
+    # if(len(tertiary_insurance) >0):
+    #     tertiary_insurance_payer=Payer.objects.filter(pk=tertiary_insurance["payer_id"]).values()[0]
+    # else:
+    #     tertiary_insurance_payer=[]
+
+
+    # Primary insurance and payer
+    try:
+        primary_insur = Insurance_Information.objects.get(
+                patient=chart,
+                level='primary')
+    except Insurance_Information.DoesNotExist:
+        primary_insur = None
+
+    # Secondary insurance and payer
+    try:
+        secondary_insur = Insurance_Information.objects.get(
+                patient=chart,
+                level='secondary')
+    except Insurance_Information.DoesNotExist:
+        secondary_insur = None
+
+    if secondary_insur:
+        secondary_payer = secondary_insur.payer
     else:
-        return JsonResponse([], safe=False)
+        secondary_payer = None
+
+    # Tertiary insurance and payer
+    try:
+        tertiary_insur = Insurance_Information.objects.get(
+                patient=chart,
+                level='tertiary')
+    except Insurance_Information.DoesNotExist:
+        tertiary_insur = None
+
+    if tertiary_insur:
+        tertiary_payer = tertiary_insur.payer
+    else:
+        tertiary_payer = None
+
+    return render(request, 'displayContent/patient/chart.html', {
+            'patient': patient,
+            'primary_insur': primary_insur,
+            'secondary_insur': secondary_insur,
+            'tertiary_insur':tertiary_insur})
 
 def payment_details(request, claim_id):
     claim = get_object_or_404(Claim, pk=claim_id)
@@ -159,3 +184,24 @@ def api_search_patient(request):
             return JsonResponse(data=se, safe=False)
     else:
         return JsonResponse([], safe=False)
+
+def api_view_claim(request):
+    """
+    Renders the /patient/<no>/claimhistory webpage. Information is
+    used for claim detals and claim searches (go to url).
+    """
+    claim = get_object_or_404(Claim, pk=request.GET.get('claim_id'))
+    notes = claim.note_set.all();
+    n = serializers.serialize('python', notes, use_natural_foreign_keys=True)
+    c = ExtPythonSerializer().serialize(
+            claim,
+            props=[
+                    'total_charge',
+                    'ins_pmnt_per_claim',
+                    'ins_adjustment_per_claim',
+                    'ins_balance',
+                    'pat_responsible_per_claim',
+                    'pat_pmnt_per_claim',
+                    'total_balance'])
+    s = dict(claim=c, notes=n)
+    return JsonResponse(data=s, safe=False)

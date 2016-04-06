@@ -289,9 +289,3 @@ def api_create_note(request):
             return JsonResponse('', safe=False)
 
     return HttpResponseBadRequest('', content_type='application/json')
-
-def api_read_note(request):
-    claim = get_object_or_404(Claim, pk=request.GET.get('claim_id'))
-    notes = claim.note_set.all();
-    s = serializers.serialize('python', notes, use_natural_foreign_keys=True)
-    return JsonResponse(data=s, safe=False)

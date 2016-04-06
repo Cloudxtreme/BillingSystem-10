@@ -261,6 +261,11 @@ class Personal_Information(models.Model):
         })
 
     @property
+    def full_address(self):
+        return '%s, %s, %s %s' % (self.address, self.city, self.state, self.zip)
+
+
+    @property
     def full_name(self):
         if(self.middle_name):
             return '%s %s %s' % (self.first_name, self.middle_name, self.last_name)
@@ -328,6 +333,11 @@ class Payer(models.Model):
 
     def __unicode__(self):
         return self.name
+
+    @property
+    def full_address(self):
+        return '%s, %s, %s %s' % (self.address, self.city, self.state, self.zip)
+
 
     def natural_key(self):
         return dict({'code': self.code, 'name': self.name})

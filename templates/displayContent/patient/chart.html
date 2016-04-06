@@ -1,86 +1,149 @@
 {% extends "base.html" %}
-{% load widget_tweaks %}
-{% load staticfiles %}
 
-    {% block title %} Patient Information {% endblock title %}
-
-    {% block script %}
-
-        
-    {% endblock script %}
-    {% block link %}
-    {% endblock link %}
-
+{% block title %} Patient Information {% endblock title %}
 
 {% block body %}
-
-<p><strong>Patient Information</strong></p>
-{{patient_info}}
-
-<p><strong>Primary Insurance</strong></p>
-{{primary_insurance}}
-
-<p><strong>Primary Payer</strong></p>
-{{primary_insurance_payer}}
-
-<p><strong>Secondary Insurance</strong></p>
-{{secondary_insurance}}
-
-<p><strong>Secondary Payer</strong></p>
-{{secondary_insurance_payer}}
-
-<p><strong>Tertiary Insurance</strong></p>
-{{tertiary_insurance}}
-
-<p><strong>Tertiary Payer</strong></p>
-{{tertiary_insurance_payer}}
-
-
 <div class="container" >
 	<h2 class="text-center">Patient Information</h2>
-        <p> 
+    <div class="col-sm-4">
+        <div class="header-line"><b>Patient Information</b></div>
+        <h4 style="display: inline-block;"><b>{{patient.full_name}}</b></h4>&nbsp;&nbsp;
+        (Date of Birth:&nbsp;&nbsp;{{patient.dob}})<br>
+        <table class="summary">
+            <tr>
+                <td>Chart No.:</td>
+                <td>{{patient.chart_no}}</td>
+            </tr>
+            <tr>
+                <td>Sex:</td>
+                <td>{{patient.sex}}</td>
+            </tr>
+            <tr>
+                <td>Race:</td>
+                <td>{{patient.race}}</td>
+            </tr>
+            <tr>
+                <td>Enthnicity:</td>
+                <td>{{patient.ethnicity}}</td>
+            </tr>
+            <tr>
+                <td>SSN:</td>
+                <td>{{patient.ssn}}</td>
+            </tr>
+            <tr>
+                <td>Address:</td>
+                <td>{{patient.full_address}}</td>
+            </tr>
+            <tr>
+                <td>Home Phone:</td>
+                <td>{{patient.home_phone}}</td>
+            </tr>
+            <tr>
+                <td>Cell Phone:</td>
+                <td>{{patient.cell_phone}}</td>
+            </tr>
+            <tr>
+                <td>Email:</td>
+                <td>{{patient.email}}</td>
+            </tr>
+        </table>
+
+        <br>
+        <div class="header-line"><b>Primary Insurance</b></div>
+        <table class="summary">
+            <tr>
+                <td>Payer:</td>
+                <td>{{primary_insur.payer.name}}</td>
+            </tr>
+            <tr>
+                <td>Status:</td>
+                <td>{{primary_insur.status}}</td>
+            </tr>
+            <tr>
+                <td>Address:</td>
+                <td>{{primary_insur.full_address}}</td>
+            </tr>
+            <tr>
+                <td>Insurance ID:</td>
+                <td>{{primary_insur.insurance_id}}</td>
+            </tr>
+        </table>
+
+        <br>
+        <div class="header-line"><b>Secondary Insurance</b></div>
+        {% if secondary_insur %}
+        <table class="summary">
+            <tr>
+                <td>Payer:</td>
+                <td>{{secondary_insur.payer.name}}</td>
+            </tr>
+            <tr>
+                <td>Status:</td>
+                <td>{{secondary_insur.status}}</td>
+            </tr>
+            <tr>
+                <td>Address:</td>
+                <td>{{secondary_insur.full_address}}</td>
+            </tr>
+            <tr>
+                <td>Insurance ID:</td>
+                <td>{{secondary_insur.insurance_id}}</td>
+            </tr>
+        </table>
+        {% else %}
+            No secondary insurance on file<br>
+        {% endif %}
+
+        <br>
+        <div class="header-line"><b>Tertiary Insurance</b></div>
+        {% if tertiary_insur %}
+        <table class="summary">
+            <tr>
+                <td>Payer:</td>
+                <td>{{tertiary_insur.payer.name}}</td>
+            </tr>
+            <tr>
+                <td>Status:</td>
+                <td>{{tertiary_insur.status}}</td>
+            </tr>
+            <tr>
+                <td>Address:</td>
+                <td>{{tertiary_insur.full_address}}</td>
+            </tr>
+            <tr>
+                <td>Insurance ID:</td>
+                <td>{{tertiary_insur.insurance_id}}</td>
+            </tr>
+        </table>
+        {% else %}
+            No tertiary insurance on file<br>
+        {% endif %}
+
+    </div>
+    <div class="col-sm-8">
+        <p>
             <ul>
                 <li>Info about the patient</li>
             </ul>
         </p>
         <br/>
 
-        <a id= "claimhistory" href="" class="btn btn-primary">Claims History</a>
-        <br/><br/>
+        <a id= "claimhistory" href="{% url 'displayContent:view_claims' chart=patient.chart_no %}" class="btn btn-primary">Claims History</a>
+        <br>
+        <br>
         <ul>
-                <li>To display:</li>
-                <ul>
-                    <li> Link to Claim form</li>
-                    <li> List of claims </li>
-                    <li> Payment summary for selected claim </li>
-                    <li> Payment Detail for selected claim </li>
-                </ul>
+            <li>To display:</li>
+            <ul>
+                <li> Link to Claim form</li>
+                <li> List of claims </li>
+                <li> Payment summary for selected claim </li>
+                <li> Payment Detail for selected claim </li>
+            </ul>
         </ul>
     </div>
 
-
-    <div class="row found-patient" id="found-patient">
-    </div>
-
 </div>
-<script>
 
-function getid() {
-    var url = window.location.pathname;
-    var myArray = /\/([0-9]+)\//g.exec(url);
-    var id = myArray[1];
-    console.log(id);
-    return id;
-}
-
-$( document ).ready(function (){
-
-    // set anchor tag
-    var href="/patient/"+getid()+"/claimhistory/";
-    $("#claimhistory").attr("href",href);
-
-});
-
-</script>
-
+<div class="row found-patient" id="found-patient">
+</div>
 {% endblock body %}
