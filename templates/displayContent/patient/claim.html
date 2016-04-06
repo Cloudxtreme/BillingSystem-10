@@ -31,7 +31,7 @@
                 {% for ele in claimSearches %}
                     <tr data-claim-id="{{ele.pk}}">
                         <td>idk</td>
-                        <td>{{ele.created}}</td>
+                        <td id="claim-date">{{ele.created}}</td>
                         <td>{{patient_info.last_name}}, {{patient_info.first_name}}</td>
                         <td>{{ele.total_charge}}</td>
                     </tr>
@@ -39,7 +39,6 @@
             </tbody>
         </table>
 
-            {{claimSearches}}
     </div>
     <div class="col-xs-6">
         <h3 class="text-center">Claim Details</h3>
@@ -98,8 +97,47 @@
                 <div class="col-sm-2"><input type="submit" class="btn btn-block btn-default" value="Save"></div>
             </form>
         </div>
+
+        <p></p>
+        <p></p>
+        <a id="showClaim" href="/patient/2016/04/06/23/pdf" TARGET="_blank" class="btn btn-primary">Download claim</a>
+
     </div>
 </div>
+
+
+<script>
+
+function getMonthFromString(mon){
+   var d = Date.parse(mon + "1, 2012");
+   if(!isNaN(d)){
+      return new Date(d).getMonth() + 1;
+   }
+   return -1;
+ }
+
+$('table#table_search tbody tr').on("click", function(){
+    claimid=($(this).attr("data-claim-id"));
+
+    var date=$(this).children("td#claim-date").html();
+    // console.log(date);
+    var da=date.split(" ")[1].split(",")[0];
+    if(da.length==1){
+        da="0"+da;
+    }
+    var mo=(getMonthFromString(date.split(" ")[0])).toString();
+    if(mo.length==1){
+        mo="0"+mo;
+    }
+    var yr=date.split(", ")[1];
+
+    // set a href
+    $("#showClaim").attr("href","/patient/"+yr+"/"+mo+"/"+da+"/"+claimid+"/pdf");
+
+    // console.log(da, mo, yr);
+})
+
+</script>
 
 
 <script type="text/template" class="claim-detail-template">

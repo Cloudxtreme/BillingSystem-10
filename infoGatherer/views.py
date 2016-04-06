@@ -507,11 +507,13 @@ def save_file_to_media(claim_id):
     fileStorage.file_permissions_mode = 0744
     f = open('output.pdf', 'rb+')
     myfile = File(f)
-    name=fileStorage.get_available_name("output.pdf")
+    name=fileStorage.get_available_name(str(claim_id)+".pdf")
     fileStorage.save(name, myfile)
     today = datetime.datetime.now()
     today_path = today.strftime("%Y/%m/%d")
     newdoc = Document.objects.create(claim=claim, docfile='media/documents/'+today_path+"/"+name)
+
+
 
 def get_make_claim_extra_context(request):
     p_set = Personal_Information.objects.values('chart_no', 'first_name', 'last_name', 'address', 'city').order_by('first_name')
@@ -823,6 +825,8 @@ def print_form(bar):
     pdf.closed
 
     return True
+
+
 
 
 #Old Stuff
