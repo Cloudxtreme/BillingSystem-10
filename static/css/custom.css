@@ -173,3 +173,8 @@ table.summary td:first-child{
 tr.selected {
     background-color: #fdfd96;
 }
+
+table.table-condensed th,
+table.table-condensed td {
+    vertical-align: middle !important;
+}

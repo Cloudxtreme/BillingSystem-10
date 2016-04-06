@@ -157,7 +157,7 @@ def charge_patient_create(request, payment_id, claim_id):
                 (partial(PatientChargeForm,
                     claim_id=claim_id)),
             formset=BasePatientChargeFormSet,
-            extra=3)
+            extra=1)
 
     pc_formset = PCFormSet(request.POST or None)
 
