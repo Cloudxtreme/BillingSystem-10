@@ -179,39 +179,23 @@ def api_search_patient(request):
     else:
         return JsonResponse([], safe=False)
 
-def api_view_claims(request):
+def api_view_claim(request):
     """
-    Renders the /patient/<no>/claimhistory webpage. Information is used for claim detals and claim searches (go to url).
+    Renders the /patient/<no>/claimhistory webpage. Information is
+    used for claim detals and claim searches (go to url).
     """
-
     claim = get_object_or_404(Claim, pk=request.GET.get('claim_id'))
-
-
     notes = claim.note_set.all();
-    s = serializers.serialize('python', notes, use_natural_foreign_keys=True)
+    n = serializers.serialize('python', notes, use_natural_foreign_keys=True)
+    c = ExtPythonSerializer().serialize(
+            claim,
+            props=[
+                    'total_charge',
+                    'ins_pmnt_per_claim',
+                    'ins_adjustment_per_claim',
+                    'ins_balance',
+                    'pat_responsible_per_claim',
+                    'pat_pmnt_per_claim',
+                    'total_balance'])
+    s = dict(claim=c, notes=n)
     return JsonResponse(data=s, safe=False)
-
-
-    patient_info=Personal_Information.objects.filter(pk=chart).values()
-    claimSearches=Claim.objects.filter(patient_id=chart)
-    if len(patient_info)>0:
-        claimValues=[]
-        claimValues=claimSearches.values()[:]
-
-        for claim, claimValue in zip(claimSearches, claimValues):
-            claimValue["pk"]=claim.pk
-            claimValue["total_charge"]=claim.total_charge
-            claimValue["ins_pmnt"]=claim.ins_pmnt_per_claim
-            claimValue["ins_adjustment"]=claim.ins_adjustment_per_claim
-            claimValue["pat_responsible"]=claim.pat_responsible_per_claim
-            claimValue["pat_pmnt"]=claim.pat_pmnt_per_claim
-            claimValue["inc_balance"]=Decimal(claim.total_charge)-Decimal(claim.ins_pmnt_per_claim+claim.ins_adjustment_per_claim)
-            claimValue["total_balance"]=claimValue["inc_balance"]+(claim.pat_responsible_per_claim-claim.pat_pmnt_per_claim)
-
-        return render(request, 'displayContent/patient/claim.html',{
-            'claimSearches' : claimValues,
-            'patient_info' : patient_info[0],
-            'note_form': NoteForm(request.POST or None),
-        })
-    else:
-        return HttpResponse("<html><h2>The patientID doesn't exist in the database.</h2></html>")

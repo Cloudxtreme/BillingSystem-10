@@ -57,19 +57,7 @@
                         <th>Total Bal</th>
                     </tr>
                 </thead>
-                <tbody>
-                    {% for ele in claimSearches %}
-                        <tr>
-                            <td>{{ele.total_charge}}</td>
-                            <td>{{ele.ins_pmnt}}</td>
-                            <td>{{ele.ins_adjustment}}</td>
-                            <td>{{ele.inc_balance}}</td>
-                            <td>{{ele.pat_responsible}}</td>
-                            <td>{{ele.pat_pmnt}}</td>
-                            <td>{{ele.total_balance}}</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
+                <tbody id="claim-detail-body"></tbody>
             </table>
         </div>
         <br>
@@ -169,12 +157,19 @@
 </script>
 
 
+<script type="text/template" class="claim-detail-template">
+    <tr>
+        <td><%= claim.total_charge %></td>
+        <td><%= claim.ins_pmnt_per_claim %></td>
+        <td><%= claim.ins_adjustment_per_claim %></td>
+        <td><%= claim.ins_balance %></td>
+        <td><%= claim.pat_responsible_per_claim %></td>
+        <td><%= claim.pat_pmnt_per_claim %></td>
+        <td><%= claim.total_balance %></td>
+    </tr>
+</script>
 <script type="text/template" class="notes-template">
-    <% if(err) { %>
-        <tr>
-            <td colspan="100" class="text-center not-found">An unexpected error has occured.  Please try again later.</td>
-        </tr>
-    <% } else if(notes.length < 1) { %>
+    <% if(notes.length < 1) { %>
         <tr>
             <td colspan="100" class="text-center not-found">There is no note for this claim.</td>
         </tr>
@@ -198,31 +193,50 @@
     $("#table_search tbody tr").click(function(e) {
         var row = $(e.currentTarget);
         var claim_id = row.data('claim-id');
-        renderNotesTemplate(claim_id);
+        renderClaimDetailsTemplate(claim_id, row);
         tableSearch.data('current-claim-id', claim_id);
     });
 
-    function renderNotesTemplate(claim_id) {
-        var notesTemplate = _.template($('script.notes-template').html());
-        $.get("{% url 'accounting:api_read_note' %}?claim_id=" + claim_id)
-            .done(function(notes) {
-                $('#note-body').html(notesTemplate({
+    function renderClaimDetailsTemplate(claim_id, row) {
+        var notesTemplate =
+                _.template($('script.notes-template').html());
+        var claimDetailTemplate =
+                _.template($('script.claim-detail-template').html());
+        var claimDetailBody = $('#claim-detail-body')
+        var notesBody = $('#note-body')
+        $.get("{% url 'displayContent:api_view_claim' %}?claim_id="
+                + claim_id)
+            .done(function(data) {
+                claimDetailBody.html(claimDetailTemplate({
                         err: false,
-                        notes: notes}));
+                        claim: data.claim[0].fields}));
+                notesBody.html(notesTemplate({
+                        err: false,
+                        notes: data.notes}));
             })
             .fail(function() {
-                $('#note-body').html(notesTemplate({
-                        err: true,
-                        notes: []}));
+                claimDetailBody.html(
+                    `<td colspan="100" class="text-center not-found">
+                    An unexpected error has occured.  Please try again later.
+                    </td>`);
+                notesBody.html(
+                    `<td colspan="100" class="text-center not-found">
+                    An unexpected error has occured.  Please try again later.
+                    </td>`);
+            })
+            .always(function() {
+                row.siblings().removeClass('selected');
+                row.addClass('selected');
             })
     }
 
     // Init with first line of search table
-    var init_claim_id = tableSearch
+    var init_row = tableSearch
             .find('tbody tr')
             .first()
+    var init_claim_id = init_row
             .data('claim-id');
-    renderNotesTemplate(init_claim_id);
+    renderClaimDetailsTemplate(init_claim_id, init_row);
     tableSearch.data('current-claim-id', init_claim_id);
 })();
 </script>

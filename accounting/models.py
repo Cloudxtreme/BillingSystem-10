@@ -97,42 +97,53 @@ class Claim(BaseModel):
 
     @property
     def ins_pmnt_per_claim(self):
-        ins_pmnt=0
-        for charge_table in Charge.objects.filter(procedure__claim=self.pk).filter(payer_type="insurance"):
+        ins_pmnt = Decimal('0.00')
+        for charge_table in Charge.objects.filter(procedure__claim=self.pk, payer_type="insurance"):
             ins_pmnt=ins_pmnt+(charge_table.apply_set.all().aggregate(Sum('amount')).get('amount__sum') or 0)
         return ins_pmnt
 
     @property
     def ins_adjustment_per_claim(self):
-        ins_adjustment=0
-        for charge_table in Charge.objects.filter(procedure__claim=self.pk).filter(payer_type="insurance"):
+        ins_adjustment = Decimal('0.00')
+        for charge_table in Charge.objects.filter(procedure__claim=self.pk, payer_type="insurance"):
             ins_adjustment=ins_adjustment+(charge_table.apply_set.all().aggregate(Sum('adjustment')).get('adjustment__sum') or 0)
         return ins_adjustment
 
 
     @property
     def pat_responsible_per_claim(self):
-        pat_responsible=0
-        pat_responsible=Charge.objects.filter(procedure__claim=self.pk)\
-                                .filter(payer_type="patient")\
-                                .aggregate(Sum('amount'))['amount__sum'] or 0
-        return pat_responsible
+        pat_resp = Charge.objects.filter(procedure__claim=self.pk)\
+                .filter(payer_type="patient")\
+                .aggregate(Sum('amount'))['amount__sum'] or Decimal('0.00')
+        return pat_resp
 
     @property
     def pat_pmnt_per_claim(self):
-        pat_pmnt=0
-        for charge_table in Charge.objects.filter(procedure__claim=self.pk).filter(payer_type="patient"):
+        pat_pmnt = Decimal('0.00')
+        for charge_table in Charge.objects.filter(procedure__claim=self.pk, payer_type="patient"):
             pat_pmnt=pat_pmnt+(charge_table.apply_set.all().aggregate(Sum('amount')).get('amount__sum') or 0)
         return pat_pmnt
 
     @property
     def total_charge(self):
-        charge=0
-        charge=Charge.objects.filter(procedure__claim=self.pk)\
-                                .filter(payer_type="insurance")\
+        charge = Decimal('0.00')
+        charge=Charge.objects.filter(procedure__claim=self.pk, payer_type="insurance")\
                                 .aggregate(Sum('amount'))\
                                 .get('amount__sum') or 0
         return charge
+
+    @property
+    def ins_balance(self):
+        return self.total_charge - \
+                (self.ins_pmnt_per_claim + self.ins_adjustment_per_claim)
+
+    @property
+    def pat_balance(self):
+        return self.pat_responsible_per_claim - self.pat_pmnt_per_claim
+
+    @property
+    def total_balance(self):
+        return self.ins_balance + self.pat_balance
 
 
 class claim_pdf(BaseModel):

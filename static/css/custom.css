@@ -169,3 +169,7 @@ table.summary td:first-child{
     width: 100px;
     font-weight: bold;
 }
+
+tr.selected {
+    background-color: #fdfd96;
+}
