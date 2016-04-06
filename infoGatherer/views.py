@@ -29,6 +29,7 @@ from accounts.models import *
 from django.core.files.storage import FileSystemStorage
 from displayContent.forms import DocumentForm
 from django.core.files import File
+import datetime
 
 def TrackCharges(request):
     return render(request, 'track_charges.html')
@@ -504,10 +505,13 @@ def save_file_to_media(claim_id):
     claim = Claim.objects.get(pk=claim_id)
     fileStorage = FileSystemStorage()
     fileStorage.file_permissions_mode = 0744
-    newdoc = Document.objects.create(claim=claim, docfile="output.pdf")
     f = open('output.pdf', 'rb+')
     myfile = File(f)
-    fileStorage.save("output.pdf", myfile)
+    name=fileStorage.get_available_name("output.pdf")
+    fileStorage.save(name, myfile)
+    today = datetime.datetime.now()
+    today_path = today.strftime("%Y/%m/%d")
+    newdoc = Document.objects.create(claim=claim, docfile='media/documents/'+today_path+"/"+name)
 
 def get_make_claim_extra_context(request):
     p_set = Personal_Information.objects.values('chart_no', 'first_name', 'last_name', 'address', 'city').order_by('first_name')
