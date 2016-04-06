@@ -504,10 +504,10 @@ def save_file_to_media(claim_id):
     claim = Claim.objects.get(pk=claim_id)
     fileStorage = FileSystemStorage()
     fileStorage.file_permissions_mode = 0644
-    newdoc = Document.objects.create(claim=claim, docfile="output123.pdf")
-    f = open('output123.pdf')
+    newdoc = Document.objects.create(claim=claim, docfile="output.pdf")
+    f = open('output.pdf')
     myfile = File(f)
-    fileStorage.save("output123.pdf", myfile)
+    fileStorage.save("output.pdf", myfile)
 
 def get_make_claim_extra_context(request):
     p_set = Personal_Information.objects.values('chart_no', 'first_name', 'last_name', 'address', 'city').order_by('first_name')
