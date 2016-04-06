@@ -192,7 +192,7 @@
         var amount = row.find('.amount').val();
 
         if(balance && amount)
-            row.find('.new-balance').html(Math.roundP(balance - amount, 2));
+            row.find('.new-balance').html((balance - amount).toFixed(2));
     });
 
     $('.amount.ins').keyup(function(e) {
@@ -203,7 +203,7 @@
         var adjustment = row.find('.adjustment');
 
         if(balance && amount) {
-            var newBalance = Math.roundP(balance - amount, 2);
+            var newBalance = (balance - amount).toFixed(2);
             row.find('.new-balance').html(newBalance);
             adjustment.val(newBalance);
         }
