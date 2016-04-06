@@ -82,7 +82,6 @@ def payment_apply_read(request):
 
     return render(request, 'accounting/apply/read.html', context)
 
-
 def apply_create(request, payment_id, claim_id):
     payment = get_object_or_404(Payment, pk=payment_id)
     claim = get_object_or_404(Claim, pk=claim_id)
@@ -103,6 +102,10 @@ def apply_create(request, payment_id, claim_id):
             procedure__claim=claim_id,
             payer_type=payment.payer_type)
 
+    other_charges = Charge.objects.filter(
+            procedure__claim=claim_id)\
+            .exclude(payer_type=payment.payer_type)
+
     apply_data = [{
         'charge': c.pk,
         'date_of_service': c.procedure.date_of_service,
@@ -111,6 +114,15 @@ def apply_create(request, payment_id, claim_id):
         'balance': c.balance,
         'resp_type': c.resp_type,
     } for c in charges]
+
+    other_apply_data = [{
+        'charge': c.pk,
+        'date_of_service': c.procedure.date_of_service,
+        'cpt_code_text': c.procedure.cpt.cpt_code,
+        'charge_amount': c.amount,
+        'balance': c.balance,
+        'resp_type': c.resp_type,
+    } for c in other_charges]
 
     if request.method == 'POST':
         apply_formset = ApplyFormSet(request.POST)
@@ -141,8 +153,8 @@ def apply_create(request, payment_id, claim_id):
             'payment': payment,
             'claim': claim,
             'apply_formset': apply_formset,
-            'apply_data': apply_data})
-
+            'apply_data': apply_data,
+            'other_apply_data': other_apply_data})
 
 def charge_patient_create(request, payment_id, claim_id):
     payment = get_object_or_404(Payment, pk=payment_id)
