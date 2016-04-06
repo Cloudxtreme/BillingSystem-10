@@ -5,7 +5,7 @@
 {% block body %}
 <div class="container" >
 	<h2 class="text-center">Patient Information</h2>
-    <div class="col-sm-4">
+    <div class="col-sm-4" style="padding-right:20px;">
         <div class="header-line"><b>Patient Information</b></div>
         <h4 style="display: inline-block;"><b>{{patient.full_name}}</b></h4>&nbsp;&nbsp;
         (Date of Birth:&nbsp;&nbsp;{{patient.dob}})<br>
@@ -120,26 +120,10 @@
         {% endif %}
 
     </div>
-    <div class="col-sm-8">
-        <p>
-            <ul>
-                <li>Info about the patient</li>
-            </ul>
-        </p>
-        <br/>
-
+    <div class="col-sm-8" style="padding-left:20px;">
         <a id= "claimhistory" href="{% url 'displayContent:view_claims' chart=patient.chart_no %}" class="btn btn-primary">Claims History</a>
         <br>
         <br>
-        <ul>
-            <li>To display:</li>
-            <ul>
-                <li> Link to Claim form</li>
-                <li> List of claims </li>
-                <li> Payment summary for selected claim </li>
-                <li> Payment Detail for selected claim </li>
-            </ul>
-        </ul>
     </div>
 
 </div>

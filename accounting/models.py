@@ -270,8 +270,8 @@ class Payment(BaseModel):
         })
 
     class Meta:
-        verbose_name = 'Payments List'
-        verbose_name_plural = 'Payments List'
+        verbose_name = 'Payment Received'
+        verbose_name_plural = 'Payment Received'
 
 
 class Charge(BaseModel):
@@ -370,6 +370,10 @@ class Apply(BaseModel):
             'amount': self.amount,
             'adjustment': self.adjustment
         })
+
+    class Meta:
+        verbose_name = 'Payment Applied'
+        verbose_name_plural = 'Payment Applied'
 
     @property
     def payer(self):

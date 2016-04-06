@@ -146,6 +146,11 @@ class CPT(models.Model):
     history = HistoricalRecords()
 
     cpt_charge= models.FloatField()
+
+    class Meta:
+        verbose_name = 'Procedure Codes (CPT)'
+        verbose_name_plural = 'Procedure Codes (CPT)'
+
     def __unicode__(self):
         return self.cpt_code+" "+self.cpt_description
 
@@ -209,6 +214,10 @@ class dx(models.Model):
     description = models.CharField(max_length=200)
     history = HistoricalRecords()
 
+    class Meta:
+        verbose_name = 'Diagnostic Codes'
+        verbose_name_plural = 'Diagnostic Codes'
+
     def __unicode__(self):
         return self.ICD_10
 
@@ -247,6 +256,11 @@ class Personal_Information(models.Model):
     audit_log = AuditLog()
     history = HistoricalRecords()
 
+
+    class Meta:
+        verbose_name = 'Patient Details'
+        verbose_name_plural = 'Patient Details'
+
     def __unicode__(self):
         return self.get_full_name()
 
@@ -259,6 +273,7 @@ class Personal_Information(models.Model):
             'full_name': self.get_full_name(),
             'dob': self.dob
         })
+
 
     @property
     def full_address(self):
@@ -317,6 +332,10 @@ class Guarantor_Information(models.Model):
     zip = models.CharField(max_length=5, default='',null=True, blank=True)
     home_phone = PhoneNumberField(help_text='XXX-XXX-XXXX', null=True, blank=True)
 
+    class Meta:
+        verbose_name = 'Guarantor'
+        verbose_name_plural = 'Guarantor'
+
     def __unicode__(self):
         return str(self.patient.pk)
 
@@ -334,6 +353,11 @@ class Payer(models.Model):
     def __unicode__(self):
         return self.name
 
+    class Meta:
+        verbose_name = 'Insurance (payer) Details'
+        verbose_name_plural = 'Insurance (payer) Details'
+
+
     @property
     def full_address(self):
         return '%s, %s, %s %s' % (self.address, self.city, self.state, self.zip)
@@ -350,6 +374,10 @@ class Insurance_Information(models.Model):
     insurance_id = models.CharField(max_length=32,default='')
     audit_log = AuditLog()
     history = HistoricalRecords()
+
+    class Meta:
+        verbose_name = 'Paitent - Insurance Details'
+        verbose_name_plural = 'Paitent - Insurance Details'
 
     def __unicode__(self):
         return self.payer.name
@@ -406,12 +434,4 @@ class Provider(models.Model):
             if len(self.speciality)==0:
                 dic['speciality']='Please provide speciality'
         raise ValidationError(dic)
-
-
-class Procedure_Codes(models.Model):
-    procedure_name = models.CharField(max_length=128,default='')
-    procedure_code = models.IntegerField(default='')
-
-    def __unicode__(self):
-        return self.procedure_code
 
