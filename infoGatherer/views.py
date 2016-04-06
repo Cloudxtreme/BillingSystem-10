@@ -503,9 +503,9 @@ def PostAdPage(request):
 def save_file_to_media(claim_id):
     claim = Claim.objects.get(pk=claim_id)
     fileStorage = FileSystemStorage()
-    fileStorage.file_permissions_mode = 0644
+    fileStorage.file_permissions_mode = 0744
     newdoc = Document.objects.create(claim=claim, docfile="output.pdf")
-    f = open('output.pdf')
+    f = open('output.pdf', 'rb+')
     myfile = File(f)
     fileStorage.save("output.pdf", myfile)
 
