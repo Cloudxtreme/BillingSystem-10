@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+import datetime
+today = datetime.datetime.now()
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -56,6 +58,7 @@ INSTALLED_APPS = (
     'accounts',
     'dashboard',
     'accounting',
+    'displayContent',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -69,6 +72,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.security.SecurityMiddleware',
     'audit_log.middleware.UserLoggingMiddleware',
     'simple_history.middleware.HistoryRequestMiddleware',
+
 )
 
 ROOT_URLCONF = 'BillingSystem.urls'
@@ -88,6 +92,10 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.request',
+                'django.template.context_processors.i18n',
+                'django.template.context_processors.media',
+                'django.template.context_processors.static',
+                'django.template.context_processors.tz',
             ],
             'loaders': [
                 'django.template.loaders.filesystem.Loader',
@@ -150,5 +158,9 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static/')]
 
 AUTH_USER_MODEL = 'accounts.User'
+
+today_path = today.strftime("%Y/%m/%d")
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/documents/'+today_path)
+MEDIA_URL = '/media/'
 
 LOGIN_URL = '/accounts/sign_in/'

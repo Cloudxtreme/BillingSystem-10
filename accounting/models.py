@@ -33,6 +33,7 @@ RESPONSIBILITY_TYPE = [
 ]
 
 
+
 class Claim(BaseModel):
     """
     Claim model captures foreign keys and some information which will
@@ -409,3 +410,10 @@ class Note(BaseModel):
     claim = models.ForeignKey(Claim)
     author = models.ForeignKey(settings.AUTH_USER_MODEL)
     desc = models.CharField(max_length=255)
+
+
+class Document(BaseModel):
+    claim = models.ForeignKey(Claim)
+    docfile = models.FileField(upload_to='junk')
+
+

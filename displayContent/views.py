@@ -12,6 +12,12 @@ from django.http import JsonResponse
 from base.models import ExtPythonSerializer
 import re
 from decimal import *
+from django.shortcuts import render_to_response
+from django.template import RequestContext
+from django.http import HttpResponseRedirect
+from django.core.urlresolvers import reverse
+from accounting.models import Document, Claim
+from accounting.models import *
 
 
 def view_dashboard(request):
