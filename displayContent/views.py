@@ -147,6 +147,12 @@ def payment_details(request, claim_id):
         'payments': payments,
         'c_proc': c_proc})
 
+def open_pdf(request, yr, mo, da, claim):
+    with open('media/documents/'+yr+"/"+mo+"/"+da+"/"+claim+".pdf", 'rb') as pdf:
+        response = HttpResponse(pdf.read(), content_type='application/pdf')
+        response['Content-Disposition'] = 'inline;filename=some_file.pdf'
+        return response
+    pdf.closed    
 
 ###############################################################################
 # API function

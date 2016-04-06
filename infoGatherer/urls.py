@@ -1,7 +1,6 @@
 from django.conf.urls import url, include
 from infoGatherer import views
 from infoGatherer.views import PostAdPage
-from infoGatherer.views import checkifopen
 from django.contrib.auth.views import logout
 
 # url(r'^postad/', PostAdPage.as_view()),
@@ -29,5 +28,5 @@ urlpatterns = [
     url(r'^get_json_physician_info$', views.get_json_physician_info, name="get_json_physician_info"),
     url(r'^get_json_provider_info$', views.get_json_provider_info, name="get_json_provider_info"),
     url(r'^get_json_cpt$', views.get_json_cpt, name="get_json_cpt"),
-    url(r'^check/$', views.checkifopen, name="checkifopen"),
+
 ]
