@@ -148,11 +148,15 @@ def payment_details(request, claim_id):
         'c_proc': c_proc})
 
 def open_pdf(request, yr, mo, da, claim):
-    with open('media/documents/'+yr+"/"+mo+"/"+da+"/"+claim+".pdf", 'rb') as pdf:
-        response = HttpResponse(pdf.read(), content_type='application/pdf')
-        response['Content-Disposition'] = 'inline;filename=some_file.pdf'
-        return response
-    pdf.closed    
+    try:
+        with open('media/documents/'+yr+"/"+mo+"/"+da+"/"+claim+".pdf", 'rb') as pdf:
+            response = HttpResponse(pdf.read(), content_type='application/pdf')
+            response['Content-Disposition'] = 'inline;filename=some_file.pdf'
+            return response
+        pdf.closed  
+    except Exception as e:
+        return render(request, 'displayContent/patient/claimNotExist.html')
+  
 
 ###############################################################################
 # API function
