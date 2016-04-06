@@ -26,6 +26,9 @@ from accounting.models import *
 from deepdiff import DeepDiff
 from pprint import pprint
 from accounts.models import *
+from django.core.files.storage import FileSystemStorage
+from displayContent.forms import DocumentForm
+from django.core.files import File
 
 def TrackCharges(request):
     return render(request, 'track_charges.html')
@@ -484,6 +487,9 @@ def PostAdPage(request):
                                 amount=amount)
 
             var = print_form(request.POST);
+            
+            # copy the saved file into media directory
+            save_file_to_media(claim.pk)
             return var
         else:
            print form.errors
@@ -493,6 +499,15 @@ def PostAdPage(request):
         'loop_times' : loop_times,
         'form': form,
     })
+
+def save_file_to_media(claim_id):
+    claim = Claim.objects.get(pk=claim_id)
+    fileStorage = FileSystemStorage()
+    fileStorage.file_permissions_mode = 0644
+    newdoc = Document.objects.create(claim=claim, docfile="output123.pdf")
+    f = open('output123.pdf')
+    myfile = File(f)
+    fileStorage.save("output123.pdf", myfile)
 
 def get_make_claim_extra_context(request):
     p_set = Personal_Information.objects.values('chart_no', 'first_name', 'last_name', 'address', 'city').order_by('first_name')

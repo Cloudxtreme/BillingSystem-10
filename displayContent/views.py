@@ -16,49 +16,9 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
-from django.core.files.storage import FileSystemStorage
 from accounting.models import Document, Claim
 from accounting.models import *
-from displayContent.forms import DocumentForm
-from django.core.files import File
 
-
-def list(request):
-
-    claim = Claim.objects.get(pk=5)
-    fileStorage = FileSystemStorage()
-    fileStorage.file_permissions_mode = 0644
-    
-    newdoc = Document.objects.create(claim=claim, docfile="output123.pdf")
-    # newdoc = Document(claim=claim, docfile="output123.pdf")
-    f = open('output123.pdf')
-    myfile = File(f)
-    fileStorage.save("output123.pdf", myfile)
-
-    html = "<html><body>It is now"
-    return HttpResponse(html)
-    # # Handle file upload
-    # if request.method == 'POST':
-    #     form = DocumentForm(request.POST, request.FILES)
-    #     if form.is_valid():
-    #         # print request.FILES['docfile']
-    #         newdoc = Document(docfile=request.FILES['docfile'])
-    #         newdoc.save()
-
-    #         # Redirect to the document list after POST
-    #         return redirect('/patient/list/')
-    # else:
-    #     form = DocumentForm()  # A empty, unbound form
-
-    # # Load documents for the list page
-    # documents = Document.objects.all()
-
-    # # Render list page with the documents and the form
-    # return render_to_response(
-    #     'list.html',
-    #     {'documents': documents, 'form': form},
-    #     context_instance=RequestContext(request)
-    # )
 
 def view_dashboard(request):
     return render(request, 'displayContent/dashboard.html')

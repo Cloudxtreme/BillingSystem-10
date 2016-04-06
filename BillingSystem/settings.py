@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+import datetime
+today = datetime.datetime.now()
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -157,7 +159,8 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static/')]
 
 AUTH_USER_MODEL = 'accounts.User'
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+today_path = today.strftime("%Y/%m/%d")
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/documents/'+today_path)
 MEDIA_URL = '/media/'
 
 LOGIN_URL = '/accounts/sign_in/'

@@ -403,6 +403,6 @@ class Note(BaseModel):
 
 class Document(BaseModel):
     claim = models.ForeignKey(Claim)
-    docfile = models.FileField(upload_to='documents/')
+    docfile = models.FileField(upload_to='junk')
 
 
