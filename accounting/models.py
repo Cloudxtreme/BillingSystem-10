@@ -97,6 +97,14 @@ class Claim(BaseModel):
         return self.patient.get_primary_insurane or ''
 
     @property
+    def get_patient_ssn(self):
+        return self.patient.get_ssn or ''
+
+    @property
+    def get_patient_home_phone(self):
+        return self.patient.get_home_phone or ''
+
+    @property
     def ins_pmnt_per_claim(self):
         ins_pmnt = Decimal('0.00')
         for charge_table in Charge.objects.filter(procedure__claim=self.pk, payer_type="insurance"):
