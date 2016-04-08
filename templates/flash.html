@@ -1,0 +1,15 @@
+{% if messages %}
+    <div class="flash" id="flash-message">
+        {% for msg in messages %}
+            <div class="alert alert-{{msg.level_tag}}" role="alert">
+                <div class="white-space-pre">
+                    <span>{{msg.message}}</span>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <script>
+        $('#flash-message').delay(5000).fadeOut();
+    </script>
+{% endif %}
