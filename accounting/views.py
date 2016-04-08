@@ -10,6 +10,7 @@ from django.db import IntegrityError, transaction
 from django.http.response import HttpResponseBadRequest
 
 from datetime import datetime
+from decimal import Decimal
 
 from .models import *
 from .forms import *
@@ -38,18 +39,24 @@ def payment_summary(request):
         # get total charge from accounting_procedure (add ammount for same claim id)
         # get sum od ammounts for same claim id from accounting_appliedpayment
         # get total adjustments -- create another column --
-        procedureList=Procedure.objects.filter(claim_id=claim_id).values()
-        totalCharge=0
-        totalAppliedAmnt=0
-        totalAdjustments=0
-        for procedure in procedureList:
-            totalCharge=totalCharge+procedure['charge']
-            totalAppliedAmnt=totalAppliedAmnt+(AppliedPayment.objects.filter(procedure_id=procedure['id']).all().aggregate(Sum('amount'))['amount__sum'] or 0)
-            totalAdjustments=totalAdjustments+(AppliedPayment.objects.filter(procedure_id=procedure['id']).all().aggregate(Sum('adjustment'))['adjustment__sum'] or 0)
-        temp["totalCharge"]=totalCharge
-        temp["totalAppliedAmnt"]=totalAppliedAmnt
-        temp["totalAdjustments"]=totalAdjustments
-        temp["balance"]=totalCharge-totalAppliedAmnt+totalAdjustments
+        procedures=Procedure.objects.filter(claim_id=claim_id)
+        totalCharge = Decimal('0.00')
+        totalAppliedAmnt = Decimal('0.00')
+        totalAdjustments = Decimal('0.00')
+        for procedure in procedures:
+            charges = procedure.charge_set.all()
+            for c in charges:
+                totalCharge += c.amount
+                totalAppliedAmnt += (Apply.objects.filter(charge=c.pk)\
+                        .aggregate(Sum('amount'))\
+                        .get('amount__sum') or 0)
+                totalAdjustments += (Apply.objects.filter(charge=c.pk)\
+                        .aggregate(Sum('adjustment'))\
+                        .get('adjustment__sum') or 0)
+        temp["totalCharge"] = totalCharge
+        temp["totalAppliedAmnt"] = totalAppliedAmnt
+        temp["totalAdjustments"] = totalAdjustments
+        temp["balance"] = totalCharge - (totalAppliedAmnt+totalAdjustments)
         dic.append(temp)
     return render(request, 'accounting/payment/accounts_summary.html', {'summary': dic})
 
