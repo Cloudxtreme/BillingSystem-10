@@ -105,19 +105,21 @@
                         <th>SSN</th>
                         <th>Home Phone</th>
                         <th>Primary Insurance</th>
+                        <th>Created</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <% _.each(patients, function(patients, i) { var p = patients.fields; console.log(p) %>
+                    <% _.each(patients, function(patients, i) { var p = patients.fields; date=new Date(p.created); console.log(p) %>
                     <tr class="found-patient-item" data-payment-index="<%- i %>">
                         <td><a href="/claim/<%= p.id %>" ><%= p.id %></a></td>
                         <td><a href="/patient/<%= p.patient.chart_no %>" ><%= p.patient.chart_no %></a></td>
                         <td><%= p.patient.first_name %></td>
                         <td><%= p.patient.last_name %></td>
                         <td><%= p.patient.dob %></td>
-                        <td><%= p.patient.ssn %></td>
-                        <td><%= p.patient.home_phone %></td>
+                        <td><%= p.get_patient_ssn %></td>
+                        <td><%= p.get_patient_home_phone %></td>
                         <td><%= p.get_patient_insurance %></td>
+                        <td><%= date.toDateString()+" "+date.toLocaleTimeString() %></td>
                     </tr>
                     <% }); %>
                 </tbody>
@@ -141,7 +143,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <% _.each(patients, function(patients, i) { var p = patients.fields; console.log(p) %>
+                    <% _.each(patients, function(patients, i) { var p = patients.fields;  %>
                     <tr class="found-patient-item" data-payment-index="<%- i %>">
                         <td><a href="/patient/<%= p.chart_no %>" ><%= p.chart_no %></a></td>
                         <td><%= p.first_name %></td>

@@ -49,38 +49,14 @@ def view_claims(request, chart):
             'note_form': NoteForm(request.POST or None),
         })
     else:
-        return HttpResponse("<html><h2>The patientID doesn't exist in the database.</h2></html>")
+        return render(request, 'displayContent/patient/NotExist.html', {
+            'info' : "(404) Sorry! This patientID doesn't exisit in the database."
+            })
 
 def view_patient(request, chart):
     """Page to view info about patients and goto the claims"""
 
     patient = get_object_or_404(Personal_Information, pk=chart)
-
-    # Insurance information
-    insur_q_set = patient.insurance_information_set.all()
-
-    # # Primary Insurance
-    # primary_insurance = insur_q_set.filter(level='primary').values()[0] if insur_q_set.filter(level='primary').exists() else []
-    # if len(primary_insurance) > 0:
-    #     primary_insurance_payer=Payer.objects.filter(pk=primary_insurance["payer_id"]).values()[0]
-    # else:
-    #     primary_insurance_payer=[]
-
-    # # Secondary Insurance
-    # secondary_insurance=insur_q_set.filter(level='secondary').values()[0] if insur_q_set.filter(level='secondary').exists() else []
-    # if(len(secondary_insurance) >0):
-    #     secondary_insurance_payer=Payer.objects.filter(pk=secondary_insurance["payer_id"]).values()[0]
-    # else:
-    #     secondary_insurance_payer=[]
-
-    # # Tertiary Insurance
-    # tertiary_insurance=insur_q_set.filter(level='tertiary').values()[0] if insur_q_set.filter(level='tertiary').exists() else []
-    # if(len(tertiary_insurance) >0):
-    #     tertiary_insurance_payer=Payer.objects.filter(pk=tertiary_insurance["payer_id"]).values()[0]
-    # else:
-    #     tertiary_insurance_payer=[]
-
-
     # Primary insurance and payer
     try:
         primary_insur = Insurance_Information.objects.get(
@@ -156,7 +132,9 @@ def open_pdf(request, yr, mo, da, claim):
             return response
         pdf.closed  
     except Exception as e:
-        return render(request, 'displayContent/patient/claimNotExist.html')
+        return render(request, 'displayContent/patient/NotExist.html', {
+            'info' : "(404) Sorry! This claim that you're trying to open doesn't exisit in the file system."
+            })
   
 
 ###############################################################################
@@ -170,7 +148,7 @@ def api_search_patient(request):
             claim = Claim.objects.filter(pk__icontains=post_data.get('claim_id') or '')
             se = ExtPythonSerializer().serialize(
                 claim,
-                props=['id', 'get_patient_insurance', ],
+                props=['id', 'get_patient_insurance', 'get_patient_ssn', 'get_patient_home_phone',  ],
                 use_natural_foreign_keys=True
             )
             return JsonResponse(data=se, safe=False)

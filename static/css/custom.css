@@ -171,7 +171,7 @@ table.summary td:first-child{
 }
 
 tr.selected {
-    background-color: #fdfd96;
+    background-color: #fdfd96 !important;
 }
 
 table.table-condensed th,

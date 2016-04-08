@@ -279,6 +279,13 @@ class Personal_Information(models.Model):
     def full_address(self):
         return '%s, %s, %s %s' % (self.address, self.city, self.state, self.zip)
 
+    @property
+    def get_ssn(self):
+        return str(self.ssn)
+
+    @property
+    def get_home_phone(self):
+        return str(self.home_phone)
 
     @property
     def full_name(self):
