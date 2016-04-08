@@ -1,6 +1,7 @@
 from functools import partial, wraps
 
 from django.shortcuts import *
+from django.contrib import messages
 from django.core import serializers
 from django.core.urlresolvers import reverse
 from django.forms import formset_factory
@@ -137,6 +138,8 @@ def apply_create(request, payment_id, claim_id):
         apply_formset = ApplyFormSet(request.POST)
         if apply_formset.is_valid():
             new_applies = []
+            total_amount = Decimal('0.00')
+
             for apply_form in apply_formset:
                 cleaned_data = apply_form.cleaned_data
                 amount = cleaned_data.get('amount')
@@ -147,8 +150,12 @@ def apply_create(request, payment_id, claim_id):
                         (payment.payer_type == 'Patient' and \
                         amount is not None):
                     new_applies.append(Apply(**cleaned_data))
+                    total_amount += amount
 
             Apply.objects.bulk_create(new_applies)
+            messages.add_message(request, messages.SUCCESS,
+                    "$%s from Payment ID: \"%s\" has been applied." % \
+                    (total_amount, payment_id))
 
             return redirect(reverse('accounting:payment_apply_create',
                     kwargs={
