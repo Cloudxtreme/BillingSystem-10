@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 
+{% load staticfiles %}
 {% load widget_tweaks %}
 {% load index %}
 
@@ -35,11 +36,12 @@
                         <th>Payment</th>
                         <th>Reference</th>
                         <th>Balance</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody class="row found-procedure" id="found-procedure">
                     {% for pc_form in pc_formset %}
-                        <tr>
+                        <tr class="pat-resp-formset">
                             <input
                                 type="hidden"
                                 name="{{pc_form.payment.html_name}}"
@@ -59,6 +61,7 @@
                             {% endif %}
 
                             <td class="balance" style="padding-left: 10px;"></td>
+                            <td></td>
                         </tr>
                     {% endfor %}
                 </tbody>
@@ -120,5 +123,15 @@
     }
 
 })();
+</script>
+
+
+<script src="{% static 'js/jquery.formset.js' %}"></script>
+<script>
+    $('.pat-resp-formset').formset({
+        addText: 'Add Line',
+        deleteText: 'Remove',
+        keepFieldValues: 'input[name$="-payment"]',
+    });
 </script>
 {% endblock body %}

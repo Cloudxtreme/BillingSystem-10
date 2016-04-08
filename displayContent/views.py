@@ -121,7 +121,8 @@ def view_patient(request, chart):
             'secondary_insur': secondary_insur,
             'tertiary_insur':tertiary_insur})
 
-def payment_details(request, claim_id):
+def payment_details(request):
+    claim_id = request.GET.get('claim_id')
     claim = get_object_or_404(Claim, pk=claim_id)
 
     # Group relevant payments

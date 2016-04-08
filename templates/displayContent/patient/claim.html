@@ -48,11 +48,11 @@
                 <thead>
                     <tr>
                         <th>Total Charge</th>
-                        <th>Inc Pmnt</th>
+                        <th>Ins Pmt</th>
                         <th>Adjustments</th>
-                        <th>Inc Balance</th>
+                        <th>Ins Bal</th>
                         <th>Pat Resp</th>
-                        <th>Pat Pmnt</th>
+                        <th>Pat Pmt</th>
                         <th>Total Bal</th>
                     </tr>
                 </thead>
@@ -60,6 +60,9 @@
             </table>
         </div>
         <br>
+        <div class="text-center">
+            Note: To view the complete payment info, click <a href="#" id="payment-detail-link">Payment Detail</a>.
+        </div>
         <br>
         <h4>Notes</h4>
         <table class="table table-striped table-condensed">
@@ -103,7 +106,6 @@
 </div>
 
 
-
 <script>
 
 function getMonthFromString(mon){
@@ -138,7 +140,6 @@ $('table#table_search tbody tr').on("click", function(){
 </script>
 
 
-
 <script type="text/template" class="claim-detail-template">
     <tr>
         <td><%= claim.total_charge %></td>
@@ -168,7 +169,7 @@ $('table#table_search tbody tr').on("click", function(){
     <% }); } %>
 </script>
 <script>
-'use strict';
+// 'use strict';
 (function() {
     var tableSearch = $('#table_search');
 
@@ -176,7 +177,7 @@ $('table#table_search tbody tr').on("click", function(){
         var row = $(e.currentTarget);
         var claim_id = row.data('claim-id');
         renderClaimDetailsTemplate(claim_id, row);
-        tableSearch.data('current-claim-id', claim_id);
+        window.sessionStorage.claim_id = claim_id;
     });
 
     function renderClaimDetailsTemplate(claim_id, row) {
@@ -195,6 +196,10 @@ $('table#table_search tbody tr').on("click", function(){
                 notesBody.html(notesTemplate({
                         err: false,
                         notes: data.notes}));
+
+                $('#payment-detail-link').prop('href',
+                        `{% url 'displayContent:payment_details' %}?claim_id=`
+                        + claim_id);
             })
             .fail(function() {
                 claimDetailBody.html(
@@ -207,19 +212,23 @@ $('table#table_search tbody tr').on("click", function(){
                     </td>`);
             })
             .always(function() {
+                tableSearch.data('current-claim-id', claim_id);
                 row.siblings().removeClass('selected');
                 row.addClass('selected');
             })
     }
 
     // Init with first line of search table
+    var claim_id = window.sessionStorage.claim_id;
     var init_row = tableSearch
             .find('tbody tr')
             .first()
+    if(tableSearch.find('[data-claim-id=' + claim_id + ']').length > 0)
+        init_row = tableSearch.find('[data-claim-id=' + claim_id + ']')
+
     var init_claim_id = init_row
             .data('claim-id');
     renderClaimDetailsTemplate(init_claim_id, init_row);
-    tableSearch.data('current-claim-id', init_claim_id);
 })();
 </script>
 
