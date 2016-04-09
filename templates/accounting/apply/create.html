@@ -21,7 +21,7 @@
     <h2 class="text-center">Apply Payment</h2>
     {% include "accounting/apply/payment_claim_search.html" %}
 
-    <form method="POST" action="{% url 'accounting:payment_apply_create' payment.pk claim.pk %}">{% csrf_token %}
+    <form id="paymentForm" method="POST" action="{% url 'accounting:payment_apply_create' payment.pk claim.pk %}">{% csrf_token %}
         <div class="row" id="procedure-table">
             {{ apply_formset.management_form }}
 
@@ -152,7 +152,7 @@
             </table>
         </div>
 
-        <input type="submit" class="btn btn-success" value="Make Payment" id="submit-make-payment">
+        <button type="button" id="submitMe" class="btn btn-success" id="submit-make-payment">Make Payment</button>
         <a href="{% url 'dashboard:dashboard' %}" class="padding-btn margin-left link-btn-danger">Cancel</a>
     </form>
 
@@ -184,6 +184,15 @@
 
 
 <script>
+
+$(document).ready(function(){
+    jQuery('#submitMe').click(function(evt) {
+        evt.preventDefault();
+        jQuery('#paymentForm').submit();
+        
+    });
+})
+
 'use strict';
 (function() {
 
