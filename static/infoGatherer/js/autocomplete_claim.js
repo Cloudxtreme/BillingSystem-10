@@ -26,7 +26,7 @@ function autocomplete_claim(api_urls) {
         $('#' + autocompleteFields[i]).val($('#hidden_' + autocompleteFields[i]).val() || $('#' + autocompleteFields[i]).attr('value'));
     }
 
-    
+
     // Make ajax call for auto-suggestion
     $.ajax({
         url: api_urls[0],
@@ -41,7 +41,7 @@ function autocomplete_claim(api_urls) {
             })
 
         // Set auto suggestion for patient's name
-        $("#id_pat_name").autocomplete({
+        $("#id_pat_name").devbridgeAutocomplete({
             minChars: 0,
             lookup: patient_lookup,
             formatResult: addHint,
@@ -64,7 +64,7 @@ function autocomplete_claim(api_urls) {
                         $("#id_pat_sex").val(patient_info.sex.substr(0,1));
 
                         $('#hidden_id_pat_name').val(suggestion.value);
-                        
+
                         $('#id_pat_id').val(patient_info.chart_no);
                     }
                 );
@@ -72,7 +72,7 @@ function autocomplete_claim(api_urls) {
         });
 
         // Set auto suggestion for insured's name
-        $("#id_insured_name").autocomplete({
+        $("#id_insured_name").devbridgeAutocomplete({
             minChars: 0,
             lookup: patient_lookup,
             formatResult: addHint,
@@ -103,7 +103,7 @@ function autocomplete_claim(api_urls) {
                         for(i of insurance_list)
                             insuranceNumberListObj.push({value: i.insurance_id, insurance_data: i});
 
-                        $("#id_insured_idnumber").autocomplete({
+                        $("#id_insured_idnumber").devbridgeAutocomplete({
                             minChars: 0,
                             lookup: insuranceNumberListObj,
                             onSelect: populateInsuranceSection,
@@ -117,7 +117,7 @@ function autocomplete_claim(api_urls) {
                         for(i of insurance_list)
                             insuranceNameListObj.push({value: i.payer.name, insurance_data: i});
 
-                        $("#id_payer_name").autocomplete({
+                        $("#id_payer_name").devbridgeAutocomplete({
                             minChars: 0,
                             lookup: insuranceNameListObj,
                             onSelect: populateInsuranceSection,
@@ -131,7 +131,7 @@ function autocomplete_claim(api_urls) {
                         for(i of insurance_list)
                             insuranceCodeListObj.push({value: i.payer.code + "", insurance_data: i});
 
-                        $("#id_payer_num").autocomplete({
+                        $("#id_payer_num").devbridgeAutocomplete({
                             minChars: 0,
                             lookup: insuranceCodeListObj,
                             onSelect: populateInsuranceSection,
@@ -146,7 +146,7 @@ function autocomplete_claim(api_urls) {
         });
 
         // Set auto suggestion for other insured's name
-        $("#id_pat_other_insured_name").autocomplete({
+        $("#id_pat_other_insured_name").devbridgeAutocomplete({
             minChars: 0,
             lookup: patient_lookup,
             formatResult: addHint,
@@ -172,7 +172,7 @@ function autocomplete_claim(api_urls) {
         }
 
         // Set auto suggestion for patient's name
-        $("#id_referring_name").autocomplete({
+        $("#id_referring_name").devbridgeAutocomplete({
             minChars: 0,
             lookup: physicians_lookup,
             formatResult: addHint,
@@ -202,7 +202,7 @@ function autocomplete_claim(api_urls) {
             });
         }
 
-        $("#id_billing_provider_name").autocomplete({
+        $("#id_billing_provider_name").devbridgeAutocomplete({
             minChars: 0,
             lookup: billing_p_lookup,
             formatResult: addHint,
@@ -224,7 +224,7 @@ function autocomplete_claim(api_urls) {
             });
         }
 
-        $("#id_location_provider_name").autocomplete({
+        $("#id_location_provider_name").devbridgeAutocomplete({
             minChars: 0,
             lookup: billing_p_lookup,
             formatResult: addHint,
@@ -246,7 +246,7 @@ function autocomplete_claim(api_urls) {
             });
         }
 
-        $("#id_rendering_provider_name").autocomplete({
+        $("#id_rendering_provider_name").devbridgeAutocomplete({
             minChars: 0,
             lookup: billing_p_lookup,
             formatResult: addHint,
@@ -271,7 +271,7 @@ function autocomplete_claim(api_urls) {
             });
         }
 
-        $("input[name^=cpt_code]").autocomplete({
+        $("input[name^=cpt_code]").devbridgeAutocomplete({
             minChars: 0,
             lookup: cpt_lookup,
             formatResult: addHint,
@@ -284,7 +284,7 @@ function autocomplete_claim(api_urls) {
                 $('#id_mod_c_' + line_no).val(cpt.cpt_mod_c);
                 $('#id_mod_d_' + line_no).val(cpt.cpt_mod_d);
                 $('#id_cpt_charge_' + line_no).val(cpt.cpt_charge);
-                
+
                 // Will not override if this field is already set
                 if(!$('#id_fees_' + line_no).val())
                     $('#id_fees_' + line_no).val(cpt.cpt_charge);
@@ -293,6 +293,69 @@ function autocomplete_claim(api_urls) {
             },
         });
     });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    var availableTags = [
+        "ActionScript",
+        "AppleScript",
+        "Asp",
+        "BASIC",
+        "C",
+        "C++",
+        "Clojure",
+        "COBOL",
+        "ColdFusion",
+        "Erlang",
+        "Fortran",
+        "Groovy",
+        "Haskell",
+        "Java",
+        "JavaScript",
+        "Lisp",
+        "Perl",
+        "PHP",
+        "Python",
+        "Ruby",
+        "Scala",
+        "Scheme"
+    ];
+    $("#id_ICD_10_1").autocomplete({
+        minLength: 0,
+        source: availableTags
+    }).focus(function(){
+        $(this).data("autocomplete").search($(this).val());
+    });;
+
+    // // Autocomplete for diagnosis code
+    // $("#id_ICD_10_1").devbridgeAutocomplete({
+    //     minChars: 0,
+    //     lookup: function(query, done) {
+    //         console.log(query);
+
+    //         $.get(api_urls[6]).done(function(dxs) {
+    //             console.log(api_urls[6]);
+    //             console.log(dxs);
+    //             done(dxs);
+    //         });
+    //     },
+    //     onSelect: function (suggestion) {
+    //         alert('You selected: ' + suggestion.value + ', ' + suggestion.data);
+    //     }
+    // });
 
     function populateInsuranceSection(suggestion) {
         // Auto populate fields in insurance section
