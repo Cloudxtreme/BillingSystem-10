@@ -10,21 +10,21 @@ function autocomplete_claim(api_urls) {
 
     // Autocomplete causes binded field to clear its value when page is loaded from back and forward button.
     // Workaround is to have hidden field to store previous value and assign to that field if available
-    var autocompleteFields = [
-        'id_pat_name',
-        'id_insured_name',
-        'id_insured_idnumber',
-        'id_payer_num',
-        'id_payer_name',
-        'id_referring_name',
-        'id_billing_provider_name',
-        'id_location_provider_name',
-        'id_rendering_provider_name',
-        'id_pat_other_insured_name',
-    ];
-    for(var i=0; i<autocompleteFields.length; i++) {
-        $('#' + autocompleteFields[i]).val($('#hidden_' + autocompleteFields[i]).val() || $('#' + autocompleteFields[i]).attr('value'));
-    }
+    // var autocompleteFields = [
+    //     'id_pat_name',
+    //     'id_insured_name',
+    //     'id_insured_idnumber',
+    //     'id_payer_num',
+    //     'id_payer_name',
+    //     'id_referring_name',
+    //     'id_billing_provider_name',
+    //     'id_location_provider_name',
+    //     'id_rendering_provider_name',
+    //     'id_pat_other_insured_name',
+    // ];
+    // for(var i=0; i<autocompleteFields.length; i++) {
+    //     $('#' + autocompleteFields[i]).val($('#hidden_' + autocompleteFields[i]).val() || $('#' + autocompleteFields[i]).attr('value'));
+    // }
 
 
     // Make ajax call for auto-suggestion
@@ -294,69 +294,6 @@ function autocomplete_claim(api_urls) {
         });
     });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    var availableTags = [
-        "ActionScript",
-        "AppleScript",
-        "Asp",
-        "BASIC",
-        "C",
-        "C++",
-        "Clojure",
-        "COBOL",
-        "ColdFusion",
-        "Erlang",
-        "Fortran",
-        "Groovy",
-        "Haskell",
-        "Java",
-        "JavaScript",
-        "Lisp",
-        "Perl",
-        "PHP",
-        "Python",
-        "Ruby",
-        "Scala",
-        "Scheme"
-    ];
-    $("#id_ICD_10_1").autocomplete({
-        minLength: 0,
-        source: availableTags
-    }).focus(function(){
-        $(this).data("autocomplete").search($(this).val());
-    });;
-
-    // // Autocomplete for diagnosis code
-    // $("#id_ICD_10_1").devbridgeAutocomplete({
-    //     minChars: 0,
-    //     lookup: function(query, done) {
-    //         console.log(query);
-
-    //         $.get(api_urls[6]).done(function(dxs) {
-    //             console.log(api_urls[6]);
-    //             console.log(dxs);
-    //             done(dxs);
-    //         });
-    //     },
-    //     onSelect: function (suggestion) {
-    //         alert('You selected: ' + suggestion.value + ', ' + suggestion.data);
-    //     }
-    // });
-
     function populateInsuranceSection(suggestion) {
         // Auto populate fields in insurance section
         var insurance = suggestion.insurance_data;
@@ -382,6 +319,32 @@ function autocomplete_claim(api_urls) {
         return suggestion.value + detailString(suggestion.hint);
     }
 
+
+    // Autocomplete for diagnonsis codes
+    $('.dx_code').each(function() {
+        $(this).typeahead({
+            hint: true,
+            highlight: true,
+            minLength: 0,
+        }, {
+            limit: 50,
+            source: new Bloodhound({
+                datumTokenizer: Bloodhound.tokenizers.whitespace,
+                queryTokenizer: Bloodhound.tokenizers.whitespace,
+                remote: {
+                    url: api_urls[6] + '?q=%Q',
+                    wildcard: '%Q',
+                }
+            }),
+            display: 'pk',
+            templates: {
+                notFound: '<div class="tt-notfound">unable to find any diagnosis codes that match the current value</div>',
+                suggestion: function(data) {
+                    return _.template('<div><%= data.pk %> - <%= data.fields.description %></div>')({data: data});
+                }
+            }
+        });
+    });
 };
 
 function bindCollapse(i) {

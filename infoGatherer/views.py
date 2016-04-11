@@ -30,6 +30,7 @@ from accounts.models import *
 from django.core.files.storage import FileSystemStorage
 from displayContent.forms import DocumentForm
 from django.core.files import File
+from django.db.models import Q
 import datetime
 
 def TrackCharges(request):
@@ -1025,13 +1026,12 @@ def get_guarantor_info(request, id=''):
 
 @login_required
 def api_read_dx(request):
-    dxs = dx.objects.filter()[:50]
+    dxs = dx.objects.all()
+    q = request.GET.get('q')
 
-    l = list()
-    for d in dxs:
-        l.append(dict(
-                value=d.description,
-                data=d.pk))
+    if q:
+        dxs = dxs.filter(Q(pk__icontains=q) | Q(description__icontains=q))
 
-    # s = serializers.serialize('python', dxs)
-    return JsonResponse(data=l, safe=False)
+    dxs = dxs[:100]
+    s = serializers.serialize('python', dxs)
+    return JsonResponse(data=s, safe=False)
