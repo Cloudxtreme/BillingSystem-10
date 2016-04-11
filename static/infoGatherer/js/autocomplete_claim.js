@@ -10,23 +10,23 @@ function autocomplete_claim(api_urls) {
 
     // Autocomplete causes binded field to clear its value when page is loaded from back and forward button.
     // Workaround is to have hidden field to store previous value and assign to that field if available
-    var autocompleteFields = [
-        'id_pat_name',
-        'id_insured_name',
-        'id_insured_idnumber',
-        'id_payer_num',
-        'id_payer_name',
-        'id_referring_name',
-        'id_billing_provider_name',
-        'id_location_provider_name',
-        'id_rendering_provider_name',
-        'id_pat_other_insured_name',
-    ];
-    for(var i=0; i<autocompleteFields.length; i++) {
-        $('#' + autocompleteFields[i]).val($('#hidden_' + autocompleteFields[i]).val() || $('#' + autocompleteFields[i]).attr('value'));
-    }
+    // var autocompleteFields = [
+    //     'id_pat_name',
+    //     'id_insured_name',
+    //     'id_insured_idnumber',
+    //     'id_payer_num',
+    //     'id_payer_name',
+    //     'id_referring_name',
+    //     'id_billing_provider_name',
+    //     'id_location_provider_name',
+    //     'id_rendering_provider_name',
+    //     'id_pat_other_insured_name',
+    // ];
+    // for(var i=0; i<autocompleteFields.length; i++) {
+    //     $('#' + autocompleteFields[i]).val($('#hidden_' + autocompleteFields[i]).val() || $('#' + autocompleteFields[i]).attr('value'));
+    // }
 
-    
+
     // Make ajax call for auto-suggestion
     $.ajax({
         url: api_urls[0],
@@ -41,7 +41,7 @@ function autocomplete_claim(api_urls) {
             })
 
         // Set auto suggestion for patient's name
-        $("#id_pat_name").autocomplete({
+        $("#id_pat_name").devbridgeAutocomplete({
             minChars: 0,
             lookup: patient_lookup,
             formatResult: addHint,
@@ -64,7 +64,7 @@ function autocomplete_claim(api_urls) {
                         $("#id_pat_sex").val(patient_info.sex.substr(0,1));
 
                         $('#hidden_id_pat_name').val(suggestion.value);
-                        
+
                         $('#id_pat_id').val(patient_info.chart_no);
                     }
                 );
@@ -72,7 +72,7 @@ function autocomplete_claim(api_urls) {
         });
 
         // Set auto suggestion for insured's name
-        $("#id_insured_name").autocomplete({
+        $("#id_insured_name").devbridgeAutocomplete({
             minChars: 0,
             lookup: patient_lookup,
             formatResult: addHint,
@@ -103,7 +103,7 @@ function autocomplete_claim(api_urls) {
                         for(i of insurance_list)
                             insuranceNumberListObj.push({value: i.insurance_id, insurance_data: i});
 
-                        $("#id_insured_idnumber").autocomplete({
+                        $("#id_insured_idnumber").devbridgeAutocomplete({
                             minChars: 0,
                             lookup: insuranceNumberListObj,
                             onSelect: populateInsuranceSection,
@@ -117,7 +117,7 @@ function autocomplete_claim(api_urls) {
                         for(i of insurance_list)
                             insuranceNameListObj.push({value: i.payer.name, insurance_data: i});
 
-                        $("#id_payer_name").autocomplete({
+                        $("#id_payer_name").devbridgeAutocomplete({
                             minChars: 0,
                             lookup: insuranceNameListObj,
                             onSelect: populateInsuranceSection,
@@ -131,7 +131,7 @@ function autocomplete_claim(api_urls) {
                         for(i of insurance_list)
                             insuranceCodeListObj.push({value: i.payer.code + "", insurance_data: i});
 
-                        $("#id_payer_num").autocomplete({
+                        $("#id_payer_num").devbridgeAutocomplete({
                             minChars: 0,
                             lookup: insuranceCodeListObj,
                             onSelect: populateInsuranceSection,
@@ -146,7 +146,7 @@ function autocomplete_claim(api_urls) {
         });
 
         // Set auto suggestion for other insured's name
-        $("#id_pat_other_insured_name").autocomplete({
+        $("#id_pat_other_insured_name").devbridgeAutocomplete({
             minChars: 0,
             lookup: patient_lookup,
             formatResult: addHint,
@@ -172,7 +172,7 @@ function autocomplete_claim(api_urls) {
         }
 
         // Set auto suggestion for patient's name
-        $("#id_referring_name").autocomplete({
+        $("#id_referring_name").devbridgeAutocomplete({
             minChars: 0,
             lookup: physicians_lookup,
             formatResult: addHint,
@@ -202,7 +202,7 @@ function autocomplete_claim(api_urls) {
             });
         }
 
-        $("#id_billing_provider_name").autocomplete({
+        $("#id_billing_provider_name").devbridgeAutocomplete({
             minChars: 0,
             lookup: billing_p_lookup,
             formatResult: addHint,
@@ -225,7 +225,7 @@ function autocomplete_claim(api_urls) {
             });
         }
 
-        $("#id_location_provider_name").autocomplete({
+        $("#id_location_provider_name").devbridgeAutocomplete({
             minChars: 0,
             lookup: billing_p_lookup,
             formatResult: addHint,
@@ -254,7 +254,7 @@ function autocomplete_claim(api_urls) {
             });
         }
 
-        $("#id_rendering_provider_name").autocomplete({
+        $("#id_rendering_provider_name").devbridgeAutocomplete({
             minChars: 0,
             lookup: billing_p_lookup,
             formatResult: addHint,
@@ -279,7 +279,7 @@ function autocomplete_claim(api_urls) {
             });
         }
 
-        $("input[name^=cpt_code]").autocomplete({
+        $("input[name^=cpt_code]").devbridgeAutocomplete({
             minChars: 0,
             lookup: cpt_lookup,
             formatResult: addHint,
@@ -292,7 +292,7 @@ function autocomplete_claim(api_urls) {
                 $('#id_mod_c_' + line_no).val(cpt.cpt_mod_c);
                 $('#id_mod_d_' + line_no).val(cpt.cpt_mod_d);
                 $('#id_cpt_charge_' + line_no).val(cpt.cpt_charge);
-                
+
                 // Will not override if this field is already set
                 if(!$('#id_fees_' + line_no).val())
                     $('#id_fees_' + line_no).val(cpt.cpt_charge);
@@ -327,6 +327,32 @@ function autocomplete_claim(api_urls) {
         return suggestion.value + detailString(suggestion.hint);
     }
 
+
+    // Autocomplete for diagnonsis codes
+    $('.dx_code').each(function() {
+        $(this).typeahead({
+            hint: true,
+            highlight: true,
+            minLength: 0,
+        }, {
+            limit: 50,
+            source: new Bloodhound({
+                datumTokenizer: Bloodhound.tokenizers.whitespace,
+                queryTokenizer: Bloodhound.tokenizers.whitespace,
+                remote: {
+                    url: api_urls[6] + '?q=%Q',
+                    wildcard: '%Q',
+                }
+            }),
+            display: 'pk',
+            templates: {
+                notFound: '<div class="tt-notfound">unable to find any diagnosis codes that match the current value</div>',
+                suggestion: function(data) {
+                    return _.template('<div><%= data.pk %> - <%= data.fields.description %></div>')({data: data});
+                }
+            }
+        });
+    });
 };
 
 function bindCollapse(i) {

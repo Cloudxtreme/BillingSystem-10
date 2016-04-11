@@ -8,6 +8,7 @@ from django.shortcuts import render, render_to_response
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.contrib.auth.views import login, logout, password_reset, password_reset_confirm, password_reset_done, password_reset_complete
 from django.contrib.auth import authenticate
+from django.core import serializers
 from django.template.context import RequestContext
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
@@ -29,6 +30,7 @@ from accounts.models import *
 from django.core.files.storage import FileSystemStorage
 from displayContent.forms import DocumentForm
 from django.core.files import File
+from django.db.models import Q
 import datetime
 
 def TrackCharges(request):
@@ -489,7 +491,7 @@ def PostAdPage(request):
                                 amount=amount)
 
             var = print_form(request.POST);
-            
+
             # copy the saved file into media directory
             save_file_to_media(claim.pk)
             return var
@@ -1022,3 +1024,15 @@ def get_guarantor_info(request, id=''):
         form = GuarantorForm(initial={'patient': patient})
 
     return render(request, 'guarantor.html', {'form': form})
+
+@login_required
+def api_read_dx(request):
+    dxs = dx.objects.all()
+    q = request.GET.get('q')
+
+    if q:
+        dxs = dxs.filter(Q(pk__icontains=q) | Q(description__icontains=q))
+
+    dxs = dxs[:100]
+    s = serializers.serialize('python', dxs)
+    return JsonResponse(data=s, safe=False)
