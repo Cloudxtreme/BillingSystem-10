@@ -144,6 +144,7 @@ SEX = (
     ('F', 'Female'),
 )
 PAT_RELA_TO_INSURED = (
+    ('--' , '-----'),
     ('Self', 'Self'),
     ('Spouse', 'Spouse'),
     ('Child', 'Child'),

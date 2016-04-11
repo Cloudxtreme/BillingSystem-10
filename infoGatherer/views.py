@@ -466,6 +466,7 @@ def PostAdPage(request):
                 location_provider_npi=location_provider.npi,
                 billing_provider=billing_provider,
                 billing_provider_npi=billing_provider.npi,
+                user=request.user,
             );
 
             for i in xrange(1, form.rows+1):
