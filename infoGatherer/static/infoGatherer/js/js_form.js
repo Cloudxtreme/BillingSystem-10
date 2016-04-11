@@ -1,8 +1,4 @@
 function init(){
-    
-    // document.getElementById('show_hide').style.display='none';
-    // document.getElementById('input_show_hide').style.display='none';
-
 
     // Div tasgs
     var d = document.getElementsByClassName("fieldWrapper");
@@ -237,56 +233,26 @@ function init(){
     }
     $("div.toggle").width("140px");
     $("div.toggle-group").width("312px");
-    
-
-    // Javascript validation for diagnosis - service information
-
-    // var cells = [1,0,0,0,0,0,0,0,0,0,0,0];
 
 
-    
-    // var element="#id_dx_pt_s1_1";
-    // var val=($(element).val()).charCodeAt(0)-"A".charCodeAt(0);
-    // // console.log($(element).val());
-    // if(cells[val]!=1){
-    //     cells[val]=1;
-    // }
-    // else{
-    //     // console.log("123123");
-    //     element.parent().addClass('has-error');
-    //     // Red the box
-    // }
-    
-    
-    // // $("#selectBox option[value='option1']").remove();
-    // var cells = [1,0,0,0,0,0,0,0,0,0,0,0];
-    // //Define a onchange handler:
-    // var changeHandler = function() {
-    //     //You can alert the value of the selected option, using this:
-    //     var val=this.value.charCodeAt(0)-"A".charCodeAt(0);
-    //     // console.log(this.value);
-    //     if(cells[val]!=1){
-    //         cells[val]=1;
-    //     }
-    //     else{
-    //         // console.log("123123");
-    //         // console.log($($(this).attr("id")));
-    //         $($(this).attr("id")).parent().addClass('has-error');
-    //         // Red the box
-    //     }
-    //     // console.log(cells);
+    // self_checkbox_insured
+    $("#id_pat_relationship_insured").change(function(){
+        if($("#id_pat_relationship_insured option:selected").text().localeCompare("Self")==0){
+            console.log("self checked");
+            $("#id_insured_name").val($("#id_pat_name").val());
+            $("#id_insured_streetaddress").val($("#id_pat_streetaddress").val());
+            $("#id_insured_city").val($("#id_pat_city").val());
+            $("#id_insured_state").val($("#id_pat_state").val());
+            $("#id_insured_zip").val($("#id_pat_zip").val());
+            $("#id_insured_telephone").val($("#id_pat_telephone").val());
+            $("#id_insured_birth_date").val($("#id_pat_birth_date").val());
+            $("#id_insured_sex").val($("#id_pat_sex").val());
+        }else{
+            console.log("self NOT checked");
 
+        }
+    });
 
-    // }
-    // var filter=document.getElementById("id_dx_pt_s1_1");
-    // if(filter.addEventListener)
-    //   filter.addEventListener("change", changeHandler, false);
-    // //If it doesn't exist, try attachEvent, the IE way:
-    // else if(filter.attachEvent)
-    //   filter.attachEvent("onchange", changeHandler);
-    // //Just use onchange if neither exist
-    // else
-    //   filter.onchange = changeHandler;
 
 }
 window.onload = init;

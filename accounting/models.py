@@ -7,6 +7,7 @@ from django.db import models
 from django.db.models import Sum
 
 from base.models import *
+from accounts.models import User
 from infoGatherer.models import (
         Personal_Information,
         Payer,
@@ -42,6 +43,9 @@ class Claim(BaseModel):
     can backtrack what has been printed out in claim form.
     """
     payer = models.ForeignKey(Payer)
+
+    user = models.ForeignKey(User)
+
     payer_detail = models.TextField()
 
     patient = models.ForeignKey(
