@@ -1,1 +1,17 @@
-Failure
+{% extends "base.html" %}
+
+{% load staticfiles %}
+
+{% block link %}
+<link rel="stylesheet" href="{% static 'accounts/accounts.css' %}">
+{% endblock link %}
+
+{% block body %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-3 col-xs-8 col-xs-offset-2">
+        	<h2>Failure logging in. The ID and Password don't match!</h2>
+        </div>
+    </div>
+</div>
+{% endblock body %}

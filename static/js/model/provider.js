@@ -9,6 +9,7 @@ function hideAll(){
 	$(".field-provider_phone").css('display', 'none');
 	$(".field-provider_ssn").css('display', 'none');
 	$(".field-provider_ein").css('display', 'none');
+	$(".field-place_of_service").css('display', 'none');
 
 }
 function rendering(){
@@ -32,12 +33,8 @@ function addRequiredLabel(){
 	$("#id_provider_state").parent().children("label").addClass("required");
 	
 }
-function init(){
-	if(window.location.href.indexOf("add")>=0){
-		hideAll();
-		rendering();
-		addRequiredLabel();
-		$("#id_role").on("change", function () {
+
+function helper(){
 			if($('#id_role').val()==="Rendering"){
 				hideAll();
 				rendering();
@@ -65,20 +62,35 @@ function init(){
 				$(".field-provider_state").css('display', 'block');
 				$(".field-provider_zip").css('display', 'block');
 				$(".field-provider_phone").css('display', 'block');
+				$(".field-place_of_service").css('display', 'block');
+				$(".field-place_of_service").addClass("required");
 			}else{
 				hideAll();
 				$(".field-tax_id").css('display','block');
 				$(".field-npi").css('display','block');
 				$(".field-provider_ssn").css('display', 'block');
 				$(".field-provider_ein").css('display', 'block');
-				$(".field-speciality").css('display', 'block');
 				$(".field-provider_address").css('display', 'block');
 				$(".field-provider_city").css('display', 'block');
 				$(".field-provider_state").css('display', 'block');
 				$(".field-provider_zip").css('display', 'block');
 				$(".field-provider_phone").css('display', 'block');
 			}
+}
+function init(){
+	if(window.location.href.indexOf("add")>=0){
+		hideAll();
+		rendering();
+		addRequiredLabel();
+		$(document).ready( function() {
+		// $("#id_role").on("change", function () {
+			helper();
 		});
+
+		$("#id_role").on("change", function(){
+			helper()
+		});
+		
 	}
 }
 window.onload = init;

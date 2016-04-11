@@ -158,9 +158,8 @@
                             <input type="hidden" id="hidden_id_insured_name">
                         </div>
                         <div class="col-sm-4">
-                            <label for="{{ form.insured_idnumber.auto_id }}">ID Number</label>
-                            {{ form.insured_idnumber|add_class:"form-control" }}
-                            <input type="hidden" id="hidden_id_insured_id">
+                            <label for="{{ form.health_plan.auto_id }}">Health Plan</label>
+                            {{ form.health_plan|add_class:"form-control" }}
                         </div>
                     </div>
                     <div class="row">
@@ -192,8 +191,9 @@
                     </div>
                     <div class="row">
                         <div class="col-sm-3">
-                            <label for="{{ form.health_plan.auto_id }}">Health Plan</label>
-                            {{ form.health_plan|add_class:"form-control" }}
+                            <label for="{{ form.insured_idnumber.auto_id }}">ID Number</label>
+                            {{ form.insured_idnumber|add_class:"form-control" }}
+                            <input type="hidden" id="hidden_id_insured_id">
                         </div>
                         <div class="col-sm-3">
                             <label for="{{ form.payer_num.auto_id }}">Payer Number</label>
@@ -323,7 +323,7 @@
                         </div>
                     </div>
                     <div class="col-sm-6">
-                        <button type="submit" id="submitMe" class="btn btn-primary btn-md pull-right" value="Submit Button">Print Please!</button>
+                        <button type="button" id="submitMe" class="btn btn-primary btn-md pull-right" value="Submit Button">Print Please!</button>
                     </div>
                 </div>
             </div><!-- end tab-content of id physician -->

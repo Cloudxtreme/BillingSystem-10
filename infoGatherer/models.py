@@ -80,6 +80,55 @@ PROVIDER_ROLE_CHOICES = (
 
 POS_CHOICES = (('Home','Home'),('Hospital','Hospital'),('Office','Office'))
 
+POS = (
+    ("42","Ambulance - Air or Water (42)"),
+    ("41","Ambulance - Land (41)"),
+    ("24","Ambulatory Surgical Center (24)"),
+    ("13","Assisted Living Facility (13)"),
+    ("25","Birthing Center (25)"),
+    ("53","Community Mental Health Center (53)"),
+    ("61","Comprehensive Inpatient Rehabilitation Facility (61)"),
+    ("62","Comprehensive Outpatient Rehabilitation Facility (62)"),
+    ("33","Custodial Care Facility (33)"),
+    ("23","Emergency Room - Hospital (23)"),
+    ("65","End-Stage Renal Disease Treatment Facility (65)"),
+    ("50","Federally Qualified Health Center (50)"),
+    ("14","Group Home (14)"),
+    ("12","Home (12)"),
+    ("04","Homeless Shelter (04)"),
+    ("34","Hospice (34)"),
+    ("49","Independent Clinic (49)"),
+    ("81","Independent Laboratory (81)"),
+    ("05","Indian Health Service Free-standing Facility (05)"),
+    ("06","Indian Health Service Provider-based Facility (06)"),
+    ("21","Inpatient Hospital (21)"),
+    ("51","Inpatient Psychiatric Facility (51)"),
+    ("54","Intermediate Care Facility/Mentally Retarded (54)"),
+    ("60","Mass Immunization Center (60)"),
+    ("26","Military Treatment Facility (26)"),
+    ("15","Mobile Unit (15)"),
+    ("57","Non-residential Substance Abuse Treatment Facility (57)"),
+    ("32","Nursing Facility (32)"),
+    ("19","Off Campus - Outpatient Hospital (19)"),
+    ("11","Office (11)"),
+    ("22","On Campus - Outpatient Hospital (22)"),
+    ("99","Other Place of Service (99)"),
+    ("01","Pharmacy (01)"),
+    ("09","Prison-Correctional Facility (09)"),
+    ("52","Psychiatric Facility-Partial Hospitalization (52)"),
+    ("56","Psychiatric Residential Treatment Center (56)"),
+    ("71","Public Health Clinic (71)"),
+    ("55","Residential Substance Abuse Treatment Facility (55)"),
+    ("72","Rural Health Clinic (72)"),
+    ("03","School (03)"),
+    ("31","Skilled Nursing Facility (31)"),
+    ("16","Temporary Lodging (16)"),
+    ("07","Tribal 638 Free-standing Facility (07)"),
+    ("08","Tribal 638 Provider-based Facility (08)"),
+    ("20","Urgent Care Facility (20)"),
+    ("17","Walk-in Retail Health Clinic (17)"),
+)
+
 HEALTHPLAN = (
     ('Medicare', 'Medicare'),
     ('Medicaid', 'Medicaid'),
@@ -95,6 +144,7 @@ SEX = (
     ('F', 'Female'),
 )
 PAT_RELA_TO_INSURED = (
+    ('--' , '-----'),
     ('Self', 'Self'),
     ('Spouse', 'Spouse'),
     ('Child', 'Child'),
@@ -415,11 +465,13 @@ class Provider(models.Model):
     provider_state = USStateField(default='',null=True, blank=True)
     provider_zip = models.IntegerField(default='',null=True, blank=True)
     provider_phone = PhoneNumberField(null=True, blank=True, help_text='XXX-XXX-XXXX',)
+    place_of_service = models.CharField(choices=POS,max_length=200,default='',null=True, blank=True)
     history = HistoricalRecords()
 
 
     def __unicode__(self):
         return self.provider_name
+
     def full_clean(self, *args, **kwargs):
         dic={}
         if self.npi is None:
@@ -434,6 +486,9 @@ class Provider(models.Model):
             dic['provider_zip']='Please provide zip'
         if len(self.provider_phone)==0:
             dic['provider_phone']='Please provide phone number'
+
+        if self.place_of_service is None:
+            dic['place_of_service']='Please provide POS'
 
         if self.role == 'Billing' or self.role == 'Dual' or self.role == 'Rendering':
             if self.tax_id is None:

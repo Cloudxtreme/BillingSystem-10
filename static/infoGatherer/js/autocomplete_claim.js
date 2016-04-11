@@ -221,6 +221,7 @@ function autocomplete_claim(api_urls) {
                 data: p.provider_name,
                 hint: p.provider_city + ", " + p.provider_state,
                 id: p.id,
+                pos: p.place_of_service,
             });
         }
 
@@ -232,6 +233,13 @@ function autocomplete_claim(api_urls) {
                 $('#hidden_id_location_provider_name').val(suggestion.value);
 
                 $('#id_location_provider_id').val(suggestion.id);
+
+                // adding value and text to POS
+                for(i=1; i<=6; i++){
+                    $("#place_of_service_"+(i)+"_pos").attr("value",suggestion.pos);
+                    $("#place_of_service_"+(i)+"_pos").text(suggestion.pos);
+                }
+
             },
         });
 
