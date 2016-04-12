@@ -8,25 +8,6 @@ function autocomplete_claim(api_urls) {
 
     $('#id_insured_other_benifit_plan').prop('checked', false);
 
-    // Autocomplete causes binded field to clear its value when page is loaded from back and forward button.
-    // Workaround is to have hidden field to store previous value and assign to that field if available
-    // var autocompleteFields = [
-    //     'id_pat_name',
-    //     'id_insured_name',
-    //     'id_insured_idnumber',
-    //     'id_payer_num',
-    //     'id_payer_name',
-    //     'id_referring_name',
-    //     'id_billing_provider_name',
-    //     'id_location_provider_name',
-    //     'id_rendering_provider_name',
-    //     'id_pat_other_insured_name',
-    // ];
-    // for(var i=0; i<autocompleteFields.length; i++) {
-    //     $('#' + autocompleteFields[i]).val($('#hidden_' + autocompleteFields[i]).val() || $('#' + autocompleteFields[i]).attr('value'));
-    // }
-
-
     // Make ajax call for auto-suggestion
     $.ajax({
         url: api_urls[0],
@@ -76,73 +57,7 @@ function autocomplete_claim(api_urls) {
             minChars: 0,
             lookup: patient_lookup,
             formatResult: addHint,
-            onSelect: function (suggestion) {
-                // Get insured information and insurance according to that person
-                $.post(
-                    api_urls[2],
-                    {personal_chart_no: suggestion.data},
-                    function(obj) {
-                        var insured_info = obj["personal_information"][0];
-
-                        // Auto populate fields in insured section
-                        $('#id_insured_id').val(insured_info.chart_no);
-                        var birth_date_str = insured_info.dob.substr(5,2) + "/" + insured_info.dob.substr(8,2) + "/" + insured_info.dob.substr(0,4);
-                        $("#id_insured_streetaddress").val(insured_info.address);
-                        $("#id_insured_city").val(insured_info.city);
-                        $("#id_insured_state").val(insured_info.state);
-                        $("#id_insured_zip").val(insured_info.zip);
-                        $("#id_insured_telephone").val(insured_info.home_phone);
-                        $("#id_insured_birth_date").val(birth_date_str);
-                        $("#id_insured_sex").val(insured_info.sex.substr(0,1));
-
-                        $('#hidden_id_insured_name').val(suggestion.value);
-
-                        // Set auto suggestion for insurance id number
-                        var insurance_list = obj["insurance_list"];
-                        var insuranceNumberListObj = [];
-                        for(i of insurance_list)
-                            insuranceNumberListObj.push({value: i.insurance_id, insurance_data: i});
-
-                        $("#id_insured_idnumber").devbridgeAutocomplete({
-                            minChars: 0,
-                            lookup: insuranceNumberListObj,
-                            onSelect: populateInsuranceSection,
-                            formatResult: function(suggestion, currentValue) {
-                                return suggestion.value + detailString(suggestion.insurance_data.payer.name);
-                            },
-                        });
-
-                        // Set auto suggesntion for insurance name
-                        var insuranceNameListObj = [];
-                        for(i of insurance_list)
-                            insuranceNameListObj.push({value: i.payer.name, insurance_data: i});
-
-                        $("#id_payer_name").devbridgeAutocomplete({
-                            minChars: 0,
-                            lookup: insuranceNameListObj,
-                            onSelect: populateInsuranceSection,
-                            formatResult: function(suggestion, currentValue) {
-                                return suggestion.value + detailString(suggestion.insurance_data.payer.address + ", " + suggestion.insurance_data.payer.city);
-                            },
-                        });
-
-                        // Set auto suggestion for insurance code
-                        var insuranceCodeListObj = [];
-                        for(i of insurance_list)
-                            insuranceCodeListObj.push({value: i.payer.code + "", insurance_data: i});
-
-                        $("#id_payer_num").devbridgeAutocomplete({
-                            minChars: 0,
-                            lookup: insuranceCodeListObj,
-                            onSelect: populateInsuranceSection,
-                            formatResult: function(suggestion, currentValue) {
-                                return suggestion.value + detailString(suggestion.insurance_data.payer.name);
-                            },
-                        });
-
-                    }
-                );
-            }
+            onSelect: setupAutoInsurance
         });
 
         // Set auto suggestion for other insured's name
@@ -157,6 +72,74 @@ function autocomplete_claim(api_urls) {
             },
         });
     });
+
+    // Get insured information and insurance according to that person
+    function setupAutoInsurance(suggestion) {
+        $.post(
+            api_urls[2],
+            {personal_chart_no: suggestion.data},
+            function(obj) {
+                var insured_info = obj["personal_information"][0];
+
+                // Auto populate fields in insured section
+                $('#id_insured_id').val(insured_info.chart_no);
+                var birth_date_str = insured_info.dob.substr(5,2) + "/" + insured_info.dob.substr(8,2) + "/" + insured_info.dob.substr(0,4);
+                $("#id_insured_streetaddress").val(insured_info.address);
+                $("#id_insured_city").val(insured_info.city);
+                $("#id_insured_state").val(insured_info.state);
+                $("#id_insured_zip").val(insured_info.zip);
+                $("#id_insured_telephone").val(insured_info.home_phone);
+                $("#id_insured_birth_date").val(birth_date_str);
+                $("#id_insured_sex").val(insured_info.sex.substr(0,1));
+
+                $('#hidden_id_insured_name').val(suggestion.value);
+
+                // Set auto suggestion for insurance id number
+                var insurance_list = obj["insurance_list"];
+                var insuranceNumberListObj = [];
+                for(i of insurance_list)
+                    insuranceNumberListObj.push({value: i.insurance_id, insurance_data: i});
+
+                $("#id_insured_idnumber").devbridgeAutocomplete({
+                    minChars: 0,
+                    lookup: insuranceNumberListObj,
+                    onSelect: populateInsuranceSection,
+                    formatResult: function(suggestion, currentValue) {
+                        return suggestion.value + detailString(suggestion.insurance_data.payer.name);
+                    },
+                });
+
+                // Set auto suggesntion for insurance name
+                var insuranceNameListObj = [];
+                for(i of insurance_list)
+                    insuranceNameListObj.push({value: i.payer.name, insurance_data: i});
+
+                $("#id_payer_name").devbridgeAutocomplete({
+                    minChars: 0,
+                    lookup: insuranceNameListObj,
+                    onSelect: populateInsuranceSection,
+                    formatResult: function(suggestion, currentValue) {
+                        return suggestion.value + detailString(suggestion.insurance_data.payer.address + ", " + suggestion.insurance_data.payer.city);
+                    },
+                });
+
+                // Set auto suggestion for insurance code
+                var insuranceCodeListObj = [];
+                for(i of insurance_list)
+                    insuranceCodeListObj.push({value: i.payer.code + "", insurance_data: i});
+
+                $("#id_payer_num").devbridgeAutocomplete({
+                    minChars: 0,
+                    lookup: insuranceCodeListObj,
+                    onSelect: populateInsuranceSection,
+                    formatResult: function(suggestion, currentValue) {
+                        return suggestion.value + detailString(suggestion.insurance_data.payer.name);
+                    },
+                });
+
+            }
+        );
+    }
 
     // Prepare auto-suggestion for physician information
     $.ajax({
@@ -342,7 +325,7 @@ function autocomplete_claim(api_urls) {
                 remote: {
                     url: api_urls[6] + '?q=%Q',
                     wildcard: '%Q',
-                }
+                },
             }),
             display: 'pk',
             templates: {
@@ -352,6 +335,23 @@ function autocomplete_claim(api_urls) {
                 }
             }
         });
+    });
+
+
+    // self_checkbox_insured
+    $("#id_pat_relationship_insured").change(function(){
+        if($("#id_pat_relationship_insured option:selected").text().localeCompare("Self") == 0) {
+            $("#id_insured_name").val($("#id_pat_name").val());
+            $("#id_insured_streetaddress").val($("#id_pat_streetaddress").val());
+            $("#id_insured_city").val($("#id_pat_city").val());
+            $("#id_insured_state").val($("#id_pat_state").val());
+            $("#id_insured_zip").val($("#id_pat_zip").val());
+            $("#id_insured_telephone").val($("#id_pat_telephone").val());
+            $("#id_insured_birth_date").val($("#id_pat_birth_date").val());
+            $("#id_insured_sex").val($("#id_pat_sex").val());
+
+            setupAutoInsurance({data: $('#id_pat_id').val()});
+        }
     });
 };
 

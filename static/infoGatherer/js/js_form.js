@@ -24,8 +24,8 @@ function init(){
     document.getElementById("id_pat_relation_auto_accident").className="";
     document.getElementById("id_pat_relation_other_accident").className="";
     document.getElementById("id_insured_other_benifit_plan").className="";
-    
-    
+
+
     // Select tags
     var d = document.getElementsByTagName("select");
     for(i=0;i<d.length;i++){
@@ -37,7 +37,7 @@ function init(){
 
     // Adding class to state # box
     document.getElementById("id_pat_auto_accident_state").className+=" input-sm";
-    
+
     // Onlick state for Auto Accident
     document.getElementById("id_pat_relation_auto_accident").onclick=function(){if (document.getElementById('input_show_hide').style.display==='none'){document.getElementById('input_show_hide').style.display = "inline-block"} else {document.getElementById('input_show_hide').style.display = "none"}}
 
@@ -46,10 +46,10 @@ function init(){
 
     // render page only after script has loaded
     document.getElementById("hideAll").style.display = "block";
-            
+
     // Custom Validation
     jQuery.validator.addMethod("validation_diagnosis", function(value, element){
-        
+
         if(value.charCodeAt(0)>=65 && value.charCodeAt(0)<=76){
             var s="#id_ICD_10_"+(value.charCodeAt(0)-"A".charCodeAt(0)+1).toString();
             // console.log(s);
@@ -58,7 +58,7 @@ function init(){
             }
         }
         return true;
-    }); 
+    });
 
     jQuery.validator.addMethod("validation_date", function(value, element){
         if(value.length==0){
@@ -160,7 +160,7 @@ function init(){
                 // $(element).closest('.form-group').addClass('has-error');
                 $(element).parent().addClass('has-error');
             }
-            
+
         },
         unhighlight: function(element) {
             $(element).parent().removeClass('has-error');
@@ -179,9 +179,9 @@ function init(){
     jQuery('#submitMe').click(function(evt) {
         evt.preventDefault();
         jQuery('#myForm').submit();
-        
+
     });
-    
+
     function runToTop (element){
         if($(element).parents("#insurance").length!=0){
             $("#nav_insurance").children("a").css("color","#BB4442");
@@ -192,7 +192,7 @@ function init(){
         else if($(element).parents("#patient").length!=0){
             $("#nav_patient").children("a").css("color","#BB4442");
         }
-        
+
     }
 
 
@@ -233,26 +233,6 @@ function init(){
     }
     $("div.toggle").width("140px");
     $("div.toggle-group").width("312px");
-
-
-    // self_checkbox_insured
-    $("#id_pat_relationship_insured").change(function(){
-        if($("#id_pat_relationship_insured option:selected").text().localeCompare("Self")==0){
-            console.log("self checked");
-            $("#id_insured_name").val($("#id_pat_name").val());
-            $("#id_insured_streetaddress").val($("#id_pat_streetaddress").val());
-            $("#id_insured_city").val($("#id_pat_city").val());
-            $("#id_insured_state").val($("#id_pat_state").val());
-            $("#id_insured_zip").val($("#id_pat_zip").val());
-            $("#id_insured_telephone").val($("#id_pat_telephone").val());
-            $("#id_insured_birth_date").val($("#id_pat_birth_date").val());
-            $("#id_insured_sex").val($("#id_pat_sex").val());
-        }else{
-            console.log("self NOT checked");
-
-        }
-    });
-
 
 }
 window.onload = init;
