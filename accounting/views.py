@@ -17,6 +17,19 @@ from .models import *
 from .forms import *
 from base.models import ExtPythonSerializer
 
+def claim_summary(request):
+
+    summary = Claim.objects.values()
+    summary = list(summary)
+    for c, b in zip(Claim.objects.all(),summary):
+        b['pat_name'] = c.patient.full_name
+
+    for c, b in zip(Claim.objects.all(),summary):
+        b['user'] = c.user.first_name+"("+c.user.email+")"
+
+    return render(request, 'accounting/claim/summary.html' ,{
+        'summary': summary    
+    }) 
 
 def payment_summary(request):
     # get data from accounting_claim : claim_id, created data, patient_id

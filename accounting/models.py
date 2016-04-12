@@ -42,10 +42,10 @@ class Claim(BaseModel):
     will be saved in field named with '_detail' suffix just in case we
     can backtrack what has been printed out in claim form.
     """
-    payer = models.ForeignKey(Payer)
 
     user = models.ForeignKey(User)
-
+    
+    payer = models.ForeignKey(Payer)
     payer_detail = models.TextField()
 
     patient = models.ForeignKey(

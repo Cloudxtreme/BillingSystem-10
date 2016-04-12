@@ -10,7 +10,7 @@ urlpatterns = [
     url(r'^payment/apply/(?P<payment_id>\w+)/(?P<claim_id>\w+)/$', views.apply_create, name="payment_apply_create"),
     url(r'^payment/apply/(?P<payment_id>\w+)/(?P<claim_id>\w+)/patient/$', views.charge_patient_create, name="charge_patient_create"),
 
-
+    url(r'^claim_summary/$', views.claim_summary, name="claim_summary"),
     url(r'^api_search_payment/$', views.api_search_payment, name="api_search_payment"),
     url(r'^api_search_claim/$', views.api_search_claim, name="api_search_claim"),
     url(r'^api_create_note/$', views.api_create_note, name="api_create_note"),
