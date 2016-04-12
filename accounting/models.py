@@ -44,7 +44,7 @@ class Claim(BaseModel):
     """
 
     user = models.ForeignKey(User)
-    
+
     payer = models.ForeignKey(Payer)
     payer_detail = models.TextField()
 
@@ -218,6 +218,9 @@ class Payment(BaseModel):
     will be distributed some amount to cover procedure that payer
     is charged.
     """
+
+    user = models.ForeignKey(User)
+
     billing_provider = models.ForeignKey(
             Provider,
             limit_choices_to={'role': 'Billing'},
@@ -343,6 +346,9 @@ class Apply(BaseModel):
     becomes zero on a report.  In case that "payer_type" is Patient,
     adjustment should be null.
     """
+
+    user = models.ForeignKey(User)
+    
     payment = models.ForeignKey(Payment)
     charge = models.ForeignKey(Charge)
     amount = models.DecimalField(

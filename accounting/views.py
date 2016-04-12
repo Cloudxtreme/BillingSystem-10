@@ -31,7 +31,7 @@ def claim_summary(request):
         'summary': summary    
     }) 
 
-def payment_summary(request):
+def gross_payment_summary(request):
     # get data from accounting_claim : claim_id, created data, patient_id
     dic=[]
     idList=Claim.objects.values_list('id', flat=True)
