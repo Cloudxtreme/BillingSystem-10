@@ -220,7 +220,6 @@ class Payment(BaseModel):
     """
 
     user = models.ForeignKey(User)
-
     billing_provider = models.ForeignKey(
             Provider,
             limit_choices_to={'role': 'Billing'},
@@ -348,7 +347,6 @@ class Apply(BaseModel):
     """
 
     user = models.ForeignKey(User)
-    
     payment = models.ForeignKey(Payment)
     charge = models.ForeignKey(Charge)
     amount = models.DecimalField(
