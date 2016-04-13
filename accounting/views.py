@@ -311,7 +311,7 @@ def api_search_claim(request):
         )
 
         if post_data.get('dob'):
-            dob = datetime.datetime.strptime(post_data.get('dob'), '%m/%d/%Y')
+            dob = datetime.strptime(post_data.get('dob'), '%m/%d/%Y')
             claim = claim.filter(patient__dob=dob.strftime('%Y-%m-%d'))
 
         s = serializers.serialize('python', claim, use_natural_foreign_keys=True)
