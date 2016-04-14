@@ -4,9 +4,7 @@ from base.models import BASE_DECIMAL
 
 
 class NotesForm(forms.ModelForm):
-	
+
     class Meta:
         model = Notes
-        exclude = [ 'author']
-        fields = '__all__'
-        widgets = {}
+        exclude = [ 'created', 'modified', 'author' ]
