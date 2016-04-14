@@ -20,6 +20,8 @@ from accounting.models import Document, Claim
 from accounting.models import *
 
 
+
+
 def view_dashboard(request):
     return render(request, 'displayContent/dashboard.html')
 

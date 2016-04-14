@@ -42,10 +42,10 @@ class Claim(BaseModel):
     will be saved in field named with '_detail' suffix just in case we
     can backtrack what has been printed out in claim form.
     """
-    payer = models.ForeignKey(Payer)
 
     user = models.ForeignKey(User)
 
+    payer = models.ForeignKey(Payer)
     payer_detail = models.TextField()
 
     patient = models.ForeignKey(
@@ -218,6 +218,8 @@ class Payment(BaseModel):
     will be distributed some amount to cover procedure that payer
     is charged.
     """
+
+    user = models.ForeignKey(User)
     billing_provider = models.ForeignKey(
             Provider,
             limit_choices_to={'role': 'Billing'},
@@ -343,6 +345,8 @@ class Apply(BaseModel):
     becomes zero on a report.  In case that "payer_type" is Patient,
     adjustment should be null.
     """
+
+    user = models.ForeignKey(User)
     payment = models.ForeignKey(Payment)
     charge = models.ForeignKey(Charge)
     amount = models.DecimalField(

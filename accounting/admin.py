@@ -4,8 +4,11 @@ from decimal import *
 
 
 class PaymentAdmin(admin.ModelAdmin):
-    list_display = ('payment_date','payer_type','payer','payment_method','check_number','payment_Amount', 'applied_Amount',)
-    search_fields = ['payment_date','payer_type','payer','payment_method','check_number','applied_Amount','payment_Amount',]
+    list_display = ('payment_date','payer_type','payer','payment_method','check_number','payment_Amount', 'applied_Amount', 'user')
+    search_fields = ['payment_date','payer_type','payer','payment_method','check_number','applied_Amount','payment_Amount', 'user']
+
+    def user(self, obj):
+        return str(obj.user.first_name)+"("+obj.user.email+")"
 
     def payer(self, obj):
         if (obj.payer_type == "Insurance"):
@@ -22,8 +25,12 @@ class PaymentAdmin(admin.ModelAdmin):
 
 class ApplyAdmin(admin.ModelAdmin):
     # pass
-    list_display = ('applied_on','payment_date','dos','patient_Id','patient_name' ,'payment_amount','adjustment_amount', 'paymentid', 'payer')
+    list_display = ('applied_on','payment_date','dos','patient_Id','patient_name' ,'payment_amount','adjustment_amount', 'paymentid', 'payer', 'user')
+    search_fields = ['applied_on','payment_date','dos','patient_Id','patient_name' ,'payment_amount','adjustment_amount', 'paymentid', 'payer', 'user']
 
+    def user(self, obj):
+        return str(obj.user.first_name)+"("+obj.user.email+")"
+        
     def adjustment_amount(self, obj):
         return "$"+str(obj.adjustment)
 
