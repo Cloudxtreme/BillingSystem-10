@@ -344,14 +344,18 @@ class Personal_Information(models.Model):
         else:
             return '%s %s' % (self.first_name, self.last_name)
 
-    def get_full_name(self):
-        return self.full_name
-
-    def get_format_name(self):
+    @property
+    def format_name(self):
         if(self.middle_name):
             return '%s, %s, %s' % (self.last_name, self.first_name, self.middle_name)
         else:
             return '%s, %s' % (self.last_name, self.first_name)
+
+    def get_full_name(self):
+        return self.full_name
+
+    def get_format_name(self):
+        return self.format_name
 
     def get_data(self):
         details = model_to_dict(self, exclude=['audit_log','dob','date_registered','state','country'])

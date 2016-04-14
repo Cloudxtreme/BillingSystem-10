@@ -33,6 +33,9 @@ from django.core.files import File
 from django.db.models import Q
 import datetime
 
+from base.models import ExtPythonSerializer
+
+
 def TrackCharges(request):
     return render(request, 'track_charges.html')
 
@@ -524,9 +527,13 @@ def get_make_claim_extra_context(request):
     return JsonResponse(data=context);
 
 def get_json_personal_info(request):
-    personal_q_set = Personal_Information.objects.filter(pk=request.POST['personal_chart_no'])
-    context = {"personal_information": list(personal_q_set.values()),}
-    return JsonResponse(data=context)
+    p = Personal_Information.objects.filter(pk=request.POST.get('personal_chart_no'))
+    se = ExtPythonSerializer().serialize(
+            p,
+            props=['format_name',],
+            use_natural_foreign_keys=True)
+
+    return JsonResponse(data=se, safe=False)
 
 def get_json_personal_and_insurance_info(request):
     personal_set = Personal_Information.objects.filter(pk=request.POST['personal_chart_no'])
