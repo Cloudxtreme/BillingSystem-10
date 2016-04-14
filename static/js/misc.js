@@ -1,10 +1,25 @@
-$( document ).ready(function() {
-    $("input[type=number").focus(function() {
-        var self = $(this);
-        if(self.val() == "") {
-            self.val(".00");
-            abc = self;
-            self[0].setSelectionRange(0, 0);
+// Automatically add trailing two decimals for input type number
+$(document).ready(function() {
+    $("input[type=number]").each(function() {
+
+        // Add trailing decimals only if the input is meant
+        // to be for decimal type
+        if($(this)[0].hasAttribute("step")) {
+            // Let default decimal be two digits but try to get
+            // custom length from "step" attribute if it has one.
+            var decimal = 2;
+            var step = $(this).prop("step");
+            var i = step.indexOf(".");
+            if(i > -1) {
+                step = step.substr(i + 1);
+                decimal = step.length;
+            }
+
+            $(this).blur(function() {
+                var value = $(this).val();
+                if(value || value === 0)
+                    $(this).val(parseFloat(value).toFixed(decimal));
+            });
         }
     });
 });
