@@ -124,6 +124,9 @@
         <a id= "claimhistory" href="{% url 'displayContent:view_claims' chart=patient.chart_no %}" class="btn btn-primary">Claims History</a>
         <br>
         <br>
+        <a href="{% url 'infoGatherer:post_ad' %}?patient={{patient.chart_no}}" class="btn btn-default">Make Claim</a>
+        <br>
+        <br>
     </div>
 
 </div>

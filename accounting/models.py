@@ -7,7 +7,6 @@ from django.db import models
 from django.db.models import Sum
 
 from base.models import *
-from accounts.models import User
 from infoGatherer.models import (
         Personal_Information,
         Payer,
@@ -34,7 +33,6 @@ RESPONSIBILITY_TYPE = [
 ]
 
 
-
 class Claim(BaseModel):
     """
     Claim model captures foreign keys and some information which will
@@ -43,7 +41,7 @@ class Claim(BaseModel):
     can backtrack what has been printed out in claim form.
     """
 
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL)
 
     payer = models.ForeignKey(Payer)
     payer_detail = models.TextField()
@@ -219,7 +217,7 @@ class Payment(BaseModel):
     is charged.
     """
 
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL)
     billing_provider = models.ForeignKey(
             Provider,
             limit_choices_to={'role': 'Billing'},
@@ -346,7 +344,7 @@ class Apply(BaseModel):
     adjustment should be null.
     """
 
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL)
     payment = models.ForeignKey(Payment)
     charge = models.ForeignKey(Charge)
     amount = models.DecimalField(

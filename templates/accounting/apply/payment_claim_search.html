@@ -50,6 +50,7 @@
         <div class="row">
             <input type="button" class="btn btn-default" id="submit-search-procedure" value="Search Charge">
             <input type="button" class="btn btn-default" id="create-patient-charge" value="Create Patient Charge">
+            <input type="button" class="btn btn-default" id="create-payment" value="Create Payment">
         </div>
     </div>
 </form>
@@ -73,6 +74,15 @@
         form.find('input[name="search_type"]').val('create_patient_charge');
         form.submit();
     })
+
+    $('#create-payment').click(function(e) {
+        var claim_id = $("#{{pcs_form.claim.auto_id}}").val();
+        var url = "{% url "accounting:payment_create" %}";
+        if(claim_id)
+            url += "?claim=" + claim_id;
+
+        window.location.href = url;
+    });
 
     function toggleLoadingIcon(el) {
         var button = $($(el).children().get(0));

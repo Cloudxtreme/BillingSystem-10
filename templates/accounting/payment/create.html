@@ -93,6 +93,9 @@
         else
             $('#{{ form.check_number.auto_id }}').parent().hide();
     });
+
+    // Trigger change in case form has initial data
+    $('#{{ form.payer_type.auto_id }}').trigger("change");
 })();
 </script>
 {% endblock body %}

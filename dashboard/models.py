@@ -1,9 +1,10 @@
 from __future__ import unicode_literals
+
+from django.conf import settings
+
 from base.models import *
-from accounts.models import User
-# Create your models here.
 
 
 class Notes(BaseModel):
-    author = models.ForeignKey(User)
+    author = models.ForeignKey(settings.AUTH_USER_MODEL)
     desc = models.CharField(max_length=255)
