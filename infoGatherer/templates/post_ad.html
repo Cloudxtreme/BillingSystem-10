@@ -27,7 +27,7 @@
 
 {% block body %}
 <div class="container" id="hideAll">
-    <form id="myForm" action="pdf" method="post" data-toggle="validator" >{% csrf_token %}
+    <form id="myForm" action="pdf" method="post" data-toggle="validator" target="_blank">{% csrf_token %}
         <ul class="nav nav-tabs" id="tabs">
             <li class="active"><a href="#patient" data-toggle="tab"><strong>Patient &amp; Insured Information</strong></a></li>
             <li><a href="#physician" data-toggle="tab"><strong>Physical Information</strong></a></li>
