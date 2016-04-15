@@ -59,6 +59,7 @@ INSTALLED_APPS = (
     'dashboard',
     'accounting',
     'displayContent',
+    'daterange_filter',
 )
 
 MIDDLEWARE_CLASSES = (
