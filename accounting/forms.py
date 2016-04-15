@@ -12,7 +12,7 @@ class PaymentMakeForm(forms.ModelForm):
 
     class Meta:
         model = Payment
-        exclude = ['created', 'modified']
+        exclude = ['created', 'modified', "user"]
 
     def clean(self):
         cleaned_data = super(PaymentMakeForm, self).clean()
@@ -210,7 +210,7 @@ class ApplyForm(forms.ModelForm):
 
     class Meta:
         model = Apply
-        exclude = ['created', 'modified']
+        exclude = ['created', 'modified', "user"]
 
     def __init__(self, *args, **kwargs):
         claim_id = kwargs.pop('claim_id', None)

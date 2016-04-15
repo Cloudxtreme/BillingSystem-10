@@ -60,8 +60,8 @@
                                 <td>{{apply_data|indexList:forloop.counter0|indexDict:'cpt_code_text'}}</td>
                                 <td>{{apply_data|indexList:forloop.counter0|indexDict:'charge_amount'}}</td>
                                 <td class="balance">{{apply_data|indexList:forloop.counter0|indexDict:'balance'}}</td>
-                                <td>{{apply_form.amount|add_class:"form-control amount ins"}}</td>
-                                <td>{{apply_form.adjustment|add_class:"form-control adjustment ins"}}</td>
+                                <td>{{apply_form.amount|add_class:"form-control amount ins"|attr:"step:0.01"}}</td>
+                                <td>{{apply_form.adjustment|add_class:"form-control adjustment ins"|attr:"step:0.01"}}</td>
                                 <td>{{apply_form.reference|add_class:"form-control"}}</td>
                                 <td class="new-balance" style="padding-left: 10px;"></td>
                             </tr>
@@ -117,7 +117,7 @@
                                 <td>{{apply_data|indexList:forloop.counter0|indexDict:'charge_amount'}}</td>
                                 <td class="balance">{{apply_data|indexList:forloop.counter0|indexDict:'balance'}}</td>
                                 <td>{{apply_data|indexList:forloop.counter0|indexDict:'resp_type'}}</td>
-                                <td>{{apply_form.amount|add_class:"form-control amount pat"}}</td>
+                                <td>{{apply_form.amount|add_class:"form-control amount pat"|attr:"step:0.01"}}</td>
                                 <td>{{apply_form.reference|add_class:"form-control"}}</td>
                                 <td class="new-balance" style="padding-left: 10px;"></td>
                             </tr>
@@ -189,7 +189,7 @@ $(document).ready(function(){
     jQuery('#submitMe').click(function(evt) {
         evt.preventDefault();
         jQuery('#paymentForm').submit();
-        
+
     });
 })
 

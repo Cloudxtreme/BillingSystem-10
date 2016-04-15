@@ -1,5 +1,3 @@
-{% load staticfiles %}
-
 {% url 'dashboard:dashboard' as dashboard %}
 {% url 'infoGatherer:post_ad' as make_claim %}
 {% url 'infoGatherer:track_charges' as track_charges %}
@@ -25,7 +23,7 @@
             <ul class="nav navbar-nav navbar-right">
                 {% if user.is_authenticated %}
                     <li {%if dashboard in request.path%} class="active" {%endif%} ><a href="{{ dashboard }}">Dashboard</a></li>
-                    <li {%if make_claim in request.path%} class="active" {%endif%} ><a href="{{ make_claim }}">Make Claim</a></li>
+                    <li {%if make_claim in request.path%} class="active" {%endif%} ><a href="javascript:void(0);" class="custom-href make-claim">Make Claim</a></li>
                     <li {%if auditlog in request.path%} class="active" {%endif%} ><a href="{{ auditlog }}">Audit Log</a></li>
                     <li {%if gross_payment_summary in request.path %} class="active" {%endif%} ><a href="{{ gross_payment_summary }}">Gross Payment Summary</a></li>
                     <li {%if not change_password in request.path and admin_index in request.path%} class="active" {%endif%} ><a href="{{ admin_index }}">Database</a></li>
@@ -38,3 +36,20 @@
         </div>
     </div>
 </nav>
+
+<script type="text/javascript">
+    $(".custom-href").click(function(e) {
+        var self = $(this);
+        if(self.hasClass("make-claim")) {
+            var pathname = window.location.pathname;
+            var pattern = new RegExp(/patient\/(.*?)\//g);
+            var matches = pattern.exec(pathname);
+            if(matches && matches.length > 0) {
+                window.location.href = "{{make_claim}}?patient=" + matches[1];
+            }
+            else {
+                window.location.href = "{{make_claim}}";
+            }
+        }
+    });
+</script>

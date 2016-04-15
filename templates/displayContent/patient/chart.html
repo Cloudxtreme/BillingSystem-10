@@ -122,8 +122,53 @@
     </div>
     <div class="col-sm-8" style="padding-left:20px;">
         <a id= "claimhistory" href="{% url 'displayContent:view_claims' chart=patient.chart_no %}" class="btn btn-primary">Claims History</a>
+        <a href="{% url 'infoGatherer:post_ad' %}?patient={{patient.chart_no}}" class="btn btn-default">Make Claim</a>
         <br>
-        <br>
+        <table class="table table-striped table-condensed">
+            <thead>
+                <tr>
+                    <th colspan="7">A/R Aging (days)</th>
+                </tr>
+                <tr>
+                    <th></th>
+                    <th>0-30</th>
+                    <th>31-60</th>
+                    <th>61-90</th>
+                    <th>91-120</th>
+                    <th>>120</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>Patient Aging</th>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th>Insurance Aging</th>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th>Total</th>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 
 </div>

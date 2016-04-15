@@ -28,8 +28,8 @@ def claim_summary(request):
         b['user'] = c.user.first_name+"("+c.user.email+")"
 
     return render(request, 'accounting/claim/summary.html' ,{
-        'summary': summary    
-    }) 
+        'summary': summary
+    })
 
 def gross_payment_summary(request):
     # get data from accounting_claim : claim_id, created data, patient_id
@@ -75,9 +75,23 @@ def gross_payment_summary(request):
     return render(request, 'accounting/payment/accounts_summary.html', {'summary': dic})
 
 def payment_create(request):
-    form = PaymentMakeForm(request.POST or None)
+    claim_id = request.GET.get("claim")
+    initial = None
+    if claim_id:
+        claim = get_object_or_404(Claim, pk=claim_id)
+        initial = dict(
+            billing_provider=claim.billing_provider,
+            rendering_provider=claim.rendering_provider,
+            payer_type="Patient",
+            payer_patient=claim.patient)
+
+    if request.method == "GET" and initial:
+        form = PaymentMakeForm(initial=initial)
+    else:
+        form = PaymentMakeForm(request.POST or None)
+
     if request.method == 'POST' and form.is_valid():
-        Payment.objects.create(**form.cleaned_data)
+        Payment.objects.create(user=request.user, **form.cleaned_data)
         return redirect(reverse('dashboard:dashboard'))
     return render(request, 'accounting/payment/create.html', {'form': form})
 
@@ -162,7 +176,8 @@ def apply_create(request, payment_id, claim_id):
                         (amount is not None or adjustment is not None)) or \
                         (payment.payer_type == 'Patient' and \
                         amount is not None):
-                    new_applies.append(Apply(**cleaned_data))
+                    new_applies.append(Apply(user=request.user,
+                            **cleaned_data))
                     total_amount += amount
 
             Apply.objects.bulk_create(new_applies)

@@ -8,6 +8,15 @@ function autocomplete_claim(api_urls) {
 
     $('#id_insured_other_benifit_plan').prop('checked', false);
 
+    // Check if url has patient ID or not.  If it does,
+    // execute autocomplete for patient section.
+    var patient_id = getUrlParameter('patient');
+    if(patient_id) {
+        $(document).ready(function() {
+            setUpPatient({data: patient_id});
+        });
+    }
+
     // Make ajax call for auto-suggestion
     $.ajax({
         url: api_urls[0],
@@ -26,30 +35,7 @@ function autocomplete_claim(api_urls) {
             minChars: 0,
             lookup: patient_lookup,
             formatResult: addHint,
-            onSelect: function (suggestion) {
-                // Get patient information
-                $.post(
-                    api_urls[1],
-                    {personal_chart_no: suggestion.data},
-                    function(obj) {
-                        var patient_info = obj['personal_information'][0];
-
-                        // Auto populate fields in patient section
-                        var birth_date_str = patient_info.dob.substr(5,2) + "/" + patient_info.dob.substr(8,2) + "/" + patient_info.dob.substr(0,4);
-                        $("#id_pat_streetaddress").val(patient_info.address);
-                        $("#id_pat_city").val(patient_info.city);
-                        $("#id_pat_state").val(patient_info.state);
-                        $("#id_pat_zip").val(patient_info.zip);
-                        $("#id_pat_telephone").val(patient_info.home_phone);
-                        $("#id_pat_birth_date").val(birth_date_str);
-                        $("#id_pat_sex").val(patient_info.sex.substr(0,1));
-
-                        $('#hidden_id_pat_name').val(suggestion.value);
-
-                        $('#id_pat_id').val(patient_info.chart_no);
-                    }
-                );
-            },
+            onSelect: setUpPatient,
         });
 
         // Set auto suggestion for insured's name
@@ -72,6 +58,28 @@ function autocomplete_claim(api_urls) {
             },
         });
     });
+
+    function setUpPatient(suggestion) {
+        // Get patient information
+        $.post(
+            api_urls[1],
+            {personal_chart_no: suggestion.data},
+            function(obj) {
+                // Auto populate fields in patient section
+                var patient = obj[0].fields;
+                var birth_date_str = patient.dob.substr(5,2) + "/" + patient.dob.substr(8,2) + "/" + patient.dob.substr(0,4);
+                $("#id_pat_streetaddress").val(patient.address);
+                $("#id_pat_city").val(patient.city);
+                $("#id_pat_state").val(patient.state);
+                $("#id_pat_zip").val(patient.zip);
+                $("#id_pat_telephone").val(patient.home_phone);
+                $("#id_pat_birth_date").val(birth_date_str);
+                $("#id_pat_sex").val(patient.sex.substr(0,1));
+                $('#id_pat_name').val(patient.format_name);
+                $('#id_pat_id').val(patient.chart_no);
+            }
+        );
+    };
 
     // Get insured information and insurance according to that person
     function setupAutoInsurance(suggestion) {
