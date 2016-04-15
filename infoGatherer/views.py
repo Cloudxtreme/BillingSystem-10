@@ -579,7 +579,11 @@ def search_form(request):
     return render(request, 'test.html')
 
 def print_form(bar):
+    bar2={}
+    for k, v in bar.items():
+        bar2[k]=v.upper();
 
+    bar=bar2;
     # Patient Information
     fields = [
         ('11',bar['pat_name']),
@@ -746,8 +750,8 @@ def print_form(bar):
         fields.append(('8',True))
     elif(bar['health_plan']=='Other'):
         fields.append(('9',True))
-    fields.append(('66','Signature on file'))
-    fields.append(('68','Signature on file'))
+    fields.append(('66','Signature on file'.upper()))
+    fields.append(('68','Signature on file'.upper()))
     now = datetime.datetime.now()
     fields.append(('67',str(now.month)+"|"+str(now.day)+"|"+str(now.year)))
 
