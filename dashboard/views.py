@@ -29,3 +29,9 @@ def api_create_note(request):
         return JsonResponse(data=s, safe=False)
 
     return HttpResponseBadRequest('[]', content_type='application/json')
+
+def api_delete_note(request):
+    if request.method == 'POST':
+        Notes.objects.all().delete();
+        return JsonResponse('', safe=False)
+    return HttpResponseBadRequest('[]', content_type='application/json')

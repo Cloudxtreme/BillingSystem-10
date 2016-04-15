@@ -38,18 +38,22 @@
 </nav>
 
 <script type="text/javascript">
-    $(".custom-href").click(function(e) {
-        var self = $(this);
-        if(self.hasClass("make-claim")) {
-            var pathname = window.location.pathname;
-            var pattern = new RegExp(/patient\/(.*?)\//g);
-            var matches = pattern.exec(pathname);
-            if(matches && matches.length > 0) {
-                window.location.href = "{{make_claim}}?patient=" + matches[1];
+    document.getElementsByClassName("custom-href")[0].onclick=function(e) {
+        if(window.jQuery){
+            var self = $(this);
+            if(self.hasClass("make-claim")) {
+                var pathname = window.location.pathname;
+                var pattern = new RegExp(/patient\/(.*?)\//g);
+                var matches = pattern.exec(pathname);
+                if(matches && matches.length > 0) {
+                    window.location.href = "{{make_claim}}?patient=" + matches[1];
+                }
+                else {
+                    window.location.href = "{{make_claim}}";
+                }
             }
-            else {
-                window.location.href = "{{make_claim}}";
-            }
+        }else{
+            window.location.href = "{{make_claim}}";
         }
-    });
+    };
 </script>

@@ -8,16 +8,29 @@
     a{
         margin-left: 5px;
     }
+
     table#notes_table{
         display : block;
         width : 100%;
         height: inherit;
         max-height: 200px;
+        table-layout:fixed;
+    }
+    table#notes_table tbody#note-body{
+        width: inherit;
+        display: table;
+    }
+
+    table#notes_table thead{
+        width: inherit;
+        display: table;
     }
     div#table_div{
         overflow-y: scroll;
     }
-    
+
+
+
 </style>
 
 {% endblock link %}
@@ -59,11 +72,12 @@
     </div>
     <div class="row">
         <form method="POST" action="{% url 'dashboard:api_create_note' %}" id="form-note-create">{% csrf_token %}
-            <div class="col-sm-10">
+            <div class="col-sm-8">
                 Add Note: 
                 <input type="text" name="desc" id="desc" class="form-control" style="display: inline-block; width: 80%;" required >
             </div>
             <div class="col-sm-2"><input type="submit" class="btn btn-block btn-default" value="Save"></div>
+            <div class="col-sm-2"><button id="delete" class="btn btn-block btn-danger" value="Delete">Delete</button></div>
         </form>
     </div>
 
@@ -105,6 +119,18 @@
                 console.log('failure');
             });
     });
+
+    $("#delete").click(function(e){
+        e.preventDefault();
+        $.post("{% url 'dashboard:api_delete_note' %}", form.serialize())
+            .done(function(data) {
+                $("#desc").val("");
+                renderNotesDetailsTemplate();
+            })
+            .fail(function(error) {
+                console.log('failure to delete notes');
+            });
+    });
 })();
 </script>
 
@@ -115,7 +141,7 @@ function renderNotesDetailsTemplate() {
     var notesBody = $('#note-body')
     $.get("{% url 'dashboard:api_create_note' %}?get=1")
         .done(function(data) {
-            console.log("getting stuff for notes!. in done@@! ");
+            // console.log("getting stuff for notes!. in done@@! ");
             notesBody.html(notesTemplate({
                     err: false,
                     notes: data.notes}));
