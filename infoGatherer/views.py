@@ -672,7 +672,7 @@ def print_form(bar):
     n=n+" "+str(bill_p['provider_city'])
     n=n+" "+str(bill_p['provider_state'])
     n=n+" "+str(bill_p['provider_zip'])
-    fields.append(('269',n))
+    fields.append(('269',n.upper()))
     # Billing provider tax id
     fields.append(('248',bill_p['tax_id']))
     # Billing provider ssn and ein
@@ -693,13 +693,13 @@ def print_form(bar):
     n=n+" "+str(location_p['provider_city'])
     n=n+" "+str(location_p['provider_state'])
     n=n+" "+str(location_p['provider_zip'])
-    fields.append(('262',n))
+    fields.append(('262',n.upper()))
 
     # Rendering Provider
     rendering_p=Provider.objects.filter(provider_name=bar['rendering_provider_name']).values()[0]
     rp=rendering_p['provider_name'].split()
     if(len(rp)>1):
-        fields.append(('260',rp[1]+", "+rp[0]))
+        fields.append(('260',rp[1].upper()+", "+rp[0].upper()))
     else:
         fields.append(('260',rendering_p['provider_name']))
     now = datetime.datetime.now()
@@ -823,7 +823,11 @@ def print_form(bar):
 
 
     # Total charge
-    fields.append(('254',sum(charge)))
+    fields.append(('254',str(sum(charge)).split(".")[0]))
+    try:
+        fields.append(('255',str(sum(charge)).split(".")[1]))
+    except IndexError:
+        fields.append(('255',"00"))
     # Amount paid
     fields.append(('256','0.00'))
     # Accept assignment
