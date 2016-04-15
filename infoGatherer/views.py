@@ -736,19 +736,19 @@ def print_form(bar):
     fields.append(('62',bar['other_cliam_id']))
 
     # Health Plan and signatures
-    if(bar['health_plan']=='Medicare'):
+    if(bar['health_plan']=='Medicare'.upper()):
         fields.append(('3',True))
-    elif(bar['health_plan']=='Medicaid'):
+    elif(bar['health_plan']=='Medicaid'.upper()):
         fields.append(('4',True))
-    elif(bar['health_plan']=='Tricare'):
+    elif(bar['health_plan']=='Tricare'.upper()):
         fields.append(('5',True))
-    elif(bar['health_plan']=='Champva'):
+    elif(bar['health_plan']=='Champva'.upper()):
         fields.append(('6',True))
-    elif(bar['health_plan']=='GroupHealthPlan'):
+    elif(bar['health_plan']=='GroupHealthPlan'.upper()):
         fields.append(('7',True))
-    elif(bar['health_plan']=='FECA_Blk_Lung'):
+    elif(bar['health_plan']=='FECA_Blk_Lung'.upper()):
         fields.append(('8',True))
-    elif(bar['health_plan']=='Other'):
+    elif(bar['health_plan']=='Other'.upper()):
         fields.append(('9',True))
     fields.append(('66','Signature on file'.upper()))
     fields.append(('68','Signature on file'.upper()))
