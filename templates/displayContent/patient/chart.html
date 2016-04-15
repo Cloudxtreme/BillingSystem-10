@@ -125,6 +125,37 @@
         <a href="{% url 'infoGatherer:post_ad' %}?patient={{patient.chart_no}}" class="btn btn-default">Make Claim</a>
         <br>
         <br>
+        <div class="header-line">Gaurantor</div>
+
+        {% if patient.guarantor %}
+            {% with guarantor=patient.guarantor %}
+                <div class="row">
+                    <div class="col-sm-6">
+                        {{guarantor.full_name}}<br>
+                        {{guarantor.dob|date:"M d, Y"}} ({{guarantor.age}})<br>
+                        {{guarantor.full_address}}<br>
+                    </div>
+                    <div class="col-sm-6">
+                        <table>
+                            <tr>
+                                <td style="width: 50px;"><b>Home: </b></td>
+                                <td>{{guarantor.home_phone}}</td>
+                            </tr>
+                            <tr>
+                                <td><b>Cell: </b></td>
+                                <td>{{guarantor.cell_phone}}</td>
+                            </tr>
+                            <tr>
+                                <td><b>Email: </b></td>
+                                <td>{{guarantor.email}}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            {% endwith %}
+        {% endif %}
+
+        <br>
         <div class="header-line">A/R Aging (days)</div>
         <table class="table table-striped table-condensed table-aging">
             <thead>

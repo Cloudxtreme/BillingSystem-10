@@ -302,6 +302,7 @@ class Personal_Information(models.Model):
     account_type = models.CharField(choices=ACCOUNT_TYPE_CHOICES, max_length=64, default='Blank')
     account_status = models.CharField(choices=ACCOUNT_STATUS_CHOICES, max_length=64, default='Current')
     sign = models.CharField(choices=SIGN_CHOICES, max_length=3, default='Yes')
+    guarantor = models.ForeignKey("self", null=True, blank=True)
 
     audit_log = AuditLog()
     history = HistoricalRecords()
@@ -350,6 +351,13 @@ class Personal_Information(models.Model):
             return '%s, %s, %s' % (self.last_name, self.first_name, self.middle_name)
         else:
             return '%s, %s' % (self.last_name, self.first_name)
+
+    @property
+    def age(self):
+        today = timezone.now().date()
+        return today.year - \
+                self.dob.year - \
+                ((today.month, today.day) < (self.dob.month, self.dob.day))
 
     def get_full_name(self):
         return self.full_name
