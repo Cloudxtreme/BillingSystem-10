@@ -606,33 +606,33 @@ def print_form(bar):
         fields.append(('15',True))
     else:
         fields.append(('16',True))
-    if(bar['pat_relationship_insured']=='Self'):
+    if(bar['pat_relationship_insured']=='SELF'):
         fields.append(('24',True))
-    elif(bar['pat_relationship_insured']=='Spouse'):
+    elif(bar['pat_relationship_insured']=='SPOUSE'):
         fields.append(('25',True))
-    elif(bar['pat_relationship_insured']=='Child'):
+    elif(bar['pat_relationship_insured']=='CHILD'):
         fields.append(('26',True))
     else:
         fields.append(('27',True))
 
     if('insured_other_benifit_plan' in bar):
-        if(bar['insured_other_benifit_plan']=='on'):
+        if(bar['insured_other_benifit_plan']=='ON'):
             fields.append(('64',True))
     else:
         fields.append(('65',True))
 
     if('pat_relation_emp' in bar):
-        if(bar['pat_relation_emp']=='on'):
+        if(bar['pat_relation_emp']=='ON'):
             fields.append(('49',True))
     else:
         fields.append(('50',True))
     if('pat_relation_auto_accident' in bar):
-        if(bar['pat_relation_auto_accident']=='on'):
+        if(bar['pat_relation_auto_accident']=='ON'):
             fields.append(('51',True))
     else:
         fields.append(('52',True))
     if('pat_relation_other_accident' in bar):
-        if(bar['pat_relation_other_accident']=='on'):
+        if(bar['pat_relation_other_accident']=='ON'):
             fields.append(('54',True))
     else:
         fields.append(('55',True))
@@ -771,11 +771,11 @@ def print_form(bar):
             month, day, year = da.split('/')
             fields.append((str(114+(23*i-23)),month))
             fields.append((str(115+(23*i-23)),day))
-            fields.append((str(116+(23*i-23)),year))
+            fields.append((str(116+(23*i-23)),year[2:]))
 
             fields.append((str(117+(23*i-23)),month))
             fields.append((str(118+(23*i-23)),day))
-            fields.append((str(119+(23*i-23)),year))
+            fields.append((str(119+(23*i-23)),year[2:]))
 
         # Place of service
         da=bar['place_of_service_'+str(i)]
@@ -789,8 +789,12 @@ def print_form(bar):
         code=bar['cpt_code_'+str(i)]
         fields.append((str(122+(23*i-23)),code))
         if(len(code)>0):
-            charge[i-1]=int(bar['total_'+str(i)])
-            fields.append((str(128+(23*i-23)),charge[i-1]))
+            charge[i-1]=Decimal(bar['total_'+str(i)])
+            fields.append((str(128+(23*i-23)),str(charge[i-1]).split(".")[0]))
+            try:
+                fields.append((str(129+(23*i-23)),str(charge[i-1]).split(".")[1]))
+            except IndexError:
+                fields.append((str(129+(23*i-23)),"00"))
 
         # Modifiers
         fields.append((str(123+(23*i-23)),bar['mod_a_'+str(i)]))
