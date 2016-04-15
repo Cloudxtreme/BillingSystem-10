@@ -23,11 +23,11 @@ function autocomplete_claim(api_urls) {
     }).done(function(obj) {
         var patient_lookup = [];
 
-        for(var p of obj['patients'])
+        for(var p of obj)
             patient_lookup.push({
-                value: p.last_name + ", " + p.first_name,
-                data: p.chart_no,
-                hint: p.address + ", " + p.city,
+                value: p.fields.format_name,
+                data: p.pk,
+                hint: p.fields.address + ", " + p.fields.city,
             })
 
         // Set auto suggestion for patient's name
@@ -87,10 +87,9 @@ function autocomplete_claim(api_urls) {
             api_urls[2],
             {personal_chart_no: suggestion.data},
             function(obj) {
-                var insured_info = obj["personal_information"][0];
+                var insured_info = obj["personal_information"][0].fields;
 
                 // Auto populate fields in insured section
-                $('#id_insured_id').val(insured_info.chart_no);
                 var birth_date_str = insured_info.dob.substr(5,2) + "/" + insured_info.dob.substr(8,2) + "/" + insured_info.dob.substr(0,4);
                 $("#id_insured_streetaddress").val(insured_info.address);
                 $("#id_insured_city").val(insured_info.city);
@@ -99,8 +98,8 @@ function autocomplete_claim(api_urls) {
                 $("#id_insured_telephone").val(insured_info.home_phone);
                 $("#id_insured_birth_date").val(birth_date_str);
                 $("#id_insured_sex").val(insured_info.sex.substr(0,1));
-
-                $('#hidden_id_insured_name').val(suggestion.value);
+                $("#id_insured_name").val(insured_info.format_name);
+                $('#id_insured_id').val(obj["personal_information"][0].pk);
 
                 // Set auto suggestion for insurance id number
                 var insurance_list = obj["insurance_list"];
