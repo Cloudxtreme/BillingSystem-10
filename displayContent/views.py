@@ -1,25 +1,23 @@
-from django.shortcuts import *
 from functools import partial, wraps
+
 from django.shortcuts import *
 from django.core import serializers
+from django.core.urlresolvers import reverse
 from django.db.models import Sum
-from datetime import datetime
-from .models import *
-from infoGatherer.models import Personal_Information, Payer, Insurance_Information
-from accounting.models import *
-from accounting.forms import NoteForm
-from django.http import JsonResponse
-from base.models import ExtPythonSerializer
-import re
-from decimal import *
+from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from django.http import HttpResponseRedirect
-from django.core.urlresolvers import reverse
-from accounting.models import Document, Claim
+from django.utils import timezone
+
+import re
+from datetime import datetime, timedelta
+from decimal import *
+
+from .models import *
 from accounting.models import *
-
-
+from accounting.forms import NoteForm
+from infoGatherer.models import Personal_Information, Payer, Insurance_Information
+from base.models import ExtPythonSerializer
 
 
 def view_dashboard(request):
@@ -93,6 +91,11 @@ def view_patient(request, chart):
     else:
         tertiary_payer = None
 
+    today = timezone.now().date()
+    m1_time = today - timedelta(days=30)
+    m1_claim = Claim.objects.filter(created__gte=m1_time)
+    print m1_claim
+
     return render(request, 'displayContent/patient/chart.html', {
             'patient': patient,
             'primary_insur': primary_insur,
@@ -132,12 +135,12 @@ def open_pdf(request, yr, mo, da, claim):
             response = HttpResponse(pdf.read(), content_type='application/pdf')
             response['Content-Disposition'] = 'inline;filename=some_file.pdf'
             return response
-        pdf.closed  
+        pdf.closed
     except Exception as e:
         return render(request, 'displayContent/patient/NotExist.html', {
             'info' : "(404) Sorry! This claim that you're trying to open doesn't exisit in the file system."
             })
-  
+
 
 ###############################################################################
 # API function
