@@ -163,6 +163,7 @@ th.left-vertical-line  {
 .header-line {
     padding: 5px;
     background-color: #bfefff;
+    font-weight: bold;
 }
 
 table.summary td:first-child{
@@ -278,4 +279,29 @@ table.table-condensed td {
     .collapse.in{
         display:block !important;
     }
+}
+
+.table-aging thead th:first-child {
+    width: 28%;
+}
+.table-aging thead th:not(:first-child) {
+    width: 12%;
+}
+
+.table-aging td,
+.table-aging th {
+    border: solid 1px #ccc;
+}
+.table-aging td:last-child,
+.table-aging tbody tr:last-child {
+    background-color: #BDECB6;
+}
+.table-aging tbody tr td:first-child {
+    font-weight: bold;
+}
+.table-aging td:not(:first-child) {
+    text-align: right;
+}
+.table-aging thead th {
+    text-align: center;
 }

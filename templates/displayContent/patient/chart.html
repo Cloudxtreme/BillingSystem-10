@@ -6,7 +6,7 @@
 <div class="container" >
 	<h2 class="text-center">Patient Information</h2>
     <div class="col-sm-4" style="padding-right:20px;">
-        <div class="header-line"><b>Patient Information</b></div>
+        <div class="header-line">Patient Information</div>
         <h4 style="display: inline-block;"><b>{{patient.full_name}}</b></h4>&nbsp;&nbsp;
         (Date of Birth:&nbsp;&nbsp;{{patient.dob}})<br>
         <table class="summary">
@@ -49,7 +49,7 @@
         </table>
 
         <br>
-        <div class="header-line"><b>Primary Insurance</b></div>
+        <div class="header-line">Primary Insurance</div>
         <table class="summary">
             <tr>
                 <td>Payer:</td>
@@ -70,7 +70,7 @@
         </table>
 
         <br>
-        <div class="header-line"><b>Secondary Insurance</b></div>
+        <div class="header-line">Secondary Insurance</div>
         {% if secondary_insur %}
         <table class="summary">
             <tr>
@@ -95,7 +95,7 @@
         {% endif %}
 
         <br>
-        <div class="header-line"><b>Tertiary Insurance</b></div>
+        <div class="header-line">Tertiary Insurance</div>
         {% if tertiary_insur %}
         <table class="summary">
             <tr>
@@ -124,11 +124,10 @@
         <a id= "claimhistory" href="{% url 'displayContent:view_claims' chart=patient.chart_no %}" class="btn btn-primary">Claims History</a>
         <a href="{% url 'infoGatherer:post_ad' %}?patient={{patient.chart_no}}" class="btn btn-default">Make Claim</a>
         <br>
-        <table class="table table-striped table-condensed">
+        <br>
+        <div class="header-line">A/R Aging (days)</div>
+        <table class="table table-striped table-condensed table-aging">
             <thead>
-                <tr>
-                    <th colspan="7">A/R Aging (days)</th>
-                </tr>
                 <tr>
                     <th></th>
                     <th>0-30</th>
@@ -141,31 +140,31 @@
             </thead>
             <tbody>
                 <tr>
-                    <th>Patient Aging</th>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td>Patient Aging</td>
+                    <td>${{aging.p_m1}}</td>
+                    <td>${{aging.p_m2}}</td>
+                    <td>${{aging.p_m3}}</td>
+                    <td>${{aging.p_m4}}</td>
+                    <td>${{aging.p_m5}}</td>
+                    <td>${{aging.p_t}}</td>
                 </tr>
                 <tr>
-                    <th>Insurance Aging</th>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td>Insurance Aging</td>
+                    <td>${{aging.i_m1}}</td>
+                    <td>${{aging.i_m2}}</td>
+                    <td>${{aging.i_m3}}</td>
+                    <td>${{aging.i_m4}}</td>
+                    <td>${{aging.i_m5}}</td>
+                    <td>${{aging.i_t}}</td>
                 </tr>
                 <tr>
-                    <th>Total</th>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td>Total</td>
+                    <td>${{aging.m1_t}}</td>
+                    <td>${{aging.m2_t}}</td>
+                    <td>${{aging.m3_t}}</td>
+                    <td>${{aging.m4_t}}</td>
+                    <td>${{aging.m5_t}}</td>
+                    <td>${{aging.total}}</td>
                 </tr>
             </tbody>
         </table>

@@ -9,6 +9,7 @@ from django.http import JsonResponse
 from django.db.models import Q, Sum
 from django.db import IntegrityError, transaction
 from django.http.response import HttpResponseBadRequest
+from django.utils import timezone
 
 from datetime import datetime
 from decimal import Decimal
@@ -166,6 +167,7 @@ def apply_create(request, payment_id, claim_id):
         if apply_formset.is_valid():
             new_applies = []
             total_amount = Decimal('0.00')
+            n = timezone.now()
 
             for apply_form in apply_formset:
                 cleaned_data = apply_form.cleaned_data
@@ -176,7 +178,9 @@ def apply_create(request, payment_id, claim_id):
                         (amount is not None or adjustment is not None)) or \
                         (payment.payer_type == 'Patient' and \
                         amount is not None):
-                    new_applies.append(Apply(user=request.user,
+                    new_applies.append(Apply(
+                            user=request.user,
+                            created=n,
                             **cleaned_data))
                     total_amount += amount
 

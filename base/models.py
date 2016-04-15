@@ -38,7 +38,8 @@ class BaseModel(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.id:
-            self.created = timezone.now()
+            if not self.created:
+                self.created = timezone.now()
 
         self.modified = timezone.now()
         return super(BaseModel, self).save(*args, **kwargs)

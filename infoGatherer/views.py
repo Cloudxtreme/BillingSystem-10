@@ -491,7 +491,8 @@ def PostAdPage(request):
                         charge = Charge.objects.create(
                                 procedure=procedure,
                                 payer_type='Insurance',
-                                amount=amount)
+                                amount=amount,
+                                created=claim.created)
 
             var = print_form(request.POST);
 
