@@ -76,7 +76,7 @@ function autocomplete_claim(api_urls) {
                 $("#id_pat_birth_date").val(birth_date_str);
                 $("#id_pat_sex").val(patient.sex.substr(0,1));
                 $('#id_pat_name').val(patient.format_name);
-                $('#id_pat_id').val(patient.chart_no);
+                $('#id_pat_id').val(obj[0].pk);
             }
         );
     };

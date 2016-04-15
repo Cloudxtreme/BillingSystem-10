@@ -91,10 +91,23 @@ def view_patient(request, chart):
     else:
         tertiary_payer = None
 
+    claim = Claim.objects.filter(patient=chart)
     today = timezone.now().date()
     m1_time = today - timedelta(days=30)
-    m1_claim = Claim.objects.filter(created__gte=m1_time)
-    print m1_claim
+    m2_time = today - timedelta(days=60)
+    m3_time = today - timedelta(days=90)
+    m4_time = today - timedelta(days=120)
+    m1_claim = claim.filter(created__gte=m1_time)
+    m2_claim = claim.filter(created__lt=m1_time, created__gte=m2_time)
+    m3_claim = claim.filter(created__lt=m2_time, created__gte=m3_time)
+    m4_claim = claim.filter(created__lt=m3_time, created__gte=m4_time)
+    m5_claim = claim.filter(created__lt=m4_time)
+
+    print '\n\n\n',m1_claim,'\n\n\n'
+    print '\n\n\n',m2_claim,'\n\n\n'
+    print '\n\n\n',m3_claim,'\n\n\n'
+    print '\n\n\n',m4_claim,'\n\n\n'
+    print '\n\n\n',m5_claim,'\n\n\n'
 
     return render(request, 'displayContent/patient/chart.html', {
             'patient': patient,
