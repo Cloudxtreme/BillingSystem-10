@@ -5,4 +5,6 @@ app_name = 'dashboard'
 urlpatterns = [
     url(r'^$', views.dashboard, name='dashboard'),
     url(r'^api_create_note/$', views.api_create_note, name="api_create_note"),
+    url(r'^api_delete_note/$', views.api_delete_note, name="api_delete_note"),
+    
 ]

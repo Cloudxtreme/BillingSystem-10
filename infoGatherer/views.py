@@ -580,7 +580,11 @@ def search_form(request):
     return render(request, 'test.html')
 
 def print_form(bar):
+    bar2={}
+    for k, v in bar.items():
+        bar2[k]=v.upper();
 
+    bar=bar2;
     # Patient Information
     fields = [
         ('11',bar['pat_name']),
@@ -603,33 +607,33 @@ def print_form(bar):
         fields.append(('15',True))
     else:
         fields.append(('16',True))
-    if(bar['pat_relationship_insured']=='Self'):
+    if(bar['pat_relationship_insured']=='SELF'):
         fields.append(('24',True))
-    elif(bar['pat_relationship_insured']=='Spouse'):
+    elif(bar['pat_relationship_insured']=='SPOUSE'):
         fields.append(('25',True))
-    elif(bar['pat_relationship_insured']=='Child'):
+    elif(bar['pat_relationship_insured']=='CHILD'):
         fields.append(('26',True))
     else:
         fields.append(('27',True))
 
     if('insured_other_benifit_plan' in bar):
-        if(bar['insured_other_benifit_plan']=='on'):
+        if(bar['insured_other_benifit_plan']=='ON'):
             fields.append(('64',True))
     else:
         fields.append(('65',True))
 
     if('pat_relation_emp' in bar):
-        if(bar['pat_relation_emp']=='on'):
+        if(bar['pat_relation_emp']=='ON'):
             fields.append(('49',True))
     else:
         fields.append(('50',True))
     if('pat_relation_auto_accident' in bar):
-        if(bar['pat_relation_auto_accident']=='on'):
+        if(bar['pat_relation_auto_accident']=='ON'):
             fields.append(('51',True))
     else:
         fields.append(('52',True))
     if('pat_relation_other_accident' in bar):
-        if(bar['pat_relation_other_accident']=='on'):
+        if(bar['pat_relation_other_accident']=='ON'):
             fields.append(('54',True))
     else:
         fields.append(('55',True))
@@ -669,7 +673,7 @@ def print_form(bar):
     n=n+" "+str(bill_p['provider_city'])
     n=n+" "+str(bill_p['provider_state'])
     n=n+" "+str(bill_p['provider_zip'])
-    fields.append(('269',n))
+    fields.append(('269',n.upper()))
     # Billing provider tax id
     fields.append(('248',bill_p['tax_id']))
     # Billing provider ssn and ein
@@ -690,13 +694,13 @@ def print_form(bar):
     n=n+" "+str(location_p['provider_city'])
     n=n+" "+str(location_p['provider_state'])
     n=n+" "+str(location_p['provider_zip'])
-    fields.append(('262',n))
+    fields.append(('262',n.upper()))
 
     # Rendering Provider
     rendering_p=Provider.objects.filter(provider_name=bar['rendering_provider_name']).values()[0]
     rp=rendering_p['provider_name'].split()
     if(len(rp)>1):
-        fields.append(('260',rp[1]+", "+rp[0]))
+        fields.append(('260',rp[1].upper()+", "+rp[0].upper()))
     else:
         fields.append(('260',rendering_p['provider_name']))
     now = datetime.datetime.now()
@@ -733,22 +737,22 @@ def print_form(bar):
     fields.append(('62',bar['other_cliam_id']))
 
     # Health Plan and signatures
-    if(bar['health_plan']=='Medicare'):
+    if(bar['health_plan']=='Medicare'.upper()):
         fields.append(('3',True))
-    elif(bar['health_plan']=='Medicaid'):
+    elif(bar['health_plan']=='Medicaid'.upper()):
         fields.append(('4',True))
-    elif(bar['health_plan']=='Tricare'):
+    elif(bar['health_plan']=='Tricare'.upper()):
         fields.append(('5',True))
-    elif(bar['health_plan']=='Champva'):
+    elif(bar['health_plan']=='Champva'.upper()):
         fields.append(('6',True))
-    elif(bar['health_plan']=='GroupHealthPlan'):
+    elif(bar['health_plan']=='GroupHealthPlan'.upper()):
         fields.append(('7',True))
-    elif(bar['health_plan']=='FECA_Blk_Lung'):
+    elif(bar['health_plan']=='FECA_Blk_Lung'.upper()):
         fields.append(('8',True))
-    elif(bar['health_plan']=='Other'):
+    elif(bar['health_plan']=='Other'.upper()):
         fields.append(('9',True))
-    fields.append(('66','Signature on file'))
-    fields.append(('68','Signature on file'))
+    fields.append(('66','Signature on file'.upper()))
+    fields.append(('68','Signature on file'.upper()))
     now = datetime.datetime.now()
     fields.append(('67',str(now.month)+"|"+str(now.day)+"|"+str(now.year)))
 
@@ -768,11 +772,11 @@ def print_form(bar):
             month, day, year = da.split('/')
             fields.append((str(114+(23*i-23)),month))
             fields.append((str(115+(23*i-23)),day))
-            fields.append((str(116+(23*i-23)),year))
+            fields.append((str(116+(23*i-23)),year[2:]))
 
             fields.append((str(117+(23*i-23)),month))
             fields.append((str(118+(23*i-23)),day))
-            fields.append((str(119+(23*i-23)),year))
+            fields.append((str(119+(23*i-23)),year[2:]))
 
         # Place of service
         da=bar['place_of_service_'+str(i)]
@@ -786,8 +790,12 @@ def print_form(bar):
         code=bar['cpt_code_'+str(i)]
         fields.append((str(122+(23*i-23)),code))
         if(len(code)>0):
-            charge[i-1]=int(bar['total_'+str(i)])
-            fields.append((str(128+(23*i-23)),charge[i-1]))
+            charge[i-1]=Decimal(bar['total_'+str(i)])
+            fields.append((str(128+(23*i-23)),str(charge[i-1]).split(".")[0]))
+            try:
+                fields.append((str(129+(23*i-23)),str(charge[i-1]).split(".")[1]))
+            except IndexError:
+                fields.append((str(129+(23*i-23)),"00"))
 
         # Modifiers
         fields.append((str(123+(23*i-23)),bar['mod_a_'+str(i)]))
@@ -816,7 +824,11 @@ def print_form(bar):
 
 
     # Total charge
-    fields.append(('254',sum(charge)))
+    fields.append(('254',str(sum(charge)).split(".")[0]))
+    try:
+        fields.append(('255',str(sum(charge)).split(".")[1]))
+    except IndexError:
+        fields.append(('255',"00"))
     # Amount paid
     fields.append(('256','0.00'))
     # Accept assignment

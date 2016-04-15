@@ -2,22 +2,39 @@
 
 {% load staticfiles %}
 
+{% block script %}
+    <script src="{% static 'dashboard/js/clock.js' %}"></script>
+{% endblock script %}
+
 {% block link %}
 
 <style>
     a{
         margin-left: 5px;
     }
+
     table#notes_table{
         display : block;
         width : 100%;
         height: inherit;
         max-height: 200px;
+        table-layout:fixed;
+    }
+    table#notes_table tbody#note-body{
+        width: inherit;
+        display: table;
+    }
+
+    table#notes_table thead{
+        width: inherit;
+        display: table;
     }
     div#table_div{
         overflow-y: scroll;
     }
-    
+
+
+
 </style>
 
 {% endblock link %}
@@ -40,8 +57,14 @@
 
     <br>
     <div class="jumbotron" >
-        <h1>Dashboard</h1>
-        <p style="display:none">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+        <div class="row">
+            <div class="col-sm-10">
+                <h1>Dashboard</h1>
+            </div>
+            <div class="col-sm-2">
+                <canvas class="pull-right" id="canvas" width="120" height="120"></canvas>
+            </div>
+    </div>
     </div>
 
     <h4>Notes</h4>
@@ -59,11 +82,12 @@
     </div>
     <div class="row">
         <form method="POST" action="{% url 'dashboard:api_create_note' %}" id="form-note-create">{% csrf_token %}
-            <div class="col-sm-10">
+            <div class="col-sm-8">
                 Add Note: 
                 <input type="text" name="desc" id="desc" class="form-control" style="display: inline-block; width: 80%;" required >
             </div>
             <div class="col-sm-2"><input type="submit" class="btn btn-block btn-default" value="Save"></div>
+            <div class="col-sm-2"><button id="delete" class="btn btn-block btn-danger" value="Delete">Delete</button></div>
         </form>
     </div>
 
@@ -105,6 +129,18 @@
                 console.log('failure');
             });
     });
+
+    $("#delete").click(function(e){
+        e.preventDefault();
+        $.post("{% url 'dashboard:api_delete_note' %}", form.serialize())
+            .done(function(data) {
+                $("#desc").val("");
+                renderNotesDetailsTemplate();
+            })
+            .fail(function(error) {
+                console.log('failure to delete notes');
+            });
+    });
 })();
 </script>
 
@@ -115,7 +151,7 @@ function renderNotesDetailsTemplate() {
     var notesBody = $('#note-body')
     $.get("{% url 'dashboard:api_create_note' %}?get=1")
         .done(function(data) {
-            console.log("getting stuff for notes!. in done@@! ");
+            // console.log("getting stuff for notes!. in done@@! ");
             notesBody.html(notesTemplate({
                     err: false,
                     notes: data.notes}));
@@ -136,7 +172,18 @@ function renderNotesDetailsTemplate() {
 
 $(document).ready(function () {
     renderNotesDetailsTemplate();
+
 })
+</script>
+
+<script>
+    // Clock
+    var canvas = document.getElementById("canvas");
+    var ctx = canvas.getContext("2d");
+    var radius = canvas.height / 2;
+    ctx.translate(radius, radius);
+    radius = radius * 0.90
+    setInterval(drawClock, 1000);
 </script>
 
 
