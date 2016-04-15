@@ -785,10 +785,6 @@ def print_form(bar):
             fields.append((str(118+(23*i-23)),day))
             fields.append((str(119+(23*i-23)),year[2:]))
 
-        # Place of service
-        da=bar['place_of_service_'+str(i)]
-        fields.append((str(120+(23*i-23)),da))
-
         # EMG
         da=bar['emg_'+str(i)]
         fields.append((str(121+(23*i-23)),da))
@@ -799,6 +795,11 @@ def print_form(bar):
         if(len(code)>0):
             charge[i-1]=Decimal(bar['total_'+str(i)])
             fields.append((str(128+(23*i-23)),str(charge[i-1]).split(".")[0]))
+
+            # Place of service
+            da=bar['place_of_service_'+str(i)]
+            fields.append((str(120+(23*i-23)),da))
+
             try:
                 fields.append((str(129+(23*i-23)),str(charge[i-1]).split(".")[1]))
             except IndexError:

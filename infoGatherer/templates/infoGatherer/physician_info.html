@@ -17,11 +17,7 @@
                 </div>
                 <div class="col-sm-3">
                     {% with 'place_of_service_'|add:i as fieldName %}
-                    <select id={{fieldName}} name={{fieldName}}>
-                        <option value="">--POS--</option>
-                        <option id={{fieldName|add:"_pos"}} value=""></option>
-                    </select>
-                    <!-- {{ form|getField:fieldName|add_class:"form-control"|attr:"placeholder:Place of Service" }} -->
+                    {{ form|getField:fieldName|add_class:"form-control"|attr:"placeholder:Place of Service" }}
                     {% endwith %}
                 </div>
                 <div class="col-sm-1">

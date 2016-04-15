@@ -225,11 +225,7 @@ function autocomplete_claim(api_urls) {
                 $('#id_location_provider_id').val(suggestion.id);
 
                 // adding value and text to POS
-                for(i=1; i<=6; i++){
-                    $("#place_of_service_"+(i)+"_pos").attr("value",suggestion.pos);
-                    $("#place_of_service_"+(i)+"_pos").text(suggestion.pos);
-                }
-
+                $("input[name^=place_of_service_]").val(suggestion.pos);
             },
         });
 
