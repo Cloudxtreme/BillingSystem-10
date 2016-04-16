@@ -520,12 +520,13 @@ def save_file_to_media(claim_id):
     today_path = today.strftime("%Y/%m/%d")
     newdoc = Document.objects.create(claim=claim, docfile='media/documents/'+today_path+"/"+name)
 
-
-
 def get_make_claim_extra_context(request):
-    p_set = Personal_Information.objects.values('chart_no', 'first_name', 'last_name', 'address', 'city').order_by('first_name')
-    context = {'patients': list(p_set),}
-    return JsonResponse(data=context);
+    p = Personal_Information.objects.all()
+    se = ExtPythonSerializer().serialize(
+            p,
+            props=['format_name',])
+
+    return JsonResponse(data=se, safe=False)
 
 def get_json_personal_info(request):
     p = Personal_Information.objects.filter(pk=request.POST.get('personal_chart_no'))
@@ -537,6 +538,12 @@ def get_json_personal_info(request):
     return JsonResponse(data=se, safe=False)
 
 def get_json_personal_and_insurance_info(request):
+    p = Personal_Information.objects.filter(pk=request.POST.get('personal_chart_no'))
+    se = ExtPythonSerializer().serialize(
+            p,
+            props=['format_name',],
+            use_natural_foreign_keys=True)
+
     personal_set = Personal_Information.objects.filter(pk=request.POST['personal_chart_no'])
     insurance_set = personal_set[0].insurance_information_set.all().select_related("payer")
     i_set_dict = insurance_set.values()
@@ -546,11 +553,11 @@ def get_json_personal_and_insurance_info(request):
         i_set[i]["payer"] = model_to_dict(insurance_set[i].payer)
 
     context = {
-        "personal_information": list(personal_set.values()),
+        "personal_information": se,
         "insurance_list": i_set,
     }
 
-    return JsonResponse(data=context);
+    return JsonResponse(data=context, safe=False)
 
 def get_json_physician_info(request):
     phy_q_set = ReferringProvider.objects.all()
@@ -778,10 +785,6 @@ def print_form(bar):
             fields.append((str(118+(23*i-23)),day))
             fields.append((str(119+(23*i-23)),year[2:]))
 
-        # Place of service
-        da=bar['place_of_service_'+str(i)]
-        fields.append((str(120+(23*i-23)),da))
-
         # EMG
         da=bar['emg_'+str(i)]
         fields.append((str(121+(23*i-23)),da))
@@ -792,6 +795,11 @@ def print_form(bar):
         if(len(code)>0):
             charge[i-1]=Decimal(bar['total_'+str(i)])
             fields.append((str(128+(23*i-23)),str(charge[i-1]).split(".")[0]))
+
+            # Place of service
+            da=bar['place_of_service_'+str(i)]
+            fields.append((str(120+(23*i-23)),da))
+
             try:
                 fields.append((str(129+(23*i-23)),str(charge[i-1]).split(".")[1]))
             except IndexError:
