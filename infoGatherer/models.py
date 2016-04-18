@@ -307,6 +307,9 @@ class Personal_Information(models.Model):
     audit_log = AuditLog()
     history = HistoricalRecords()
 
+    def get_admin_url(self):
+        return urlresolvers.reverse("admin:%s__%s__change" %
+            (self._meta.app_label, self._meta.model_name), args=(self.pk,))
 
     class Meta:
         verbose_name = 'Patient Details'
