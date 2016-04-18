@@ -2,6 +2,7 @@
 /output.pdf
 *.fdf
 ~$*.*x
+~*.tmp
 .DS_Store
 /media/documents/**/*.*
 
