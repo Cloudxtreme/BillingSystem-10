@@ -28,6 +28,7 @@ urlpatterns = [
     url(r'^dashboard/', include('dashboard.urls')),
     url(r'^accounting/', include('accounting.urls')),
     url(r'^patient/', include('displayContent.urls')),
+    url(r'^report/', include('report.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
