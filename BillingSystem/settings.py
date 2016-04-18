@@ -52,6 +52,7 @@ INSTALLED_APPS = (
     'widget_tweaks',
     'simple_history',
     'deepdiff',
+    'daterange_filter',
 
     'infoGatherer',
     'claims',
@@ -59,7 +60,7 @@ INSTALLED_APPS = (
     'dashboard',
     'accounting',
     'displayContent',
-    'daterange_filter',
+    'report',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -116,7 +117,7 @@ try:
     import pymysql
     pymysql.install_as_MySQLdb()
 except ImportError:
-    pass 
+    pass
 
 DATE_FORMAT = "m/d/Y"
 

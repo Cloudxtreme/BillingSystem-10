@@ -1,0 +1,205 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Statement Report</title>
+        <script src="{% static 'js/jquery.min.js' %}"></script>
+        <link rel="stylesheet" href="{% static 'css/report/statement.css' %}" />
+    </head>
+    <body>
+        <div class="page">
+            <div class="subpage">
+                <div class="header-left">
+                    <div class="b-provider">XENON ANESTHESIA OF GEORGIA LLC</div>
+                    <div class="b-provider">6464 SUNSET BLVD</div>
+                    <div class="b-provider">LOS ANGELES CA 90028-8006</div>
+                    <div>ANY QUESTION PLEASE CALL: <span>(323) 417-0335</span></div>
+                    <div>PATIENT: <span>AE YOUNG LEE</span></div>
+                </div>
+                <div class="header-right">
+                    <table>
+                        <tbody>
+                            <tr><td colspan="100" class="label">IF PAYING BY MASTER CARD, DISCOVER, VISA OR AMERICAN EXPRESS, FILL OUT BELOW.</td></tr>
+                            <tr>
+                                <td style="width: 0.25in;"></td>
+                                <td class="label"><input type="checkbox"> VISA <input type="checkbox"> MASTERCARD <input type="checkbox"> DISCOVER <input type="checkbox"> AMER EXP.</td>
+                            </tr>
+                            <tr>
+                                <td>CARD NUMBER</td>
+                                <td>SIGNATURE CODE</td>
+                            </tr>
+                            <tr></tr>
+                            <tr></tr>
+                            <tr></tr>
+                        </tbody>
+                    </table>
+
+                </div>
+                <br>
+                <!--<p><b>STATEMENT</b></p>
+                <table border="1" cellspacing="0" cellpadding="0" summary="Invoice Table" width="116%" >
+                    <thead>
+                        <tr>
+                            <td width="13%" colspan="2" valign="bottom" >
+                                <p><b>PATIENT NAME</b></p>
+                            </td>
+                            <td width="19%" valign="bottom" > </td>
+                            <td width="19%" colspan="2" valign="bottom" >
+                                <p><b>PATIENT ACCT NUMBER</b></p>
+                            </td>
+                            <td width="19%" colspan="2" valign="bottom" > </td>
+                            <td width="12%" valign="bottom" >
+                                <p><b>BALANCE DUE</b></p>
+                            </td>
+                            <td width="16%" valign="bottom" > </td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td width="6%" valign="top" >
+                                <p>DATE</p>
+                            </td>
+                            <td width="6%" valign="top" >
+                                <p>CODE</p>
+                            </td>
+                            <td width="19%" valign="top" >
+                                <p>DESCRIPTION OF SERVICE</p>
+                            </td>
+                            <td width="8%" valign="top" >
+                                <p>CHARGE</p>
+                            </td>
+                            <td width="10%" valign="top" >
+                                <p>ADJUSTMENT</p>
+                            </td>
+                            <td width="9%" valign="top" >
+                                <p>INS PYMT</p>
+                            </td>
+                            <td width="9%" valign="top" >
+                                <p>PAT RESP</p>
+                            </td>
+                            <td width="12%" valign="top" >
+                                <p>PAT PYMT</p>
+                            </td>
+                            <td width="16%" valign="top" >
+                                <p>BALANCE</p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="6%" valign="top" >
+                                <p>02/15/16</p>
+                            </td>
+                            <td width="6%" valign="top" >
+                                <p>24658</p>
+                            </td>
+                            <td width="19%" valign="top" >
+                                <p>This is spartaasdfasdfasdfasdfsadfsadfasdfasfsadfsdafsadfasdfsadfsadfsadfdsfsadf~~!</p>
+                            </td>
+                            <td width="8%" valign="top" >
+                                <p>$40</p>
+                            </td>
+                            <td width="10%" valign="top" >
+                                <p>0</p>
+                            </td>
+                            <td width="9%" valign="top" >
+                                <p>$12</p>
+                            </td>
+                            <td width="9%" valign="top" >
+                                <p>$28</p>
+                            </td>
+                            <td width="12%" valign="top" >
+                                <p>0</p>
+                            </td>
+                            <td width="16%" valign="top" >
+                                <p>$28</p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="13%" colspan="2" valign="top" > </td>
+                            <td width="19%" valign="top" > </td>
+                            <td width="19%" colspan="2" valign="top" > </td>
+                            <td width="19%" colspan="2" valign="top" > </td>
+                            <td width="12%" valign="top" > </td>
+                            <td width="16%" valign="top" > </td>
+                        </tr>
+                        <tr>
+                            <td width="13%" colspan="2" valign="top" > </td>
+                            <td width="19%" valign="top" >
+                                <p><b>CURRENT</b></p>
+                            </td>
+                            <td width="19%" colspan="2" valign="top" >
+                                <p><b>30 DAYS</b></p>
+                            </td>
+                            <td width="9%" valign="top" >
+                                <p><b>60 DAYS</b></p>
+                            </td>
+                            <td width="9%" valign="top" >
+                                <p><b>90 DAYS</b></p>
+                            </td>
+                            <td width="12%" valign="top" >
+                                <p><b>120 DAYS</b></p>
+                            </td>
+                            <td width="16%" valign="top" >
+                                <p><b>TOTAL BALANCE</b></p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="13%" colspan="2" valign="top" >
+                                <p><b>INSURANCE</b></p>
+                            </td>
+                            <td width="19%" valign="top" > </td>
+                            <td width="19%" colspan="2" valign="top" > </td>
+                            <td width="9%" valign="top" > </td>
+                            <td width="9%" valign="top" > </td>
+                            <td width="12%" valign="top" > </td>
+                            <td width="16%" valign="top" > </td>
+                        </tr>
+                        <tr>
+                            <td width="13%" colspan="2" valign="top" >
+                                <p><b>PATIENT</b></p>
+                            </td>
+                            <td width="19%" valign="top" > </td>
+                            <td width="19%" colspan="2" valign="top" > </td>
+                            <td width="9%" valign="top" > </td>
+                            <td width="9%" valign="top" > </td>
+                            <td width="12%" valign="top" > </td>
+                            <td width="16%" valign="top" > </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table cellpadding="0" cellspacing="0" align="left">
+                    <tbody>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td colspan="2"></td>
+                            <td rowspan="3" >
+                                <table cellpadding="0" cellspacing="0" width="100%">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <p>PLEASE PAY $</p>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td align="left" valign="top"></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>-->
+            </div>
+        </div>
+    </body>
+</html>
