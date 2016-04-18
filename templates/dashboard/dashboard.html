@@ -32,9 +32,12 @@
     div#table_div{
         overflow-y: scroll;
     }
-
-
-
+    .table tbody td {
+        text-align: center;   
+    }
+    .table thead th {
+        text-align: center;   
+    }
 </style>
 
 {% endblock link %}
@@ -64,35 +67,107 @@
             <div class="col-sm-2">
                 <canvas class="pull-right" id="canvas" width="120" height="120"></canvas>
             </div>
-    </div>
-    </div>
-
-    <h4>Notes</h4>
-    <div id="table_div">
-        <table id="notes_table" class="table table-striped table-condensed">
-            <thead>
-                <tr>
-                    <th>Description</th>
-                    <th>Entered By</th>
-                    <th>Date</th>
-                </tr>
-            </thead>
-            <tbody id="note-body"></tbody>
-        </table>
-    </div>
-    <div class="row">
-        <form method="POST" action="{% url 'dashboard:api_create_note' %}" id="form-note-create">{% csrf_token %}
-            <div class="col-sm-8">
-                Add Note: 
-                <input type="text" name="desc" id="desc" class="form-control" style="display: inline-block; width: 80%;" required >
-            </div>
-            <div class="col-sm-2"><input type="submit" class="btn btn-block btn-default" value="Save"></div>
-            <div class="col-sm-2"><button id="delete" class="btn btn-block btn-danger" value="Delete">Delete</button></div>
-        </form>
+        </div>
     </div>
 
-
+    <div class="col-sm-12">
+        <div class="col-sm-3">
+            <table class="top table table-bordered table-condensed">
+                <thead>
+                    <tr>
+                    <th>Patients</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><a href="http://127.0.0.1:8000/admin/infoGatherer/personal_information/add/">Register new patient</a></td></tr>
+                    <tr><td><a href="{% url 'displayContent:view_dashboard' %}">Patient Dashboard</a></td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-sm-3">
+            <table class="top table table-bordered table-condensed">
+                <thead>
+                    <tr>
+                    <th>Claims</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><a href="{% url 'infoGatherer:post_ad' %}">Create claim</a></td></tr>
+                    <tr><td><a href="{% url 'accounting:claim_summary' %}">Claim summary</a></td></tr>
+                    <tr><td>Claim Status Report</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-sm-3">
+            <table class="top table table-bordered table-condensed">
+                <thead>
+                    <tr>
+                    <th>Administration</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Provider Maintenance</td>
+                    </tr>
+                    <tr>
+                        <td>Payer Maintenance</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-sm-3">
+            <table class="top table table-bordered table-condensed">
+                <thead>
+                    <tr>
+                    <th>Payments</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><a href="{% url 'accounting:payment_create' %}">Create Payments</a></td></tr>
+                    <tr><td><a href="{% url 'accounting:payment_apply_read' %}">Apply payment to patient</a></td></tr>
+                    <tr><td><a href="{% url 'accounting:gross_payment_summary' %}">Gross payment summary</a></td></tr>
+                    <tr><td><a href="{% url 'admin:accounting_payment_changelist' %}">Payment received summary</a></td></tr>
+                    <tr><td><a href="{% url 'admin:accounting_apply_changelist' %}">Applied payments summary</a></td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+        
+    
+    
+    <div class="col-sm-12">
+        <h4>Notes</h4>
+        <div id="table_div">
+            <table id="notes_table" class="table table-striped table-condensed">
+                <thead>
+                    <tr>
+                        <th>Description</th>
+                        <th>Entered By</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody id="note-body"></tbody>
+            </table>
+        </div>
+        <div class="row">
+            <form method="POST" action="{% url 'dashboard:api_create_note' %}" id="form-note-create">{% csrf_token %}
+                <div class="col-sm-8">
+                    Add Note: 
+                    <input type="text" name="desc" id="desc" class="form-control" style="display: inline-block; width: 80%;" required >
+                </div>
+                <div class="col-sm-2"><input type="submit" class="btn btn-block btn-default" value="Save"></div>
+                <div class="col-sm-2"><button id="delete" class="btn btn-block btn-danger" value="Delete">Delete</button></div>
+            </form>
+        </div>
+    </div>
 </div>
+
+<script>
+$(document).ready(function(){
+    $("table.top tbody tr").addClass("info");
+    $("table.top thead tr").addClass("danger");
+})
+</script>
 
 <script type="text/template" class="notes-template">
     <% if(notes.length < 1) { %>
