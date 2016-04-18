@@ -4,7 +4,7 @@ body {
     margin: 0;
     padding: 0;
     background-color: #FAFAFA;
-    font: 12pt "Arial";
+    font: 10pt "Arial";
 }
 * {
     box-sizing: border-box;
@@ -13,7 +13,7 @@ body {
 .page {
     width: 8.5in;
     min-height: 11in;
-    padding: 1in;
+    padding: 0.5in;
     margin: 10px auto;
     border: 1px #D3D3D3 solid;
     border-radius: 5px;
@@ -44,4 +44,24 @@ body {
         background: initial;
         page-break-after: always;
     }
+}
+
+.header-left {
+    display: inline-block;
+    float: left;
+    width: 50%;
+    border: 1px solid green;
+    padding-right: 0.1in
+}
+.header-right {
+    display: inline-block;
+    width: 50%;
+    border: 1px solid red;
+}
+.b-provider {
+    margin-left: 0.5in
+}
+.header-right .label {
+    font: 8pt "Arial";
+    color: blue;
 }
