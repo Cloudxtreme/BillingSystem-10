@@ -20,6 +20,13 @@ from infoGatherer.models import Personal_Information, Payer, Insurance_Informati
 from base.models import ExtPythonSerializer
 
 
+
+def generate_statement(request, chart):
+    # get all claims
+    
+    return HttpResponse("<html>This is sparta!</html>")
+
+
 def view_dashboard(request):
     return render(request, 'displayContent/dashboard.html')
 

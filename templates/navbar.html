@@ -7,6 +7,15 @@
 {% url 'admin:password_change' as change_password %}
 {% url 'accounts:sign_out' as sign_out %}
 {% url 'accounts:sign_in' as sign_in %}
+{% url 'accounting:payment_create' as payment_create%}
+{% url 'accounting:payment_apply_read' as payment_apply_read%}
+{% url 'admin:accounting_payment_changelist' as accounting_payment_changelist%}
+{% url 'admin:accounting_apply_changelist' as accounting_apply_changelist %}
+<style>
+#d.dropdown:hover .dropdown-menu {
+    display: block;
+}
+</style>
 
 <nav class="navbar navbar-default navbar-static-top">
     <div class="container">
@@ -25,7 +34,18 @@
                     <li {%if dashboard in request.path%} class="active" {%endif%} ><a href="{{ dashboard }}">Dashboard</a></li>
                     <li {%if make_claim in request.path%} class="active" {%endif%} ><a href="javascript:void(0);" class="custom-href make-claim">Make Claim</a></li>
                     <li {%if auditlog in request.path%} class="active" {%endif%} ><a href="{{ auditlog }}">Audit Log</a></li>
-                    <li {%if gross_payment_summary in request.path %} class="active" {%endif%} ><a href="{{ gross_payment_summary }}">Gross Payment Summary</a></li>
+                    <li class="dropdown" id="d" >
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Payments <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li {% if payment_create in request.path %} class="active" {%endif%}><a href="{{payment_create}}">Create Payments</a></li>
+                            <li {% if payment_apply_read in request.path %} class="active" {%endif%}><a href="{{payment_apply_read}}">Apply payment to patient</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li class="dropdown-header">Summary</li>
+                            <li {% if gross_payment_summary in request.path %} class="active" {%endif%}><a href="{{gross_payment_summary}}">Gross payment</a></li>
+                            <li {% if accounting_payment_changelist in request.path %} class="active" {%endif%}><a href="{{accounting_payment_changelist}}">Payment received</a></li>
+                            <li {% if accounting_apply_changelist in request.path %} class="active" {%endif%}><a href="{{accounting_apply_changelist}}">Applied payments</a></li>
+                        </ul>
+                    </li>
                     <li {%if not change_password in request.path and admin_index in request.path%} class="active" {%endif%} ><a href="{{ admin_index }}">Database</a></li>
                     <li {%if change_password in request.path%} class="active" {%endif%} ><a href="{{ change_password }}">Change Password</a></li>
                     <li><a href="{{ sign_out }}">Sign Out</a></li>
