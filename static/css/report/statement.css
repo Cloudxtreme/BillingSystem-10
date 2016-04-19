@@ -164,3 +164,6 @@ div.bottom-line span {
     border: 1px solid #6B6B6B;
     border-left: 0px;
 }
+.number {
+    text-align: right;
+}
