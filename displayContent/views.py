@@ -4,15 +4,18 @@ from django.shortcuts import *
 from django.core import serializers
 from django.core.urlresolvers import reverse
 from django.db.models import Sum, Q
-from django.http import JsonResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.utils import timezone
-
+from fdfgen import forge_fdf
+from django.http.response import HttpResponseBadRequest
 import re
 from datetime import datetime, timedelta
 from decimal import *
-
+import os
+import subprocess
+import json
 from .models import *
 from accounting.models import *
 from accounting.forms import NoteForm
@@ -206,6 +209,54 @@ def open_pdf(request, yr, mo, da, claim):
 ###############################################################################
 # API function
 ###############################################################################
+
+def helper_trasnfer_pdf_content(file_path):
+    count=1
+    name=""
+    val=""
+    fields=[]
+    pdf_transfer="pdf_transfer"
+    try:
+        os.system('pdftk '+file_path+' dump_data_fields output '+pdf_transfer+'.txt')
+        with open(pdf_transfer+".txt","rb") as f:
+            for line in f:
+                if(len(line.split("---"))==1):
+                    if(len(line.split("FieldName:"))>1):
+                        name=line.split("FieldName:")[1].split("\n")[0]
+                    elif (len(line.split("FieldValue:"))>1):
+                        val=line.split("FieldValue:")[1].split("\n")[0]
+                else:
+                    fields.append((name.strip(), val.strip()))
+                    name=""
+                    val=""
+                count=count+1
+    except:
+        return HttpResponseBadRequest('[]', content_type='application/json')
+
+    # Transfer PDF content
+    fdf = forge_fdf("",fields,[],[],[])
+    fdf_file = open("data.fdf","w")
+    fdf_file.write(fdf)
+    fdf_file.close()
+    os.system('pdftk blank.pdf fill_form data.fdf output output_blank.pdf')
+    os.remove('data.fdf')
+    with open('output_blank.pdf', 'rb') as pdf:
+        response = HttpResponse(pdf.read(), content_type='application/pdf')
+        response['Content-Disposition'] = 'inline;filename=some_file.pdf'
+        os.remove(pdf_transfer+".txt")
+        return response
+    pdf.closed
+    return true
+
+def api_get_blank_claim(request,yr,mo,da,claim):
+    if request.method == 'GET' and 'make' in request.GET :
+        url=yr+"/"+mo+"/"+da+"/"+claim+".pdf"
+        var = helper_trasnfer_pdf_content("media/documents/"+url)
+        return var
+
+    return HttpResponseBadRequest('[]', content_type='application/json')
+
+
 def api_search_patient(request):
     if request.method == 'POST':
         post_data = request.POST
