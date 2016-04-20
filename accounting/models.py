@@ -203,8 +203,39 @@ class Procedure(BaseModel):
                     .apply_set.all()\
                     .aggregate(Sum('amount'))\
                     .get('amount__sum') or 0
-        print var
         return var
+
+    @property
+    def ins_total_charge(self):
+        return Charge.objects.filter(procedure=self.pk, payer_type="Insurance")\
+                .aggregate(Sum("amount"))\
+                .get("amount__sum") or 0
+
+    @property
+    def ins_total_adjustment(self):
+        total = Decimal("0.00")
+        charges = Charge.objects\
+                .filter(procedure=self.pk, payer_type="Insurance")\
+
+        for charge in charges:
+            total += charge.apply_set.all()\
+                    .aggregate(Sum('adjustment'))\
+                    .get('adjustment__sum') or 0
+
+        return total
+
+    @property
+    def ins_total_pymt(self):
+        total = Decimal("0.00")
+        charges = Charge.objects\
+                .filter(procedure=self.pk, payer_type="Insurance")\
+
+        for charge in charges:
+            total += charge.apply_set.all()\
+                    .aggregate(Sum('amount'))\
+                    .get('amount__sum') or 0
+
+        return total
 
     def __str__(self):
         return '%s: %s' % (self.id, self.cpt.cpt_description)

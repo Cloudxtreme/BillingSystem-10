@@ -167,3 +167,8 @@ div.bottom-line span {
 .number {
     text-align: right;
 }
+tr.claim td {
+    font-weight: bold;
+    padding-top: 2mm;
+    padding-bottom: 1mm;
+}
