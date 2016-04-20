@@ -29,4 +29,6 @@ urlpatterns = [
     url(r'^get_json_provider_info$', views.get_json_provider_info, name="get_json_provider_info"),
     url(r'^get_json_cpt$', views.get_json_cpt, name="get_json_cpt"),
     url(r'^api_read_dx/$', views.api_read_dx, name="api_read_dx"),
+    
+    
 ]
