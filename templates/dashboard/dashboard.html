@@ -55,6 +55,7 @@
         <a href="{% url 'admin:accounting_payment_changelist' %}" class="btn btn-primary pull-right">Payment received Summary</a>
         <a href="{% url 'admin:accounting_apply_changelist' %}" class="btn btn-danger pull-right">Apply Payment Summary</a> -->
 
+        
     </div>
 
 
@@ -68,6 +69,9 @@
                 <canvas class="pull-right" id="canvas" width="120" height="120"></canvas>
             </div>
         </div>
+        <p>
+            <a href="{% url 'report:TransactionReport' %}" class="btn btn-default">Transaction report</a>
+        </p>
     </div>
 
     <div class="col-sm-12">
