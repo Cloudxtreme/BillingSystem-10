@@ -3,6 +3,7 @@
 *.fdf
 ~$*.*x
 ~*.tmp
+*.xls
 .DS_Store
 /media/documents/**/*.*
 

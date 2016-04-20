@@ -108,12 +108,14 @@
         <p></p>
         <p></p>
         <a id="showClaim" href="/patient/2016/04/06/23/pdf" TARGET="_blank" class="btn btn-primary">Download claim</a>
+        <a id="no_background_claim" href="/patient/2016/04/06/23/pdf" TARGET="_blank" class="btn btn-default">Download claim without background</a>
 
     </div>
 </div>
 
 
 <script>
+
 
 function getMonthFromString(mon){
    var d = Date.parse(mon + "1, 2012");
@@ -140,8 +142,8 @@ $('table#table_search tbody tr').on("click", function(){
 
     // set a href
     $("#showClaim").attr("href","/patient/"+yr+"/"+mo+"/"+da+"/"+claimid+"/pdf");
+    $("#no_background_claim").attr("href","/patient/get_blank/"+yr+"/"+mo+"/"+da+"/"+claimid+"/pdf?make=1");
 
-    // console.log(da, mo, yr);
 })
 
 </script>
