@@ -4,7 +4,7 @@ body {
     margin: 0;
     padding: 0;
     background-color: #FAFAFA;
-    font: 10pt "Arial";
+    font: 8pt "Arial";
 }
 * {
     box-sizing: border-box;
@@ -21,7 +21,7 @@ body {
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 }
 .subpage {
-    border: 1px red solid;
+    /*border: 1px red solid;*/
     height: 10in;
 }
 
@@ -46,22 +46,129 @@ body {
     }
 }
 
-.header-left {
-    display: inline-block;
-    float: left;
-    width: 50%;
-    border: 1px solid green;
-    padding-right: 0.1in
+input[type=checkbox] {
+    margin-right: 0px;
 }
-.header-right {
-    display: inline-block;
-    width: 50%;
-    border: 1px solid red;
+table {
+    border-collapse: collapse;
+    width: 100%;
 }
+th, td {
+    border: 1px solid #999;
+}
+table.head-table,
+table.head-table tr:last-child td,
+table.head-table tr:last-child th {
+    border-bottom: 0px;
+    margin-bottom: 0px;
+    padding-bottom: 0px;
+}
+table.foot-table,
+table.foot-table tr:first-child td,
+table.foot-table tr:first-child th {
+    border-top: 0px;
+    margin-top: 0px;
+    padding-top: 0px;
+}
+table.main {
+    height: 6in;
+}
+table.main tbody tr:not(:last-child) {
+    height: 1em;
+}
+table.main tbody tr:not(:first-child) td {
+    border-top: 0px;
+    border-bottom: 0px;
+}
+table.main tbody tr:first-child td {
+    border-bottom: 0px;
+}
+
 .b-provider {
     margin-left: 0.5in
 }
-.header-right .label {
-    font: 8pt "Arial";
+.label {
+    font: 6pt "Arial";
+}
+.blue {
     color: blue;
+}
+.top-left {
+    vertical-align: top;
+}
+.input {
+    text-align: center;
+}
+.input-big {
+    font-size: 1.1em;
+    line-height: 2em;
+}
+hr.head-line {
+    margin-top: 0px;
+    border: 2px solid #5EA0D4;
+}
+hr.bottom-line {
+    margin-bottom: 0px;
+    border: 2px solid #5EA0D4;
+}
+div.bottom-line {
+    width: 100%;
+    text-align: center;
+    border-bottom: 4px solid #5EA0D4;
+    height: 9px;
+    margin: 10px 0 20px;
+}
+div.bottom-line span {
+    background: #fff;
+    padding: 0 10px;
+    font-weight: bold;
+}
+
+.row {
+    display: table;
+    width: 100%;
+}
+.col-2 {
+    position: relative;
+    min-height: 1px;
+    width: 50%;
+    float: left;
+}
+.col-3 {
+    position: relative;
+    min-height: 1px;
+    width: 33.33%;
+    float: left;
+}
+.indent-top {
+    margin-top: 0.1in;
+}
+.note-box {
+    width: 73.75%;
+    border: 1px solid #6B6B6B;
+    padding: 2mm;
+    background-color: #D8D8D8;
+}
+.space-box {
+    width: 2.5%;
+    border: 0px;
+}
+.pay-box {
+    width: 13.75%;
+    border: 1px solid #6B6B6B;
+    border-right: 0px;
+    padding: 2mm;
+}
+.amount-box {
+    width: 10%;
+    border: 1px solid #6B6B6B;
+    border-left: 0px;
+}
+.number {
+    text-align: right;
+}
+tr.claim td {
+    font-weight: bold;
+    padding-top: 2mm;
+    padding-bottom: 1mm;
 }

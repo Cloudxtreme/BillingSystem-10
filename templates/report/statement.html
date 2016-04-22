@@ -10,196 +10,251 @@
     <body>
         <div class="page">
             <div class="subpage">
-                <div class="header-left">
-                    <div class="b-provider">XENON ANESTHESIA OF GEORGIA LLC</div>
-                    <div class="b-provider">6464 SUNSET BLVD</div>
-                    <div class="b-provider">LOS ANGELES CA 90028-8006</div>
-                    <div>ANY QUESTION PLEASE CALL: <span>(323) 417-0335</span></div>
-                    <div>PATIENT: <span>AE YOUNG LEE</span></div>
+                <div class="row">
+                    <div class="col-2" style="padding-right: 0.1in;">
+                        <hr class="head-line">
+                        <div class="b-provider" style="height: 0.7in;">
+                            XENON ANESTHESIA OF GEORGIA LLC<br>
+                            6464 SUNSET BLVD<br>
+                            <br>
+                            LOS ANGELES CA 90028-8006
+                        </div>
+                        <div style="margin-top: 0.1in;">ANY QUESTION PLEASE CALL: <span>(323) 417-0335</span></div>
+                        <div>PATIENT: <span>AE YOUNG LEE</span></div>
+                        <div class="bottom-line"><span>SEND TO:</span></div>
+                    </div>
+                    <div class="col-2">
+                        <table class="head-table" style="table-layout: auto;">
+                            <tbody>
+                                <tr><td colspan="2" style="text-align: center;">
+                                    <span class="label blue">IF PAYING BY MASTER CARD, DISCOVER, VISA OR AMERICAN EXPRESS, FILL OUT BELOW.</span>
+                                </td></tr>
+                                <tr>
+                                    <td style="width: 0.25in;"></td>
+                                    <td class="label blue">
+                                        <span class="label blue">
+                                            <input type="checkbox"><span>VISA&nbsp;</span>
+                                            <input type="checkbox">MASTERCARD&nbsp;
+                                            <input type="checkbox">DISCOVER&nbsp;
+                                            <input type="checkbox">AMER EXP.&nbsp;
+                                        </span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td colspan="2">
+                                        <span class="label blue top-left">CARD NUMBER</span><br>
+                                        <div class="input">1900 1900 4833 1622</div>
+                                    </td>
+                                    <td>
+                                        <span class="label blue top-left">SIGNATURE CODE</span><br>
+                                        <div class="input">123</div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">
+                                        <span class="label blue top-left">SIGNATURE</span><br>
+                                        <div class="input">Ekasit sign</div>
+                                    </td>
+                                    <td>
+                                        <span class="label blue top-left">EXP DATE</span><br>
+                                        <div class="input">05/16</div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="width: 33.3%; text-align: center;">
+                                        <span class="label blue">STATEMENT DATE</span><br>
+                                        <div class="input input-big">{{today}}</div>
+                                    </td>
+                                    <td style="width: 33.3%; text-align: center;">
+                                        <span class="label blue">PAY THIS AMOUNT</span><br>
+                                        <div class="input input-big"><span class="number">{{aging.total}}</span></div>
+                                    </td>
+                                    <td style="width: 33.4%; text-align: center;">
+                                        <span class="label blue">ACCT. #</span><br>
+                                        <div class="input input-big">HF102814888</div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table class="foot-table">
+                            <tbody>
+                                <tr>
+                                    <td style="width: 36.6%; border: 0px;"></td>
+                                    <td style="width: 30%; border-right: 0px;"><span class="label blue">SHOW AMOUNT $<br>PAID HERE</span></td>
+                                    <td style="width: 33.4%; border-left: 0px;">
+                                        <div class="input input-big">123.65</div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-                <div class="header-right">
-                    <table>
+                <div class="row indent-top">
+                    <div class="col-2" style="padding-left: 0.25in; height: 0.55in;">
+                        AE YOUNG LEE<br>
+                        2896 OXFORD WAY<br>
+                        <br>
+                        DULUTH GA 30096
+                    </div>
+                    <div class="col-2" style="padding-left: 0.25in; height: 0.55in;">
+                        XENON ANESTHESIA OF GEORGIA LLC<br>
+                        6464 SUNSET BLVD<br>
+                        <br>
+                        LOS ANGELES CA 90028-8006
+                    </div>
+                </div>
+                <div class="row indent-top">
+                    <div class="col-3 label" style="width: 33%;"><input type="checkbox">PLEASE CHECK THE BOX IF YOUR ADDRESS IS INCORRECT OR INSURANCE INFO HAS CHANGED</div>
+                    <div class="col-3" style="width: 7%;"></div>
+                    <div class="col-3" style="text-align: center; width: 20%;"><span style="font-weight: bold; font-size: 1.5em;">STATEMENT</span></div>
+                    <div class="col-3 label" style="text-align: right; width: 40%;">PLEASE DETACH AND RETURN TOP PORTION WITH YOUR PAYMENT</div>
+                </div>
+                <div class="row indent-top">
+                    <table class="head-table main">
+                        <thead>
+                            <tr style="line-height: 2em;">
+                                <th style="width: 14%;" colspan="2">PATIENT NAME</th>
+                                <td style="width: 25.5%; text-align: center;">AE YOUNG LEE</td>
+                                <th style="width: 20%;" colspan="2">PATIENT ACCT NUMBER</th>
+                                <td style="width: 18%; text-align: center;" colspan="2">HF102814888</td>
+                                <th style="width: 13%;">BALANCE DUE</th>
+                                <td style="width: 9.5%; text-align: center;">378.00</td>
+                            </tr>
+                             <tr>
+                                <th style="width: 7%;">DATE</th>
+                                <th style="width: 7%;">CODE</th>
+                                <th style="width: 25.5%;">DESCRIPTION OF SERVICE</th>
+                                <th style="width: 8%;">CHARGE</th>
+                                <th style="width: 12%;">ADJUSTMENT</th>
+                                <th style="width: 9%;">INS PYMT</th>
+                                <th style="width: 9%;">PAT RESP</th>
+                                <th style="width: 13%;">PAT PYMT</th>
+                                <th style="width: 9.5%;">BALANCE</th>
+                            </tr>
+                        </thead>
                         <tbody>
-                            <tr><td colspan="100" class="label">IF PAYING BY MASTER CARD, DISCOVER, VISA OR AMERICAN EXPRESS, FILL OUT BELOW.</td></tr>
+                            {% for claim in claims %}
+                                <tr class="claim">
+                                    <td>{{claim.created|date:"m/d/y"}}</td>
+                                    <td></td>
+                                    <td>{{claim.rendering_provider.provider_name}}</td>
+                                    <td class="number">{{claim.total_charge}}</td>
+                                    <td class="number">{{claim.ins_adjustment_per_claim}}</td>
+                                    <td class="number">{{claim.ins_pmnt_per_claim}}</td>
+                                    <td class="number">{{claim.pat_responsible_per_claim}}</td>
+                                    <td class="number">{{claim.pat_pmnt_per_claim}}</td>
+                                    <td class="number">{{claim.total_balance}}</td>
+                                </tr>
+                                {% for procedure in claim.procedure_set.all %}
+                                    <tr>
+                                        <td>{{procedure.date_of_service|date:"m/d/y"}}</td>
+                                        <td>{{procedure.cpt.cpt_code}}</td>
+                                        <td>{{procedure.cpt.cpt_description}}</td>
+                                        <td class="number">{{procedure.ins_total_charge}}</td>
+                                        <td class="number">{{procedure.ins_total_adjustment}}</td>
+                                        <td class="number">{{procedure.ins_total_pymt}}</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    {% for charge in procedure.charge_set.all %}
+                                        {% if charge.payer_type == "Patient"%}
+                                            <tr>
+                                                <td></td>
+                                                <td></td>
+                                                <td>{{charge.resp_type}}</td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td class="number">{{charge.amount}}</td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endfor %}
+                            {% endfor %}
                             <tr>
-                                <td style="width: 0.25in;"></td>
-                                <td class="label"><input type="checkbox"> VISA <input type="checkbox"> MASTERCARD <input type="checkbox"> DISCOVER <input type="checkbox"> AMER EXP.</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
                             </tr>
-                            <tr>
-                                <td>CARD NUMBER</td>
-                                <td>SIGNATURE CODE</td>
+                        </tbody>
+                        <tfoot>
+                            <tr style="line-height: 2em;">
+                                <td colspan="5" style="border-right: 0px;"></td>
+                                <td style="border-left: 0px; border-right: 0px;" class="number">0</td>
+                                <td style="border-left: 0px; border-right: 0px;"></td>
+                                <td style="border-left: 0px; border-right: 0px;" class="number">0</td>
+                                <td class="number">0</td>
                             </tr>
-                            <tr></tr>
-                            <tr></tr>
-                            <tr></tr>
+                        </tfoot>
+                    </table>
+                    <table>
+                        <thead>
+                            <tr style="line-height: 2em;">
+                                <th style="width: 16%;"></th>
+                                <th style="width: 12%;">CURRENT</th>
+                                <th style="width: 12%;">30 DAYS</th>
+                                <th style="width: 12%;">60 DAYS</th>
+                                <th style="width: 12%;">90 DAYS</th>
+                                <th style="width: 12%;">120 DAYS</th>
+                                <th style="width: 24%;">TOTAL ACCOUNT BALANCE</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="line-height: 2em;">
+                                <th>INSURANCE</th>
+                                <td class="number">{{aging.i_m1}}</td>
+                                <td class="number">{{aging.i_m2}}</td>
+                                <td class="number">{{aging.i_m3}}</td>
+                                <td class="number">{{aging.i_m4}}</td>
+                                <td class="number">{{aging.i_m5}}</td>
+                                <td class="number">{{aging.i_t}}</td>
+                            </tr>
+                            <tr style="line-height: 2em;">
+                                <th>PATIENT</th>
+                                <td class="number">{{aging.p_m1}}</td>
+                                <td class="number">{{aging.p_m2}}</td>
+                                <td class="number">{{aging.p_m3}}</td>
+                                <td class="number">{{aging.p_m4}}</td>
+                                <td class="number">{{aging.p_m5}}</td>
+                                <td class="number">{{aging.p_t}}</td>
+                            </tr>
                         </tbody>
                     </table>
-
                 </div>
-                <br>
-                <!--<p><b>STATEMENT</b></p>
-                <table border="1" cellspacing="0" cellpadding="0" summary="Invoice Table" width="116%" >
-                    <thead>
-                        <tr>
-                            <td width="13%" colspan="2" valign="bottom" >
-                                <p><b>PATIENT NAME</b></p>
-                            </td>
-                            <td width="19%" valign="bottom" > </td>
-                            <td width="19%" colspan="2" valign="bottom" >
-                                <p><b>PATIENT ACCT NUMBER</b></p>
-                            </td>
-                            <td width="19%" colspan="2" valign="bottom" > </td>
-                            <td width="12%" valign="bottom" >
-                                <p><b>BALANCE DUE</b></p>
-                            </td>
-                            <td width="16%" valign="bottom" > </td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td width="6%" valign="top" >
-                                <p>DATE</p>
-                            </td>
-                            <td width="6%" valign="top" >
-                                <p>CODE</p>
-                            </td>
-                            <td width="19%" valign="top" >
-                                <p>DESCRIPTION OF SERVICE</p>
-                            </td>
-                            <td width="8%" valign="top" >
-                                <p>CHARGE</p>
-                            </td>
-                            <td width="10%" valign="top" >
-                                <p>ADJUSTMENT</p>
-                            </td>
-                            <td width="9%" valign="top" >
-                                <p>INS PYMT</p>
-                            </td>
-                            <td width="9%" valign="top" >
-                                <p>PAT RESP</p>
-                            </td>
-                            <td width="12%" valign="top" >
-                                <p>PAT PYMT</p>
-                            </td>
-                            <td width="16%" valign="top" >
-                                <p>BALANCE</p>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td width="6%" valign="top" >
-                                <p>02/15/16</p>
-                            </td>
-                            <td width="6%" valign="top" >
-                                <p>24658</p>
-                            </td>
-                            <td width="19%" valign="top" >
-                                <p>This is spartaasdfasdfasdfasdfsadfsadfasdfasfsadfsdafsadfasdfsadfsadfsadfdsfsadf~~!</p>
-                            </td>
-                            <td width="8%" valign="top" >
-                                <p>$40</p>
-                            </td>
-                            <td width="10%" valign="top" >
-                                <p>0</p>
-                            </td>
-                            <td width="9%" valign="top" >
-                                <p>$12</p>
-                            </td>
-                            <td width="9%" valign="top" >
-                                <p>$28</p>
-                            </td>
-                            <td width="12%" valign="top" >
-                                <p>0</p>
-                            </td>
-                            <td width="16%" valign="top" >
-                                <p>$28</p>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td width="13%" colspan="2" valign="top" > </td>
-                            <td width="19%" valign="top" > </td>
-                            <td width="19%" colspan="2" valign="top" > </td>
-                            <td width="19%" colspan="2" valign="top" > </td>
-                            <td width="12%" valign="top" > </td>
-                            <td width="16%" valign="top" > </td>
-                        </tr>
-                        <tr>
-                            <td width="13%" colspan="2" valign="top" > </td>
-                            <td width="19%" valign="top" >
-                                <p><b>CURRENT</b></p>
-                            </td>
-                            <td width="19%" colspan="2" valign="top" >
-                                <p><b>30 DAYS</b></p>
-                            </td>
-                            <td width="9%" valign="top" >
-                                <p><b>60 DAYS</b></p>
-                            </td>
-                            <td width="9%" valign="top" >
-                                <p><b>90 DAYS</b></p>
-                            </td>
-                            <td width="12%" valign="top" >
-                                <p><b>120 DAYS</b></p>
-                            </td>
-                            <td width="16%" valign="top" >
-                                <p><b>TOTAL BALANCE</b></p>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td width="13%" colspan="2" valign="top" >
-                                <p><b>INSURANCE</b></p>
-                            </td>
-                            <td width="19%" valign="top" > </td>
-                            <td width="19%" colspan="2" valign="top" > </td>
-                            <td width="9%" valign="top" > </td>
-                            <td width="9%" valign="top" > </td>
-                            <td width="12%" valign="top" > </td>
-                            <td width="16%" valign="top" > </td>
-                        </tr>
-                        <tr>
-                            <td width="13%" colspan="2" valign="top" >
-                                <p><b>PATIENT</b></p>
-                            </td>
-                            <td width="19%" valign="top" > </td>
-                            <td width="19%" colspan="2" valign="top" > </td>
-                            <td width="9%" valign="top" > </td>
-                            <td width="9%" valign="top" > </td>
-                            <td width="12%" valign="top" > </td>
-                            <td width="16%" valign="top" > </td>
-                        </tr>
-                    </tbody>
-                </table>
-                <table cellpadding="0" cellspacing="0" align="left">
-                    <tbody>
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td colspan="2"></td>
-                            <td rowspan="3" >
-                                <table cellpadding="0" cellspacing="0" width="100%">
-                                    <tbody>
-                                        <tr>
-                                            <td>
-                                                <p>PLEASE PAY $</p>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td align="left" valign="top"></td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                        </tr>
-                    </tbody>
-                </table>-->
+                <div class="row indent-top">
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td class="note-box">IF YOU HAVE ANY CONCERNS REGARDING THIS STATEMENT, PLEASE CONTACT OUR BILLING DEPARTMENT AT (323) 417-0335. SORRY, WE DO NOT ACCEPT CREDIT CARDS.</td>
+                                <td class="space-box"></td>
+                                <td class="pay-box">PLEASE PAY THIS AMOUNT</td>
+                                <td class="amount-box" style="text-align: right;">$ <span class="number">{{aging.total}}</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
+        <script type="text/javascript">
+            var list = document.querySelectorAll(".number");
+            for(var i=0; i<list.length; i++) {
+                var td = list[i];
+                if(td.innerText)
+                    td.innerText = parseFloat(td.innerText).toFixed(2);
+            }
+        </script>
     </body>
 </html>
