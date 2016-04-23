@@ -105,7 +105,18 @@ def TransactionReportPayment(request):
     # filtering the information!
     claim = Claim.objects.filter(created__range=(from_dos, to_dos)).all()
 
+    wb = Workbook()
+    sheet1 = wb.add_sheet('Transaction Report')
     
+    sheet1.write(3, 1, label = 'Patient', style=style1)
+    sheet1.write(3, 2, label = 'Chart No', style=style1)
+    sheet1.write(3, 3, label = 'Provider', style=style1)
+    sheet1.write(3, 4, label = 'Code [Modifiers]', style=style1)
+    sheet1.write(3, 5, label = 'Procedure Code Description', style=style1)
+    sheet1.write(3, 6, label = 'DOS', style=style1)
+    sheet1.write(3, 7, label = 'Created Date', style=style1)
+    sheet1.write(3, 8, label = 'Units', style=style1)
+    sheet1.write(3, 9, label = 'Charges', style=style1)
 
     return HttpResponse("<html>To do!</html>")
 
