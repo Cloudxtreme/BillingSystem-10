@@ -480,11 +480,21 @@ def PostAdPage(request):
                     cpt = CPT.objects.get(cpt_code=cpt_code)
                     amount = form.cleaned_data.get('total_%s' % i)
                     date_of_service = form.cleaned_data.get('service_start_date_%s' % i)
+                    unit = form.cleaned_data.get('note_%s' % i)
+                    if(len(unit)>0):
+                        txt=unit
+                        if(txt.split()[0]=='START'):
+                            unit=txt.split()[7]
+                        else:
+                            unit=txt.split()[2][-2:]
+                    else:
+                        unit="0.00"
                     if(cpt and amount):
                         procedure = Procedure.objects.create(
                             claim=claim,
                             rendering_provider=rendering_provider,
                             cpt=cpt,
+                            unit=unit,
                             date_of_service=date_of_service,
                         )
 
