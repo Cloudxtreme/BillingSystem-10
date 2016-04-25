@@ -26,13 +26,14 @@ body {
 }
 
 @page {
-    size: A4;
-    margin: 0;
+    size: 8.5in 11in;
+    margin: 0mm;
 }
 @media print {
     html, body {
         width: 8.5in;
         height: 11in;
+        -webkit-print-color-adjust: exact;
     }
     .page {
         margin: 0;
@@ -70,8 +71,9 @@ table.foot-table tr:first-child th {
     margin-top: 0px;
     padding-top: 0px;
 }
+
 table.main {
-    height: 6in;
+    height: 5.8in;
 }
 table.main tbody tr:not(:last-child) {
     height: 1em;
@@ -83,6 +85,9 @@ table.main tbody tr:not(:first-child) td {
 table.main tbody tr:first-child td {
     border-bottom: 0px;
 }
+table.main tfoot {
+    background-color: #F2DBDB !important;
+}
 
 .b-provider {
     margin-left: 0.5in
@@ -91,7 +96,7 @@ table.main tbody tr:first-child td {
     font: 6pt "Arial";
 }
 .blue {
-    color: blue;
+    color: #5EA0D4;
 }
 .top-left {
     vertical-align: top;
@@ -171,4 +176,44 @@ tr.claim td {
     font-weight: bold;
     padding-top: 2mm;
     padding-bottom: 1mm;
+}
+.dash{
+    border: 0 none;
+    border-top: 1px dashed #A9C5E9;
+    background: none;
+    height:0;
+}
+div.checkbox-card {
+    display: inline-block;
+}
+.checkbox-custom {
+    opacity: 0;
+    position: absolute;
+}
+.checkbox-custom, .checkbox-custom-label {
+    display: inline-block;
+    vertical-align: middle;
+    margin: 3px;
+    cursor: pointer;
+}
+.checkbox-custom-label {
+    position: relative;
+}
+.checkbox-custom + .checkbox-custom-label:before {
+    content: '';
+    background: #fff;
+    border: 1px solid #777;
+    display: inline-block;
+    vertical-align: middle;
+    width: 10px;
+    height: 10px;
+    padding: 2px;
+    margin-right: 5px;
+    text-align: center;
+}
+.checkbox-custom:checked + .checkbox-custom-label:before {
+    background: black;
+}
+.checkbox-custom:focus + .checkbox-custom-label {
+  outline: 1px solid #ddd; /* focus style */
 }

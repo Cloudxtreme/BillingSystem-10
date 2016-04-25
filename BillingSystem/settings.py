@@ -53,6 +53,7 @@ INSTALLED_APPS = (
     'simple_history',
     'deepdiff',
     'daterange_filter',
+    'tz_detect',
 
     'infoGatherer',
     'claims',
@@ -74,7 +75,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.security.SecurityMiddleware',
     'audit_log.middleware.UserLoggingMiddleware',
     'simple_history.middleware.HistoryRequestMiddleware',
-
+    'tz_detect.middleware.TimezoneMiddleware',
 )
 
 ROOT_URLCONF = 'BillingSystem.urls'
