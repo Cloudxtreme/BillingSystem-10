@@ -480,7 +480,7 @@ class Provider(models.Model):
     provider_state = USStateField(default='',null=True, blank=True)
     provider_zip = models.IntegerField(default='',null=True, blank=True)
     provider_phone = PhoneNumberField(null=True, blank=True, help_text='XXX-XXX-XXXX',)
-    place_of_service = models.CharField(choices=POS,max_length=200,default='',null=True, blank=True)
+    place_of_service = models.CharField(choices=POS, max_length=200, default='', null=True, blank=True)
     history = HistoricalRecords()
 
 

@@ -1,33 +1,41 @@
 from django.shortcuts import *
+from django.contrib.auth.decorators import login_required
 from django.db.models import Q
+from django.http import HttpResponse
 from django.utils import timezone
-import pytz
 
 from datetime import datetime, timedelta
 from decimal import *
+from xlwt import Workbook
+import datetime
+import pytz
+import xlwt
+import time
 
 from infoGatherer.models import *
 from accounting.models import *
-
-
-from django.shortcuts import render
-from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
 from dashboard.models import Notes
-from django.http.response import HttpResponseBadRequest
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
-from django.core import serializers
-import xlwt
-from xlwt import Workbook
-import time
-import datetime
-
 
 
 def statment_create(request):
     patient_id = request.GET.get("patient")
     patient = get_object_or_404(Personal_Information, pk=patient_id)
 
+    billing_provider_id = request.GET.get("billing")
+    try:
+        billing_provider = Provider.objects.get(pk=billing_provider_id)
+    except:
+        billing_provider = Provider.objects.get(provider_name__icontains="XENON HEALTH")
+
+    # Calculate total ins pymt and pat pymt
+    total_ins_pymt = 0
+    total_pat_pymt = 0
+    claims = patient.patient.all()
+    for claim in claims:
+        total_ins_pymt += claim.ins_pmnt_per_claim
+        total_pat_pymt += claim.pat_pmnt_per_claim
+
+    # Prepare aging table
     today = timezone.now().date()
     m1_time = today - timedelta(days=30)
     m2_time = today - timedelta(days=60)
@@ -87,9 +95,13 @@ def statment_create(request):
             total=sum(ins_t_age) + sum(pat_t_age))
 
     return render(request, "report/statement.html", {
-        "claims": patient.patient.all(),
+        "patient": patient,
+        "billing_provider": billing_provider,
+        "claims": claims,
         "aging": aging,
-        "today": today,
+        "today": timezone.now(),
+        "total_ins_pymt": total_ins_pymt,
+        "total_pat_pymt": total_pat_pymt,
     })
 
 def index(request):

@@ -1,7 +1,8 @@
 {% load staticfiles %}
+{% load tz_detect %}
 
 <!DOCTYPE html>
-<html>
+<html moznomarginboxes mozdisallowselectionprint>
     <head>
         <title>Statement Report</title>
         <script src="{% static 'js/jquery.min.js' %}"></script>
@@ -14,13 +15,12 @@
                     <div class="col-2" style="padding-right: 0.1in;">
                         <hr class="head-line">
                         <div class="b-provider" style="height: 0.7in;">
-                            XENON ANESTHESIA OF GEORGIA LLC<br>
-                            6464 SUNSET BLVD<br>
-                            <br>
-                            LOS ANGELES CA 90028-8006
+                            {{billing_provider.provider_name|upper}}<br>
+                            {{billing_provider.provider_address|upper}}<br>
+                            {{billing_provider.provider_city|upper}} {{billing_provider.provider_state|upper}} {{billing_provider.provider_zip|upper}}<br>
                         </div>
-                        <div style="margin-top: 0.1in;">ANY QUESTION PLEASE CALL: <span>(323) 417-0335</span></div>
-                        <div>PATIENT: <span>AE YOUNG LEE</span></div>
+                        <div style="margin-top: 0.1in;">ANY QUESTION PLEASE CALL: <span>{{billing_provider.provider_phone}}</span></div>
+                        <div>PATIENT: <span>{{patient.full_name|upper}}</span></div>
                         <div class="bottom-line"><span>SEND TO:</span></div>
                     </div>
                     <div class="col-2">
@@ -33,10 +33,22 @@
                                     <td style="width: 0.25in;"></td>
                                     <td class="label blue">
                                         <span class="label blue">
-                                            <input type="checkbox"><span>VISA&nbsp;</span>
-                                            <input type="checkbox">MASTERCARD&nbsp;
-                                            <input type="checkbox">DISCOVER&nbsp;
-                                            <input type="checkbox">AMER EXP.&nbsp;
+                                            <div class="checkbox-card">
+                                                <input id="checkbox-1" class="checkbox-custom" type="checkbox">
+                                                <label for="checkbox-1" class="checkbox-custom-label">VISA</label>
+                                            </div>
+                                            <div class="checkbox-card">
+                                                <input id="checkbox-2" class="checkbox-custom" type="checkbox">
+                                                <label for="checkbox-2" class="checkbox-custom-label">MASTERCARD</label>
+                                            </div>
+                                            <div class="checkbox-card">
+                                                <input id="checkbox-3" class="checkbox-custom" type="checkbox">
+                                                <label for="checkbox-3" class="checkbox-custom-label">DISCOVER</label>
+                                            </div>
+                                            <div class="checkbox-card">
+                                                <input id="checkbox-4" class="checkbox-custom" type="checkbox">
+                                                <label for="checkbox-4" class="checkbox-custom-label">AMER EXP.</label>
+                                            </div>
                                         </span>
                                     </td>
                                 </tr>
@@ -47,27 +59,27 @@
                                 <tr>
                                     <td colspan="2">
                                         <span class="label blue top-left">CARD NUMBER</span><br>
-                                        <div class="input">1900 1900 4833 1622</div>
+                                        <div class="input">&nbsp;</div>
                                     </td>
                                     <td>
                                         <span class="label blue top-left">SIGNATURE CODE</span><br>
-                                        <div class="input">123</div>
+                                        <div class="input">&nbsp;</div>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td colspan="2">
                                         <span class="label blue top-left">SIGNATURE</span><br>
-                                        <div class="input">Ekasit sign</div>
+                                        <div class="input">&nbsp;</div>
                                     </td>
                                     <td>
                                         <span class="label blue top-left">EXP DATE</span><br>
-                                        <div class="input">05/16</div>
+                                        <div class="input">&nbsp;</div>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td style="width: 33.3%; text-align: center;">
                                         <span class="label blue">STATEMENT DATE</span><br>
-                                        <div class="input input-big">{{today}}</div>
+                                        <div class="input input-big">{{today|date:"m/d/y"}}</div>
                                     </td>
                                     <td style="width: 33.3%; text-align: center;">
                                         <span class="label blue">PAY THIS AMOUNT</span><br>
@@ -75,7 +87,7 @@
                                     </td>
                                     <td style="width: 33.4%; text-align: center;">
                                         <span class="label blue">ACCT. #</span><br>
-                                        <div class="input input-big">HF102814888</div>
+                                        <div class="input input-big">{{patient.chart_no}}</div>
                                     </td>
                                 </tr>
                             </tbody>
@@ -86,7 +98,7 @@
                                     <td style="width: 36.6%; border: 0px;"></td>
                                     <td style="width: 30%; border-right: 0px;"><span class="label blue">SHOW AMOUNT $<br>PAID HERE</span></td>
                                     <td style="width: 33.4%; border-left: 0px;">
-                                        <div class="input input-big">123.65</div>
+                                        <div class="input input-big"></div>
                                     </td>
                                 </tr>
                             </tbody>
@@ -95,21 +107,27 @@
                 </div>
                 <div class="row indent-top">
                     <div class="col-2" style="padding-left: 0.25in; height: 0.55in;">
-                        AE YOUNG LEE<br>
-                        2896 OXFORD WAY<br>
-                        <br>
-                        DULUTH GA 30096
+                        {{patient.full_name|upper}}<br>
+                        {{patient.address|upper}}<br>
+                        {{patient.city|upper}} {{patient.state|upper}} {{patient.zip|upper}}
                     </div>
                     <div class="col-2" style="padding-left: 0.25in; height: 0.55in;">
-                        XENON ANESTHESIA OF GEORGIA LLC<br>
-                        6464 SUNSET BLVD<br>
-                        <br>
-                        LOS ANGELES CA 90028-8006
+                        {{billing_provider.provider_name|upper}}<br>
+                        {{billing_provider.provider_address|upper}}<br>
+                        {{billing_provider.provider_city|upper}} {{billing_provider.provider_state|upper}} {{billing_provider.provider_zip|upper}}<br>
                     </div>
                 </div>
+                <hr class="dash">
                 <div class="row indent-top">
-                    <div class="col-3 label" style="width: 33%;"><input type="checkbox">PLEASE CHECK THE BOX IF YOUR ADDRESS IS INCORRECT OR INSURANCE INFO HAS CHANGED</div>
-                    <div class="col-3" style="width: 7%;"></div>
+                    <div class="col-3" style="width: 40%;">
+                        <div class="checkbox-card">
+                            <input id="checkbox-5" class="checkbox-custom" type="checkbox">
+                            <label for="checkbox-5" class="checkbox-custom-label label" style="top: -7px;"></label>
+                        </div>
+                        <div style="display: inline-block;">
+                            <span class="label">PLEASE CHECK THE BOX IF YOUR ADDRESS IS <br>INCORRECT OR INSURANCE INFO HAS CHANGED</span>
+                        </div>
+                    </div>
                     <div class="col-3" style="text-align: center; width: 20%;"><span style="font-weight: bold; font-size: 1.5em;">STATEMENT</span></div>
                     <div class="col-3 label" style="text-align: right; width: 40%;">PLEASE DETACH AND RETURN TOP PORTION WITH YOUR PAYMENT</div>
                 </div>
@@ -118,11 +136,11 @@
                         <thead>
                             <tr style="line-height: 2em;">
                                 <th style="width: 14%;" colspan="2">PATIENT NAME</th>
-                                <td style="width: 25.5%; text-align: center;">AE YOUNG LEE</td>
+                                <td style="width: 25.5%; text-align: center;">{{patient.full_name|upper}}</td>
                                 <th style="width: 20%;" colspan="2">PATIENT ACCT NUMBER</th>
-                                <td style="width: 18%; text-align: center;" colspan="2">HF102814888</td>
+                                <td style="width: 18%; text-align: center;" colspan="2">{{patient.chart_no|upper}}</td>
                                 <th style="width: 13%;">BALANCE DUE</th>
-                                <td style="width: 9.5%; text-align: center;">378.00</td>
+                                <td style="width: 9.5%; text-align: center;">{{aging.total}}</td>
                             </tr>
                              <tr>
                                 <th style="width: 7%;">DATE</th>
@@ -141,7 +159,7 @@
                                 <tr class="claim">
                                     <td>{{claim.created|date:"m/d/y"}}</td>
                                     <td></td>
-                                    <td>{{claim.rendering_provider.provider_name}}</td>
+                                    <td>{{claim.rendering_provider.provider_name|upper}}</td>
                                     <td class="number">{{claim.total_charge}}</td>
                                     <td class="number">{{claim.ins_adjustment_per_claim}}</td>
                                     <td class="number">{{claim.ins_pmnt_per_claim}}</td>
@@ -153,7 +171,7 @@
                                     <tr>
                                         <td>{{procedure.date_of_service|date:"m/d/y"}}</td>
                                         <td>{{procedure.cpt.cpt_code}}</td>
-                                        <td>{{procedure.cpt.cpt_description}}</td>
+                                        <td>{{procedure.cpt.cpt_description|upper}}</td>
                                         <td class="number">{{procedure.ins_total_charge}}</td>
                                         <td class="number">{{procedure.ins_total_adjustment}}</td>
                                         <td class="number">{{procedure.ins_total_pymt}}</td>
@@ -166,7 +184,7 @@
                                             <tr>
                                                 <td></td>
                                                 <td></td>
-                                                <td>{{charge.resp_type}}</td>
+                                                <td>{{charge.resp_type|upper}}</td>
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>
@@ -193,10 +211,10 @@
                         <tfoot>
                             <tr style="line-height: 2em;">
                                 <td colspan="5" style="border-right: 0px;"></td>
-                                <td style="border-left: 0px; border-right: 0px;" class="number">0</td>
+                                <td style="border-left: 0px; border-right: 0px;" class="number">{{total_ins_pymt}}</td>
                                 <td style="border-left: 0px; border-right: 0px;"></td>
-                                <td style="border-left: 0px; border-right: 0px;" class="number">0</td>
-                                <td class="number">0</td>
+                                <td style="border-left: 0px; border-right: 0px;" class="number">{{total_pat_pymt}}</td>
+                                <td class="number">{{aging.total}}</td>
                             </tr>
                         </tfoot>
                     </table>
@@ -238,7 +256,7 @@
                     <table>
                         <tbody>
                             <tr>
-                                <td class="note-box">IF YOU HAVE ANY CONCERNS REGARDING THIS STATEMENT, PLEASE CONTACT OUR BILLING DEPARTMENT AT (323) 417-0335. SORRY, WE DO NOT ACCEPT CREDIT CARDS.</td>
+                                <td class="note-box">IF YOU HAVE ANY CONCERNS REGARDING THIS STATEMENT, PLEASE CONTACT OUR BILLING DEPARTMENT AT {{billing_provider.provider_phone}}. SORRY, WE DO NOT ACCEPT CREDIT CARDS.</td>
                                 <td class="space-box"></td>
                                 <td class="pay-box">PLEASE PAY THIS AMOUNT</td>
                                 <td class="amount-box" style="text-align: right;">$ <span class="number">{{aging.total}}</span></td>
@@ -256,5 +274,7 @@
                     td.innerText = parseFloat(td.innerText).toFixed(2);
             }
         </script>
+
+    {% tz_detect %}
     </body>
 </html>
