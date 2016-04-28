@@ -36,7 +36,7 @@ def statment_create(request):
         total_pat_pymt += claim.pat_pmnt_per_claim
 
     # Prepare aging table
-    today = timezone.now().date()
+    today = timezone.now()
     m1_time = today - timedelta(days=30)
     m2_time = today - timedelta(days=60)
     m3_time = today - timedelta(days=90)
@@ -94,12 +94,118 @@ def statment_create(request):
             m5_t=ins_t_age[4] + pat_t_age[4],
             total=sum(ins_t_age) + sum(pat_t_age))
 
+    from win32com import client
+    from django.conf import settings
+    import pythoncom
+
+    pythoncom.CoInitialize()
+    excel = None
+    wb = None
+    try:
+        # Prepare excel template
+        excel = client.Dispatch("Excel.Application")
+        templateDir = settings.BASE_DIR + "\\templates\\report"
+        wb = excel.Workbooks.Open(templateDir + "\\statement.xlsx")
+        ws = wb.Worksheets("statement")
+
+        # Write data
+        ws.Range("F1").Value = billing_provider.provider_name.upper()
+        ws.Range("F2").Value = billing_provider.provider_address.upper()
+        ws.Range("F3").Value = "%s %s %s" % (
+                billing_provider.provider_city.upper(),
+                billing_provider.provider_state.upper(),
+                billing_provider.provider_zip)
+
+        ws.Range("A5").Value = ws.Range("A5").Value + \
+                " " + billing_provider.provider_phone.upper()
+        ws.Range("A6").Value = ws.Range("A6").Value + \
+                " " + patient.full_name.upper()
+
+        ws.Range("AM6").Value = today.strftime("%m/%d/%y")
+        ws.Range("BN6").Value = patient.chart_no
+
+        ws.Range("F10").Value = patient.full_name.upper()
+        ws.Range("F11").Value = patient.address.upper()
+        ws.Range("F12").Value = "%s %s %s" % (
+                patient.city.upper(),
+                patient.state.upper(),
+                patient.zip)
+
+        ws.Range("BA10").Value = ws.Range("F1").Value
+        ws.Range("BA11").Value = ws.Range("F2").Value
+        ws.Range("BA12").Value = ws.Range("F3").Value
+
+        ws.Range("L18").Value = ws.Range("F10").Value
+        ws.Range("AV18").Value = ws.Range("BN6").Value
+
+        line = 19
+        for claim in claims:
+            ws.Range("A%s" % line).Value = claim.created.strftime("%m/%d/%y")
+            ws.Range("L%s" % line).Value = claim.rendering_provider\
+                    .provider_name.upper()
+            ws.Range("AF%s" % line).Value = claim.total_charge
+            ws.Range("AL%s" % line).Value = claim.ins_adjustment_per_claim
+            ws.Range("AV%s" % line).Value = claim.ins_pmnt_per_claim
+            ws.Range("BC%s" % line).Value = claim.pat_responsible_per_claim
+            ws.Range("BJ%s" % line).Value = claim.pat_pmnt_per_claim
+            ws.Range("BT%s" % line).Value = claim.total_balance
+
+            line += 1
+            for procedure in claim.procedure_set.all():
+                ws.Range("A%s" % line).Value = procedure.date_of_service.strftime("%m/%d/%y")
+                ws.Range("F%s" % line).Value = procedure.cpt.cpt_code
+                ws.Range("L%s" % line).Value = procedure.cpt.cpt_description.upper()
+                ws.Range("AF%s" % line).Value = procedure.ins_total_charge
+                ws.Range("AL%s" % line).Value = procedure.ins_total_adjustment
+                ws.Range("AV%s" % line).Value = procedure.ins_total_pymt
+
+                line += 1
+                for charge in procedure.charge_set.all():
+                    if charge.payer_type == "Patient":
+                        ws.Range("L%s" % line).Value = charge.resp_type.upper()
+                        ws.Range("BC%s" % line).Value = charge.amount
+                        line += 1
+
+        ws.Range("AV55").Value = total_ins_pymt
+        ws.Range("BJ55").Value = total_pat_pymt
+
+        ws.Range("P57").Value = aging.get("i_m1")
+        ws.Range("Y57").Value = aging.get("i_m2")
+        ws.Range("AH57").Value = aging.get("i_m3")
+        ws.Range("AQ57").Value = aging.get("i_m4")
+        ws.Range("AZ57").Value = aging.get("i_m5")
+        ws.Range("BH57").Value = aging.get("i_t")
+
+        ws.Range("P58").Value = aging.get("p_m1")
+        ws.Range("Y58").Value = aging.get("p_m2")
+        ws.Range("AH58").Value = aging.get("p_m3")
+        ws.Range("AQ58").Value = aging.get("p_m4")
+        ws.Range("AZ58").Value = aging.get("p_m5")
+        ws.Range("BH58").Value = aging.get("p_t")
+
+        ws.Range("BA6").Value = aging.get("total")
+        ws.Range("BT17").Value = aging.get("total")
+        ws.Range("BT55").Value = aging.get("total")
+        ws.Range("BT60").Value = aging.get("total")
+
+        # Save as PDF format
+        wb.ExportAsFixedFormat(0, templateDir + "\\s.pdf")
+        # wb.SaveAs(templateDir + "\\s.xlsx")
+    except Exception, e:
+        print "Error occurs during saving statemnet report"
+        print e
+    finally:
+        if wb is not None:
+            wb.Close(False)
+        if excel is not None:
+            excel.Application.Quit()
+
     return render(request, "report/statement.html", {
         "patient": patient,
         "billing_provider": billing_provider,
         "claims": claims,
         "aging": aging,
-        "today": timezone.now(),
+        "today": today,
         "total_ins_pymt": total_ins_pymt,
         "total_pat_pymt": total_pat_pymt,
     })
