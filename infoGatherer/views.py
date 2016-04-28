@@ -481,6 +481,18 @@ def PostAdPage(request):
                     amount = form.cleaned_data.get('total_%s' % i)
                     date_of_service = form.cleaned_data.get('service_start_date_%s' % i)
                     unit = form.cleaned_data.get('note_%s' % i)
+
+                    if(form.cleaned_data.get('dx_pt_s1_%s' % i)!='---' and len(form.cleaned_data.get('dx_pt_s1_%s' % i))>0):
+                        diag=form.cleaned_data.get('ICD_10_%s' % str(ord(form.cleaned_data.get('dx_pt_s1_%s' % i))-ord('A')+1))
+                    elif(form.cleaned_data.get('dx_pt_s2_%s' % i)!='---' and len(form.cleaned_data.get('dx_pt_s2_%s' % i))>0):
+                        diag=form.cleaned_data.get('ICD_10_%s' % str(ord(form.cleaned_data.get('dx_pt_s2_%s' % i))-ord('A')+1))
+                    elif(form.cleaned_data.get('dx_pt_s3_%s' % i)!='---' and len(form.cleaned_data.get('dx_pt_s3_%s' % i))>0):
+                        diag=form.cleaned_data.get('ICD_10_%s' % str(ord(form.cleaned_data.get('dx_pt_s3_%s' % i))-ord('A')+1))
+                    elif(form.cleaned_data.get('dx_pt_s4_%s' % i)!='---' and len(form.cleaned_data.get('dx_pt_s4_%s' % i))>0):
+                        diag=form.cleaned_data.get('ICD_10_%s' % str(ord(form.cleaned_data.get('dx_pt_s4_%s' % i))-ord('A')+1))
+                    else:
+                        diag=""
+
                     if(len(unit)>0):
                         txt=unit
                         if(txt.split()[0]=='START'):
@@ -496,6 +508,7 @@ def PostAdPage(request):
                             cpt=cpt,
                             unit=unit,
                             date_of_service=date_of_service,
+                            diag=diag,
                         )
 
                         charge = Charge.objects.create(
@@ -522,12 +535,13 @@ def save_file_to_media(claim_id):
     claim = Claim.objects.get(pk=claim_id)
     fileStorage = FileSystemStorage()
     fileStorage.file_permissions_mode = 0744
+    today = datetime.datetime.now()
+    today_path = today.strftime("%Y/%m/%d")
+    fileStorage.location='media/documents/'+today_path
     f = open('output.pdf', 'rb+')
     myfile = File(f)
     name=fileStorage.get_available_name(str(claim_id)+".pdf")
     fileStorage.save(name, myfile)
-    today = datetime.datetime.now()
-    today_path = today.strftime("%Y/%m/%d")
     newdoc = Document.objects.create(claim=claim, docfile='media/documents/'+today_path+"/"+name)
 
 def get_make_claim_extra_context(request):

@@ -8,6 +8,8 @@ urlpatterns = [
     url(r'^$', views.index, name='index'),
     url(r'^transactionreport$', views.TransactionReport, name='TransactionReport'),
     url(r'^transactionreportpayment$', views.TransactionReportPayment, name='TransactionReportPayment'),
+    url(r'^report_search$', views.report_search, name='report_search'),
+    
     # url(r'^sign_in/$', views.sign_in, name='sign_in'),
     # url(r'^sign_out/$', views.sign_out, name='sign_out'),
     # url(r'^register/$', views.register, name='register'),
