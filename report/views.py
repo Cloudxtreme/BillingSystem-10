@@ -109,8 +109,28 @@ def index(request):
     return render(request, "report/statement.html")
 
 def report_search(request):
+    str_form = SearchTransactionReport(request.POST or None)
+
+    if request.method == 'POST' and str_form.is_valid():
+        cleaned_data = str_form.cleaned_data
+        # search_type = cleaned_data.get('search_type')
+
+        # if search_type == 'create_patient_charge':
+        #     location = 'accounting:charge_patient_create'
+        # else:
+        #     location = 'accounting:payment_apply_create'
+
+        # return redirect(reverse(location, kwargs={
+        #         'payment_id': cleaned_data.get('payment'),
+        #         'claim_id': cleaned_data.get('claim')}))
+        return render(request, "report/report_search.html")
+
+    context = {
+        'str_form': str_form,
+    }
+
+
     return render(request, "report/report_search.html")
-    return HttpResponse("<html>To do!</html>")
 
 def TransactionReportPayment(request):
     utc=pytz.utc
