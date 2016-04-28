@@ -481,6 +481,16 @@ def PostAdPage(request):
                     amount = form.cleaned_data.get('total_%s' % i)
                     date_of_service = form.cleaned_data.get('service_start_date_%s' % i)
                     unit = form.cleaned_data.get('note_%s' % i)
+
+                    if(form.cleaned_data.get('dx_pt_s1_%s' % i)!='---' and len(form.cleaned_data.get('dx_pt_s1_%s' % i))>0):
+                        diag=form.cleaned_data.get('ICD_10_%s' % str(ord(form.cleaned_data.get('dx_pt_s1_%s' % i))-ord('A')+1))
+                    elif(form.cleaned_data.get('dx_pt_s2_%s' % i)!='---' and len(form.cleaned_data.get('dx_pt_s2_%s' % i))>0):
+                        diag=form.cleaned_data.get('ICD_10_%s' % str(ord(form.cleaned_data.get('dx_pt_s2_%s' % i))-ord('A')+1))
+                    elif(form.cleaned_data.get('dx_pt_s3_%s' % i)!='---' and len(form.cleaned_data.get('dx_pt_s3_%s' % i))>0):
+                        diag=form.cleaned_data.get('ICD_10_%s' % str(ord(form.cleaned_data.get('dx_pt_s3_%s' % i))-ord('A')+1))
+                    elif(form.cleaned_data.get('dx_pt_s4_%s' % i)!='---' and len(form.cleaned_data.get('dx_pt_s4_%s' % i))>0):
+                        diag=form.cleaned_data.get('ICD_10_%s' % str(ord(form.cleaned_data.get('dx_pt_s4_%s' % i))-ord('A')+1))
+
                     if(len(unit)>0):
                         txt=unit
                         if(txt.split()[0]=='START'):
@@ -496,6 +506,7 @@ def PostAdPage(request):
                             cpt=cpt,
                             unit=unit,
                             date_of_service=date_of_service,
+                            diag=diag,
                         )
 
                         charge = Charge.objects.create(

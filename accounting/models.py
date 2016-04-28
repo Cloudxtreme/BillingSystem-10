@@ -170,6 +170,7 @@ class Procedure(BaseModel):
     cpt = models.ForeignKey(CPT)
     date_of_service = models.DateField()
     unit = models.DecimalField(**BASE_DECIMAL)
+    diag = models.CharField(max_length=5, default='')
 
     @property
     def balance(self):
