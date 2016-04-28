@@ -11,6 +11,7 @@ import datetime
 import pytz
 import xlwt
 import time
+from dateutil import tz
 
 from infoGatherer.models import *
 from accounting.models import *
@@ -107,19 +108,209 @@ def statment_create(request):
 def index(request):
     return render(request, "report/statement.html")
 
+def report_search(request):
+    return render(request, "report/report_search.html")
+    return HttpResponse("<html>To do!</html>")
 
 def TransactionReportPayment(request):
     utc=pytz.utc
-    from_dos = datetime.datetime(2016, 04, 8, 0, 0,0,0,utc)
-    to_dos = datetime.datetime(2016, 04, 23, 0,0,0,0,utc)
+    from_dos = datetime.datetime(2016, 04, 18, 0, 0,0,0,utc)
+    to_dos = datetime.datetime(2016, 04, 28, 0,0,0,0,utc)
 
+    wb = Workbook()
+    sheet1 = wb.add_sheet('Transaction Report Payment')
+
+    # Set wedth of columns
+    sheet1.col(0).width = 1000
+    sheet1.col(1).width = 5000
+    sheet1.col(2).width = 2500
+    sheet1.col(3).width = 5000
+    sheet1.col(4).width = 5000
+    sheet1.col(5).width = 5500
+    sheet1.col(6).width = 5000
+    sheet1.col(7).width = 5000
+    sheet1.col(8).width = 5000
+    sheet1.col(9).width = 5000
+
+    # alignment and border
+    alignment = xlwt.Alignment()
+    alignment.horz = xlwt.Alignment.HORZ_LEFT
+
+    borderT1 = xlwt.Borders()
+    borderT1.down = xlwt.Borders.THIN
+
+    # styles
+    style = xlwt.XFStyle()
+    font = xlwt.Font()
+    font.name = 'Verdana'
+    font.bold = True
+    font.height = 240
+    style.font = font
+
+    style1 = xlwt.XFStyle()
+    font = xlwt.Font()
+    font.name = 'Verdana'
+    font.bold = True
+    font.height = 160
+    style1.borders = borderT1
+    style1.font = font
+
+    style2 = xlwt.XFStyle()
+    font = xlwt.Font()
+    font.name = 'Verdana'
+    font.bold = False
+    font.height = 160
+    style2.font = font
+
+    style7 = xlwt.XFStyle()
+    font = xlwt.Font()
+    style7.alignment = alignment
+    font.name = 'Verdana'
+    font.bold = False
+    font.height = 160
+    style7.font = font
+
+    style4 = xlwt.XFStyle()
+    font = xlwt.Font()
+    font.name = 'Verdana'
+    font.bold = True
+    font.height = 160
+    style4.font = font
+
+    style6 = xlwt.XFStyle()
+    font = xlwt.Font()
+    font.name = 'Verdana'
+    font.bold = True
+    font.height = 240
+    style6.font = font
+
+    style5 = xlwt.XFStyle()
+    font = xlwt.Font()
+    font.name = 'Verdana'
+    font.bold = False
+    font.height = 200
+    style5.font = font
+
+    sheet1.write(0, 0, label = 'Transaction Report With Payment Details', style = style)
+    sheet1.write(0, 7, label = 'Report Date:', style=style2)
+    sheet1.write(0, 8, label = str(datetime.datetime.now()).split(" ")[0],style=style2)
+    sheet1.write(1, 7, label = 'Date Span:',style=style2)
+    sheet1.write(1, 8, label = str(from_dos).split(" ")[0] +" to "+ str(to_dos).split(" ")[0],style=style2)
+    sheet1.write(3, 0, label = '', style=style1)
+    
+    sheet1.write(3, 1, label = 'Patient', style=style1)
+    sheet1.write(3, 2, label = 'Chart No', style=style1)
+    sheet1.write(3, 3, label = 'Claim id', style=style1)
+    sheet1.write(3, 4, label = 'Date', style=style1)
+    sheet1.write(3, 5, label = 'Provider', style=style1)
+    sheet1.write(3, 6, label = 'POS', style=style1)
+    sheet1.write(3, 7, label = 'Diagnosis', style=style1)
+    sheet1.write(3, 8, label = 'TX Code', style=style1)
+    sheet1.write(3, 9, label = 'Amount', style=style1)
 
     # filtering the information!
-    claim = Claim.objects.filter(created__range=(from_dos, to_dos)).all()
+    claim = Claim.objects.filter(created__range=(from_dos, to_dos)).order_by('patient').all()
+    # setting base line number
+    line=5
+    patient_old_no=""
+    total_charge=Decimal("0.00")
+    total_ins=Decimal("0.00")
+    total_pat=Decimal("0.00")
+    total_pat_paid=Decimal("0.00")
+    total_adj=Decimal("0.00")
+    for cl in claim:
+        # procedure
+        pro=cl.procedure_set.all()
+        # patient
+        patient=cl.patient.get_full_name()
+        if(patient_old_no!=cl.patient_id):
+            sheet1.write(line, 1, label = patient, style=style2)
+            sheet1.write(line, 2, label = cl.patient_id, style=style7)
+        patient_old_no=cl.patient_id
+        for procedure in pro:
+            sheet1.write(line, 3, label = cl.id,style=style7)
+            sheet1.write(line, 4, label = str(procedure.date_of_service), style=style2)
+            sheet1.write(line, 5, label = procedure.rendering_provider.provider_name, style=style2)
+            sheet1.write(line, 6, label = procedure.claim.location_provider.place_of_service, style=style2)
+            sheet1.write(line, 7, label = procedure.diag , style=style2)
+            sheet1.write(line, 8, label = procedure.cpt.cpt_code, style=style2)
+            sheet1.write(line, 9, label = str(Decimal(procedure.ins_total_charge)), style=style2)
+            total_charge=total_charge+Decimal(procedure.ins_total_charge)
+            char=procedure.charge_set.all()
+            anytrue=False
+            pat_tot=Decimal("0.00")
+            for charge in char:
+                if(charge.payer_type=='Patient'):
+                    if(charge.resp_type=='Co-pay'):
+                        anytrue=True
+                        line=line+1
+                        sheet1.write(line, 8, label = 'Co-pay', style=style2)
+                        sheet1.write(line, 9, label = str(Decimal(charge.amount)), style=style2)
+                        sheet1.write(line, 4, label = str((charge.created.astimezone(tz.tzlocal()))).split(" ")[0], style=style2)
+                        pat_tot=pat_tot+Decimal(charge.amount)
+                    if(charge.resp_type=='Deductible'):
+                        anytrue=True
+                        line=line+1
+                        sheet1.write(line, 8, label = 'Deductable', style=style2)
+                        sheet1.write(line, 9, label = str(Decimal(charge.amount)), style=style2)
+                        sheet1.write(line, 4, label = str((charge.created.astimezone(tz.tzlocal()))).split(" ")[0], style=style2)
+                        pat_tot=pat_tot+Decimal(charge.amount)
+                    if(charge.resp_type=='Other PR'):
+                        anytrue=True
+                        line=line+1
+                        sheet1.write(line, 8, label = 'Other PR', style=style2)
+                        sheet1.write(line, 9, label = str(Decimal(charge.amount)), style=style2)
+                        sheet1.write(line, 4, label = str((charge.created.astimezone(tz.tzlocal()))).split(" ")[0], style=style2)
+                        pat_tot=pat_tot+Decimal(charge.amount)
+            if(anytrue):
+                line=line+1
+                sheet1.write(line, 8, label = 'Pat Balance', style=style2)
+                sheet1.write(line, 9, label = str(Decimal(procedure.patient_balance)), style=style2)
+                total_pat_paid=total_pat_paid+pat_tot-Decimal(procedure.patient_balance)   
+            total_pat=total_pat+pat_tot                 
+            # ins
+            line=line+1
+            sheet1.write(line, 8, label = 'Ins. Paid', style=style2)
+            sheet1.write(line, 9, label = str(Decimal(procedure.ins_total_pymt)), style=style2)
+            total_ins=total_ins+Decimal(procedure.ins_total_pymt)
+            line=line+1
+            sheet1.write(line, 8, label = 'Ins. Adjustment', style=style2)
+            sheet1.write(line, 9, label = str(Decimal(procedure.ins_total_adjustment)), style=style2)
+            total_adj=total_adj+Decimal(procedure.ins_total_adjustment)
+            line=line+1
+
+    line=line+5
+    sheet1.write(line, 5, label = 'All Provider - All Location', style=style6)
+
+    #chargers
+    line=line+1
+    sheet1.write(line, 4, label = 'Charges', style=style5)
+    sheet1.write(line, 5, label = 'Insurance', style=style5)
+    sheet1.write(line, 6, label = str(total_charge), style=style5)
+    line=line+1
+    sheet1.write(line, 5, label = 'Patient', style=style5)
+    sheet1.write(line, 6, label = str(total_pat), style=style5)
+
+    # payments
+    line=line+2
+    sheet1.write(line, 4, label = 'Payments', style=style5)
+    sheet1.write(line, 5, label = 'Insurance', style=style5)
+    sheet1.write(line, 6, label = str(total_ins), style=style5)   
+    line=line+1
+    sheet1.write(line, 5, label = 'Patient', style=style5)
+    sheet1.write(line, 6, label = str(total_pat_paid), style=style5)  
+    line=line+2
+    sheet1.write(line, 4, label = 'Adjustments', style=style5)
+    sheet1.write(line, 5, label = 'Insurance', style=style5)
+    sheet1.write(line, 6, label = str(total_adj), style=style5)
 
 
+    # saving the report
+    wb.save('transactionreportpayment.xls')
+    return HttpResponse(open('transactionreportpayment.xls','rb+').read(),
+        content_type='application/vnd.ms-excel')
 
-    return HttpResponse("<html>To do!</html>")
+    # return HttpResponse("<html>To do!</html>")
 
 
 def TransactionReport(request):
