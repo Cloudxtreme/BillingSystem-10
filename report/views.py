@@ -1,5 +1,6 @@
 from django.shortcuts import *
 from django.contrib.auth.decorators import login_required
+from django.db import IntegrityError, transaction
 from django.db.models import Q
 from django.http import HttpResponse
 from django.utils import timezone
@@ -15,8 +16,10 @@ import time
 from infoGatherer.models import *
 from accounting.models import *
 from dashboard.models import Notes
+from .models import *
 
 
+@login_required
 def statment_create(request):
     patient_id = request.GET.get("patient")
     patient = get_object_or_404(Personal_Information, pk=patient_id)
@@ -189,10 +192,26 @@ def statment_create(request):
         ws.Range("BT60").Value = aging.get("total")
 
         # Save as PDF format
-        wb.ExportAsFixedFormat(0, templateDir + "\\s.pdf")
+        gen_name = "s"
+        file_url = "\\media\\documents\\report\\statement\\" + gen_name + ".pdf"
+        wb.ExportAsFixedFormat(0, settings.BASE_DIR + file_url)
         # wb.SaveAs(templateDir + "\\s.xlsx")
+
+        try:
+            with transaction.atomic():
+                sh = StatementHistory.objects.create(
+                        created_by=request.user)
+
+                s = Statement.objects.create(
+                        statementHistory=sh,
+                        patient=patient,
+                        balance=aging.get("total"),
+                        url=file_url)
+        except IntegrityError:
+            print 'IntegrityError has occured.'
+
     except Exception, e:
-        print "Error occurs during saving statemnet report"
+        print "Error occurs during saving statement report"
         print e
     finally:
         if wb is not None:
