@@ -490,6 +490,8 @@ def PostAdPage(request):
                         diag=form.cleaned_data.get('ICD_10_%s' % str(ord(form.cleaned_data.get('dx_pt_s3_%s' % i))-ord('A')+1))
                     elif(form.cleaned_data.get('dx_pt_s4_%s' % i)!='---' and len(form.cleaned_data.get('dx_pt_s4_%s' % i))>0):
                         diag=form.cleaned_data.get('ICD_10_%s' % str(ord(form.cleaned_data.get('dx_pt_s4_%s' % i))-ord('A')+1))
+                    else:
+                        diag=""
 
                     if(len(unit)>0):
                         txt=unit
@@ -533,12 +535,13 @@ def save_file_to_media(claim_id):
     claim = Claim.objects.get(pk=claim_id)
     fileStorage = FileSystemStorage()
     fileStorage.file_permissions_mode = 0744
+    today = datetime.datetime.now()
+    today_path = today.strftime("%Y/%m/%d")
+    fileStorage.location='media/documents/'+today_path
     f = open('output.pdf', 'rb+')
     myfile = File(f)
     name=fileStorage.get_available_name(str(claim_id)+".pdf")
     fileStorage.save(name, myfile)
-    today = datetime.datetime.now()
-    today_path = today.strftime("%Y/%m/%d")
     newdoc = Document.objects.create(claim=claim, docfile='media/documents/'+today_path+"/"+name)
 
 def get_make_claim_extra_context(request):
