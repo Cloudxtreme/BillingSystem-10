@@ -5,29 +5,22 @@ from localflavor.us.us_states import STATE_CHOICES
 
 from .models import *
 from base.models import BASE_DECIMAL
+from infoGatherer.models import (
+        Provider,)
 
+REPORTS = (
+    ('1', 'Transaction report without payment summary'),
+    ('2', 'Transaction report with payment summary'),
+)
 
 class SearchTransactionReport(forms.Form):
-    date = forms.CharField()
-    name = forms.CharField()
-    size = forms.CharField()
+    reporttype = forms.ChoiceField(choices=REPORTS)
+    startdate = forms.DateField()
+    enddate = forms.DateField()
+    renderingprovider  = forms.ModelChoiceField(queryset=Provider.objects.filter(role="Rendering").all(), required=False)
 
     def clean(self):
         cleaned_data = super(SearchTransactionReport, self).clean()
-        payment_id = cleaned_data.get('date')
-        claim_id = cleaned_data.get('name')
-        search_type = cleaned_data.get('size')
-
-        # try:
-        #     payment = Payment.objects.get(pk=payment_id)
-        #     # if search_type == 'create_patient_charge' and \
-        #     #         payment.payer_type != 'Patient':
-        #     #     self.add_error('payment',
-        #     #             'Given payment is not payer type \"Patient\"')
-        # except:
-        #     self.add_error('payment', 'Payment with given ID does not exist')
-
-        # try:
-        #     Claim.objects.get(pk=claim_id)
-        # except:
-        #     self.add_error('claim', 'Claim with given ID does not exist')
+        reporttype = cleaned_data.get('reporttype')
+        startdate = cleaned_data.get('startdate')
+        enddate = cleaned_data.get('enddate')

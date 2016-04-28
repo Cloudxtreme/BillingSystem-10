@@ -3,7 +3,7 @@
 {% load staticfiles %}
 {% load widget_tweaks %}
 
-{% block title %} Make Payment {% endblock title %}
+{% block title %} Reports {% endblock title %}
 
 {% block body %}
 <div class="container">
@@ -14,21 +14,33 @@
         <h2 class="text-center">Generate Report</h2>
         <form method="POST">{% csrf_token %}
             <div class="row">
-                <div class="form-group col-sm-6">
-                    <label class="control-label required">TX type</label>
-                    {{ form.billing_provider|add_class:"form-control" }}
-                </div>
-
-                <div class="form-group col-sm-6">
-                    <label class="control-label required">Rendering Provider</label>
-                    {{ form.rendering_provider|add_class:"form-control" }}
+                <div class="form-group col-sm-12">
+                    <label class="control-label required">Report type</label>
+                    {{ form.reporttype|add_class:"form-control" }}
                 </div>
             </div>
 
+            <div class="row">
+                <div class="form-group col-sm-6">
+                    <label class="control-label required">Start date</label>
+                    {{ form.startdate|add_class:"form-control pikaday"|attr:"placeholder:MM/DD/YYYY" }}
+                </div>
 
+                <div class="form-group col-sm-6">
+                    <label class="control-label required">End date</label>
+                    {{ form.enddate|add_class:"form-control pikaday"|attr:"placeholder:MM/DD/YYYY" }}
+                </div>
+            </div>
 
+            <div class="row">
+                <div class="form-group col-sm-12">
+                    <label class="control-label ">Rendering Provider</label>
+                    {{ form.renderingprovider|add_class:"form-control" }}
+                </div>
+            </div>
 
             <input type="submit" value="Generate Report!" class="btn btn-success">
+
             <a href="{% url 'dashboard:dashboard' %}" class="padding-btn margin-left link-btn-danger">Cancel</a>
         </form>
 

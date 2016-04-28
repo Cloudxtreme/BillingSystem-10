@@ -12,6 +12,8 @@ import pytz
 import xlwt
 import time
 from dateutil import tz
+from .forms import *
+from django.db.models import Q
 
 from infoGatherer.models import *
 from accounting.models import *
@@ -113,29 +115,31 @@ def report_search(request):
 
     if request.method == 'POST' and str_form.is_valid():
         cleaned_data = str_form.cleaned_data
-        # search_type = cleaned_data.get('search_type')
+        reporttype = cleaned_data.get('reporttype')
+        startdate = cleaned_data.get('startdate')
+        enddate = cleaned_data.get('enddate')
+        renderingprovider = cleaned_data.get('renderingprovider')
 
-        # if search_type == 'create_patient_charge':
-        #     location = 'accounting:charge_patient_create'
-        # else:
-        #     location = 'accounting:payment_apply_create'
+        # utc=pytz.utc
 
-        # return redirect(reverse(location, kwargs={
-        #         'payment_id': cleaned_data.get('payment'),
-        #         'claim_id': cleaned_data.get('claim')}))
-        return render(request, "report/report_search.html")
+        from_dos = datetime.datetime.combine(startdate, datetime.time())
+        to_dos = datetime.datetime.combine(enddate, datetime.time())
 
-    context = {
-        'str_form': str_form,
-    }
+        # Transaction report without payments!
+        if(reporttype=="1"):
+            return TransactionReport(from_dos, to_dos, renderingprovider)
 
+        elif(reporttype=="2"):
+            return TransactionReportPayment(from_dos, to_dos)
 
-    return render(request, "report/report_search.html")
+        return render(request, "report/report_search.html", {'form': str_form})
 
-def TransactionReportPayment(request):
-    utc=pytz.utc
-    from_dos = datetime.datetime(2016, 04, 18, 0, 0,0,0,utc)
-    to_dos = datetime.datetime(2016, 04, 28, 0,0,0,0,utc)
+    return render(request, "report/report_search.html", {'form': str_form})
+
+def TransactionReportPayment(from_dos, to_dos):
+    # utc=pytz.utc
+    # from_dos = datetime.datetime(2016, 04, 18, 0, 0,0,0,utc)
+    # to_dos = datetime.datetime(2016, 04, 28, 0,0,0,0,utc)
 
     wb = Workbook()
     sheet1 = wb.add_sheet('Transaction Report Payment')
@@ -333,10 +337,7 @@ def TransactionReportPayment(request):
     # return HttpResponse("<html>To do!</html>")
 
 
-def TransactionReport(request):
-    utc=pytz.utc
-    from_dos = datetime.datetime(2016, 04, 8, 0, 0,0,0,utc)
-    to_dos = datetime.datetime(2016, 04, 23, 0,0,0,0,utc)
+def TransactionReport(from_dos, to_dos, renderingprovider):
 
     # dictionaries to count number of entries in it
     dic_pat={}
@@ -428,7 +429,10 @@ def TransactionReport(request):
     sheet1.write(3, 9, label = 'Charges', style=style1)
 
     # filtering the information!
-    claim = Claim.objects.filter(created__range=(from_dos, to_dos)).all()
+    claim = Claim.objects.filter(created__range=(from_dos, to_dos))
+    if(renderingprovider is not None):
+        claim = claim.filter(rendering_provider=renderingprovider)
+    
     # setting base line number
     line=5
     for cl in claim:
