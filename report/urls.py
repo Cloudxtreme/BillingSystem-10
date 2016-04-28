@@ -4,6 +4,7 @@ from . import views
 app_name = 'report'
 urlpatterns = [
     url(r'^statement/$', views.statment_create, name='statment_create'),
+    url(r'^statement/read/$', views.statment_read, name='statment_read'),
     url(r'^$', views.index, name='index'),
     url(r'^transactionreport$', views.TransactionReport, name='TransactionReport'),
     url(r'^transactionreportpayment$', views.TransactionReportPayment, name='TransactionReportPayment'),

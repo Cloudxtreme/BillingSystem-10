@@ -1,5 +1,6 @@
 from django.shortcuts import *
 from django.contrib.auth.decorators import login_required
+from django.core.files.storage import FileSystemStorage
 from django.db import IntegrityError, transaction
 from django.db.models import Q
 from django.http import HttpResponse
@@ -192,10 +193,18 @@ def statment_create(request):
         ws.Range("BT60").Value = aging.get("total")
 
         # Save as PDF format
-        gen_name = "s"
-        file_url = "\\media\\documents\\report\\statement\\" + gen_name + ".pdf"
+        file_url = "\\temp\\statement.pdf"
         wb.ExportAsFixedFormat(0, settings.BASE_DIR + file_url)
-        # wb.SaveAs(templateDir + "\\s.xlsx")
+
+        # fileStorage = FileSystemStorage()
+        # fileStorage.file_permissions_mode = 0744
+        # f = open('output.pdf', 'rb+')
+        # myfile = File(f)
+        # name = fileStorage.get_available_name(str(claim_id)+".pdf")
+        # fileStorage.save(name, myfile)
+        # today = datetime.datetime.now()
+        # today_path = today.strftime("%Y/%m/%d")
+        # newdoc = Document.objects.create(claim=claim, docfile='media/documents/'+today_path+"/"+name)
 
         try:
             with transaction.atomic():
@@ -228,6 +237,18 @@ def statment_create(request):
         "total_ins_pymt": total_ins_pymt,
         "total_pat_pymt": total_pat_pymt,
     })
+
+def statment_read(request, statement):
+    try:
+        with open('media/documents/'+yr+"/"+mo+"/"+da+"/"+claim+".pdf", 'rb') as pdf:
+            response = HttpResponse(pdf.read(), content_type='application/pdf')
+            response['Content-Disposition'] = 'inline;filename=some_file.pdf'
+            return response
+        pdf.closed
+    except Exception as e:
+        return render(request, 'displayContent/patient/NotExist.html', {
+            'info' : "(404) Sorry! This claim that you're trying to open doesn't exisit in the file system."
+            })
 
 def index(request):
     return render(request, "report/statement.html")
