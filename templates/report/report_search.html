@@ -33,13 +33,18 @@
             </div>
 
             <div class="row">
-                <div class="form-group col-sm-12">
+                <div class="form-group col-sm-6">
                     <label class="control-label ">Rendering Provider</label>
                     {{ form.renderingprovider|add_class:"form-control" }}
                 </div>
+                <div class="form-group col-sm-6">
+                    <label class="control-label ">Location Provider</label>
+                    {{ form.locationprovider|add_class:"form-control" }}
+                </div>
+
             </div>
 
-            <input type="submit" value="Generate Report!" class="btn btn-success">
+            <input type="submit" value="Download Report!" class="btn btn-success">
 
             <a href="{% url 'dashboard:dashboard' %}" class="padding-btn margin-left link-btn-danger">Cancel</a>
         </form>

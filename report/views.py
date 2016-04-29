@@ -9,6 +9,7 @@ from decimal import *
 from xlwt import Workbook
 import datetime
 import pytz
+from pytz import timezone
 import xlwt
 import time
 from dateutil import tz
@@ -119,31 +120,36 @@ def report_search(request):
         startdate = cleaned_data.get('startdate')
         enddate = cleaned_data.get('enddate')
         renderingprovider = cleaned_data.get('renderingprovider')
+        locationprovider = cleaned_data.get('locationprovider')
 
         # utc=pytz.utc
 
-        from_dos = datetime.datetime.combine(startdate, datetime.time())
-        to_dos = datetime.datetime.combine(enddate, datetime.time())
+        # from_dos = datetime.datetime.combine(startdate, datetime.time())
+        from_dos = str(startdate)+" 00:00:00"
+        from_dos = datetime.datetime.strptime(from_dos, "%Y-%m-%d %H:%M:%S")
+        from_dos = pytz.timezone('UTC').localize(from_dos)
+        # to_dos = datetime.datetime.combine(enddate, datetime.time())
+        to_dos = str(enddate)+" 23:59:59"
+        to_dos = datetime.datetime.strptime(to_dos, "%Y-%m-%d %H:%M:%S")
+        to_dos = pytz.timezone('UTC').localize(to_dos)
 
         # Transaction report without payments!
         if(reporttype=="1"):
-            return TransactionReport(from_dos, to_dos, renderingprovider)
+            return TransactionReport(from_dos, to_dos, renderingprovider, locationprovider)
 
         elif(reporttype=="2"):
-            return TransactionReportPayment(from_dos, to_dos)
+            return TransactionReportPayment(from_dos, to_dos, renderingprovider, locationprovider)
 
         return render(request, "report/report_search.html", {'form': str_form})
 
     return render(request, "report/report_search.html", {'form': str_form})
 
-def TransactionReportPayment(from_dos, to_dos):
+def TransactionReportPayment(from_dos, to_dos, renderingprovider, locationprovider ):
     # utc=pytz.utc
     # from_dos = datetime.datetime(2016, 04, 18, 0, 0,0,0,utc)
     # to_dos = datetime.datetime(2016, 04, 28, 0,0,0,0,utc)
-
     wb = Workbook()
     sheet1 = wb.add_sheet('Transaction Report Payment')
-
     # Set wedth of columns
     sheet1.col(0).width = 1000
     sheet1.col(1).width = 5000
@@ -155,14 +161,15 @@ def TransactionReportPayment(from_dos, to_dos):
     sheet1.col(7).width = 5000
     sheet1.col(8).width = 5000
     sheet1.col(9).width = 5000
-
+    sheet1.col(10).width = 5000
     # alignment and border
     alignment = xlwt.Alignment()
     alignment.horz = xlwt.Alignment.HORZ_LEFT
-
     borderT1 = xlwt.Borders()
-    borderT1.down = xlwt.Borders.THIN
-
+    borderT1.top = xlwt.Borders.THIN
+    borderT2 = xlwt.Borders()
+    borderT2.top = xlwt.Borders.THIN
+    borderT2.bottom = xlwt.Borders.THIN
     # styles
     style = xlwt.XFStyle()
     font = xlwt.Font()
@@ -179,6 +186,22 @@ def TransactionReportPayment(from_dos, to_dos):
     style1.borders = borderT1
     style1.font = font
 
+    style8 = xlwt.XFStyle()
+    font = xlwt.Font()
+    font.name = 'Verdana'
+    font.bold = False
+    font.height = 160
+    style8.borders = borderT1
+    style8.font = font
+
+    style0 = xlwt.XFStyle()
+    font = xlwt.Font()
+    font.name = 'Verdana'
+    font.bold = True
+    font.height = 160
+    style0.borders = borderT2
+    style0.font = font
+
     style2 = xlwt.XFStyle()
     font = xlwt.Font()
     font.name = 'Verdana'
@@ -194,6 +217,15 @@ def TransactionReportPayment(from_dos, to_dos):
     font.height = 160
     style7.font = font
 
+    style77 = xlwt.XFStyle()
+    font = xlwt.Font()
+    style77.alignment = alignment
+    font.name = 'Verdana'
+    font.bold = False
+    font.height = 160
+    style77.borders = borderT1
+    style77.font = font
+
     style4 = xlwt.XFStyle()
     font = xlwt.Font()
     font.name = 'Verdana'
@@ -205,7 +237,7 @@ def TransactionReportPayment(from_dos, to_dos):
     font = xlwt.Font()
     font.name = 'Verdana'
     font.bold = True
-    font.height = 240
+    font.height = 200
     style6.font = font
 
     style5 = xlwt.XFStyle()
@@ -220,22 +252,26 @@ def TransactionReportPayment(from_dos, to_dos):
     sheet1.write(0, 8, label = str(datetime.datetime.now()).split(" ")[0],style=style2)
     sheet1.write(1, 7, label = 'Date Span:',style=style2)
     sheet1.write(1, 8, label = str(from_dos).split(" ")[0] +" to "+ str(to_dos).split(" ")[0],style=style2)
-    sheet1.write(3, 0, label = '', style=style1)
-    
-    sheet1.write(3, 1, label = 'Patient', style=style1)
-    sheet1.write(3, 2, label = 'Chart No', style=style1)
-    sheet1.write(3, 3, label = 'Claim id', style=style1)
-    sheet1.write(3, 4, label = 'Date', style=style1)
-    sheet1.write(3, 5, label = 'Provider', style=style1)
-    sheet1.write(3, 6, label = 'POS', style=style1)
-    sheet1.write(3, 7, label = 'Diagnosis', style=style1)
-    sheet1.write(3, 8, label = 'TX Code', style=style1)
-    sheet1.write(3, 9, label = 'Amount', style=style1)
-
+    sheet1.write(3, 0, label = '', style=style0)
+    sheet1.write(3, 1, label = 'Patient', style=style0)
+    sheet1.write(3, 2, label = 'Chart No', style=style0)
+    sheet1.write(3, 3, label = 'Claim id', style=style0)
+    sheet1.write(3, 4, label = 'Date', style=style0)
+    sheet1.write(3, 5, label = 'Rendering Provider', style=style0)
+    sheet1.write(3, 6, label = 'Location Provider', style=style0)
+    sheet1.write(3, 7, label = 'POS', style=style0)
+    sheet1.write(3, 8, label = 'Diagnosis', style=style0)
+    sheet1.write(3, 9, label = 'TX Code', style=style0)
+    sheet1.write(3, 10, label = 'Amount', style=style0)
     # filtering the information!
-    claim = Claim.objects.filter(created__range=(from_dos, to_dos)).order_by('patient').all()
+    claim = Claim.objects.filter(created__range=(from_dos, to_dos))
+    if(renderingprovider is not None):
+        claim = claim.filter(rendering_provider=renderingprovider)
+    if(locationprovider is not None):
+        claim = claim.filter(location_provider=locationprovider)
+    claim=claim.order_by('patient')
     # setting base line number
-    line=5
+    line=4
     patient_old_no=""
     total_charge=Decimal("0.00")
     total_ins=Decimal("0.00")
@@ -243,22 +279,38 @@ def TransactionReportPayment(from_dos, to_dos):
     total_pat_paid=Decimal("0.00")
     total_adj=Decimal("0.00")
     for cl in claim:
+        first=True
         # procedure
         pro=cl.procedure_set.all()
         # patient
         patient=cl.patient.get_full_name()
         if(patient_old_no!=cl.patient_id):
-            sheet1.write(line, 1, label = patient, style=style2)
-            sheet1.write(line, 2, label = cl.patient_id, style=style7)
+            sheet1.write(line, 1, label = patient, style=style8)
+            sheet1.write(line, 2, label = cl.patient_id, style=style77)
+        else:
+            first=False
         patient_old_no=cl.patient_id
+        
         for procedure in pro:
-            sheet1.write(line, 3, label = cl.id,style=style7)
-            sheet1.write(line, 4, label = str(procedure.date_of_service), style=style2)
-            sheet1.write(line, 5, label = procedure.rendering_provider.provider_name, style=style2)
-            sheet1.write(line, 6, label = procedure.claim.location_provider.place_of_service, style=style2)
-            sheet1.write(line, 7, label = procedure.diag , style=style2)
-            sheet1.write(line, 8, label = procedure.cpt.cpt_code, style=style2)
-            sheet1.write(line, 9, label = str(Decimal(procedure.ins_total_charge)), style=style2)
+            if(first==True):
+                sheet1.write(line, 3, label = cl.id,style=style77)
+                sheet1.write(line, 4, label = str(procedure.date_of_service), style=style8)
+                sheet1.write(line, 5, label = procedure.rendering_provider.provider_name, style=style8)
+                sheet1.write(line, 6, label = cl.location_provider.provider_name, style=style8)
+                sheet1.write(line, 7, label = procedure.claim.location_provider.place_of_service, style=style8)
+                sheet1.write(line, 8, label = procedure.diag , style=style8)
+                sheet1.write(line, 9, label = procedure.cpt.cpt_code, style=style8)
+                sheet1.write(line, 10, label = str(Decimal(procedure.ins_total_charge)), style=style8)
+                first=False
+            else:
+                sheet1.write(line, 3, label = cl.id,style=style7)
+                sheet1.write(line, 4, label = str(procedure.date_of_service), style=style2)
+                sheet1.write(line, 5, label = procedure.rendering_provider.provider_name, style=style2)
+                sheet1.write(line, 6, label = cl.location_provider.provider_name, style=style2)
+                sheet1.write(line, 7, label = procedure.claim.location_provider.place_of_service, style=style2)
+                sheet1.write(line, 8, label = procedure.diag , style=style2)
+                sheet1.write(line, 9, label = procedure.cpt.cpt_code, style=style2)
+                sheet1.write(line, 10, label = str(Decimal(procedure.ins_total_charge)), style=style2)
             total_charge=total_charge+Decimal(procedure.ins_total_charge)
             char=procedure.charge_set.all()
             anytrue=False
@@ -268,44 +320,65 @@ def TransactionReportPayment(from_dos, to_dos):
                     if(charge.resp_type=='Co-pay'):
                         anytrue=True
                         line=line+1
-                        sheet1.write(line, 8, label = 'Co-pay', style=style2)
-                        sheet1.write(line, 9, label = str(Decimal(charge.amount)), style=style2)
+                        sheet1.write(line, 9, label = 'Co-pay', style=style2)
+                        sheet1.write(line, 10, label = str(Decimal(charge.amount)), style=style2)
                         sheet1.write(line, 4, label = str((charge.created.astimezone(tz.tzlocal()))).split(" ")[0], style=style2)
                         pat_tot=pat_tot+Decimal(charge.amount)
                     if(charge.resp_type=='Deductible'):
                         anytrue=True
                         line=line+1
-                        sheet1.write(line, 8, label = 'Deductable', style=style2)
-                        sheet1.write(line, 9, label = str(Decimal(charge.amount)), style=style2)
+                        sheet1.write(line, 9, label = 'Deductable', style=style2)
+                        sheet1.write(line, 10, label = str(Decimal(charge.amount)), style=style2)
                         sheet1.write(line, 4, label = str((charge.created.astimezone(tz.tzlocal()))).split(" ")[0], style=style2)
                         pat_tot=pat_tot+Decimal(charge.amount)
                     if(charge.resp_type=='Other PR'):
                         anytrue=True
                         line=line+1
-                        sheet1.write(line, 8, label = 'Other PR', style=style2)
-                        sheet1.write(line, 9, label = str(Decimal(charge.amount)), style=style2)
+                        sheet1.write(line, 9, label = 'Other PR', style=style2)
+                        sheet1.write(line, 10, label = str(Decimal(charge.amount)), style=style2)
                         sheet1.write(line, 4, label = str((charge.created.astimezone(tz.tzlocal()))).split(" ")[0], style=style2)
                         pat_tot=pat_tot+Decimal(charge.amount)
             if(anytrue):
                 line=line+1
-                sheet1.write(line, 8, label = 'Pat Balance', style=style2)
-                sheet1.write(line, 9, label = str(Decimal(procedure.patient_balance)), style=style2)
+                sheet1.write(line, 9, label = 'Pat Balance', style=style2)
+                sheet1.write(line, 10, label = str(Decimal(procedure.patient_balance)), style=style2)
                 total_pat_paid=total_pat_paid+pat_tot-Decimal(procedure.patient_balance)   
             total_pat=total_pat+pat_tot                 
             # ins
             line=line+1
-            sheet1.write(line, 8, label = 'Ins. Paid', style=style2)
-            sheet1.write(line, 9, label = str(Decimal(procedure.ins_total_pymt)), style=style2)
+            sheet1.write(line, 9, label = 'Ins. Paid', style=style2)
+            sheet1.write(line, 10, label = str(Decimal(procedure.ins_total_pymt)), style=style2)
             total_ins=total_ins+Decimal(procedure.ins_total_pymt)
             line=line+1
-            sheet1.write(line, 8, label = 'Ins. Adjustment', style=style2)
-            sheet1.write(line, 9, label = str(Decimal(procedure.ins_total_adjustment)), style=style2)
+            sheet1.write(line, 9, label = 'Ins. Adjustment', style=style2)
+            sheet1.write(line, 10, label = str(Decimal(procedure.ins_total_adjustment)), style=style2)
             total_adj=total_adj+Decimal(procedure.ins_total_adjustment)
             line=line+1
 
-    line=line+5
-    sheet1.write(line, 5, label = 'All Provider - All Location', style=style6)
+    # writing totals
+    sheet1.write(line, 1, label = '', style=style1)
+    sheet1.write(line, 2, label = '', style=style1)
+    sheet1.write(line, 3, label = '', style=style1)
+    sheet1.write(line, 4, label = '', style=style1)
+    sheet1.write(line, 5, label = '', style=style1)
+    sheet1.write(line, 6, label = '', style=style1)
+    sheet1.write(line, 7, label = '', style=style1)
+    sheet1.write(line, 8, label = '', style=style1)
+    sheet1.write(line, 9, label = '', style=style1)
+    sheet1.write(line, 10, label = '', style=style1)
 
+    line=line+5
+    loc_ref=""
+    if(renderingprovider is not None):
+        loc_ref="Rendering Provider: "+str(renderingprovider.provider_name)
+    else:
+        loc_ref="All Provider"
+    loc_ref=loc_ref+" - "
+    if(locationprovider is not None):
+        loc_ref=loc_ref+"Location Provider: "+str(locationprovider.provider_name)
+    else:
+        loc_ref=loc_ref+"All Location"
+    sheet1.write(line, 5, label = loc_ref, style=style6)
     #chargers
     line=line+1
     sheet1.write(line, 4, label = 'Charges', style=style5)
@@ -314,7 +387,6 @@ def TransactionReportPayment(from_dos, to_dos):
     line=line+1
     sheet1.write(line, 5, label = 'Patient', style=style5)
     sheet1.write(line, 6, label = str(total_pat), style=style5)
-
     # payments
     line=line+2
     sheet1.write(line, 4, label = 'Payments', style=style5)
@@ -327,42 +399,37 @@ def TransactionReportPayment(from_dos, to_dos):
     sheet1.write(line, 4, label = 'Adjustments', style=style5)
     sheet1.write(line, 5, label = 'Insurance', style=style5)
     sheet1.write(line, 6, label = str(total_adj), style=style5)
-
-
     # saving the report
     wb.save('transactionreportpayment.xls')
     return HttpResponse(open('transactionreportpayment.xls','rb+').read(),
         content_type='application/vnd.ms-excel')
-
     # return HttpResponse("<html>To do!</html>")
 
-
-def TransactionReport(from_dos, to_dos, renderingprovider):
-
+def TransactionReport(from_dos, to_dos, renderingprovider, locationprovider):
     # dictionaries to count number of entries in it
     dic_pat={}
     dic_provider={}
+    dic_loc={}
     dic_code={}
-
     #keeping track pf total charge
     sum_charge=Decimal(0)
     sum_unit_total=Decimal(0)
     # Writing into excel workbook
     wb = Workbook()
     sheet1 = wb.add_sheet('Transaction Report')
-
+    # set alignment
+    alignment = xlwt.Alignment()
+    alignment.horz = xlwt.Alignment.HORZ_LEFT
     # set border
     borderT1 = xlwt.Borders()
     borderT1.top = xlwt.Borders.THIN
     borderT2 = xlwt.Borders()
     borderT2.top = xlwt.Borders.THIN
-
     #color
     shadedFill = xlwt.Pattern()
     shadedFill.pattern = xlwt.Pattern.SOLID_PATTERN
     shadedFill.pattern_fore_colour = 0x16 # 25% Grey
     shadedFill.pattern_back_colour = 0x08 # Black
-
     # Set wedth of columns
     sheet1.col(0).width = 1000
     sheet1.col(1).width = 5000
@@ -372,6 +439,9 @@ def TransactionReport(from_dos, to_dos, renderingprovider):
     sheet1.col(5).width = 8000
     sheet1.col(6).width = 5000
     sheet1.col(7).width = 5000
+    sheet1.col(8).width = 5000
+    sheet1.col(9).width = 5000
+    sheet1.col(10).width = 5000
 
     # creating styles
     style = xlwt.XFStyle()
@@ -411,32 +481,41 @@ def TransactionReport(from_dos, to_dos, renderingprovider):
     style1.borders = borderT2
     style1.font = font
 
+    style7 = xlwt.XFStyle()
+    font = xlwt.Font()
+    style7.alignment = alignment
+    font.name = 'Verdana'
+    font.bold = False
+    font.height = 160
+    style7.font = font
+
     sheet1.write(0, 0, label = 'Transaction Report', style = style)
     sheet1.write(0, 7, label = 'Report Date:', style=style2)
     sheet1.write(0, 8, label = str(datetime.datetime.now()).split(" ")[0],style=style2)
     sheet1.write(1, 7, label = 'Date Span:',style=style2)
     sheet1.write(1, 8, label = str(from_dos).split(" ")[0] +" to "+ str(to_dos).split(" ")[0],style=style2)
     sheet1.write(3, 0, label = '', style=style1)
-
     sheet1.write(3, 1, label = 'Patient', style=style1)
     sheet1.write(3, 2, label = 'Chart No', style=style1)
-    sheet1.write(3, 3, label = 'Provider', style=style1)
-    sheet1.write(3, 4, label = 'Code [Modifiers]', style=style1)
-    sheet1.write(3, 5, label = 'Procedure Code Description', style=style1)
-    sheet1.write(3, 6, label = 'DOS', style=style1)
-    sheet1.write(3, 7, label = 'Created Date', style=style1)
-    sheet1.write(3, 8, label = 'Units', style=style1)
-    sheet1.write(3, 9, label = 'Charges', style=style1)
-
+    sheet1.write(3, 3, label = 'Rendering Provider', style=style1)
+    sheet1.write(3, 4, label = 'Location Provider', style=style1)
+    sheet1.write(3, 5, label = 'Code [Modifiers]', style=style1)
+    sheet1.write(3, 6, label = 'Procedure Code Description', style=style1)
+    sheet1.write(3, 7, label = 'DOS', style=style1)
+    sheet1.write(3, 8, label = 'Created Date', style=style1)
+    sheet1.write(3, 9, label = 'Units', style=style1)
+    sheet1.write(3, 10, label = 'Charges', style=style1)
     # filtering the information!
     claim = Claim.objects.filter(created__range=(from_dos, to_dos))
     if(renderingprovider is not None):
         claim = claim.filter(rendering_provider=renderingprovider)
-    
+    if(locationprovider is not None):
+        claim = claim.filter(location_provider=locationprovider)
     # setting base line number
     line=5
     for cl in claim:
         dic_pro_claim={}
+        dic_loc_claim={}
         dic_cpt_claim={}
         sum_claim=Decimal(0)
         sum_unit=Decimal(0)
@@ -452,14 +531,15 @@ def TransactionReport(from_dos, to_dos, renderingprovider):
         line=line+1
         for procedure in pro:
             sheet1.write(line, 1, label = patient, style=style2)
-            sheet1.write(line, 2, label = cl.patient_id, style=style2)
+            sheet1.write(line, 2, label = cl.patient_id, style=style7)
             sheet1.write(line, 3, label = procedure.rendering_provider.provider_name, style=style2)
-            sheet1.write(line, 4, label = procedure.cpt.cpt_code, style=style2)
-            sheet1.write(line, 5, label = procedure.cpt.cpt_description, style=style2)
-            sheet1.write(line, 6, label = str(procedure.date_of_service), style=style2)
-            sheet1.write(line, 7, label = str(procedure.created), style=style2)
-            sheet1.write(line, 8, label = str(Decimal(procedure.unit)), style=style2)
-            sheet1.write(line, 9, label = str(Decimal(procedure.ins_total_charge)), style=style2)
+            sheet1.write(line, 4, label = cl.location_provider.provider_name, style=style2)
+            sheet1.write(line, 5, label = procedure.cpt.cpt_code, style=style2)
+            sheet1.write(line, 6, label = procedure.cpt.cpt_description, style=style2)
+            sheet1.write(line, 7, label = str(procedure.date_of_service), style=style2)
+            sheet1.write(line, 8, label = str(procedure.created), style=style2)
+            sheet1.write(line, 9, label = str(Decimal(procedure.unit)), style=style2)
+            sheet1.write(line, 10, label = str(Decimal(procedure.ins_total_charge)), style=style2)
             # summing up charges
             sum_charge=sum_charge+Decimal(procedure.ins_total_charge)
             sum_claim=sum_claim+Decimal(procedure.ins_total_charge)
@@ -467,8 +547,10 @@ def TransactionReport(from_dos, to_dos, renderingprovider):
             #entering into dictionary
             dic_pat[str(cl.patient_id)]=1
             dic_provider[str(procedure.rendering_provider.provider_name)]=1
+            dic_loc[str(cl.location_provider.provider_name)]=1
             dic_code[str(procedure.cpt.cpt_code)]=1
             dic_pro_claim[str(procedure.rendering_provider.provider_name)]=1
+            dic_loc_claim[str(cl.location_provider.provider_name)]=1
             dic_cpt_claim[str(procedure.cpt.cpt_code)]=1
             line=line+1
         sum_unit_total=sum_unit_total+sum_unit
@@ -476,24 +558,24 @@ def TransactionReport(from_dos, to_dos, renderingprovider):
         sheet1.write(line, 1, label = '', style=style3)
         sheet1.write(line, 2, label = '', style=style3)
         sheet1.write(line, 3, label = len(dic_pro_claim), style=style3)
-        sheet1.write(line, 4, label = len(dic_cpt_claim), style=style3)
-        sheet1.write(line, 5, label = '', style=style3)
+        sheet1.write(line, 4, label = len(dic_loc_claim), style=style3)
+        sheet1.write(line, 5, label = len(dic_cpt_claim), style=style3)
         sheet1.write(line, 6, label = '', style=style3)
         sheet1.write(line, 7, label = '', style=style3)
-        sheet1.write(line, 8, label = str(sum_unit), style=style3)
-        sheet1.write(line, 9, label = str(sum_claim), style=style3)
-
+        sheet1.write(line, 8, label = '', style=style3)
+        sheet1.write(line, 9, label = str(sum_unit), style=style3)
+        sheet1.write(line, 10, label = str(sum_claim), style=style3)
     # writing totals
     sheet1.write(4, 1, label = 'Total', style=style1)
     sheet1.write(4, 2, label = str(len(dic_pat)), style=style1)
     sheet1.write(4, 3, label = str(len(dic_provider)), style=style1)
-    sheet1.write(4, 4, label = str(len(dic_code)), style=style1)
-    sheet1.write(4, 5, label = '', style=style1)
+    sheet1.write(4, 4, label = str(len(dic_loc)), style=style1)
+    sheet1.write(4, 5, label = str(len(dic_code)), style=style1)
     sheet1.write(4, 6, label = '', style=style1)
     sheet1.write(4, 7, label = '', style=style1)
-    sheet1.write(4, 8, label = str(Decimal(sum_unit_total)), style=style1)
-    sheet1.write(4, 9, label = str(Decimal(sum_charge)) , style=style1)
-
+    sheet1.write(4, 8, label = '', style=style1)
+    sheet1.write(4, 9, label = str(Decimal(sum_unit_total)), style=style1)
+    sheet1.write(4, 10, label = str(Decimal(sum_charge)) , style=style1)
     # saving the report
     wb.save('transactionreport.xls')
     return HttpResponse(open('transactionreport.xls','rb+').read(),

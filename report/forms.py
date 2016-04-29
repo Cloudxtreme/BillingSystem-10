@@ -18,6 +18,15 @@ class SearchTransactionReport(forms.Form):
     startdate = forms.DateField()
     enddate = forms.DateField()
     renderingprovider  = forms.ModelChoiceField(queryset=Provider.objects.filter(role="Rendering").all(), required=False)
+    locationprovider  = forms.ModelChoiceField(queryset=Provider.objects.filter(role="Location").all(), required=False)
+
+    def __init__(self, *args, **kwargs):
+        super(SearchTransactionReport, self).__init__(*args, **kwargs)
+        modelchoicefields = [field for field_name, field in self.fields.iteritems() if
+            isinstance(field, forms.ModelChoiceField)]
+
+        for field in modelchoicefields:
+            field.empty_label = "All"
 
     def clean(self):
         cleaned_data = super(SearchTransactionReport, self).clean()
