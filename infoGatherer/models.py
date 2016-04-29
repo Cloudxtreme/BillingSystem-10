@@ -502,8 +502,9 @@ class Provider(models.Model):
         if len(self.provider_phone)==0:
             dic['provider_phone']='Please provide phone number'
 
-        if self.place_of_service is None:
-            dic['place_of_service']='Please provide POS'
+        if self.role == 'Location':
+            if self.place_of_service is None:
+                dic['place_of_service']='Please provide POS'
 
         if self.role == 'Billing' or self.role == 'Dual' or self.role == 'Rendering':
             if self.tax_id is None:
