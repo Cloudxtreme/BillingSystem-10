@@ -36,7 +36,7 @@
                     <li {%if auditlog in request.path%} class="active" {%endif%} ><a href="{{ auditlog }}">Audit Log</a></li>
                     <li class="dropdown" id="d" >
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Payments <span class="caret"></span></a>
-                        <ul class="dropdown-menu">
+                        <ul class="dropdown-menu" >
                             <li {% if payment_create in request.path %} class="active" {%endif%}><a href="{{payment_create}}">Create Payments</a></li>
                             <li {% if payment_apply_read in request.path %} class="active" {%endif%}><a href="{{payment_apply_read}}">Apply payment to patient</a></li>
                             <li role="separator" class="divider"></li>

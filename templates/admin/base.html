@@ -9,6 +9,7 @@
         <title>{% block title %}{% endblock %}</title>
         <link rel="stylesheet" type="text/css" href="{% block stylesheet %}{% static "admin/css/base.css" %}{% endblock %}" />
         <link rel="stylesheet" href="{% static 'css/bootstrap.navbar.min.css' %}">
+        <link rel="stylesheet" href="{% static 'css/bootstrap.min.dropdown.css' %}">
         {% block extrastyle %}{% endblock %}
         {% if LANGUAGE_BIDI %}<link rel="stylesheet" type="text/css" href="{% block stylesheet_rtl %}{% static "admin/css/rtl.css" %}{% endblock %}" />{% endif %}
         {% block extrahead %}{% endblock %}
