@@ -498,7 +498,7 @@ def PostAdPage(request):
                         if(txt.split()[0]=='START'):
                             unit=txt.split()[7]
                         else:
-                            unit=txt.split()[2][-2:]
+                            unit=txt.split()[2][2:]
                     else:
                         unit="0.00"
                     if(cpt and amount):
@@ -671,7 +671,7 @@ def print_form(bar):
     fields.append(('251',bar['pat_id']))
 
     # Payer Information
-    fields.append(('2',bar['payer_name']+"\n"+bar['payer_address']))
+    fields.append(('2',bar['payer_name']+" "+bar['payer_address']))
 
     # Physician Information
     fields.append(('81',bar['referring_name']))
@@ -852,7 +852,7 @@ def print_form(bar):
             if(txt.split()[0]=='START'):
                 fields.append((str(130+(23*i-23)),txt.split()[7]))
             else:
-                fields.append((str(130+(23*i-23)),txt.split()[2][-2:]))
+                fields.append((str(130+(23*i-23)),txt.split()[2][2:]))
 
 
     # Total charge
