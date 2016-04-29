@@ -17,8 +17,12 @@ class SearchTransactionReport(forms.Form):
     reporttype = forms.ChoiceField(choices=REPORTS)
     startdate = forms.DateField()
     enddate = forms.DateField()
+
     renderingprovider  = forms.ModelChoiceField(queryset=Provider.objects.filter(role="Rendering").all(), required=False)
     locationprovider  = forms.ModelChoiceField(queryset=Provider.objects.filter(role="Location").all(), required=False)
+
+    # renderingprovider  = forms.ModelMultipleChoiceField(queryset=Provider.objects.filter(role="Rendering").all(), required=False,  widget=forms.SelectMultiple)
+    # locationprovider  = forms.ModelMultipleChoiceField(queryset=Provider.objects.filter(role="Location").all(), required=False,  widget=forms.SelectMultiple)
 
     def __init__(self, *args, **kwargs):
         super(SearchTransactionReport, self).__init__(*args, **kwargs)
@@ -26,7 +30,7 @@ class SearchTransactionReport(forms.Form):
             isinstance(field, forms.ModelChoiceField)]
 
         for field in modelchoicefields:
-            field.empty_label = "All"
+            field.empty_label = "-- All --"
 
     def clean(self):
         cleaned_data = super(SearchTransactionReport, self).clean()
