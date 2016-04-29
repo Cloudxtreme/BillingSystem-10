@@ -305,3 +305,10 @@ table.table-condensed td {
 .table-aging thead th {
     text-align: center;
 }
+
+.table-padding td {
+    padding: 5px 0px;
+}
+.table-padding td:first-child {
+    padding-right: 10px;
+}

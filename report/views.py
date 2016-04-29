@@ -20,6 +20,7 @@ import time
 from dateutil import tz
 from win32com import client
 import pythoncom
+from shutil import copyfile
 
 from infoGatherer.models import *
 from accounting.models import *
@@ -110,10 +111,19 @@ def statment_create(request):
     excel = None
     wb = None
     try:
+        # Copy template to temp folder of that user beforehand
+        temp_path = "temp/" + str(request.user.pk)
+        if not os.path.exists(temp_path):
+            os.makedirs(temp_path)
+
+        src_template = "templates/report/statement.xlsx"
+        des_template = temp_path + "/statement.xlsx"
+        copyfile(src_template, des_template)
+
         # Prepare excel template
         excel = client.Dispatch("Excel.Application")
-        templateDir = settings.BASE_DIR + "\\templates\\report"
-        wb = excel.Workbooks.Open(templateDir + "\\statement.xlsx")
+        template_path = os.path.join(settings.BASE_DIR, des_template)
+        wb = excel.Workbooks.Open(template_path)
         ws = wb.Worksheets("statement")
 
         # Write data
@@ -197,35 +207,29 @@ def statment_create(request):
         ws.Range("BT60").Value = aging.get("total")
 
         # Prepare path and filename for temp file
-        relative_path = "temp/" + str(request.user.pk) + "/"
         temp_filename = "statement.pdf"
-        relative_file_path = os.path.join(relative_path, temp_filename)
+        temp_pdf_file_path = os.path.join(temp_path, temp_filename)
         location = "documents/report/statement/" + today.strftime("%Y") + \
                 "/user_" + str(request.user.pk) + "/"
-
-        # win32com does not create folder automatically.  Check
-        # if the directory exists and create one if necessary
-        if not os.path.exists(relative_path):
-            os.makedirs(relative_path)
 
         # Save temp file as PDF format
         wb.ExportAsFixedFormat(0, os.path.join(
                 settings.BASE_DIR,
-                relative_file_path))
+                temp_pdf_file_path))
 
         # Save to permanent file with FileSystemStorage to use its
         # built-in auto-rename function
         fileStorage = FileSystemStorage(
                 location=os.path.join(settings.MEDIA_ROOT, location))
         fileStorage.file_permissions_mode = 0744
-        temp_file = File(open(relative_file_path, 'rb+'))
+        temp_file = File(open(temp_pdf_file_path, 'rb+'))
         filename = fileStorage.save(
                 today.strftime("%m%d_%H%M%S_p_") + str(patient.pk) + ".pdf",
                 temp_file)
 
         # remove temp file
         temp_file.close()
-        os.remove(relative_file_path)
+        os.remove(temp_pdf_file_path)
 
         # Create Statement history record to group all reports created
         # at the time user clicks
@@ -249,8 +253,9 @@ def statment_create(request):
     finally:
         if wb is not None:
             wb.Close(False)
-        if excel is not None:
-            excel.Application.Quit()
+            os.remove(template_path)
+
+    pythoncom.CoUninitialize()
 
     return render(request, "report/statement.html", {
         "patient": patient,
@@ -262,19 +267,317 @@ def statment_create(request):
         "total_pat_pymt": total_pat_pymt,
     })
 
+@login_required
+def statement_generate(
+        request,
+        billing_provider,
+        rendering_provider,
+        patients,
+        min_balance,
+        max_balance,
+        message):
+
+    # Get default billing provider if it is not provided
+    if billing_provider is None or \
+            type(billing_provider) != Provider or \
+            billing_provider.role != "Billing":
+        billing_provider = Provider.objects.get(
+                provider_name__icontains="XENON HEALTH")
+
+    # rendering_provider option will filter claims to retrieve
+    # only those relate to this rendering doctor.  Set it to
+    # None to indicate that any provider is fine.
+    if type(rendering_provider) != Provider or \
+            rendering_provider.role != "Rendering":
+        rendering_provider = None
+
+    # Check if patients is a collection of personal_information
+    # or not.  If not, generate report for all patients
+    if type(patients) != list and \
+            type(patients) != tuple:
+        patients = Personal_Information.objects.all()
+    else:
+        for patient in patients:
+            if type(patient) != Personal_Information:
+                patients = Personal_Information.objects.all()
+                break
+
+    # Prepare time condition for aging table
+    today = timezone.now()
+    m1_time = today - timedelta(days=30)
+    m2_time = today - timedelta(days=60)
+    m3_time = today - timedelta(days=90)
+    m4_time = today - timedelta(days=120)
+
+    Q1 = Q(created__gte=m1_time)
+    Q2 = Q(Q(created__lt=m1_time) & Q(created__gte=m2_time))
+    Q3 = Q(Q(created__lt=m2_time) & Q(created__gte=m3_time))
+    Q4 = Q(Q(created__lt=m3_time) & Q(created__gte=m4_time))
+    Q5 = Q(Q(created__lt=m4_time))
+
+    # These COM extension should be launch just once
+    pythoncom.CoInitialize()
+    excel = client.Dispatch("Excel.Application")
+
+    # Create Statement history record to group all reports created
+    # at the time user clicks
+    sh = StatementHistory.objects.create(created_by=request.user)
+
+    gen_report = 0
+    for patient in patients:
+        # Calculate total ins pymt and pat pymt
+        total_ins_pymt = 0
+        total_pat_pymt = 0
+
+        if rendering_provider is not None:
+            claims = patient.patient.filter(
+                    rendering_provider=rendering_provider)
+            # Exclude charges not related to rendering provider
+            charges = Charge.objects.filter(
+                    procedure__claim__patient=patient,
+                    procedure__claim__rendering_provider=rendering_provider)
+        else:
+            claims = patient.patient.all()
+            charges = Charge.objects.filter(procedure__claim__patient=patient)
+
+        # No need to do anything if we don't
+        # capture any claim from here
+        if len(claims) < 1:
+            continue
+
+        for claim in claims:
+            total_ins_pymt += claim.ins_pmnt_per_claim
+            total_pat_pymt += claim.pat_pmnt_per_claim
+
+        # Prepare aging table
+        ins_charges = charges.filter(payer_type="Insurance")
+        pat_charges = charges.filter(payer_type="Patient")
+
+        ins_c_age = [ins_charges.filter(Q1),
+                ins_charges.filter(Q2),
+                ins_charges.filter(Q3),
+                ins_charges.filter(Q4),
+                ins_charges.filter(Q5)]
+
+        pat_c_age = [pat_charges.filter(Q1),
+                pat_charges.filter(Q2),
+                pat_charges.filter(Q3),
+                pat_charges.filter(Q4),
+                pat_charges.filter(Q5)]
+
+        ins_t_age = [Decimal("0.00") for i in range(5)]
+        for i, charges in enumerate(ins_c_age):
+            for charge in charges:
+                ins_t_age[i] += charge.balance
+
+        pat_t_age = [Decimal("0.00") for i in range(5)]
+        for i, charges in enumerate(pat_c_age):
+            for charge in charges:
+                pat_t_age[i] += charge.balance
+
+        aging = dict(
+                i_m1=ins_t_age[0],
+                i_m2=ins_t_age[1],
+                i_m3=ins_t_age[2],
+                i_m4=ins_t_age[3],
+                i_m5=ins_t_age[4],
+                p_m1=pat_t_age[0],
+                p_m2=pat_t_age[1],
+                p_m3=pat_t_age[2],
+                p_m4=pat_t_age[3],
+                p_m5=pat_t_age[4],
+                i_t=sum(ins_t_age),
+                p_t=sum(pat_t_age),
+                m1_t=ins_t_age[0] + pat_t_age[0],
+                m2_t=ins_t_age[1] + pat_t_age[1],
+                m3_t=ins_t_age[2] + pat_t_age[2],
+                m4_t=ins_t_age[3] + pat_t_age[3],
+                m5_t=ins_t_age[4] + pat_t_age[4],
+                total=sum(ins_t_age) + sum(pat_t_age))
+
+        # If total balance of that patient doesn't match min or max
+        # balance, do not generate report
+        if min_balance is not None:
+            if aging.get("total") < min_balance:
+                continue
+        if max_balance is not None:
+            if aging.get("total") > max_balance:
+                continue
+
+        # Begin writing Excel template
+        wb = None
+        try:
+            # Copy template to temp folder of that user beforehand
+            temp_path = "temp/" + str(request.user.pk)
+            if not os.path.exists(temp_path):
+                os.makedirs(temp_path)
+
+            src_template = "templates/report/statement.xlsx"
+            des_template = temp_path + "/statement.xlsx"
+            copyfile(src_template, des_template)
+
+            # Prepare excel template
+
+            template_path = os.path.join(settings.BASE_DIR, des_template)
+            wb = excel.Workbooks.Open(template_path)
+            ws = wb.Worksheets("statement")
+
+            # Write data
+            ws.Range("F1").Value = billing_provider.provider_name.upper()
+            ws.Range("F2").Value = billing_provider.provider_address.upper()
+            ws.Range("F3").Value = "%s %s %s" % (
+                    billing_provider.provider_city.upper(),
+                    billing_provider.provider_state.upper(),
+                    billing_provider.provider_zip)
+
+            ws.Range("A5").Value = ws.Range("A5").Value + \
+                    " " + billing_provider.provider_phone.upper()
+            ws.Range("A6").Value = ws.Range("A6").Value + \
+                    " " + patient.full_name.upper()
+
+            ws.Range("AM6").Value = today.strftime("%m/%d/%y")
+            ws.Range("BN6").Value = patient.chart_no
+
+            ws.Range("F10").Value = patient.full_name.upper()
+            ws.Range("F11").Value = patient.address.upper()
+            ws.Range("F12").Value = "%s %s %s" % (
+                    patient.city.upper(),
+                    patient.state.upper(),
+                    patient.zip)
+
+            ws.Range("BA10").Value = ws.Range("F1").Value
+            ws.Range("BA11").Value = ws.Range("F2").Value
+            ws.Range("BA12").Value = ws.Range("F3").Value
+
+            ws.Range("L18").Value = ws.Range("F10").Value
+            ws.Range("AV18").Value = ws.Range("BN6").Value
+
+            line = 19
+            for claim in claims:
+                ws.Range("A%s" % line).Value = claim.created.strftime("%m/%d/%y")
+                ws.Range("L%s" % line).Value = claim.rendering_provider\
+                        .provider_name.upper()
+                ws.Range("AF%s" % line).Value = claim.total_charge
+                ws.Range("AL%s" % line).Value = claim.ins_adjustment_per_claim
+                ws.Range("AV%s" % line).Value = claim.ins_pmnt_per_claim
+                ws.Range("BC%s" % line).Value = claim.pat_responsible_per_claim
+                ws.Range("BJ%s" % line).Value = claim.pat_pmnt_per_claim
+                ws.Range("BT%s" % line).Value = claim.total_balance
+
+                line += 1
+                for procedure in claim.procedure_set.all():
+                    ws.Range("A%s" % line).Value = procedure.date_of_service.strftime("%m/%d/%y")
+                    ws.Range("F%s" % line).Value = procedure.cpt.cpt_code
+                    ws.Range("L%s" % line).Value = procedure.cpt.cpt_description.upper()
+                    ws.Range("AF%s" % line).Value = procedure.ins_total_charge
+                    ws.Range("AL%s" % line).Value = procedure.ins_total_adjustment
+                    ws.Range("AV%s" % line).Value = procedure.ins_total_pymt
+
+                    line += 1
+                    for charge in procedure.charge_set.all():
+                        if charge.payer_type == "Patient":
+                            ws.Range("L%s" % line).Value = charge.resp_type.upper()
+                            ws.Range("BC%s" % line).Value = charge.amount
+                            line += 1
+
+            ws.Range("AV55").Value = total_ins_pymt
+            ws.Range("BJ55").Value = total_pat_pymt
+
+            ws.Range("P57").Value = aging.get("i_m1")
+            ws.Range("Y57").Value = aging.get("i_m2")
+            ws.Range("AH57").Value = aging.get("i_m3")
+            ws.Range("AQ57").Value = aging.get("i_m4")
+            ws.Range("AZ57").Value = aging.get("i_m5")
+            ws.Range("BH57").Value = aging.get("i_t")
+
+            ws.Range("P58").Value = aging.get("p_m1")
+            ws.Range("Y58").Value = aging.get("p_m2")
+            ws.Range("AH58").Value = aging.get("p_m3")
+            ws.Range("AQ58").Value = aging.get("p_m4")
+            ws.Range("AZ58").Value = aging.get("p_m5")
+            ws.Range("BH58").Value = aging.get("p_t")
+
+            ws.Range("BA6").Value = aging.get("total")
+            ws.Range("BT17").Value = aging.get("total")
+            ws.Range("BT55").Value = aging.get("total")
+            ws.Range("BT60").Value = aging.get("total")
+
+            # Prepare path and filename for temp file
+            temp_filename = "statement.pdf"
+            temp_pdf_file_path = os.path.join(temp_path, temp_filename)
+            location = "documents/report/statement/" + today.strftime("%Y") + \
+                    "/user_" + str(request.user.pk) + "/"
+
+            # Save temp file as PDF format
+            wb.ExportAsFixedFormat(0, os.path.join(
+                    settings.BASE_DIR,
+                    temp_pdf_file_path))
+
+            # Save to permanent file with FileSystemStorage to use its
+            # built-in auto-rename function
+            fileStorage = FileSystemStorage(
+                    location=os.path.join(settings.MEDIA_ROOT, location))
+            fileStorage.file_permissions_mode = 0744
+            temp_file = File(open(temp_pdf_file_path, 'rb+'))
+            filename = fileStorage.save(
+                    today.strftime("%m%d_%H%M%S_p_") + str(patient.pk) + ".pdf",
+                    temp_file)
+
+            # remove temp file
+            temp_file.close()
+            os.remove(temp_pdf_file_path)
+
+            s = Statement.objects.create(
+                    statement_history=sh,
+                    patient=patient,
+                    balance=aging.get("total"),
+                    file=location + filename,
+                    created=sh.created)
+
+            gen_report += 1
+
+        except Exception, e:
+            print "Error occurs during saving statement report"
+            print e
+        finally:
+            if wb is not None:
+                wb.Close(False)
+                os.remove(template_path)
+
+    # Delete history object is we didn't create
+    # any report for that group
+    if gen_report < 1:
+        sh.delete()
+
+    pythoncom.CoUninitialize()
+
 def statement_read(request):
+    today = timezone.now()
     shs = StatementHistory.objects.all().order_by("-created")
 
+    form = StatementReportForm(request.POST or None)
+
+    if request.method == "POST" and form.is_valid():
+        cleaned_data = form.cleaned_data
+        statement_generate(
+                request=request,
+                billing_provider=cleaned_data.get("billing_provider"),
+                rendering_provider=cleaned_data.get("rendering_provider"),
+                patients=None,
+                min_balance=cleaned_data.get("min_balance"),
+                max_balance=cleaned_data.get("max_balance"),
+                message=cleaned_data.get("message"))
+
     return render(request, "report/statement.html", {
-        "shs": shs})
+        "today": today,
+        "shs": shs,
+        "form": form})
 
 def statement_history_read(request, history_id):
     ss = Statement.objects.filter(statement_history=history_id)
-    today = timezone.now()
 
     return render(request, "report/statement_history.html", {
-        "ss": ss,
-        "today": today})
+        "ss": ss})
 
 def statement_file_read(request, statement_id):
     s = get_object_or_404(Statement, pk=statement_id)
@@ -466,7 +769,7 @@ def TransactionReportPayment(from_dos, to_dos, renderingprovider, locationprovid
         else:
             first=False
         patient_old_no=cl.patient_id
-        
+
         for procedure in pro:
             if(first==True):
                 sheet1.write(line, 3, label = cl.id,style=style77)
@@ -518,8 +821,8 @@ def TransactionReportPayment(from_dos, to_dos, renderingprovider, locationprovid
                 line=line+1
                 sheet1.write(line, 9, label = 'Pat Balance', style=style2)
                 sheet1.write(line, 10, label = str(Decimal(procedure.patient_balance)), style=style2)
-                total_pat_paid=total_pat_paid+pat_tot-Decimal(procedure.patient_balance)   
-            total_pat=total_pat+pat_tot                 
+                total_pat_paid=total_pat_paid+pat_tot-Decimal(procedure.patient_balance)
+            total_pat=total_pat+pat_tot
             # ins
             line=line+1
             sheet1.write(line, 9, label = 'Ins. Paid', style=style2)

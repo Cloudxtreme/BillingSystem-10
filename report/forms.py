@@ -6,6 +6,7 @@ from localflavor.us.us_states import STATE_CHOICES
 from .models import *
 from base.models import BASE_DECIMAL
 from infoGatherer.models import (
+        Personal_Information,
         Provider,)
 
 REPORTS = (
@@ -33,3 +34,27 @@ class SearchTransactionReport(forms.Form):
         reporttype = cleaned_data.get('reporttype')
         startdate = cleaned_data.get('startdate')
         enddate = cleaned_data.get('enddate')
+
+
+class StatementReportForm(forms.Form):
+    billing_provider = forms.ModelChoiceField(
+            queryset=Provider.objects.filter(role="Billing"),
+            required=False,
+            empty_label="--- Xenon Health ---")
+    rendering_provider = forms.ModelChoiceField(
+            queryset=Provider.objects.filter(role="Rendering"),
+            required=False,
+            empty_label="--- All Providers ---")
+    patient = forms.ModelChoiceField(
+            queryset=Personal_Information.objects.all(),
+            required=False,
+            empty_label="--- All Patients ---")
+    min_balance = forms.DecimalField(
+            required=False,
+            min_value=0,
+            **BASE_DECIMAL)
+    max_balance = forms.DecimalField(required=False, **BASE_DECIMAL)
+    message = forms.CharField(
+            max_length=270,
+            widget=forms.Textarea,
+            required=False)

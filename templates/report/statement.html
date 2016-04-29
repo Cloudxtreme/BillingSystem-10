@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load staticfiles %}
-
+{% load widget_tweaks %}
 
 {% block body %}
 
@@ -8,19 +8,36 @@
     <h2 class="text-center">Statement Report</h2>
     <div class="row">
         <div class="col-sm-6">
-            <h4>Statement Formatting</h4>
-            <table>
-                <tr>
-                    <th>Statement Date</th>
-                    <td>{{today|date:"m/d/Y"}}</td>
-                </tr>
-                <tr>
-                    <th>Rendering Providers</th>
-                    <td>
-
-                    </td>
-                </tr>
-            </table>
+            <form method="POST">{% csrf_token %}
+                <h4>Generating Options</h4>
+                <table class="table-padding">
+                    <tr>
+                        <td>Statement Date</td>
+                        <td>{{today|date:"m/d/y"}}</td>
+                    </tr>
+                    <tr>
+                        <td><label class="control-label required">Rendering Providers</label></td>
+                        <td>{{form.rendering_provider|add_class:"form-control"}}</td>
+                    </tr>
+                    <tr>
+                        <td><label class="control-label required">Patients</label></td>
+                        <td>{{form.patient|add_class:"form-control"}}</td>
+                    </tr>
+                    <tr>
+                        <td><label class="control-label">Balance Range</label></td>
+                        <td>
+                            <div class="col-sm-6" style="padding-left: 0px;">Minimum ${{form.min_balance|add_class:"form-control"|attr:"step:0.01"}}</div>
+                            <div class="col-sm-6" style="padding-right: 0px;">Maximum ${{form.max_balance|add_class:"form-control"|attr:"step:0.01"}}</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><label class="control-label">Standard Message</label></td>
+                        <td>{{form.message|add_class:"form-control"|attr:"rows:5"}}</td>
+                    </tr>
+                </table>
+                <br>
+                <input type="submit" value="Generate Statements" class="btn btn-primary">
+            </form>
         </div>
         <div class="col-sm-6">
             <h4>Statement History</h4>
@@ -40,6 +57,10 @@
                             <td>{{sh.created|date:"h:i A"}}</td>
                             <td>{{sh.created_by}}</td>
                             <td>{{sh.statement_set.all.count}}</td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="100" class="not-found text-center"><h4>No statement history has been found.<h4></td>
                         </tr>
                     {% endfor %}
                 </tbody>
