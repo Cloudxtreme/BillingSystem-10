@@ -30,7 +30,8 @@ urlpatterns = [
     url(r'^patient/', include('displayContent.urls')),
     url(r'^report/', include('report.urls')),
     url(r'^tz_detect/', include('tz_detect.urls')),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]
+# ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
 

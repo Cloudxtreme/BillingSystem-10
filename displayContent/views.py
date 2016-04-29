@@ -24,6 +24,7 @@ from base.models import ExtPythonSerializer
 
 
 
+
 def generate_statement(request, chart):
     # get all claims
     
