@@ -1,5 +1,6 @@
 from django.shortcuts import *
 from django.contrib.auth.decorators import login_required
+from django.core.files import File
 from django.core.files.storage import FileSystemStorage
 from django.db import IntegrityError, transaction
 from django.db.models import Q
@@ -10,6 +11,7 @@ from datetime import datetime, timedelta
 from decimal import *
 from xlwt import Workbook
 import datetime
+import os
 import pytz
 import xlwt
 import time
@@ -193,30 +195,50 @@ def statment_create(request):
         ws.Range("BT55").Value = aging.get("total")
         ws.Range("BT60").Value = aging.get("total")
 
-        # Save as PDF format
-        file_url = "\\temp\\statement.pdf"
-        wb.ExportAsFixedFormat(0, settings.BASE_DIR + file_url)
+        # Prepare path and filename for temp file
+        relative_path = "temp/" + str(request.user.pk) + "/"
+        temp_filename = "statement.pdf"
+        relative_file_path = os.path.join(relative_path, temp_filename)
+        location = "documents/report/statement/" + today.strftime("%Y") + \
+                "/user_" + str(request.user.pk) + "/"
 
-        # fileStorage = FileSystemStorage()
-        # fileStorage.file_permissions_mode = 0744
-        # f = open('output.pdf', 'rb+')
-        # myfile = File(f)
-        # name = fileStorage.get_available_name(str(claim_id)+".pdf")
-        # fileStorage.save(name, myfile)
-        # today = datetime.datetime.now()
-        # today_path = today.strftime("%Y/%m/%d")
-        # newdoc = Document.objects.create(claim=claim, docfile='media/documents/'+today_path+"/"+name)
+        # win32com does not create folder automatically.  Check
+        # if the directory exists and create one if necessary
+        if not os.path.exists(relative_path):
+            os.makedirs(relative_path)
 
+        # Save temp file as PDF format
+        wb.ExportAsFixedFormat(0, os.path.join(
+                settings.BASE_DIR,
+                relative_file_path))
+
+        # Save to permanent file with FileSystemStorage to use its
+        # built-in auto-rename function
+        fileStorage = FileSystemStorage(
+                location=os.path.join(settings.MEDIA_ROOT, location))
+        fileStorage.file_permissions_mode = 0744
+        temp_file = File(open(relative_file_path, 'rb+'))
+        filename = fileStorage.save(
+                today.strftime("%m%d_%H%M%S_p_") + str(patient.pk) + ".pdf",
+                temp_file)
+
+        # remove temp file
+        temp_file.close()
+        os.remove(relative_file_path)
+
+        # Create Statement history record to group all reports created
+        # at the time user clicks
         try:
             with transaction.atomic():
                 sh = StatementHistory.objects.create(
                         created_by=request.user)
 
                 s = Statement.objects.create(
-                        statementHistory=sh,
+                        statement_history=sh,
                         patient=patient,
                         balance=aging.get("total"),
-                        url=file_url)
+                        file=location + filename,
+                        created=sh.created)
         except IntegrityError:
             print 'IntegrityError has occured.'
 
@@ -239,17 +261,23 @@ def statment_create(request):
         "total_pat_pymt": total_pat_pymt,
     })
 
-def statment_read(request, statement):
-    try:
-        with open('media/documents/'+yr+"/"+mo+"/"+da+"/"+claim+".pdf", 'rb') as pdf:
-            response = HttpResponse(pdf.read(), content_type='application/pdf')
-            response['Content-Disposition'] = 'inline;filename=some_file.pdf'
-            return response
-        pdf.closed
-    except Exception as e:
-        return render(request, 'displayContent/patient/NotExist.html', {
-            'info' : "(404) Sorry! This claim that you're trying to open doesn't exisit in the file system."
-            })
+def statement_read(request):
+    shs = StatementHistory.objects.all()
+
+    return render(request, "report/statement.html", {
+        "shs": shs})
+
+def statement_history_read(request, history_id):
+    ss = Statement.objects.filter(statement_history=history_id)
+
+    return render(request, "report/statement_history.html", {
+        "ss": ss})
+
+def statement_file_read(request, statement_id):
+    s = get_object_or_404(Statement, pk=statement_id)
+    response = HttpResponse(s.file, content_type='application/pdf')
+    response['Content-Disposition'] = 'inline;filename=some_file.pdf'
+    return response
 
 def index(request):
     return render(request, "report/statement.html")
@@ -343,7 +371,7 @@ def TransactionReportPayment(request):
     sheet1.write(1, 7, label = 'Date Span:',style=style2)
     sheet1.write(1, 8, label = str(from_dos).split(" ")[0] +" to "+ str(to_dos).split(" ")[0],style=style2)
     sheet1.write(3, 0, label = '', style=style1)
-    
+
     sheet1.write(3, 1, label = 'Patient', style=style1)
     sheet1.write(3, 2, label = 'Chart No', style=style1)
     sheet1.write(3, 3, label = 'Claim id', style=style1)
@@ -412,8 +440,8 @@ def TransactionReportPayment(request):
                 line=line+1
                 sheet1.write(line, 8, label = 'Pat Balance', style=style2)
                 sheet1.write(line, 9, label = str(Decimal(procedure.patient_balance)), style=style2)
-                total_pat_paid=total_pat_paid+pat_tot-Decimal(procedure.patient_balance)   
-            total_pat=total_pat+pat_tot                 
+                total_pat_paid=total_pat_paid+pat_tot-Decimal(procedure.patient_balance)
+            total_pat=total_pat+pat_tot
             # ins
             line=line+1
             sheet1.write(line, 8, label = 'Ins. Paid', style=style2)
@@ -441,10 +469,10 @@ def TransactionReportPayment(request):
     line=line+2
     sheet1.write(line, 4, label = 'Payments', style=style5)
     sheet1.write(line, 5, label = 'Insurance', style=style5)
-    sheet1.write(line, 6, label = str(total_ins), style=style5)   
+    sheet1.write(line, 6, label = str(total_ins), style=style5)
     line=line+1
     sheet1.write(line, 5, label = 'Patient', style=style5)
-    sheet1.write(line, 6, label = str(total_pat_paid), style=style5)  
+    sheet1.write(line, 6, label = str(total_pat_paid), style=style5)
     line=line+2
     sheet1.write(line, 4, label = 'Adjustments', style=style5)
     sheet1.write(line, 5, label = 'Insurance', style=style5)

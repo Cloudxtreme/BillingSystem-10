@@ -4,12 +4,14 @@ from . import views
 app_name = 'report'
 urlpatterns = [
     url(r'^statement/$', views.statment_create, name='statment_create'),
-    url(r'^statement/read/$', views.statment_read, name='statment_read'),
+    url(r'^statement/read/$', views.statement_read, name='statement_read'),
+    url(r'^statement/history/read/(?P<history_id>[^/]+)/$', views.statement_history_read, name='statement_history_read'),
+    url(r'^statement/file/read/(?P<statement_id>[^/]+)/$', views.statement_file_read, name='statement_file_read'),
     url(r'^$', views.index, name='index'),
     url(r'^transactionreport$', views.TransactionReport, name='TransactionReport'),
     url(r'^transactionreportpayment$', views.TransactionReportPayment, name='TransactionReportPayment'),
     url(r'^report_search$', views.report_search, name='report_search'),
-    
+
     # url(r'^sign_in/$', views.sign_in, name='sign_in'),
     # url(r'^sign_out/$', views.sign_out, name='sign_out'),
     # url(r'^register/$', views.register, name='register'),

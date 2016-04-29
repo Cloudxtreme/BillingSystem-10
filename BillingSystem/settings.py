@@ -161,7 +161,7 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static/')]
 
 AUTH_USER_MODEL = 'accounts.User'
 
-MEDIA_ROOT = os.path.join(BASE_DIR, '/media/')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 MEDIA_URL = '/media/'
 
 LOGIN_URL = '/accounts/sign_in/'

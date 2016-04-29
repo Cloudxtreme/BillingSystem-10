@@ -1,280 +1,39 @@
+{% extends "base.html" %}
 {% load staticfiles %}
-{% load tz_detect %}
 
-<!DOCTYPE html>
-<html moznomarginboxes mozdisallowselectionprint>
-    <head>
-        <title>Statement Report</title>
-        <script src="{% static 'js/jquery.min.js' %}"></script>
-        <link rel="stylesheet" href="{% static 'css/report/statement.css' %}" />
-    </head>
-    <body>
-        <div class="page">
-            <div class="subpage">
-                <div class="row">
-                    <div class="col-2" style="padding-right: 0.1in;">
-                        <hr class="head-line">
-                        <div class="b-provider" style="height: 0.7in;">
-                            {{billing_provider.provider_name|upper}}<br>
-                            {{billing_provider.provider_address|upper}}<br>
-                            {{billing_provider.provider_city|upper}} {{billing_provider.provider_state|upper}} {{billing_provider.provider_zip|upper}}<br>
-                        </div>
-                        <div style="margin-top: 0.1in;">ANY QUESTION PLEASE CALL: <span>{{billing_provider.provider_phone}}</span></div>
-                        <div>PATIENT: <span>{{patient.full_name|upper}}</span></div>
-                        <div class="bottom-line"><span>SEND TO:</span></div>
-                    </div>
-                    <div class="col-2">
-                        <table class="head-table" style="table-layout: auto;">
-                            <tbody>
-                                <tr><td colspan="2" style="text-align: center;">
-                                    <span class="label blue">IF PAYING BY MASTER CARD, DISCOVER, VISA OR AMERICAN EXPRESS, FILL OUT BELOW.</span>
-                                </td></tr>
-                                <tr>
-                                    <td style="width: 0.25in;"></td>
-                                    <td class="label blue">
-                                        <span class="label blue">
-                                            <div class="checkbox-card">
-                                                <input id="checkbox-1" class="checkbox-custom" type="checkbox">
-                                                <label for="checkbox-1" class="checkbox-custom-label">VISA</label>
-                                            </div>
-                                            <div class="checkbox-card">
-                                                <input id="checkbox-2" class="checkbox-custom" type="checkbox">
-                                                <label for="checkbox-2" class="checkbox-custom-label">MASTERCARD</label>
-                                            </div>
-                                            <div class="checkbox-card">
-                                                <input id="checkbox-3" class="checkbox-custom" type="checkbox">
-                                                <label for="checkbox-3" class="checkbox-custom-label">DISCOVER</label>
-                                            </div>
-                                            <div class="checkbox-card">
-                                                <input id="checkbox-4" class="checkbox-custom" type="checkbox">
-                                                <label for="checkbox-4" class="checkbox-custom-label">AMER EXP.</label>
-                                            </div>
-                                        </span>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <table>
-                            <tbody>
-                                <tr>
-                                    <td colspan="2">
-                                        <span class="label blue top-left">CARD NUMBER</span><br>
-                                        <div class="input">&nbsp;</div>
-                                    </td>
-                                    <td>
-                                        <span class="label blue top-left">SIGNATURE CODE</span><br>
-                                        <div class="input">&nbsp;</div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colspan="2">
-                                        <span class="label blue top-left">SIGNATURE</span><br>
-                                        <div class="input">&nbsp;</div>
-                                    </td>
-                                    <td>
-                                        <span class="label blue top-left">EXP DATE</span><br>
-                                        <div class="input">&nbsp;</div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td style="width: 33.3%; text-align: center;">
-                                        <span class="label blue">STATEMENT DATE</span><br>
-                                        <div class="input input-big">{{today|date:"m/d/y"}}</div>
-                                    </td>
-                                    <td style="width: 33.3%; text-align: center;">
-                                        <span class="label blue">PAY THIS AMOUNT</span><br>
-                                        <div class="input input-big"><span class="number">{{aging.total}}</span></div>
-                                    </td>
-                                    <td style="width: 33.4%; text-align: center;">
-                                        <span class="label blue">ACCT. #</span><br>
-                                        <div class="input input-big">{{patient.chart_no}}</div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <table class="foot-table">
-                            <tbody>
-                                <tr>
-                                    <td style="width: 36.6%; border: 0px;"></td>
-                                    <td style="width: 30%; border-right: 0px;"><span class="label blue">SHOW AMOUNT $<br>PAID HERE</span></td>
-                                    <td style="width: 33.4%; border-left: 0px;">
-                                        <div class="input input-big"></div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="row indent-top">
-                    <div class="col-2" style="padding-left: 0.25in; height: 0.55in;">
-                        {{patient.full_name|upper}}<br>
-                        {{patient.address|upper}}<br>
-                        {{patient.city|upper}} {{patient.state|upper}} {{patient.zip|upper}}
-                    </div>
-                    <div class="col-2" style="padding-left: 0.25in; height: 0.55in;">
-                        {{billing_provider.provider_name|upper}}<br>
-                        {{billing_provider.provider_address|upper}}<br>
-                        {{billing_provider.provider_city|upper}} {{billing_provider.provider_state|upper}} {{billing_provider.provider_zip|upper}}<br>
-                    </div>
-                </div>
-                <hr class="dash">
-                <div class="row indent-top">
-                    <div class="col-3" style="width: 40%;">
-                        <div class="checkbox-card">
-                            <input id="checkbox-5" class="checkbox-custom" type="checkbox">
-                            <label for="checkbox-5" class="checkbox-custom-label label" style="top: -7px;"></label>
-                        </div>
-                        <div style="display: inline-block;">
-                            <span class="label">PLEASE CHECK THE BOX IF YOUR ADDRESS IS <br>INCORRECT OR INSURANCE INFO HAS CHANGED</span>
-                        </div>
-                    </div>
-                    <div class="col-3" style="text-align: center; width: 20%;"><span style="font-weight: bold; font-size: 1.5em;">STATEMENT</span></div>
-                    <div class="col-3 label" style="text-align: right; width: 40%;">PLEASE DETACH AND RETURN TOP PORTION WITH YOUR PAYMENT</div>
-                </div>
-                <div class="row indent-top">
-                    <table class="head-table main">
-                        <thead>
-                            <tr style="line-height: 2em;">
-                                <th style="width: 14%;" colspan="2">PATIENT NAME</th>
-                                <td style="width: 25.5%; text-align: center;">{{patient.full_name|upper}}</td>
-                                <th style="width: 20%;" colspan="2">PATIENT ACCT NUMBER</th>
-                                <td style="width: 18%; text-align: center;" colspan="2">{{patient.chart_no|upper}}</td>
-                                <th style="width: 13%;">BALANCE DUE</th>
-                                <td style="width: 9.5%; text-align: center;">{{aging.total}}</td>
-                            </tr>
-                             <tr>
-                                <th style="width: 7%;">DATE</th>
-                                <th style="width: 7%;">CODE</th>
-                                <th style="width: 25.5%;">DESCRIPTION OF SERVICE</th>
-                                <th style="width: 8%;">CHARGE</th>
-                                <th style="width: 12%;">ADJUSTMENT</th>
-                                <th style="width: 9%;">INS PYMT</th>
-                                <th style="width: 9%;">PAT RESP</th>
-                                <th style="width: 13%;">PAT PYMT</th>
-                                <th style="width: 9.5%;">BALANCE</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for claim in claims %}
-                                <tr class="claim">
-                                    <td>{{claim.created|date:"m/d/y"}}</td>
-                                    <td></td>
-                                    <td>{{claim.rendering_provider.provider_name|upper}}</td>
-                                    <td class="number">{{claim.total_charge}}</td>
-                                    <td class="number">{{claim.ins_adjustment_per_claim}}</td>
-                                    <td class="number">{{claim.ins_pmnt_per_claim}}</td>
-                                    <td class="number">{{claim.pat_responsible_per_claim}}</td>
-                                    <td class="number">{{claim.pat_pmnt_per_claim}}</td>
-                                    <td class="number">{{claim.total_balance}}</td>
-                                </tr>
-                                {% for procedure in claim.procedure_set.all %}
-                                    <tr>
-                                        <td>{{procedure.date_of_service|date:"m/d/y"}}</td>
-                                        <td>{{procedure.cpt.cpt_code}}</td>
-                                        <td>{{procedure.cpt.cpt_description|upper}}</td>
-                                        <td class="number">{{procedure.ins_total_charge}}</td>
-                                        <td class="number">{{procedure.ins_total_adjustment}}</td>
-                                        <td class="number">{{procedure.ins_total_pymt}}</td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                    </tr>
-                                    {% for charge in procedure.charge_set.all %}
-                                        {% if charge.payer_type == "Patient"%}
-                                            <tr>
-                                                <td></td>
-                                                <td></td>
-                                                <td>{{charge.resp_type|upper}}</td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td class="number">{{charge.amount}}</td>
-                                                <td></td>
-                                                <td></td>
-                                            </tr>
-                                        {% endif %}
-                                    {% endfor %}
-                                {% endfor %}
-                            {% endfor %}
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                        </tbody>
-                        <tfoot>
-                            <tr style="line-height: 2em;">
-                                <td colspan="5" style="border-right: 0px;"></td>
-                                <td style="border-left: 0px; border-right: 0px;" class="number">{{total_ins_pymt}}</td>
-                                <td style="border-left: 0px; border-right: 0px;"></td>
-                                <td style="border-left: 0px; border-right: 0px;" class="number">{{total_pat_pymt}}</td>
-                                <td class="number">{{aging.total}}</td>
-                            </tr>
-                        </tfoot>
-                    </table>
-                    <table>
-                        <thead>
-                            <tr style="line-height: 2em;">
-                                <th style="width: 16%;"></th>
-                                <th style="width: 12%;">CURRENT</th>
-                                <th style="width: 12%;">30 DAYS</th>
-                                <th style="width: 12%;">60 DAYS</th>
-                                <th style="width: 12%;">90 DAYS</th>
-                                <th style="width: 12%;">120 DAYS</th>
-                                <th style="width: 24%;">TOTAL ACCOUNT BALANCE</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr style="line-height: 2em;">
-                                <th>INSURANCE</th>
-                                <td class="number">{{aging.i_m1}}</td>
-                                <td class="number">{{aging.i_m2}}</td>
-                                <td class="number">{{aging.i_m3}}</td>
-                                <td class="number">{{aging.i_m4}}</td>
-                                <td class="number">{{aging.i_m5}}</td>
-                                <td class="number">{{aging.i_t}}</td>
-                            </tr>
-                            <tr style="line-height: 2em;">
-                                <th>PATIENT</th>
-                                <td class="number">{{aging.p_m1}}</td>
-                                <td class="number">{{aging.p_m2}}</td>
-                                <td class="number">{{aging.p_m3}}</td>
-                                <td class="number">{{aging.p_m4}}</td>
-                                <td class="number">{{aging.p_m5}}</td>
-                                <td class="number">{{aging.p_t}}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="row indent-top">
-                    <table>
-                        <tbody>
-                            <tr>
-                                <td class="note-box">IF YOU HAVE ANY CONCERNS REGARDING THIS STATEMENT, PLEASE CONTACT OUR BILLING DEPARTMENT AT {{billing_provider.provider_phone}}. SORRY, WE DO NOT ACCEPT CREDIT CARDS.</td>
-                                <td class="space-box"></td>
-                                <td class="pay-box">PLEASE PAY THIS AMOUNT</td>
-                                <td class="amount-box" style="text-align: right;">$ <span class="number">{{aging.total}}</span></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+
+{% block body %}
+
+<div class="container">
+    <h2 class="text-center">Statement Report</h2>
+    <div class="row">
+        <div class="col-sm-6">
+
         </div>
-        <script type="text/javascript">
-            var list = document.querySelectorAll(".number");
-            for(var i=0; i<list.length; i++) {
-                var td = list[i];
-                if(td.innerText)
-                    td.innerText = parseFloat(td.innerText).toFixed(2);
-            }
-        </script>
+        <div class="col-sm-6">
+            <h4>Statement History</h4>
+            <table class="table table-striped table-condensed">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>User</th>
+                        <th>Qty</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for sh in shs %}
+                        <tr>
+                            <td><a href="{% url 'report:statement_history_read' sh.pk %}">{{sh.created|date:"m/d/Y"}}</a></td>
+                            <td>{{sh.created|date:"h:i A"}}</td>
+                            <td>{{sh.created_by}}</td>
+                            <td>{{sh.statement_set.all.count}}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 
-    {% tz_detect %}
-    </body>
-</html>
+{% endblock body %}

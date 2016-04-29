@@ -11,7 +11,7 @@ class StatementHistory(BaseModel):
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL)
 
 class Statement(BaseModel):
-    statementHistory = models.ForeignKey(StatementHistory)
+    statement_history = models.ForeignKey(StatementHistory)
     patient = models.ForeignKey(Personal_Information)
     balance = models.DecimalField(**BASE_DECIMAL)
-    url = models.SlugField(max_length=128)
+    file = models.FileField()
