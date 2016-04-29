@@ -1,5 +1,6 @@
 from django.shortcuts import *
 from django.contrib.auth.decorators import login_required
+from django.conf import settings
 from django.core.files import File
 from django.core.files.storage import FileSystemStorage
 from django.db import IntegrityError, transaction
@@ -16,6 +17,8 @@ import pytz
 import xlwt
 import time
 from dateutil import tz
+from win32com import client
+import pythoncom
 
 from infoGatherer.models import *
 from accounting.models import *
@@ -100,10 +103,6 @@ def statment_create(request):
             m4_t=ins_t_age[3] + pat_t_age[3],
             m5_t=ins_t_age[4] + pat_t_age[4],
             total=sum(ins_t_age) + sum(pat_t_age))
-
-    from win32com import client
-    from django.conf import settings
-    import pythoncom
 
     pythoncom.CoInitialize()
     excel = None
@@ -262,21 +261,25 @@ def statment_create(request):
     })
 
 def statement_read(request):
-    shs = StatementHistory.objects.all()
+    shs = StatementHistory.objects.all().order_by("-created")
 
     return render(request, "report/statement.html", {
         "shs": shs})
 
 def statement_history_read(request, history_id):
     ss = Statement.objects.filter(statement_history=history_id)
+    today = timezone.now()
 
     return render(request, "report/statement_history.html", {
-        "ss": ss})
+        "ss": ss,
+        "today": today})
 
 def statement_file_read(request, statement_id):
     s = get_object_or_404(Statement, pk=statement_id)
+
     response = HttpResponse(s.file, content_type='application/pdf')
-    response['Content-Disposition'] = 'inline;filename=some_file.pdf'
+    response['Content-Disposition'] = 'inline;filename=' + \
+            os.path.basename(s.file.name)
     return response
 
 def index(request):
