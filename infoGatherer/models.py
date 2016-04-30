@@ -57,7 +57,6 @@ ACCOUNT_TYPE_CHOICES = (('9','09: Self-pay'),
 ('Blank','')
 )
 
-
 ACCOUNT_STATUS_CHOICES = (('Current','Current'),('Archived','Archived'))
 
 SIGN_CHOICES = (('Yes','Yes'),('No','No'))
@@ -173,19 +172,6 @@ UNIT = (
     ('UN', 'Unit'),
 )
 
-
-"""
-CATEGORIES = (
-    ('LAB', 'labor'),
-    ('CAR', 'cars'),
-    ('TRU', 'trucks'),
-    ('WRI', 'writing'),
-)
-"""
-
-
-#New stuf
-
 class CPT(models.Model):
     cpt_code=   models.CharField(max_length=50)
     cpt_description=    models.CharField(max_length=200)
@@ -271,8 +257,6 @@ class dx(models.Model):
     def __unicode__(self):
         return self.ICD_10
 
-
-#New stuff
 
 class Personal_Information(models.Model):
     first_name = models.CharField(max_length=128, default='')
