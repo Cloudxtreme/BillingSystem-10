@@ -35,3 +35,4 @@ def api_delete_note(request):
         Notes.objects.all().delete();
         return JsonResponse('', safe=False)
     return HttpResponseBadRequest('[]', content_type='application/json')
+
