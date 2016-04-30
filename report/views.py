@@ -122,6 +122,8 @@ def report_search(request):
         renderingprovider = cleaned_data.get('renderingprovider')
         locationprovider = cleaned_data.get('locationprovider')
 
+        print renderingprovider
+
         # utc=pytz.utc
 
         # from_dos = datetime.datetime.combine(startdate, datetime.time())
@@ -265,10 +267,24 @@ def TransactionReportPayment(from_dos, to_dos, renderingprovider, locationprovid
     sheet1.write(3, 10, label = 'Amount', style=style0)
     # filtering the information!
     claim = Claim.objects.filter(created__range=(from_dos, to_dos))
-    if(renderingprovider is not None):
-        claim = claim.filter(rendering_provider=renderingprovider)
-    if(locationprovider is not None):
-        claim = claim.filter(location_provider=locationprovider)
+
+    if(len(renderingprovider)>0):
+        matches = claim.filter(rendering_provider=renderingprovider[0])
+        for renderingprovider in renderingprovider:
+            matches = matches | claim.filter(rendering_provider=renderingprovider)
+        claim = matches
+        if(len(locationprovider)>0):
+            matches2 = claim.filter(location_provider=locationprovider[0])
+            for locationprovider in locationprovider:
+                matches2 = matches2 | claim.filter(location_provider=locationprovider)
+            claim =  matches2
+    else:
+        if(len(locationprovider)>0):
+            matches2 = claim.filter(location_provider=locationprovider[0])
+            for locationprovider in locationprovider:
+                matches2 = matches2 | claim.filter(location_provider=locationprovider)
+            claim =  matches2
+    
     claim=claim.order_by('patient')
     # setting base line number
     line=4
@@ -369,15 +385,16 @@ def TransactionReportPayment(from_dos, to_dos, renderingprovider, locationprovid
 
     line=line+5
     loc_ref=""
-    if(renderingprovider is not None):
-        loc_ref="Rendering Provider: "+str(renderingprovider.provider_name)
-    else:
-        loc_ref="All Provider"
-    loc_ref=loc_ref+" - "
-    if(locationprovider is not None):
-        loc_ref=loc_ref+"Location Provider: "+str(locationprovider.provider_name)
-    else:
-        loc_ref=loc_ref+"All Location"
+    # if(renderingprovider is not None):
+    #     loc_ref="Rendering Provider: "+str(renderingprovider.provider_name)
+    # else:
+    #     loc_ref="All Provider"
+    # loc_ref=loc_ref+" - "
+    # if(locationprovider is not None):
+    #     loc_ref=loc_ref+"Location Provider: "+str(locationprovider.provider_name)
+    # else:
+    #     loc_ref=loc_ref+"All Location"
+    loc_ref="All Location"
     sheet1.write(line, 5, label = loc_ref, style=style6)
     #chargers
     line=line+1
@@ -507,10 +524,23 @@ def TransactionReport(from_dos, to_dos, renderingprovider, locationprovider):
     sheet1.write(3, 10, label = 'Charges', style=style1)
     # filtering the information!
     claim = Claim.objects.filter(created__range=(from_dos, to_dos))
-    if(renderingprovider is not None):
-        claim = claim.filter(rendering_provider=renderingprovider)
-    if(locationprovider is not None):
-        claim = claim.filter(location_provider=locationprovider)
+
+    if(len(renderingprovider)>0):
+        matches = claim.filter(rendering_provider=renderingprovider[0])
+        for renderingprovider in renderingprovider:
+            matches = matches | claim.filter(rendering_provider=renderingprovider)
+        claim = matches
+        if(len(locationprovider)>0):
+            matches2 = claim.filter(location_provider=locationprovider[0])
+            for locationprovider in locationprovider:
+                matches2 = matches2 | claim.filter(location_provider=locationprovider)
+            claim =  matches2
+    else:
+        if(len(locationprovider)>0):
+            matches2 = claim.filter(location_provider=locationprovider[0])
+            for locationprovider in locationprovider:
+                matches2 = matches2 | claim.filter(location_provider=locationprovider)
+            claim =  matches2
     # setting base line number
     line=5
     for cl in claim:
