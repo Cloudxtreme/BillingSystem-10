@@ -13,7 +13,6 @@ from django.utils import timezone
 from datetime import datetime, timedelta
 from decimal import *
 from xlwt import Workbook
-import datetime
 import os
 import pytz
 from pytz import timezone
@@ -32,9 +31,14 @@ from .forms import *
 
 
 @login_required
-def statement_create(request, patient_id):
+def statement_create(request, patient_id, today_page):
     patient = get_object_or_404(Personal_Information, pk=patient_id)
-    sh = statement_generate(request=request, patients=[patient])
+    d = datetime.strptime(today_page, "%m-%d-%Y")
+
+    sh = statement_generate(
+            request=request,
+            today_page=d,
+            patients=[patient])
     if sh is not None:
         ss = sh.statement_set.all()
         return redirect(reverse('report:statement_file_read',
@@ -48,6 +52,7 @@ def statement_create(request, patient_id):
 @login_required
 def statement_generate(
         request,
+        today_page,
         billing_provider=None,
         rendering_provider=None,
         patients=None,
@@ -72,7 +77,8 @@ def statement_generate(
     # Check if patients is a collection of personal_information
     # or not.  If not, generate report for all patients
     if type(patients) != list and \
-            type(patients) != tuple:
+            type(patients) != tuple and \
+            type(patients) != QuerySet:
         patients = Personal_Information.objects.all()
     else:
         for patient in patients:
@@ -213,7 +219,7 @@ def statement_generate(
             ws.Range("A6").Value = ws.Range("A6").Value + \
                     " " + patient.full_name.upper()
 
-            ws.Range("AM6").Value = today.strftime("%m/%d/%y")
+            ws.Range("AM6").Value = today_page.strftime("%m/%d/%y")
             ws.Range("BN6").Value = patient.chart_no
 
             ws.Range("F10").Value = patient.full_name.upper()
@@ -345,9 +351,10 @@ def statement_read(request):
         cleaned_data = form.cleaned_data
         sh = statement_generate(
                 request=request,
+                today_page=cleaned_data.get("today"),
                 billing_provider=cleaned_data.get("billing_provider"),
                 rendering_provider=cleaned_data.get("rendering_provider"),
-                patients=None,
+                patients=cleaned_data.get("patients"),
                 min_balance=cleaned_data.get("min_balance"),
                 max_balance=cleaned_data.get("max_balance"),
                 message=cleaned_data.get("message"))

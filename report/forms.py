@@ -37,6 +37,7 @@ class SearchTransactionReport(forms.Form):
 
 
 class StatementReportForm(forms.Form):
+    today = forms.DateField()
     billing_provider = forms.ModelChoiceField(
             queryset=Provider.objects.filter(role="Billing"),
             required=False,
@@ -45,10 +46,10 @@ class StatementReportForm(forms.Form):
             queryset=Provider.objects.filter(role="Rendering"),
             required=False,
             empty_label="--- All Providers ---")
-    patient = forms.ModelChoiceField(
+    patients = forms.ModelMultipleChoiceField(
             queryset=Personal_Information.objects.all(),
             required=False,
-            empty_label="--- All Patients ---")
+            widget=forms.SelectMultiple)
     min_balance = forms.DecimalField(
             required=False,
             min_value=0,

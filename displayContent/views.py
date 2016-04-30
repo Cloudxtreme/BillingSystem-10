@@ -27,7 +27,7 @@ from base.models import ExtPythonSerializer
 
 def generate_statement(request, chart):
     # get all claims
-    
+
     return HttpResponse("<html>This is sparta!</html>")
 
 
@@ -102,7 +102,7 @@ def view_patient(request, chart):
     else:
         tertiary_payer = None
 
-    today = timezone.now().date()
+    today = timezone.now()
     m1_time = today - timedelta(days=30)
     m2_time = today - timedelta(days=60)
     m3_time = today - timedelta(days=90)
@@ -161,6 +161,7 @@ def view_patient(request, chart):
             total=sum(ins_t_age) + sum(pat_t_age))
 
     return render(request, 'displayContent/patient/chart.html', {
+            "today": today,
             'patient': patient,
             'primary_insur': primary_insur,
             'secondary_insur': secondary_insur,

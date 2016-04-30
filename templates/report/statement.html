@@ -15,6 +15,12 @@
                     <tr>
                         <td>Statement Date</td>
                         <td>{{today|date:"m/d/y"}}</td>
+                        <input
+                            type="hidden"
+                            name="{{form.today.html_name}}"
+                            id="{{form.today.auto_id}}"
+                            value="{{today|date:"m/d/y"}}"
+                        >
                     </tr>
                     <tr>
                         <td><label class="control-label required">Billing Providers</label></td>
@@ -25,8 +31,8 @@
                         <td>{{form.rendering_provider|add_class:"form-control"}}</td>
                     </tr>
                     <tr>
-                        <td><label class="control-label required">Patients</label></td>
-                        <td>{{form.patient|add_class:"form-control"}}</td>
+                        <td><label class="control-label">Patients</label></td>
+                        <td>{{form.patients|add_class:"form-control"}}</td>
                     </tr>
                     <tr>
                         <td><label class="control-label">Balance Range</label></td>
