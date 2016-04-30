@@ -3,7 +3,7 @@ from . import views
 
 app_name = 'report'
 urlpatterns = [
-    url(r'^statement/$', views.statment_create, name='statment_create'),
+    url(r'^statement/create/(?P<patient_id>[^/]+)/$', views.statement_create, name='statement_create'),
     url(r'^statement/read/$', views.statement_read, name='statement_read'),
     url(r'^statement/history/read/(?P<history_id>[^/]+)/$', views.statement_history_read, name='statement_history_read'),
     url(r'^statement/file/read/(?P<statement_id>[^/]+)/$', views.statement_file_read, name='statement_file_read'),

@@ -1,8 +1,10 @@
 from django.shortcuts import *
-from django.contrib.auth.decorators import login_required
 from django.conf import settings
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from django.core.files import File
 from django.core.files.storage import FileSystemStorage
+from django.core.urlresolvers import reverse
 from django.db import IntegrityError, transaction
 from django.db.models import Q
 from django.http import HttpResponse
@@ -30,252 +32,28 @@ from .forms import *
 
 
 @login_required
-def statment_create(request):
-    patient_id = request.GET.get("patient")
+def statement_create(request, patient_id):
     patient = get_object_or_404(Personal_Information, pk=patient_id)
+    sh = statement_generate(request=request, patients=[patient])
+    if sh is not None:
+        ss = sh.statement_set.all()
+        return redirect(reverse('report:statement_file_read',
+                        kwargs={'statement_id': ss[0].pk}))
 
-    billing_provider_id = request.GET.get("billing")
-    try:
-        billing_provider = Provider.objects.get(pk=billing_provider_id)
-    except:
-        billing_provider = Provider.objects.get(provider_name__icontains="XENON HEALTH")
-
-    # Calculate total ins pymt and pat pymt
-    total_ins_pymt = 0
-    total_pat_pymt = 0
-    claims = patient.patient.all()
-    for claim in claims:
-        total_ins_pymt += claim.ins_pmnt_per_claim
-        total_pat_pymt += claim.pat_pmnt_per_claim
-
-    # Prepare aging table
-    today = timezone.now()
-    m1_time = today - timedelta(days=30)
-    m2_time = today - timedelta(days=60)
-    m3_time = today - timedelta(days=90)
-    m4_time = today - timedelta(days=120)
-
-    Q1 = Q(created__gte=m1_time)
-    Q2 = Q(Q(created__lt=m1_time) & Q(created__gte=m2_time))
-    Q3 = Q(Q(created__lt=m2_time) & Q(created__gte=m3_time))
-    Q4 = Q(Q(created__lt=m3_time) & Q(created__gte=m4_time))
-    Q5 = Q(Q(created__lt=m4_time))
-
-    charges = Charge.objects.filter(procedure__claim__patient=patient)
-    ins_charges = charges.filter(payer_type="Insurance")
-    pat_charges = charges.filter(payer_type="Patient")
-
-    ins_c_age = [ins_charges.filter(Q1),
-            ins_charges.filter(Q2),
-            ins_charges.filter(Q3),
-            ins_charges.filter(Q4),
-            ins_charges.filter(Q5)]
-
-    pat_c_age = [pat_charges.filter(Q1),
-            pat_charges.filter(Q2),
-            pat_charges.filter(Q3),
-            pat_charges.filter(Q4),
-            pat_charges.filter(Q5)]
-
-    ins_t_age = [Decimal("0.00") for i in range(5)]
-    for i, charges in enumerate(ins_c_age):
-        for charge in charges:
-            ins_t_age[i] += charge.balance
-
-    pat_t_age = [Decimal("0.00") for i in range(5)]
-    for i, charges in enumerate(pat_c_age):
-        for charge in charges:
-            pat_t_age[i] += charge.balance
-
-    aging = dict(
-            i_m1=ins_t_age[0],
-            i_m2=ins_t_age[1],
-            i_m3=ins_t_age[2],
-            i_m4=ins_t_age[3],
-            i_m5=ins_t_age[4],
-            p_m1=pat_t_age[0],
-            p_m2=pat_t_age[1],
-            p_m3=pat_t_age[2],
-            p_m4=pat_t_age[3],
-            p_m5=pat_t_age[4],
-            i_t=sum(ins_t_age),
-            p_t=sum(pat_t_age),
-            m1_t=ins_t_age[0] + pat_t_age[0],
-            m2_t=ins_t_age[1] + pat_t_age[1],
-            m3_t=ins_t_age[2] + pat_t_age[2],
-            m4_t=ins_t_age[3] + pat_t_age[3],
-            m5_t=ins_t_age[4] + pat_t_age[4],
-            total=sum(ins_t_age) + sum(pat_t_age))
-
-    pythoncom.CoInitialize()
-    excel = None
-    wb = None
-    try:
-        # Copy template to temp folder of that user beforehand
-        temp_path = "temp/" + str(request.user.pk)
-        if not os.path.exists(temp_path):
-            os.makedirs(temp_path)
-
-        src_template = "templates/report/statement.xlsx"
-        des_template = temp_path + "/statement.xlsx"
-        copyfile(src_template, des_template)
-
-        # Prepare excel template
-        excel = client.Dispatch("Excel.Application")
-        template_path = os.path.join(settings.BASE_DIR, des_template)
-        wb = excel.Workbooks.Open(template_path)
-        ws = wb.Worksheets("statement")
-
-        # Write data
-        ws.Range("F1").Value = billing_provider.provider_name.upper()
-        ws.Range("F2").Value = billing_provider.provider_address.upper()
-        ws.Range("F3").Value = "%s %s %s" % (
-                billing_provider.provider_city.upper(),
-                billing_provider.provider_state.upper(),
-                billing_provider.provider_zip)
-
-        ws.Range("A5").Value = ws.Range("A5").Value + \
-                " " + billing_provider.provider_phone.upper()
-        ws.Range("A6").Value = ws.Range("A6").Value + \
-                " " + patient.full_name.upper()
-
-        ws.Range("AM6").Value = today.strftime("%m/%d/%y")
-        ws.Range("BN6").Value = patient.chart_no
-
-        ws.Range("F10").Value = patient.full_name.upper()
-        ws.Range("F11").Value = patient.address.upper()
-        ws.Range("F12").Value = "%s %s %s" % (
-                patient.city.upper(),
-                patient.state.upper(),
-                patient.zip)
-
-        ws.Range("BA10").Value = ws.Range("F1").Value
-        ws.Range("BA11").Value = ws.Range("F2").Value
-        ws.Range("BA12").Value = ws.Range("F3").Value
-
-        ws.Range("L18").Value = ws.Range("F10").Value
-        ws.Range("AV18").Value = ws.Range("BN6").Value
-
-        line = 19
-        for claim in claims:
-            ws.Range("A%s" % line).Value = claim.created.strftime("%m/%d/%y")
-            ws.Range("L%s" % line).Value = claim.rendering_provider\
-                    .provider_name.upper()
-            ws.Range("AF%s" % line).Value = claim.total_charge
-            ws.Range("AL%s" % line).Value = claim.ins_adjustment_per_claim
-            ws.Range("AV%s" % line).Value = claim.ins_pmnt_per_claim
-            ws.Range("BC%s" % line).Value = claim.pat_responsible_per_claim
-            ws.Range("BJ%s" % line).Value = claim.pat_pmnt_per_claim
-            ws.Range("BT%s" % line).Value = claim.total_balance
-
-            line += 1
-            for procedure in claim.procedure_set.all():
-                ws.Range("A%s" % line).Value = procedure.date_of_service.strftime("%m/%d/%y")
-                ws.Range("F%s" % line).Value = procedure.cpt.cpt_code
-                ws.Range("L%s" % line).Value = procedure.cpt.cpt_description.upper()
-                ws.Range("AF%s" % line).Value = procedure.ins_total_charge
-                ws.Range("AL%s" % line).Value = procedure.ins_total_adjustment
-                ws.Range("AV%s" % line).Value = procedure.ins_total_pymt
-
-                line += 1
-                for charge in procedure.charge_set.all():
-                    if charge.payer_type == "Patient":
-                        ws.Range("L%s" % line).Value = charge.resp_type.upper()
-                        ws.Range("BC%s" % line).Value = charge.amount
-                        line += 1
-
-        ws.Range("AV55").Value = total_ins_pymt
-        ws.Range("BJ55").Value = total_pat_pymt
-
-        ws.Range("P57").Value = aging.get("i_m1")
-        ws.Range("Y57").Value = aging.get("i_m2")
-        ws.Range("AH57").Value = aging.get("i_m3")
-        ws.Range("AQ57").Value = aging.get("i_m4")
-        ws.Range("AZ57").Value = aging.get("i_m5")
-        ws.Range("BH57").Value = aging.get("i_t")
-
-        ws.Range("P58").Value = aging.get("p_m1")
-        ws.Range("Y58").Value = aging.get("p_m2")
-        ws.Range("AH58").Value = aging.get("p_m3")
-        ws.Range("AQ58").Value = aging.get("p_m4")
-        ws.Range("AZ58").Value = aging.get("p_m5")
-        ws.Range("BH58").Value = aging.get("p_t")
-
-        ws.Range("BA6").Value = aging.get("total")
-        ws.Range("BT17").Value = aging.get("total")
-        ws.Range("BT55").Value = aging.get("total")
-        ws.Range("BT60").Value = aging.get("total")
-
-        # Prepare path and filename for temp file
-        temp_filename = "statement.pdf"
-        temp_pdf_file_path = os.path.join(temp_path, temp_filename)
-        location = "documents/report/statement/" + today.strftime("%Y") + \
-                "/user_" + str(request.user.pk) + "/"
-
-        # Save temp file as PDF format
-        wb.ExportAsFixedFormat(0, os.path.join(
-                settings.BASE_DIR,
-                temp_pdf_file_path))
-
-        # Save to permanent file with FileSystemStorage to use its
-        # built-in auto-rename function
-        fileStorage = FileSystemStorage(
-                location=os.path.join(settings.MEDIA_ROOT, location))
-        fileStorage.file_permissions_mode = 0744
-        temp_file = File(open(temp_pdf_file_path, 'rb+'))
-        filename = fileStorage.save(
-                today.strftime("%m%d_%H%M%S_p_") + str(patient.pk) + ".pdf",
-                temp_file)
-
-        # remove temp file
-        temp_file.close()
-        os.remove(temp_pdf_file_path)
-
-        # Create Statement history record to group all reports created
-        # at the time user clicks
-        try:
-            with transaction.atomic():
-                sh = StatementHistory.objects.create(
-                        created_by=request.user)
-
-                s = Statement.objects.create(
-                        statement_history=sh,
-                        patient=patient,
-                        balance=aging.get("total"),
-                        file=location + filename,
-                        created=sh.created)
-        except IntegrityError:
-            print 'IntegrityError has occured.'
-
-    except Exception, e:
-        print "Error occurs during saving statement report"
-        print e
-    finally:
-        if wb is not None:
-            wb.Close(False)
-            os.remove(template_path)
-
-    pythoncom.CoUninitialize()
-
-    return render(request, "report/statement.html", {
-        "patient": patient,
-        "billing_provider": billing_provider,
-        "claims": claims,
-        "aging": aging,
-        "today": today,
-        "total_ins_pymt": total_ins_pymt,
-        "total_pat_pymt": total_pat_pymt,
-    })
+    messages.add_message(request, messages.WARNING,
+            "There is no claim from this patient to create statement.")
+    return redirect(reverse('displayContent:view_patient',
+            kwargs={'chart': patient_id}))
 
 @login_required
 def statement_generate(
         request,
-        billing_provider,
-        rendering_provider,
-        patients,
-        min_balance,
-        max_balance,
-        message):
+        billing_provider=None,
+        rendering_provider=None,
+        patients=None,
+        min_balance=None,
+        max_balance=None,
+        message=""):
 
     # Get default billing provider if it is not provided
     if billing_provider is None or \
@@ -502,6 +280,9 @@ def statement_generate(
             ws.Range("BT55").Value = aging.get("total")
             ws.Range("BT60").Value = aging.get("total")
 
+            if len(message) > 0:
+                ws.Range("A60").Value = message
+
             # Prepare path and filename for temp file
             temp_filename = "statement.pdf"
             temp_pdf_file_path = os.path.join(temp_path, temp_filename)
@@ -544,12 +325,15 @@ def statement_generate(
                 wb.Close(False)
                 os.remove(template_path)
 
+    pythoncom.CoUninitialize()
+
     # Delete history object is we didn't create
     # any report for that group
     if gen_report < 1:
         sh.delete()
-
-    pythoncom.CoUninitialize()
+        return None
+    else:
+        return sh
 
 def statement_read(request):
     today = timezone.now()
@@ -559,7 +343,7 @@ def statement_read(request):
 
     if request.method == "POST" and form.is_valid():
         cleaned_data = form.cleaned_data
-        statement_generate(
+        sh = statement_generate(
                 request=request,
                 billing_provider=cleaned_data.get("billing_provider"),
                 rendering_provider=cleaned_data.get("rendering_provider"),
@@ -567,6 +351,14 @@ def statement_read(request):
                 min_balance=cleaned_data.get("min_balance"),
                 max_balance=cleaned_data.get("max_balance"),
                 message=cleaned_data.get("message"))
+
+        if sh is not None:
+            return redirect(reverse('report:statement_history_read',
+                    kwargs={'history_id': sh.pk}))
+        else:
+            messages.add_message(request, messages.WARNING,
+                    "No statement has been created due to given options")
+            return redirect(reverse('report:statement_read'))
 
     return render(request, "report/statement.html", {
         "today": today,

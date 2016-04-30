@@ -40,7 +40,7 @@ class StatementReportForm(forms.Form):
     billing_provider = forms.ModelChoiceField(
             queryset=Provider.objects.filter(role="Billing"),
             required=False,
-            empty_label="--- Xenon Health ---")
+            empty_label="--- Xenon Health LLC ---")
     rendering_provider = forms.ModelChoiceField(
             queryset=Provider.objects.filter(role="Rendering"),
             required=False,

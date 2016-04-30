@@ -10,10 +10,15 @@
         <div class="col-sm-6">
             <form method="POST">{% csrf_token %}
                 <h4>Generating Options</h4>
+                {{ form.errors }}
                 <table class="table-padding">
                     <tr>
                         <td>Statement Date</td>
                         <td>{{today|date:"m/d/y"}}</td>
+                    </tr>
+                    <tr>
+                        <td><label class="control-label required">Billing Providers</label></td>
+                        <td>{{form.billing_provider|add_class:"form-control"}}</td>
                     </tr>
                     <tr>
                         <td><label class="control-label required">Rendering Providers</label></td>
@@ -68,5 +73,9 @@
         </div>
     </div>
 </div>
+
+<script type="text/javascript">
+    $("#{{form.message.auto_id}}").val("IF YOU HAVE ANY CONCERNS REGARDING THIS STATEMENT, PLEASE CONTACT OUR BILLING DEPARTMENT AT 323-417-0335. SORRY, WE DO NOT ACCEPT CREDIT CARDS.");
+</script>
 
 {% endblock body %}

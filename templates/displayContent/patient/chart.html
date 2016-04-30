@@ -123,7 +123,7 @@
     <div class="col-sm-8" style="padding-left:20px;">
         <a id= "claimhistory" href="{% url 'displayContent:view_claims' chart=patient.chart_no %}" class="btn btn-primary">Claims History</a>
         <a href="{% url 'infoGatherer:post_ad' %}?patient={{patient.chart_no}}" class="btn btn-default">Make Claim</a>
-        <a id="statement" href="" class="btn btn-default">Generate Statement</a>
+        <a id="statement" href="{% url 'report:statement_create' patient.chart_no %}" class="btn btn-default" target="_blank">Generate Statement</a>
         <br>
         <br>
         <div class="header-line">Gaurantor</div>
@@ -207,10 +207,4 @@
 <div class="row found-patient" id="found-patient">
 </div>
 
-<script>
-    $(document).ready(function(){
-        var pat_no=window.location.pathname.split("patient/")[1].split("/")[0];
-        $("#statement").attr("href","/patient/"+pat_no+"/statement/")
-    })
-</script>
 {% endblock body %}

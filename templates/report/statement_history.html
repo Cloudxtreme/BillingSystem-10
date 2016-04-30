@@ -21,7 +21,7 @@
         <tbody>
             {% for s in ss %}
                 <tr>
-                    <td><a href="{% url 'report:statement_file_read' s.pk %}">{{s.pk}}</a></td>
+                    <td><a href="{% url 'report:statement_file_read' s.pk %}" target="_blank">{{s.pk}}</a></td>
                     <td>{{s.patient.full_name}}</td>
                     <td>{{s.patient.full_address}}</td>
                     <td>{{s.patient.home_phone}}</td>
