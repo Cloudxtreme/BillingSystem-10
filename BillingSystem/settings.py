@@ -55,7 +55,6 @@ INSTALLED_APPS = (
     'tz_detect',
 
     'infoGatherer',
-    'claims',
     'accounts',
     'dashboard',
     'accounting',

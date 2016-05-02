@@ -8,6 +8,7 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.contrib.auth.views import login, logout, password_reset, password_reset_confirm, password_reset_done, password_reset_complete
 from django.contrib.auth import authenticate
 from django.core import serializers
+from django.conf import settings
 from django.template.context import RequestContext
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
@@ -515,10 +516,7 @@ def PostAdPage(request):
                                 amount=amount,
                                 created=claim.created)
 
-            var = print_form(request.POST);
-
-            # copy the saved file into media directory
-            save_file_to_media(claim.pk)
+            var = print_form(request, request.POST, claim.pk);
             return var
         else:
            print form.errors
@@ -608,7 +606,7 @@ def view_in_between(request):
 def search_form(request):
     return render(request, 'test.html')
 
-def print_form(bar):
+def print_form(request, bar, claim_id):
     bar2={}
     for k, v in bar.items():
         bar2[k]=v.upper();
@@ -711,8 +709,6 @@ def print_form(bar):
 
     if(len(bill_p['provider_ein'])!=0):
         fields.append(('250',True))
-
-
 
     # Location provider
     location_p=Provider.objects.filter(provider_name=bar['location_provider_name']).values()[0]
@@ -867,20 +863,52 @@ def print_form(bar):
     # Accept assignment
     fields.append(('252',True))
 
+    # Prepare temp folder for PDF generating
+    temp_path = "temp/" + str(request.user.pk)
+    data_file_path = os.path.join(temp_path, "data.fdf")
+    temp_output_file_path = os.path.join(temp_path, "output.pdf")
+    if not os.path.exists(temp_path):
+        os.makedirs(temp_path)
+
     # PDF generation
-    fdf = forge_fdf("",fields,[],[],[])
-    fdf_file = open("data.fdf","w")
+    fdf = forge_fdf("", fields, [], [], [])
+    fdf_file = open(data_file_path, "w")
     fdf_file.write(fdf)
     fdf_file.close()
-    os.system('pdftk CMS1500.pdf fill_form data.fdf output output.pdf')
-    os.remove('data.fdf')
-    with open('output.pdf', 'rb') as pdf:
-        response = HttpResponse(pdf.read(), content_type='application/pdf')
-        response['Content-Disposition'] = 'inline;filename=some_file.pdf'
-        return response
-    pdf.closed
+    os.system('pdftk CMS1500.pdf fill_form %s output %s' % \
+            (data_file_path, temp_output_file_path))
 
-    return True
+    # Copy saved file into media directory
+    today_path = datetime.datetime.now().strftime("%Y/%m/%d")
+    perm_path = 'documents/' + today_path
+
+    fileStorage = FileSystemStorage()
+    fileStorage.file_permissions_mode = 0744
+    fileStorage.location = os.path.join(settings.MEDIA_ROOT, perm_path)
+    f = open(temp_output_file_path, 'rb+')
+    myfile = File(f)
+    name = fileStorage.save(str(claim_id) + ".pdf", myfile)
+
+    perm_output_file_path = os.path.join(perm_path, name)
+    newdoc = Document.objects.create(
+            claim=Claim.objects.get(pk=claim_id),
+            docfile=perm_output_file_path)
+
+    f.close()
+    os.remove(data_file_path)
+    os.remove(temp_output_file_path)
+
+    # with open(newdoc.docfile.path, 'rb') as pdf:
+    #     response = HttpResponse(pdf.read(), content_type='application/pdf')
+    #     response['Content-Disposition'] = 'inline;filename=some_file.pdf'
+    #     return response
+    # pdf.closed
+
+    response = HttpResponse(newdoc.docfile, content_type='application/pdf')
+    response['Content-Disposition'] = 'inline;filename=some_file.pdf'
+    return response
+
+    # return True
 
 def index(request):
     return HttpResponse("Welcome")
