@@ -1,6 +1,7 @@
 from functools import partial, wraps
 
 from django.shortcuts import *
+from django.contrib.auth.decorators import login_required
 from django.core import serializers
 from django.core.urlresolvers import reverse
 from django.db.models import Sum, Q
@@ -210,7 +211,7 @@ def open_pdf(request, yr, mo, da, claim):
 ###############################################################################
 # API function
 ###############################################################################
-
+@login_required
 def helper_trasnfer_pdf_content(file_path, request):
     count=1
     name=""
@@ -265,7 +266,7 @@ def helper_trasnfer_pdf_content(file_path, request):
     except:
         return HttpResponseBadRequest('[]', content_type='application/json')
 
-
+@login_required
 def api_get_blank_claim(request,yr,mo,da,claim):
     if request.method == 'GET' and 'make' in request.GET :
         url=yr+"/"+mo+"/"+da+"/"+claim+".pdf"

@@ -352,6 +352,7 @@ def statement_generate(
     else:
         return sh
 
+@login_required
 def statement_read(request):
     today = timezone.now()
     shs = StatementHistory.objects.all().order_by("-created")
@@ -397,9 +398,8 @@ def statement_file_read(request, statement_id):
             os.path.basename(s.file.name)
     return response
 
-def index(request):
-    return render(request, "report/statement.html")
 
+@login_required
 def report_search(request):
     str_form = SearchTransactionReport(request.POST or None)
 
@@ -435,6 +435,7 @@ def report_search(request):
 
     return render(request, "report/report_search.html", {'form': str_form})
 
+@login_required
 def TransactionReportPayment(from_dos, to_dos, renderingprovider, locationprovider ):
     # utc=pytz.utc
     # from_dos = datetime.datetime(2016, 04, 18, 0, 0,0,0,utc)
@@ -711,6 +712,7 @@ def TransactionReportPayment(from_dos, to_dos, renderingprovider, locationprovid
         content_type='application/vnd.ms-excel')
     # return HttpResponse("<html>To do!</html>")
 
+@login_required
 def TransactionReport(from_dos, to_dos, renderingprovider, locationprovider):
     # dictionaries to count number of entries in it
     dic_pat={}
