@@ -45,12 +45,20 @@
             </div>
 
             <input type="submit" value="Download Report!" class="btn btn-success">
-
-            <a href="{% url 'dashboard:dashboard' %}" class="padding-btn margin-left link-btn-danger">Cancel</a>
+            <a id="clear_providers" class="btn">Clear Providers</a>
         </form>
 
     </div>
 </div>
+<script>
+$(document).ready(function(){
+    $("#clear_providers").on("click",function(){
+        $('#id_renderingprovider').val('');
+        $('#id_locationprovider').val('');
+    })
+})
 
+
+</script>
 
 {% endblock body %}

@@ -404,13 +404,13 @@ def report_search(request):
 
         # utc=pytz.utc
 
-        # from_dos = datetime.datetime.combine(startdate, datetime.time())
+        # from_dos = datetime.combine(startdate, datetime.time())
         from_dos = str(startdate)+" 00:00:00"
-        from_dos = datetime.datetime.strptime(from_dos, "%Y-%m-%d %H:%M:%S")
+        from_dos = datetime.strptime(from_dos, "%Y-%m-%d %H:%M:%S")
         from_dos = pytz.timezone('UTC').localize(from_dos)
-        # to_dos = datetime.datetime.combine(enddate, datetime.time())
+        # to_dos = datetime.combine(enddate, datetime.time())
         to_dos = str(enddate)+" 23:59:59"
-        to_dos = datetime.datetime.strptime(to_dos, "%Y-%m-%d %H:%M:%S")
+        to_dos = datetime.strptime(to_dos, "%Y-%m-%d %H:%M:%S")
         to_dos = pytz.timezone('UTC').localize(to_dos)
 
         # Transaction report without payments!
@@ -529,7 +529,7 @@ def TransactionReportPayment(from_dos, to_dos, renderingprovider, locationprovid
 
     sheet1.write(0, 0, label = 'Transaction Report With Payment Details', style = style)
     sheet1.write(0, 7, label = 'Report Date:', style=style2)
-    sheet1.write(0, 8, label = str(datetime.datetime.now()).split(" ")[0],style=style2)
+    sheet1.write(0, 8, label = str(datetime.now()).split(" ")[0],style=style2)
     sheet1.write(1, 7, label = 'Date Span:',style=style2)
     sheet1.write(1, 8, label = str(from_dos).split(" ")[0] +" to "+ str(to_dos).split(" ")[0],style=style2)
     sheet1.write(3, 0, label = '', style=style0)
@@ -786,7 +786,7 @@ def TransactionReport(from_dos, to_dos, renderingprovider, locationprovider):
 
     sheet1.write(0, 0, label = 'Transaction Report', style = style)
     sheet1.write(0, 7, label = 'Report Date:', style=style2)
-    sheet1.write(0, 8, label = str(datetime.datetime.now()).split(" ")[0],style=style2)
+    sheet1.write(0, 8, label = str(datetime.now()).split(" ")[0],style=style2)
     sheet1.write(1, 7, label = 'Date Span:',style=style2)
     sheet1.write(1, 8, label = str(from_dos).split(" ")[0] +" to "+ str(to_dos).split(" ")[0],style=style2)
     sheet1.write(3, 0, label = '', style=style1)
