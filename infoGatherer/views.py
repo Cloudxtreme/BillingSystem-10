@@ -33,6 +33,7 @@ from django.core.files import File
 from django.db.models import Q
 import datetime
 from base.models import ExtPythonSerializer
+from shutil import copyfile
 
 
 def TrackCharges(request):
@@ -867,16 +868,20 @@ def print_form(request, bar, claim_id):
     temp_path = "temp/" + str(request.user.pk)
     data_file_path = os.path.join(temp_path, "data.fdf")
     temp_output_file_path = os.path.join(temp_path, "output.pdf")
+    ori_form_file_path = "CMS1500.pdf"
+    temp_form_file_path = os.path.join(temp_path, "CMS1500.pdf")
     if not os.path.exists(temp_path):
         os.makedirs(temp_path)
+
+    copyfile(ori_form_file_path, temp_form_file_path)
 
     # PDF generation
     fdf = forge_fdf("", fields, [], [], [])
     fdf_file = open(data_file_path, "w")
     fdf_file.write(fdf)
     fdf_file.close()
-    os.system('pdftk CMS1500.pdf fill_form %s output %s' % \
-            (data_file_path, temp_output_file_path))
+    os.system('pdftk %s fill_form %s output %s' % \
+            (temp_form_file_path, data_file_path, temp_output_file_path))
 
     # Copy saved file into media directory
     today_path = datetime.datetime.now().strftime("%Y/%m/%d")
@@ -894,21 +899,15 @@ def print_form(request, bar, claim_id):
             claim=Claim.objects.get(pk=claim_id),
             docfile=perm_output_file_path)
 
+    # Delete all temp files
     f.close()
     os.remove(data_file_path)
     os.remove(temp_output_file_path)
-
-    # with open(newdoc.docfile.path, 'rb') as pdf:
-    #     response = HttpResponse(pdf.read(), content_type='application/pdf')
-    #     response['Content-Disposition'] = 'inline;filename=some_file.pdf'
-    #     return response
-    # pdf.closed
+    os.remove(temp_form_file_path)
 
     response = HttpResponse(newdoc.docfile, content_type='application/pdf')
     response['Content-Disposition'] = 'inline;filename=some_file.pdf'
     return response
-
-    # return True
 
 def index(request):
     return HttpResponse("Welcome")
