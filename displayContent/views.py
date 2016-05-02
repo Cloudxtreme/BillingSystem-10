@@ -21,8 +21,7 @@ from accounting.models import *
 from accounting.forms import NoteForm
 from infoGatherer.models import Personal_Information, Payer, Insurance_Information
 from base.models import ExtPythonSerializer
-
-
+from shutil import copyfile
 
 
 def generate_statement(request, chart):
@@ -219,15 +218,19 @@ def helper_trasnfer_pdf_content(file_path, request):
     fields=[]
     pdf_transfer="pdf_transfer"
     try:
-
         temp_path = "temp/" + str(request.user.pk)
-        temp_output_file_path = os.path.join(temp_path, "blank.pdf")
+        data_file_path = os.path.join(temp_path, "data.fdf")
+        temp_output_file_path = os.path.join(temp_path, "output_blank.pdf")
+        temp_pdf_transfer = os.path.join(temp_path, "pdf_transfer.txt")
+        ori_form_file_path = "blank.pdf"
+        temp_form_file_path = os.path.join(temp_path, ori_form_file_path)
         if not os.path.exists(temp_path):
             os.makedirs(temp_path)
 
+        copyfile(ori_form_file_path, temp_form_file_path)
 
-        os.system('pdftk '+file_path+' dump_data_fields output '+pdf_transfer+'.txt')
-        with open(pdf_transfer+".txt","rb") as f:
+        os.system('pdftk '+file_path+' dump_data_fields output '+temp_pdf_transfer)
+        with open(temp_pdf_transfer,"rb") as f:
             for line in f:
                 if(len(line.split("---"))==1):
                     if(len(line.split("FieldName:"))>1):
@@ -239,24 +242,29 @@ def helper_trasnfer_pdf_content(file_path, request):
                     name=""
                     val=""
                 count=count+1
+
+        # Transfer PDF content
+        fdf = forge_fdf("",fields,[],[],[])
+        fdf_file = open(data_file_path,"w")
+        fdf_file.write(fdf)
+        fdf_file.close()
+
+        os.system('pdftk %s fill_form %s output %s' % \
+                (temp_form_file_path, data_file_path, temp_output_file_path))
+
+        with open(temp_output_file_path, 'rb') as pdf:
+            response = HttpResponse(pdf.read(), content_type='application/pdf')
+            response['Content-Disposition'] = 'inline;filename=some_file.pdf'
+            pdf.closed
+            res=response
+        os.remove(temp_pdf_transfer)
+        os.remove(temp_output_file_path)
+        os.remove(data_file_path)
+        os.remove(temp_form_file_path)
+        return res
     except:
         return HttpResponseBadRequest('[]', content_type='application/json')
 
-    # Transfer PDF content
-    fdf = forge_fdf("",fields,[],[],[])
-    fdf_file = open("data.fdf","w")
-    fdf_file.write(fdf)
-    fdf_file.close()
-    os.system('pdftk blank.pdf fill_form data.fdf output output_blank.pdf')
-    os.remove('data.fdf')
-    with open('output_blank.pdf', 'rb') as pdf:
-        response = HttpResponse(pdf.read(), content_type='application/pdf')
-        response['Content-Disposition'] = 'inline;filename=some_file.pdf'
-        os.remove(pdf_transfer+".txt")
-        pdf.closed
-    os.remove("output_blank.pdf")
-    return response
-    return true
 
 def api_get_blank_claim(request,yr,mo,da,claim):
     if request.method == 'GET' and 'make' in request.GET :
