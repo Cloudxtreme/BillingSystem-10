@@ -312,3 +312,16 @@ table.table-condensed td {
 .table-padding td:first-child {
     padding-right: 10px;
 }
+
+th.tablesorter-header div:after {
+    content: "\f0dc";
+    display: inline-block;
+    font: normal normal normal 14px/1 FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+}
+
+
+/*content: "\f0de";
+content: "\f0dd";*/

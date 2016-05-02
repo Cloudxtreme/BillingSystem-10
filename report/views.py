@@ -206,6 +206,7 @@ def statement_generate(
 
             template_path = os.path.join(settings.BASE_DIR, des_template)
             wb = excel.Workbooks.Open(template_path)
+
             ws = wb.Worksheets("statement")
 
             # Write data
