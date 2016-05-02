@@ -84,7 +84,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr><td><a href="http://127.0.0.1:8000/admin/infoGatherer/personal_information/add/">Register new patient</a></td></tr>
+                    <tr><td><a href="/admin/infoGatherer/personal_information/add/">Register new patient</a></td></tr>
                     <tr><td><a href="{% url 'displayContent:view_dashboard' %}">Patient Dashboard</a></td></tr>
                 </tbody>
             </table>
@@ -252,7 +252,6 @@ function renderNotesDetailsTemplate() {
 
 $(document).ready(function () {
     renderNotesDetailsTemplate();
-
 })
 </script>
 
@@ -265,6 +264,4 @@ $(document).ready(function () {
     radius = radius * 0.90
     setInterval(drawClock, 1000);
 </script>
-
-
 {% endblock body %}
