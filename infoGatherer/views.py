@@ -528,19 +528,6 @@ def PostAdPage(request):
         'form': form,
     })
 
-def save_file_to_media(claim_id):
-    claim = Claim.objects.get(pk=claim_id)
-    fileStorage = FileSystemStorage()
-    fileStorage.file_permissions_mode = 0744
-    today = datetime.datetime.now()
-    today_path = today.strftime("%Y/%m/%d")
-    fileStorage.location='media/documents/'+today_path
-    f = open('output.pdf', 'rb+')
-    myfile = File(f)
-    name=fileStorage.get_available_name(str(claim_id)+".pdf")
-    fileStorage.save(name, myfile)
-    newdoc = Document.objects.create(claim=claim, docfile='media/documents/'+today_path+"/"+name)
-
 def get_make_claim_extra_context(request):
     p = Personal_Information.objects.all()
     se = ExtPythonSerializer().serialize(

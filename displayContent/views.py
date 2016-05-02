@@ -1,6 +1,7 @@
 from functools import partial, wraps
 
 from django.shortcuts import *
+from django.contrib.auth.decorators import login_required
 from django.core import serializers
 from django.core.urlresolvers import reverse
 from django.db.models import Sum, Q
@@ -21,8 +22,7 @@ from accounting.models import *
 from accounting.forms import NoteForm
 from infoGatherer.models import Personal_Information, Payer, Insurance_Information
 from base.models import ExtPythonSerializer
-
-
+from shutil import copyfile
 
 
 def generate_statement(request, chart):
@@ -39,7 +39,7 @@ def view_claims(request, chart):
     Renders the /patient/<no>/claimhistory webpage. Information is used for claim detals and claim searches (go to url).
     """
     patient_info=Personal_Information.objects.filter(pk=chart).values()
-    claimSearches=Claim.objects.filter(patient_id=chart)
+    claimSearches=Claim.objects.filter(patient_id=chart).order_by('-created')
     if len(patient_info)>0:
         claimValues=[]
         claimValues=claimSearches.values()[:]
@@ -211,16 +211,27 @@ def open_pdf(request, yr, mo, da, claim):
 ###############################################################################
 # API function
 ###############################################################################
-
-def helper_trasnfer_pdf_content(file_path):
+@login_required
+def helper_trasnfer_pdf_content(file_path, request):
     count=1
     name=""
     val=""
     fields=[]
     pdf_transfer="pdf_transfer"
     try:
-        os.system('pdftk '+file_path+' dump_data_fields output '+pdf_transfer+'.txt')
-        with open(pdf_transfer+".txt","rb") as f:
+        temp_path = "temp/" + str(request.user.pk)
+        data_file_path = os.path.join(temp_path, "data.fdf")
+        temp_output_file_path = os.path.join(temp_path, "output_blank.pdf")
+        temp_pdf_transfer = os.path.join(temp_path, "pdf_transfer.txt")
+        ori_form_file_path = "blank.pdf"
+        temp_form_file_path = os.path.join(temp_path, ori_form_file_path)
+        if not os.path.exists(temp_path):
+            os.makedirs(temp_path)
+
+        copyfile(ori_form_file_path, temp_form_file_path)
+
+        os.system('pdftk '+file_path+' dump_data_fields output '+temp_pdf_transfer)
+        with open(temp_pdf_transfer,"rb") as f:
             for line in f:
                 if(len(line.split("---"))==1):
                     if(len(line.split("FieldName:"))>1):
@@ -232,28 +243,34 @@ def helper_trasnfer_pdf_content(file_path):
                     name=""
                     val=""
                 count=count+1
+
+        # Transfer PDF content
+        fdf = forge_fdf("",fields,[],[],[])
+        fdf_file = open(data_file_path,"w")
+        fdf_file.write(fdf)
+        fdf_file.close()
+
+        os.system('pdftk %s fill_form %s output %s' % \
+                (temp_form_file_path, data_file_path, temp_output_file_path))
+
+        with open(temp_output_file_path, 'rb') as pdf:
+            response = HttpResponse(pdf.read(), content_type='application/pdf')
+            response['Content-Disposition'] = 'inline;filename=some_file.pdf'
+            pdf.closed
+            res=response
+        os.remove(temp_pdf_transfer)
+        os.remove(temp_output_file_path)
+        os.remove(data_file_path)
+        os.remove(temp_form_file_path)
+        return res
     except:
         return HttpResponseBadRequest('[]', content_type='application/json')
 
-    # Transfer PDF content
-    fdf = forge_fdf("",fields,[],[],[])
-    fdf_file = open("data.fdf","w")
-    fdf_file.write(fdf)
-    fdf_file.close()
-    os.system('pdftk blank.pdf fill_form data.fdf output output_blank.pdf')
-    os.remove('data.fdf')
-    with open('output_blank.pdf', 'rb') as pdf:
-        response = HttpResponse(pdf.read(), content_type='application/pdf')
-        response['Content-Disposition'] = 'inline;filename=some_file.pdf'
-        os.remove(pdf_transfer+".txt")
-        return response
-    pdf.closed
-    return true
-
+@login_required
 def api_get_blank_claim(request,yr,mo,da,claim):
     if request.method == 'GET' and 'make' in request.GET :
         url=yr+"/"+mo+"/"+da+"/"+claim+".pdf"
-        var = helper_trasnfer_pdf_content("media/documents/"+url)
+        var = helper_trasnfer_pdf_content("media/documents/"+url, request)
         return var
 
     return HttpResponseBadRequest('[]', content_type='application/json')

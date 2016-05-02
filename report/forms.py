@@ -18,8 +18,12 @@ class SearchTransactionReport(forms.Form):
     reporttype = forms.ChoiceField(choices=REPORTS)
     startdate = forms.DateField()
     enddate = forms.DateField()
-    renderingprovider  = forms.ModelMultipleChoiceField(queryset=Provider.objects.filter(role="Rendering").all(), required=False,  widget=forms.SelectMultiple)
-    locationprovider  = forms.ModelMultipleChoiceField(queryset=Provider.objects.filter(role="Location").all(), required=False,  widget=forms.SelectMultiple)
+    renderingprovider  = forms.ModelMultipleChoiceField(queryset=Provider.objects.filter(role="Rendering").all(), 
+                                        required=False,  
+                                        widget=forms.SelectMultiple)
+    locationprovider  = forms.ModelMultipleChoiceField(queryset=Provider.objects.filter(role="Location").all(), 
+                                        required=False,  
+                                        widget=forms.SelectMultiple)
 
     def clean(self):
         cleaned_data = super(SearchTransactionReport, self).clean()
