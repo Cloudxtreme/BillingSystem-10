@@ -80,11 +80,13 @@ def statement_generate(
             type(patients) != tuple and \
             type(patients) != QuerySet:
         patients = Personal_Information.objects.all()
-    else:
+    elif len(patients) > 0:
         for patient in patients:
             if type(patient) != Personal_Information:
                 patients = Personal_Information.objects.all()
                 break
+    else:
+        patients = Personal_Information.objects.all()
 
     # Prepare time condition for aging table
     today = timezone.now()
@@ -247,6 +249,15 @@ def statement_generate(
                 ws.Range("BC%s" % line).Value = claim.pat_responsible_per_claim
                 ws.Range("BJ%s" % line).Value = claim.pat_pmnt_per_claim
                 ws.Range("BT%s" % line).Value = claim.total_balance
+
+                ws.Range("A%s" % line).Font.Bold = True
+                ws.Range("L%s" % line).Font.Bold = True
+                ws.Range("AF%s" % line).Font.Bold = True
+                ws.Range("AL%s" % line).Font.Bold = True
+                ws.Range("AV%s" % line).Font.Bold = True
+                ws.Range("BC%s" % line).Font.Bold = True
+                ws.Range("BJ%s" % line).Font.Bold = True
+                ws.Range("BT%s" % line).Font.Bold = True
 
                 line += 1
                 for procedure in claim.procedure_set.all():
@@ -562,7 +573,7 @@ def TransactionReportPayment(from_dos, to_dos, renderingprovider, locationprovid
             for locationprovider in locationprovider:
                 matches2 = matches2 | claim.filter(location_provider=locationprovider)
             claim =  matches2
-    
+
     claim=claim.order_by('patient')
     # setting base line number
     line=4
