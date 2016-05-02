@@ -23,7 +23,6 @@ from django.conf import settings
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^info/', include('infoGatherer.urls')),
-    url(r'^claims/', include('claims.urls')),
     url(r'^accounts/', include('accounts.urls')),
     url(r'^dashboard/', include('dashboard.urls')),
     url(r'^accounting/', include('accounting.urls')),
