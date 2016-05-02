@@ -212,13 +212,20 @@ def open_pdf(request, yr, mo, da, claim):
 # API function
 ###############################################################################
 
-def helper_trasnfer_pdf_content(file_path):
+def helper_trasnfer_pdf_content(file_path, request):
     count=1
     name=""
     val=""
     fields=[]
     pdf_transfer="pdf_transfer"
     try:
+
+        temp_path = "temp/" + str(request.user.pk)
+        temp_output_file_path = os.path.join(temp_path, "blank.pdf")
+        if not os.path.exists(temp_path):
+            os.makedirs(temp_path)
+
+
         os.system('pdftk '+file_path+' dump_data_fields output '+pdf_transfer+'.txt')
         with open(pdf_transfer+".txt","rb") as f:
             for line in f:
@@ -246,14 +253,15 @@ def helper_trasnfer_pdf_content(file_path):
         response = HttpResponse(pdf.read(), content_type='application/pdf')
         response['Content-Disposition'] = 'inline;filename=some_file.pdf'
         os.remove(pdf_transfer+".txt")
-        return response
-    pdf.closed
+        pdf.closed
+    os.remove("output_blank.pdf")
+    return response
     return true
 
 def api_get_blank_claim(request,yr,mo,da,claim):
     if request.method == 'GET' and 'make' in request.GET :
         url=yr+"/"+mo+"/"+da+"/"+claim+".pdf"
-        var = helper_trasnfer_pdf_content("media/documents/"+url)
+        var = helper_trasnfer_pdf_content("media/documents/"+url, request)
         return var
 
     return HttpResponseBadRequest('[]', content_type='application/json')

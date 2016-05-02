@@ -527,19 +527,6 @@ def PostAdPage(request):
         'form': form,
     })
 
-def save_file_to_media(claim_id):
-    claim = Claim.objects.get(pk=claim_id)
-    fileStorage = FileSystemStorage()
-    fileStorage.file_permissions_mode = 0744
-    today = datetime.datetime.now()
-    today_path = today.strftime("%Y/%m/%d")
-    fileStorage.location='media/documents/'+today_path
-    f = open('output.pdf', 'rb+')
-    myfile = File(f)
-    name=fileStorage.get_available_name(str(claim_id)+".pdf")
-    fileStorage.save(name, myfile)
-    newdoc = Document.objects.create(claim=claim, docfile='media/documents/'+today_path+"/"+name)
-
 def get_make_claim_extra_context(request):
     p = Personal_Information.objects.all()
     se = ExtPythonSerializer().serialize(
@@ -897,12 +884,6 @@ def print_form(request, bar, claim_id):
     f.close()
     os.remove(data_file_path)
     os.remove(temp_output_file_path)
-
-    # with open(newdoc.docfile.path, 'rb') as pdf:
-    #     response = HttpResponse(pdf.read(), content_type='application/pdf')
-    #     response['Content-Disposition'] = 'inline;filename=some_file.pdf'
-    #     return response
-    # pdf.closed
 
     response = HttpResponse(newdoc.docfile, content_type='application/pdf')
     response['Content-Disposition'] = 'inline;filename=some_file.pdf'
