@@ -39,7 +39,7 @@ def view_claims(request, chart):
     Renders the /patient/<no>/claimhistory webpage. Information is used for claim detals and claim searches (go to url).
     """
     patient_info=Personal_Information.objects.filter(pk=chart).values()
-    claimSearches=Claim.objects.filter(patient_id=chart)
+    claimSearches=Claim.objects.filter(patient_id=chart).order_by('-created')
     if len(patient_info)>0:
         claimValues=[]
         claimValues=claimSearches.values()[:]
