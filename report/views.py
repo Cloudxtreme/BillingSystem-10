@@ -235,8 +235,8 @@ def statement_generate(
             ws.Range("BA11").Value = ws.Range("F2").Value
             ws.Range("BA12").Value = ws.Range("F3").Value
 
-            ws.Range("L18").Value = ws.Range("F10").Value
-            ws.Range("AV18").Value = ws.Range("BN6").Value
+            ws.Range("L17").Value = ws.Range("F10").Value
+            ws.Range("AV17").Value = ws.Range("BN6").Value
 
             line = 19
             for claim in claims:
