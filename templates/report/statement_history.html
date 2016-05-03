@@ -2,13 +2,16 @@
 {% load staticfiles %}
 
 
-{% block body %}
+{% block script %}
+    <script src="{% static 'js/tablesorter.min.js' %}"></script>
+{% endblock %}
 
+{% block body %}
 <div class="container">
     <h2 class="text-center">Statement History</h2>
     <a href="{% url 'report:statement_read' %}" class="btn btn-default">Back</a><br>
     <br>
-    <table class="table table-striped table-condensed">
+    <table class="table table-striped table-condensed" id="statement-history">
         <thead>
             <tr>
                 <th>Statement ID</th>
@@ -31,5 +34,7 @@
         </tbody>
     </table>
 </div>
-
+<script type="text/javascript">
+    $("#statement-history").tablesorter();
+</script>
 {% endblock body %}
