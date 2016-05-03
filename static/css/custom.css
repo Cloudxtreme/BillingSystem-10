@@ -313,27 +313,24 @@ table.table-condensed td {
     padding-right: 10px;
 }
 
+th.tablesorter-header div,
+th.tablesorter-headerAsc div,
+th.tablesorter-headerDesc div {
+    cursor: pointer;
+}
 th.tablesorter-header div:after {
-    content: "\00a0\f0dc";
     display: inline-block;
     font: normal normal normal 14px/1 FontAwesome;
     font-size: inherit;
     text-rendering: auto;
     -webkit-font-smoothing: antialiased;
+}
+th.tablesorter-header div:after {
+    content: "\00a0\f0dc";
 }
 th.tablesorter-headerAsc div:after {
     content: "\00a0\f0de";
-    display: inline-block;
-    font: normal normal normal 14px/1 FontAwesome;
-    font-size: inherit;
-    text-rendering: auto;
-    -webkit-font-smoothing: antialiased;
 }
 th.tablesorter-headerDesc div:after {
     content: "\00a0\f0dd";
-    display: inline-block;
-    font: normal normal normal 14px/1 FontAwesome;
-    font-size: inherit;
-    text-rendering: auto;
-    -webkit-font-smoothing: antialiased;
 }
