@@ -314,14 +314,26 @@ table.table-condensed td {
 }
 
 th.tablesorter-header div:after {
-    content: "\f0dc";
+    content: "\00a0\f0dc";
     display: inline-block;
     font: normal normal normal 14px/1 FontAwesome;
     font-size: inherit;
     text-rendering: auto;
     -webkit-font-smoothing: antialiased;
 }
-
-
-/*content: "\f0de";
-content: "\f0dd";*/
+th.tablesorter-headerAsc div:after {
+    content: "\00a0\f0de";
+    display: inline-block;
+    font: normal normal normal 14px/1 FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+}
+th.tablesorter-headerDesc div:after {
+    content: "\00a0\f0dd";
+    display: inline-block;
+    font: normal normal normal 14px/1 FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+}

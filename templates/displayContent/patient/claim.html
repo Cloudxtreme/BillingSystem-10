@@ -2,21 +2,20 @@
 {% load widget_tweaks %}
 {% load staticfiles %}
 
-    {% block title %} Claim Details {% endblock title %}
+{% block title %} Claim Details {% endblock title %}
 
-    {% block script %}
+{% block script %}
+    <script src="{% static 'js/tablesorter.min.js' %}"></script>
+{% endblock %}
+{% block link %}
 
+<style>
+    table#table_search tbody tr:hover {
+        background-color: #def ;
+    }
+</style>
 
-    {% endblock script %}
-    {% block link %}
-
-    <style>
-        table#table_search tbody tr:hover {
-            background-color: #def ;
-        }
-    </style>
-
-    {% endblock link %}
+{% endblock link %}
 
 
 {% block body %}
@@ -181,6 +180,7 @@ $('table#table_search tbody tr').on("click", function(){
 // 'use strict';
 (function() {
     var tableSearch = $('#table_search');
+    tableSearch.tablesorter();
 
     $("#table_search tbody tr").click(function(e) {
         var row = $(e.currentTarget);
