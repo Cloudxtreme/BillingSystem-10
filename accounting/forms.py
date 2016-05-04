@@ -46,10 +46,6 @@ class PaymentClaimSearchForm(forms.Form):
 
         try:
             payment = Payment.objects.get(pk=payment_id)
-            # if search_type == 'create_patient_charge' and \
-            #         payment.payer_type != 'Patient':
-            #     self.add_error('payment',
-            #             'Given payment is not payer type \"Patient\"')
         except:
             self.add_error('payment', 'Payment with given ID does not exist')
 

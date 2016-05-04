@@ -15,10 +15,13 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
-import infoGatherer
 from django.conf.urls.static import static
 from django.views.generic import RedirectView
 from django.conf import settings
+
+import infoGatherer
+from accounts import views
+
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
@@ -29,6 +32,7 @@ urlpatterns = [
     url(r'^patient/', include('displayContent.urls')),
     url(r'^report/', include('report.urls')),
     url(r'^tz_detect/', include('tz_detect.urls')),
+    url(r'^$', views.index),
 ]
 # ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

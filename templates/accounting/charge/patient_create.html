@@ -117,9 +117,9 @@
         var aa = row.find('.apply-amount').val();
 
         if(ca && aa)
-            row.find('.balance').html(Math.roundP(ca - aa, 2));
+            row.find('.balance').html(parseFloat(ca - aa).toFixed(2));
         else if(ca)
-            row.find('.balance').html(Math.roundP(ca, 2));
+            row.find('.balance').html(parseFloat(ca).toFixed(2));
     }
 
 })();
