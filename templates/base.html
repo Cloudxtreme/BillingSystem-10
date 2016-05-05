@@ -8,25 +8,20 @@
         <title>{% block title %} Xenon Health {% endblock title %}</title>
 
         <script src="{% static 'js/jquery.min.js' %}"></script>
-        <script src="{% static 'js/csrf.js' %}"></script>
-        <script src="{% static 'js/js.cookie.min.js' %}"></script>
         <script src="{% static 'js/jquery.validate.min.js' %}"></script>
         <script src="{% static 'js/additional-methods.min.js' %}"></script>
         <script src="{% static 'js/lodash.min.js' %}"></script>
+        <script src="{% static 'js/bootstrap.min.js' %}"></script>
+        <script src="{% static 'js/moment.min.js' %}"></script>
+        <script src="{% static 'js/pikaday.min.js' %}"></script>
         <script src="{% static 'js/misc.js' %}"></script>
 
         {% block script %}{% endblock script %}
 
         <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
-        <script src="{% static 'js/bootstrap.min.js' %}"></script>
-
         <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">
-        <link rel="stylesheet" href="{% static 'css/custom.css' %}">
-
-
-        <script src="{% static 'js/moment.min.js' %}"></script>
-        <script src="{% static 'js/pikaday.min.js' %}"></script>
         <link rel="stylesheet" href="{% static 'css/pikaday.css' %}" />
+        <link rel="stylesheet" href="{% static 'css/custom.css' %}">
 
         {% block link %}{% endblock link %}
 
