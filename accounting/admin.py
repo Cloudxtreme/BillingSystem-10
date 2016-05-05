@@ -2,16 +2,17 @@ from django.contrib import admin
 from daterange_filter.filter import DateRangeFilter
 from accounting.models import *
 from decimal import *
+from import_export.admin import ImportExportModelAdmin
 
 
-class PaymentAdmin(admin.ModelAdmin):
+class PaymentAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     list_display = ('payment_date','payer_type','payer','payment_method','check_number','payment_Amount', 'applied_Amount', 'user')
     list_filter=(
         'user',
         ('payment_date', DateRangeFilter),
     )
-    search_fields = ['payment_date','payer_type', 'user__first_name', 'user__last_name', 
-                            'user__email', 'amount','check_number','payment_method', 
+    search_fields = ['payment_date','payer_type', 'user__first_name', 'user__last_name',
+                            'user__email', 'amount','check_number','payment_method',
                             'payer_patient__first_name','payer_patient__last_name',
                             'payer_insurance__name']
 
@@ -31,7 +32,7 @@ class PaymentAdmin(admin.ModelAdmin):
         return "$"+str(obj.applied_amount)
 
 
-class ApplyAdmin(admin.ModelAdmin):
+class ApplyAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     # pass
     list_display = ('applied_on','payment_date','dos','patient_Id','patient_name' ,'payment_amount','adjustment_amount', 'paymentid', 'payer', 'user')
     search_fields = ['created' ,'amount','adjustment','payment__payment_date','charge__procedure__claim__patient__first_name',
@@ -44,11 +45,9 @@ class ApplyAdmin(admin.ModelAdmin):
         ('created', DateRangeFilter),
     )
 
-
-
     def user(self, obj):
         return str(obj.user.first_name)+"("+obj.user.email+")"
-        
+
     def adjustment_amount(self, obj):
         return "$"+str(obj.adjustment)
 

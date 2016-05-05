@@ -53,6 +53,7 @@ INSTALLED_APPS = (
     'deepdiff',
     'daterange_filter',
     'tz_detect',
+    'import_export',
 
     'infoGatherer',
     'accounts',
@@ -60,7 +61,6 @@ INSTALLED_APPS = (
     'accounting',
     'displayContent',
     'report',
-    'loader',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -157,6 +157,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = 'static_root/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static/')]
 
 AUTH_USER_MODEL = 'accounts.User'
