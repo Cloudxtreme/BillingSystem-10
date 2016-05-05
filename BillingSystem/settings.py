@@ -60,6 +60,7 @@ INSTALLED_APPS = (
     'accounting',
     'displayContent',
     'report',
+    'loader',
 )
 
 MIDDLEWARE_CLASSES = (

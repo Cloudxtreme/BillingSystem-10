@@ -24,6 +24,7 @@ from dashboard import views
 
 
 urlpatterns = [
+    url(r'^$', views.dashboard),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^info/', include('infoGatherer.urls')),
     url(r'^accounts/', include('accounts.urls')),
@@ -32,7 +33,7 @@ urlpatterns = [
     url(r'^patient/', include('displayContent.urls')),
     url(r'^report/', include('report.urls')),
     url(r'^tz_detect/', include('tz_detect.urls')),
-    url(r'^$', views.dashboard),
+    url(r'^loader/', include('loader.urls')),
 ]
 # ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
