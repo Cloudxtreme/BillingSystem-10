@@ -103,7 +103,7 @@ def statement_generate(
 
     # These COM extension should be launch just once
     pythoncom.CoInitialize()
-    excel = client.Dispatch("Excel.Application")
+    excel = client.DispatchEx("Excel.Application")
 
     # Create Statement history record to group all reports created
     # at the time user clicks
@@ -193,6 +193,11 @@ def statement_generate(
         # Begin writing Excel template
         wb = None
         try:
+            # Make it run much faster
+            excel.ScreenUpdating = False
+            excel.DisplayAlerts = False
+            excel.CutCopyMode = False
+
             # Copy template to temp folder of that user beforehand
             temp_path = "temp/" + str(request.user.pk)
             if not os.path.exists(temp_path):
@@ -239,7 +244,58 @@ def statement_generate(
             ws.Range("L17").Value = ws.Range("F10").Value
             ws.Range("AV17").Value = ws.Range("BN6").Value
 
-            line = 19
+            ws.Range("AV55").Value = total_ins_pymt
+            ws.Range("BJ55").Value = total_pat_pymt
+
+            ws.Range("P57").Value = aging.get("i_m1")
+            ws.Range("Y57").Value = aging.get("i_m2")
+            ws.Range("AH57").Value = aging.get("i_m3")
+            ws.Range("AQ57").Value = aging.get("i_m4")
+            ws.Range("AZ57").Value = aging.get("i_m5")
+            ws.Range("BH57").Value = aging.get("i_t")
+
+            ws.Range("P58").Value = aging.get("p_m1")
+            ws.Range("Y58").Value = aging.get("p_m2")
+            ws.Range("AH58").Value = aging.get("p_m3")
+            ws.Range("AQ58").Value = aging.get("p_m4")
+            ws.Range("AZ58").Value = aging.get("p_m5")
+            ws.Range("BH58").Value = aging.get("p_t")
+
+            ws.Range("BA6").Value = aging.get("total")
+            ws.Range("BT17").Value = aging.get("total")
+            ws.Range("BT55").Value = aging.get("total")
+            ws.Range("BT60").Value = aging.get("total")
+
+            if len(message) > 0:
+                ws.Range("A60").Value = message
+
+            start_line = 19
+            last_line = 54 - 1
+            page_count = 1
+            line_per_new_page = 72
+
+            # Calculator total lines will be printed
+            total_lines = 0
+            for claim in claims:
+                total_lines += 1
+
+                for procedure in claim.procedure_set.all():
+                    total_lines += 1
+
+                    for charge in procedure.charge_set.all():
+                        if charge.payer_type == "Patient":
+                            total_lines += 1
+
+            # Keep adding new lines until we have enough space
+            # Add multiple lines each to save time
+            while total_lines + start_line >= last_line:
+                multiplier = 18
+                for i in range(0, line_per_new_page / multiplier):
+                    ws.Rows("%s:%s" % (last_line-multiplier+1, last_line)).Copy()
+                    ws.Rows("%s:%s" % (last_line-multiplier+1, last_line-multiplier+1)).Insert()
+                    last_line += multiplier
+
+            line = start_line
             for claim in claims:
                 ws.Range("A%s" % line).Value = claim.created.strftime("%m/%d/%y")
                 ws.Range("L%s" % line).Value = claim.rendering_provider\
@@ -275,31 +331,6 @@ def statement_generate(
                             ws.Range("L%s" % line).Value = charge.resp_type.upper()
                             ws.Range("BC%s" % line).Value = charge.amount
                             line += 1
-
-            ws.Range("AV55").Value = total_ins_pymt
-            ws.Range("BJ55").Value = total_pat_pymt
-
-            ws.Range("P57").Value = aging.get("i_m1")
-            ws.Range("Y57").Value = aging.get("i_m2")
-            ws.Range("AH57").Value = aging.get("i_m3")
-            ws.Range("AQ57").Value = aging.get("i_m4")
-            ws.Range("AZ57").Value = aging.get("i_m5")
-            ws.Range("BH57").Value = aging.get("i_t")
-
-            ws.Range("P58").Value = aging.get("p_m1")
-            ws.Range("Y58").Value = aging.get("p_m2")
-            ws.Range("AH58").Value = aging.get("p_m3")
-            ws.Range("AQ58").Value = aging.get("p_m4")
-            ws.Range("AZ58").Value = aging.get("p_m5")
-            ws.Range("BH58").Value = aging.get("p_t")
-
-            ws.Range("BA6").Value = aging.get("total")
-            ws.Range("BT17").Value = aging.get("total")
-            ws.Range("BT55").Value = aging.get("total")
-            ws.Range("BT60").Value = aging.get("total")
-
-            if len(message) > 0:
-                ws.Range("A60").Value = message
 
             # Prepare path and filename for temp file
             temp_filename = "statement.pdf"
@@ -339,6 +370,10 @@ def statement_generate(
             print "Error occurs during saving statement report"
             print e
         finally:
+            excel.ScreenUpdating = True
+            excel.DisplayAlerts = True
+            excel.CutCopyMode = True
+
             if wb is not None:
                 wb.Close(False)
                 os.remove(template_path)

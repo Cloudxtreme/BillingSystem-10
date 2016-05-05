@@ -20,7 +20,7 @@ from django.views.generic import RedirectView
 from django.conf import settings
 
 import infoGatherer
-from accounts import views
+from dashboard import views
 
 
 urlpatterns = [
@@ -32,7 +32,7 @@ urlpatterns = [
     url(r'^patient/', include('displayContent.urls')),
     url(r'^report/', include('report.urls')),
     url(r'^tz_detect/', include('tz_detect.urls')),
-    url(r'^$', views.index),
+    url(r'^$', views.dashboard),
 ]
 # ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
