@@ -281,6 +281,13 @@ table.table-condensed td {
     }
 }
 
+@media (min-width: 768px) {
+    .navbar-right .dropdown-menu {
+        left: auto;
+        right: auto;
+    }
+}
+
 .table-aging thead th:first-child {
     width: 28%;
 }
