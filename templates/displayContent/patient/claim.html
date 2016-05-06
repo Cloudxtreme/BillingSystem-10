@@ -115,6 +115,9 @@
 
 <script>
 
+$(document).ready(function(){
+    $("table#table_search tbody tr").first().trigger("click");
+})
 
 function getMonthFromString(mon){
    var d = Date.parse(mon + "1, 2012");
