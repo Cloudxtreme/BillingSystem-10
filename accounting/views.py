@@ -93,7 +93,10 @@ def payment_create(request):
 
     if request.method == 'POST' and form.is_valid():
         Payment.objects.create(user=request.user, **form.cleaned_data)
-        return redirect(reverse('dashboard:dashboard'))
+        amnt = form.cleaned_data.get('amount')
+        messages.add_message(request, messages.SUCCESS,
+            "A new payment has been created for $%s"% str(amnt))
+        return redirect(reverse('accounting:payment_create'))
     return render(request, 'accounting/payment/create.html', {'form': form})
 
 def payment_apply_read(request):
