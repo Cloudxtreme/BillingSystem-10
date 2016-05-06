@@ -74,7 +74,6 @@ PROVIDER_ROLE_CHOICES = (
     ('Rendering', 'Rendering'),
     ('Dual', 'Dual'),
     ('Location', 'Location'),
-    ('Referring', 'Referring'),
 )
 
 POS_CHOICES = (('Home','Home'),('Hospital','Hospital'),('Office','Office'))
