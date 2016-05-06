@@ -3,10 +3,15 @@ from daterange_filter.filter import DateRangeFilter
 from accounting.models import *
 from decimal import *
 from import_export.admin import ImportExportModelAdmin
+from django.forms import TextInput, Textarea
 
 
 class PaymentAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     list_display = ('payment_date','payer_type','payer','payment_method','check_number','payment_Amount', 'applied_Amount', 'user')
+    formfield_overrides = {
+        models.CharField: {'widget': TextInput(attrs={'size':'30'})},
+        models.IntegerField: {'widget': TextInput(attrs={'size':'30'})},
+    }
     list_filter=(
         'user',
         ('payment_date', DateRangeFilter),
@@ -34,6 +39,10 @@ class PaymentAdmin(ImportExportModelAdmin, admin.ModelAdmin):
 
 class ApplyAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     # pass
+    formfield_overrides = {
+        models.CharField: {'widget': TextInput(attrs={'size':'30'})},
+        models.IntegerField: {'widget': TextInput(attrs={'size':'30'})},
+    }
     list_display = ('applied_on','payment_date','dos','patient_Id','patient_name' ,'payment_amount','adjustment_amount', 'paymentid', 'payer', 'user')
     search_fields = ['created' ,'amount','adjustment','payment__payment_date','charge__procedure__claim__patient__first_name',
                             'charge__procedure__claim__patient__last_name','charge__procedure__claim__patient__chart_no',
